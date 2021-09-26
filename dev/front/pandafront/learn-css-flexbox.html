@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <style>
+        .parent {
+
+            display: flex;
+            background-color: aqua;
+
+
+
+        }
+
+        .child {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            margin-right: 8px;
+            border: 1px solid black;
+        }
+
+        #child1 {
+            /* 자식의 최소 너비 */
+            /* 잘안씀 */
+            flex-basis: 200px;
+            /* 여백을 어떻게 채워나갈것인가 늘어날때*/
+            /* 상대적인것 */
+            flex-grow: 1;
+
+            /* 줄어들어야할떄 어느 비율로 줄일지 */
+            flex-shrink: 1;
+        }
+
+        #child2 {
+            flex-basis: 100px;
+            flex-grow: 1;
+        }
+
+        #child3 {
+            flex-basis: 100px;
+            flex-grow: 1;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parent">
+        <div id="child1" class="child">
+            자식
+        </div>
+        <div id="child2" class="child">
+            자식
+        </div>
+        <div id="child3" class="child">
+            자식
+        </div>
+
+    </div>
+</body>
+
+</html>

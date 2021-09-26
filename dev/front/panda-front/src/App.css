@@ -1,4 +1,71 @@
-.App {
+* {
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+}
+
+html,
+body,
+#root,
+#root > div {
+  height: 100%;
+}
+
+#header {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  background-color: red;
+  border-bottom: 1px solid gray;
+}
+
+#header-area {
+  width: 1024px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#header-area img {
+  width: 128px;
+  height: 36px;
+}
+
+#body {
+  min-height: 100vh;
+  max-width: 1024px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+
+#footer {
+  height: 200px;
+  background-color: rgb(230, 230, 230);
+}
+
+@media screen and (max-width: 400px) {
+  .product-card {
+    width: 160px !important;
+  }
+  #header {
+    padding: 0 8px;
+  }
+  #body {
+    padding: 0 8px;
+  }
+  .ant-carousel {
+    margin: 0 -8px;
+  }
+}
+
+.navbar-nav {
+  background-color: blue;
+}
+
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +102,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

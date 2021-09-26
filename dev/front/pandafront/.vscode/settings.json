@@ -1,0 +1,12 @@
+{
+    "[json]": {
+        "breadcrumbs.showArrays": true,
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+        "editor.formatOnSave": true,
+        "editor.showUnused": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

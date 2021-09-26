@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // 액시오스 객체 생성확인
+        // console.log(axios);
+        axios.get("https://jsonplaceholder.typicode.com/todos/1").then(function (result) {
+            console.log('통신결과 :', result);
+        })
+            .catch(function (error) {
+                console.log('ero', console.erro);
+            });
+        console.log('실행완료');
+
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

@@ -18,7 +18,7 @@ class LoginApp extends Component {
             <div className="TodoApp">
                 <Router>
                     <div>
-                        <HeaderWithRouter/>
+                        {/* <HeaderWithRouter/> */}
                         <Switch>
                             <Route path="/" exact component={LoginComponent}/>
                             <Route path="/login" component={LoginComponent}/>
