@@ -19,7 +19,7 @@ public class Account {
 
     //두개있으면 안된다 유니크
     @Column(unique = true)
-    private String email;
+    private String account;
 
     @Column(unique = true)
     private String nickname;
