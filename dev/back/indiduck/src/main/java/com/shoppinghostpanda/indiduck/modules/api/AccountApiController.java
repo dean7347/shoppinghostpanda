@@ -5,6 +5,7 @@ import com.shoppinghostpanda.indiduck.modules.account.Account;
 import com.shoppinghostpanda.indiduck.modules.account.AccountService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,15 +20,16 @@ public class AccountApiController {
 
     //회원가입 API
     @PostMapping("/api/register")
-    public CreateAccountResponse regMember(@RequestBody @Valid CreateAccountRequest request){
+    public ResponseEntity regMember(@RequestBody @Valid CreateAccountRequest request){
 
         Account account = new Account();
         account.setAccount(request.getAccount());
         account.setPassword(request.getPassword());
-
-        Long id = accountService.join(account);
-        return new CreateAccountResponse(id);
+        ResponseEntity join = accountService.join(account);
+        return join;
     }
+
+
     //회원가입 API res req
     @Data
     static class CreateAccountRequest{
@@ -39,6 +41,8 @@ public class AccountApiController {
         private Long id;
         public CreateAccountResponse(Long id) {this.id = id;}
     }
+
+
 
 
 }
