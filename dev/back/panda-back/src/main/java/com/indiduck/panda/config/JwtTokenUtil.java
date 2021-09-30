@@ -23,7 +23,7 @@ public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60*60*60;
 
-    @Value("${spring.jwt.secret}")
+    @Value("${spring.jwt.secret}@panda@ghkdlxld")
     private String secret;
 
     //retrieve username from jwt token
@@ -68,9 +68,10 @@ public class JwtTokenUtil implements Serializable {
     //   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claims, String subject) {
 
+        long now = (new Date()).getTime();
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .signWith(SignatureAlgorithm.HS512, secret).setExpiration(new Date(now+86400)).compact();
     }
 
     //validate token

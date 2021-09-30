@@ -15,6 +15,7 @@ package com.indiduck.panda.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.domain.User;
@@ -26,11 +27,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class JwtUserDetailsService implements UserDetailsService {
 
     //	@Override
@@ -43,6 +45,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 //		}
 //	}
     private final UserRepository userRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
     /**
      * Spring Security 필수 메소드 구현
@@ -73,5 +76,17 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .auth(infoDto.getAuth())
                 .password(infoDto.getPassword())
                 .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
+    }
+
+    /**
+     * 토큰 검증
+     */
+    public User Check(String token){
+
+        String usernameFromToken = jwtTokenUtil.getUsernameFromToken(token);
+        Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
+        User user = byEmail.get();
+        return user;
+
     }
 }
