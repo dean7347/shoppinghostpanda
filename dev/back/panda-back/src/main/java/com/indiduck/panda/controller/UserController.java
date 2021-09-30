@@ -16,7 +16,9 @@ public class UserController {
 
     @PostMapping("/signup")
     public Response signup(@RequestBody UserDto infoDto) { // 회원 추가
+        System.out.println("infoDto = " + infoDto.getEmail());
         Response response = new Response();
+
 
         try {
             userService.save(infoDto);

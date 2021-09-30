@@ -13,10 +13,13 @@ package com.indiduck.panda.config;
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserDto;
+import com.indiduck.panda.domain.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -68,6 +71,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         return userRepository.save(User.builder()
                 .email(infoDto.getEmail())
                 .auth(infoDto.getAuth())
-                .password(infoDto.getPassword()).build()).getId();
+                .password(infoDto.getPassword())
+                .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
     }
 }

@@ -35,10 +35,10 @@ public class JwtAuthenticationController {
 
     @Autowired
     private JwtUserDetailsService userDetailsService;
-
+    //로그인
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-
+        System.out.println("authenticationRequest = " + authenticationRequest.getUsername());
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final UserDetails userDetails = userDetailsService
@@ -48,8 +48,18 @@ public class JwtAuthenticationController {
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
+    //check
+//    @RequestMapping(value ="/api/auth/check", method = RequestMethod.GET)
+//    public ResponseEntity<?> createCheckMethod(){
+//
+//        return ResponseEntity
+//    }
 
-    
+    /*
+    펑션
+     */
+
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
