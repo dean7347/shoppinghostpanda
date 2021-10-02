@@ -15,7 +15,7 @@ import com.indiduck.panda.domain.User;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -31,8 +31,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @CrossOrigin
@@ -50,36 +54,64 @@ public class JwtAuthenticationController {
 
     private final UserRepository userRepository;
 
+
     //로그인
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-//        System.out.println("authenticationRequest = " + authenticationRequest.getUsername());
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+//          V1
+//        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+//        final UserDetails userDetails = userDetailsService
+//                .loadUserByUsername(authenticationRequest.getUsername());
+//
+//
 
+
+        System.out.println("컨트롤러 로그인 시도 ");
+        ResponseEntity<String> CONFLICT = authenticateV2(authenticationRequest);
+
+        if (CONFLICT != null) return CONFLICT;
+        System.out.println("컨트롤러 체크로직 통과");
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails);
+//
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        HttpHeaders resHeader = new HttpHeaders();
+        resHeader.add("Set-Cookie","access_token="+token);
+//        new JwtResponse(token)
+        return ResponseEntity.ok().headers(resHeader).body("환영합니다");
     }
+
+
 
     @RequestMapping(path = "/auth/logout", method = RequestMethod.GET)
     private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+//        SecurityContextHolder 클리어시켜볼까?
+        System.out.println(" 로그아웃 ");
         if(authentication !=null)
         {
             new SecurityContextLogoutHandler().logout(request,response,authentication);
         }
-        System.out.println(" 로그아웃 ");
+
 
     }
 
     @GetMapping("/auth/check")
-    public SimpleCheckDto hello(@CurrentSecurityContext(expression="authentication.name")
-                                String username) {
-        return new SimpleCheckDto(username);
+    @ResponseBody
+    public ResponseEntity<?> check(HttpServletRequest request,
+                                   @CookieValue(name = "access_token",defaultValue = "얻지못함") String usernameCookie){//        @CookieValue("Cookie") String usernameCookie
+
+        String usernameFromToken = jwtTokenUtil.getUsernameFromToken(usernameCookie);
+        if(usernameFromToken !=null)
+        {
+            System.out.println("usernameFromToken = " + usernameFromToken);
+            return ResponseEntity.status(HttpStatus.OK).body(new SimpleCheckDto(usernameFromToken));
+        }
+
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
     }
 
     /*
@@ -91,12 +123,33 @@ public class JwtAuthenticationController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
+            System.out.println("user_disabled");
             throw new Exception("USER_DISABLED", e);
+
+
         } catch (BadCredentialsException e) {
+            System.out.println("invalid_credentials");
+
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
-    ////////////////dto///////////
+
+    private ResponseEntity<String> authenticateV2(JwtRequest authenticationRequest) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername()
+                    , authenticationRequest.getPassword()));
+        } catch (DisabledException e) {
+             System.out.println("user_disabled");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
+//            return ResponseEntity("no user",HttpStatus.CONFLICT)
+
+        } catch (BadCredentialsException e) {
+            System.out.println("invalid_credentials");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
+        }
+        return null;
+    }
+    //////////////dto///////////
     @Data
     static class SimpleCheckDto {
 

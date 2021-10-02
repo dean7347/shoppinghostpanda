@@ -78,15 +78,5 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
     }
 
-    /**
-     * 토큰 검증
-     */
-    public User Check(String token){
 
-        String usernameFromToken = jwtTokenUtil.getUsernameFromToken(token);
-        Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
-        User user = byEmail.get();
-        return user;
-
-    }
 }
