@@ -1,4 +1,4 @@
-package com.indiduck.panda.domain;
+package com.indiduck.panda.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;

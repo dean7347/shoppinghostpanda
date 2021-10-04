@@ -1,11 +1,13 @@
 package com.indiduck.panda.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,8 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue
+    @Column(name="member_id")
     private Long id;
 
     @Column(name = "email", unique = true)
@@ -28,6 +31,25 @@ public class User implements UserDetails {
 
     @Column(name = "auth")
     private String auth;
+
+
+    private String userPhoneNumber;
+    private LocalDateTime regAt;
+    private boolean isEmail;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "userId")
+    private List<UserOrder> orders;
+
+
+    @OneToMany(mappedBy = "userName")
+    private List<DeliverAddress> userAddress;
+
+    @OneToMany(mappedBy = "writerName")
+    private List<ProductReply> replies;
+
+    @OneToOne
+    private Shop shop;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

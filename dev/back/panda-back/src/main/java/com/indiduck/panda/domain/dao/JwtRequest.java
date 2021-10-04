@@ -1,4 +1,4 @@
-package com.indiduck.panda.domain;
+package com.indiduck.panda.domain.dao;
 
 //- 일종의 Dto입니다. 한번 감싸줌으로서 rare한 정보대신 가공된 정보를 받을 수 있도록 합니다.
 //

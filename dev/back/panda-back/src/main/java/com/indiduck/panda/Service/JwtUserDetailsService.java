@@ -1,4 +1,4 @@
-package com.indiduck.panda.config;
+package com.indiduck.panda.Service;
 
 
 //- UserDetailsService를 implements 해주었다는 것이 중요합니다.
@@ -12,17 +12,14 @@ package com.indiduck.panda.config;
 //- https://www.javainuse.com/onlineBcrypt 에서 user_pw를 Bcrypt화할 수 있습니다.
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.User;
-import com.indiduck.panda.domain.UserDto;
+import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.domain.UserType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

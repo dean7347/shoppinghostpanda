@@ -1,4 +1,4 @@
-package com.indiduck.panda.domain;
+package com.indiduck.panda.domain.dto;
 
 //- 응답 객체입니다.
 //

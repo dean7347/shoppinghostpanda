@@ -8,10 +8,8 @@ package com.indiduck.panda.controller;
 //- JwtRequest를 Json 형식으로 받았다면, 인증을 통해 토큰을 발급해주는 기능을 작성하였습니다.
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.JwtTokenUtil;
-import com.indiduck.panda.config.JwtUserDetailsService;
-import com.indiduck.panda.domain.JwtRequest;
-import com.indiduck.panda.domain.JwtResponse;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.Service.JwtUserDetailsService;
+import com.indiduck.panda.domain.dao.JwtRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +19,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.status;
 

@@ -1,9 +1,7 @@
 package com.indiduck.panda.controller;
 
-import com.indiduck.panda.config.JwtUserDetailsService;
-import com.indiduck.panda.domain.JwtResponse;
-import com.indiduck.panda.domain.Response;
-import com.indiduck.panda.domain.UserDto;
+import com.indiduck.panda.Service.JwtUserDetailsService;
+import com.indiduck.panda.domain.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
