@@ -15,19 +15,6 @@ public class UserController {
 
     private final JwtUserDetailsService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserDto infoDto) { // 회원 추가
-        System.out.println("infoDto = " + infoDto.getEmail());
 
-
-
-        try {
-            userService.save(infoDto);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
-        }
-        return ResponseEntity.ok("회원가입 성공");
-    }
 
 }

@@ -10,6 +10,7 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.domain.dao.JwtRequest;
+import com.indiduck.panda.domain.dto.UserDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,7 @@ public class JwtAuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -74,8 +77,22 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok().headers(resHeader).body("환영합니다");
     }
 
+    //회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody UserDto infoDto) { // 회원 추가
+        System.out.println("infoDto = " + infoDto.getEmail());
 
 
+
+        try {
+            userDetailsService.save(infoDto);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
+        }
+        return ResponseEntity.ok("회원가입 성공");
+    }
+    //체크
     @RequestMapping(path = "/auth/logout", method = RequestMethod.GET)
     private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
     private Long id;
 
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(name = "auth")
     private String auth;
 
-
+    private String userRName;
     private String userPhoneNumber;
     private LocalDateTime regAt;
     private boolean isEmail;
