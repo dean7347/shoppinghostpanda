@@ -11,6 +11,8 @@ import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import com.indiduck.panda.domain.dto.UserDto;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.logging.Logger;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -112,11 +116,21 @@ public class JwtAuthenticationController {
                                    @CookieValue(name = "access_token",defaultValue = "얻지못함") String usernameCookie){//        @CookieValue("Cookie") String usernameCookie
 
         String usernameFromToken = jwtTokenUtil.getUsernameFromToken(usernameCookie);
+        try {
+
+
+        }catch (ExpiredJwtException e) {
+            System.out.println(" Token expired ");
+        } catch(Exception e){
+            System.out.println(" Some other exception in JWT parsing ");
+        }
+
         if(usernameFromToken !=null)
         {
             System.out.println("usernameFromToken = " + usernameFromToken);
             return ResponseEntity.status(HttpStatus.OK).body(new SimpleCheckDto(usernameFromToken));
         }
+
 
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");

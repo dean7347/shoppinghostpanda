@@ -21,7 +21,9 @@ public class JwtTokenUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60*60*60;
+    public static final long JWT_TOKEN_VALIDITY =5*60*60;
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2;
 
     @Value("${spring.jwt.secret}@panda@ghkdlxld")
     private String secret;
@@ -70,7 +72,7 @@ public class JwtTokenUtil implements Serializable {
 
         long now = (new Date()).getTime();
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 5000))
                 .signWith(SignatureAlgorithm.HS512, secret).setExpiration(new Date(now+86400)).compact();
     }
 
