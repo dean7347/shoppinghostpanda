@@ -14,7 +14,7 @@ public class Shop {
     @GeneratedValue
     private Long id;
 
-    private String ShopName;
+    private String shopName;
     //사업자 등록번호
     private String CRN;
 

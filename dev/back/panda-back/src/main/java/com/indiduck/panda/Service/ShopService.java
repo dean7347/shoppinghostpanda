@@ -36,9 +36,13 @@ public class ShopService {
             return save;
         }
         return null;
-
-
-
-
+    }
+    //샵이 있는지 조회
+    public Shop haveShop(String userName)
+    {
+        Optional<User> byEmail = userRepository.findByEmail(userName);
+        Shop shopWithUserByusername = shopRepository.findShopWithShopNameByUser(byEmail.get());
+        System.out.println("shopWithUserByusername = " + shopWithUserByusername);
+        return shopWithUserByusername;
     }
 }

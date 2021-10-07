@@ -7,9 +7,13 @@ package com.indiduck.panda.controller;
 //
 //- JwtRequest를 Json 형식으로 받았다면, 인증을 통해 토큰을 발급해주는 기능을 작성하였습니다.
 import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Service.CookieUtil;
+import com.indiduck.panda.Service.RedisUtil;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
+import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.dao.JwtRequest;
+import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.UserDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -28,6 +32,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,35 +55,30 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    private final UserRepository userRepository;
 
+    @Autowired
+    private CookieUtil cookieUtil;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     //로그인
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-//          V1
-//        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-//        final UserDetails userDetails = userDetailsService
-//                .loadUserByUsername(authenticationRequest.getUsername());
-//
-//
-
-
-        System.out.println("컨트롤러 로그인 시도 ");
-        ResponseEntity<String> CONFLICT = authenticateV2(authenticationRequest);
-
-        if (CONFLICT != null) return CONFLICT;
-        System.out.println("컨트롤러 체크로직 통과");
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-//
-
-        HttpHeaders resHeader = new HttpHeaders();
-        resHeader.add("Set-Cookie","access_token="+token);
-//        new JwtResponse(token)
-        return ResponseEntity.ok().headers(resHeader).body("환영합니다");
+    public Response createAuthenticationToken(@RequestBody JwtRequest authenticationRequest,HttpServletRequest req,
+                                                       HttpServletResponse res) throws Exception {
+        try {
+            final User user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+            final String token = jwtTokenUtil.generateToken(user);
+            final String refreshJwt = jwtTokenUtil.generateRefreshToken(user);
+            Cookie accessToken = cookieUtil.createCookie(jwtTokenUtil.ACCESS_TOKEN_NAME, token);
+            Cookie refreshToken = cookieUtil.createCookie(jwtTokenUtil.REFRESH_TOKEN_NAME, refreshJwt);
+            redisUtil.setDataExpire(refreshJwt, user.getUsername(), jwtTokenUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+            res.addCookie(accessToken);
+            res.addCookie(refreshToken);
+            return new Response("success", "로그인에 성공했습니다.", token);
+        } catch (Exception e) {
+            return new Response("error", "로그인에 실패했습니다.", e.getMessage());
+        }
     }
 
     //회원가입
@@ -113,26 +113,17 @@ public class JwtAuthenticationController {
     @GetMapping("/auth/check")
     @ResponseBody
     public ResponseEntity<?> check(HttpServletRequest request,
-                                   @CookieValue(name = "access_token",defaultValue = "얻지못함") String usernameCookie){//        @CookieValue("Cookie") String usernameCookie
+                                   @CookieValue(name = "accessToken") String usernameCookie){
 
-        String usernameFromToken = jwtTokenUtil.getUsernameFromToken(usernameCookie);
-        try {
-
-
-        }catch (ExpiredJwtException e) {
-            System.out.println(" Token expired ");
-        } catch(Exception e){
-            System.out.println(" Some other exception in JWT parsing ");
-        }
-
+        String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
         if(usernameFromToken !=null)
         {
             System.out.println("usernameFromToken = " + usernameFromToken);
             return ResponseEntity.status(HttpStatus.OK).body(new SimpleCheckDto(usernameFromToken));
         }
-
-
-
+//
+//
+//
         return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
     }
 

@@ -1,84 +1,89 @@
 package com.indiduck.panda.config;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
+
+import com.indiduck.panda.domain.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
+import java.util.function.Function;
 //- 토큰 관련 설정을 담당하는 클래스입니다.
 //- 토큰을 발급해주고, 자격증명을 관리해줍니다.
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtil {
 
-    private static final long serialVersionUID = -2550185165626007488L;
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 10*3000000;
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2*3000000;
 
-    public static final long JWT_TOKEN_VALIDITY =5*60*60;
-    public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2;
+    final static public String ACCESS_TOKEN_NAME = "accessToken";
+    final static public String REFRESH_TOKEN_NAME = "refreshToken";
 
-    @Value("${spring.jwt.secret}@panda@ghkdlxld")
-    private String secret;
+    @Value("${spring.jwt.secret}")
+    private String SECRET_KEY;
 
-    //retrieve username from jwt token
-    // jwt token으로부터 username을 획득한다.
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    private Key getSigningKey(String secretKey) {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //retrieve expiration date from jwt token
-    // jwt token으로부터 만료일자를 알려준다.
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
+    public Claims extractAllClaims(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey(SECRET_KEY))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-    //for retrieveing any information from token we will need the secret key
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    public String getUsername(String token) {
+        return extractAllClaims(token).get("username", String.class);
     }
 
-    //check if the token has expired
-    // 토큰이 만료되었는지 확인한다.
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
+    public Boolean isTokenExpired(String token) {
+        final Date expiration = extractAllClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 
-    //generate token for user
-    // 유저를 위한 토큰을 발급해준다.
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+    public String generateToken(User member) {
+        return doGenerateToken(member.getUsername(), TOKEN_VALIDATION_SECOND);
     }
 
-    //while creating the token -
-    //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-    //2. Sign the JWT using the HS512 algorithm and secret key.
-    //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-    //   compaction of the JWT to a URL-safe string
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
-
-        long now = (new Date()).getTime();
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 5000))
-                .signWith(SignatureAlgorithm.HS512, secret).setExpiration(new Date(now+86400)).compact();
+    public String generateRefreshToken(User member) {
+        return doGenerateToken(member.getUsername(), REFRESH_TOKEN_VALIDATION_SECOND);
     }
 
-    //validate token
+    public String doGenerateToken(String username, long expireTime) {
+
+        Claims claims = Jwts.claims();
+        claims.put("username", username);
+
+        String jwt = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
+                .signWith(getSigningKey(SECRET_KEY), SignatureAlgorithm.HS256)
+                .compact();
+
+        return jwt;
+    }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
+        final String username = getUsername(token);
+
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
 }
