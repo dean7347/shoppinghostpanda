@@ -8,3 +8,6 @@ https://velog.io/@gytlr01/nextjs-quill-editor%EC%97%90%EC%84%9C-%EC%9D%B4%EB%AF%
 https://kyuhyuk.kr/article/spring-boot/2020/07/22/Spring-Boot-JPA-MySQL-Board-Post-File-Upload-Download
 
 https://blog.naver.com/gmlwo308/222251309968
+
+다중상품선택
+https://velog.io/@mygomi/React-%EC%87%BC%ED%95%91%EB%AA%B0-%ED%81%B4%EB%A1%A0%EC%BD%94%EB%94%A9-3.-%EA%B5%AC%ED%98%84-%EA%B8%B0%EB%8A%A5%EA%B8%B0%EB%8A%A5%EB%A1%9C%EC%A7%81-%EB%8D%B0%EC%9D%B4%ED%84%B0

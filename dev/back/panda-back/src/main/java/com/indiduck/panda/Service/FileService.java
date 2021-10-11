@@ -2,7 +2,8 @@ package com.indiduck.panda.Service;
 
 import com.indiduck.panda.Repository.FileRepository;
 import com.indiduck.panda.domain.File;
-import com.indiduck.panda.domain.dto.FileDto;
+import com.indiduck.panda.domain.dto.FileDao;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +16,20 @@ public class FileService {
     }
 
     @Transactional
-    public Long saveFile(FileDto fileDto) {
+    public Long saveFile(FileDao fileDto) {
         return fileRepository.save(fileDto.toEntity()).getId();
     }
 
     @Transactional
-    public FileDto getFile(Long id) {
+    public FileDao getFile(Long id) {
         File file = fileRepository.findById(id).get();
 
-        FileDto fileDto = FileDto.builder()
+        FileDao fileDao = FileDao.builder()
                 .id(id)
                 .origFilename(file.getOrigFilename())
                 .filename(file.getFilename())
                 .filePath(file.getFilePath())
                 .build();
-        return fileDto;
+        return fileDao;
     }
 }

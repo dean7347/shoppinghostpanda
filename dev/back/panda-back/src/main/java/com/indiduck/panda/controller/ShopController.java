@@ -62,9 +62,13 @@ public class ShopController {
         if(usernameFromToken !=null)
         {
             Shop shop = shopService.haveShop(usernameFromToken);
-            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(shop.getShopName()));
+            if(shop ==null)
+            {
+                return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto("null",false));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(shop.getShopName(),true));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 못한 요청입니다 ");
 
     }
 
@@ -85,9 +89,11 @@ public class ShopController {
     static class haveShopDto {
 
         private String shopName;
-        public haveShopDto(String name){
+        private boolean isShop;
+        public haveShopDto(String name,Boolean isShop){
 
             this.shopName=name;
+            this.isShop=isShop;
 
         }
     }

@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class FileDto {
+public class FileDao {
     private Long id;
     private String origFilename;
     private String filename;
@@ -25,10 +25,12 @@ public class FileDto {
     }
 
     @Builder
-    public FileDto(Long id, String origFilename, String filename, String filePath) {
+    public FileDao(Long id, String origFilename, String filename, String filePath) {
         this.id = id;
         this.origFilename = origFilename;
         this.filename = filename;
         this.filePath = filePath;
     }
+
+
 }

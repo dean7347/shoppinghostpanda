@@ -6,7 +6,8 @@ import com.indiduck.panda.Service.ProductService;
 
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
-import com.indiduck.panda.domain.dto.FileDto;
+import com.indiduck.panda.domain.dto.FileDao;
+
 import com.indiduck.panda.util.MD5Generator;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -38,13 +39,14 @@ public class ProductController {
                                                 Authentication authentication, @RequestParam("file") MultipartFile files) throws Exception{
         try {
             String origFilename = files.getOriginalFilename();
+            String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
             String filename = new MD5Generator(origFilename).toString();
             /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-            String savePath = System.getProperty("user.dir") + "\\files"+authentication.getName();
+            String savePath = System.getProperty("user.dir") + "\\files"+"\\"+authentication.getName();
             /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
             if (!new File(savePath).exists()) {
                 try{
-                    new File(savePath).mkdir();
+                    new File(savePath).mkdirs();
                 }
                 catch(Exception e){
                     e.getStackTrace();
@@ -52,15 +54,15 @@ public class ProductController {
             }
 
             String filePath = savePath + "\\" + filename;
-            files.transferTo(new File(filePath));
+            files.transferTo(new File(filePath+"."+etx));
 
-            FileDto fileDto = new FileDto();
-            fileDto.setOrigFilename(origFilename);
-            fileDto.setFilename(filename);
-            fileDto.setFilePath(filePath);
+            FileDao fileDao = new FileDao();
+            fileDao.setOrigFilename(origFilename);
+            fileDao.setFilename(filename+"."+etx);
+            fileDao.setFilePath(filePath+"."+etx);
 
-            Long fileId = fileService.saveFile(fileDto);
-            return  ResponseEntity.ok("fileId="+fileId);
+            Long fileId = fileService.saveFile(fileDao);
+            return  ResponseEntity.ok(new FileDto(true,fileDao.getFilePath(),fileDao.getFilename()));
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -107,4 +109,36 @@ public class ProductController {
 
 
     }
+
+    @Data
+    static class haveShopDto {
+
+        private String shopName;
+        private boolean isShop;
+        public haveShopDto(String name,Boolean isShop){
+
+            this.shopName=name;
+            this.isShop=isShop;
+
+        }
+    }
+
+    @Data
+    static class FileDto {
+
+        private boolean success;
+        private String filePath;
+        private String fileName;
+        public FileDto(boolean success,String filePath,String fileName){
+            this.success=success;
+            this.filePath=filePath;
+            this.fileName=fileName;
+        }
+        public FileDto(boolean success){
+            this.success=success;
+
+        }
+    }
+
+
     }
