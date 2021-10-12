@@ -20,9 +20,11 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class HelloController {
@@ -40,19 +42,79 @@ public class HelloController {
         System.out.println("test = " + test);
 
     }
+//    @RequestMapping(value = "/test2", method = RequestMethod.GET)
+//    public Page<ProductDto> viewAll(@CurrentSecurityContext(expression = "authentication")
+//                                             Authentication authentication, Pageable pageable) throws Exception {
+//
+//        Page<Product> result = productRepository.findAll(pageable);
+//        Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
+//
+//
+//        return tomap;
+//    }
+//
+//    @Data
+//    static class ProductDto {
+//        String proname;
+//        String shopname;
+//        List<FileDtopro> images=new ArrayList<>();
+//
+//        public ProductDto(Product pro) {
+//            proname=pro.getProductName();
+//            shopname=pro.getShop().getShopName();
+////            images= pro.getImages();
+//            List<File> getImages = pro.getImages();
+//            for (File getImage : getImages) {
+//                if(getImage.isIsthumb()){
+//                    images.add(new FileDtopro(getImage));
+//                }
+//            }
+//        }
+//    }
+//    @Data
+//    static class FileDtopro {
+//        String filepath;
+//        public FileDtopro(File file){
+//                filepath= file.getFilepath();
+//        }
+//    }
+//
 
-    @RequestMapping(value = "/test2", method = RequestMethod.GET)
-    public ResponseEntity<?> viewAll(@CurrentSecurityContext(expression = "authentication")
-                                             Authentication authentication, Pageable pageable) throws Exception {
-
-        Page<Product> freeView = productRepository.findAll(pageable);
-        freeView.forEach( e->{
-            System.out.println("e = " + e);
-        });
-
-        return new ResponseEntity<>(freeView, HttpStatus.OK);
-
-    }
+//    //v1
+//    @RequestMapping(value = "/test2", method = RequestMethod.GET)
+//    public List<ProductDto> viewAll(@CurrentSecurityContext(expression = "authentication")
+//                                             Authentication authentication, Pageable pageable) throws Exception {
+//
+//        List<Product> pro =productRepository.findAll();
+//        List<ProductDto> result = pro.stream()
+//                .map(o -> new ProductDto(o))
+//                .collect(Collectors.toList());
+//
+//        return  result;
+//    }
+//
+//    @Data
+//    static class ProductDto {
+//        String productName;
+//        List<FileDtop> images;
+//        public ProductDto(Product pro)
+//        {
+//            productName= pro.getProductName();
+//            images = pro.getImages().stream()
+//                    .map( e  -> new FileDtop(e))
+//                    .collect(Collectors.toList());
+//        }
+//    }
+//
+//    @Data
+//    private static class FileDtop {
+//        String filePath;
+//        public FileDtop(File f){
+//           filePath= f.getFilepath();
+//
+//        }
+//    }
+//    ///v1 end
 
 //    @RequestMapping(value = "/test2", method = RequestMethod.POST)
 //    public void createShop(@RequestBody TestDAO testDAO) throws Exception {
@@ -89,26 +151,26 @@ public class HelloController {
     //상품 조회
 
 
-    //== 상품 DAO == //
-    @Data
-    static class CreateProductDAO {
-        //        private List<Map<Long,String>> tumb;
-        private String title;
-        private String description;
-        private List<String> images;
-        private List<ProductOption> Options;
-
-
-
-    }
-
-    @Data
-    static class TestDAO {
-        private List<Long> array;
-        private String test;
-
-
-    }
+//    //== 상품 DAO == //
+//    @Data
+//    static class CreateProductDAO {
+//        //        private List<Map<Long,String>> tumb;
+//        private String title;
+//        private String description;
+//        private List<String> images;
+//        private List<ProductOption> Options;
+//
+//
+//
+//    }
+//
+//    @Data
+//    static class TestDAO {
+//        private List<Long> array;
+//        private String test;
+//
+//
+//    }
 
 
 

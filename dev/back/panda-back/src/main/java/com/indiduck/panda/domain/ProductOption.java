@@ -22,7 +22,6 @@ public class ProductOption {
     private int optionPrice;
 
     @ManyToOne
-    @JsonBackReference
     private Product product;
 
     //생성메서드

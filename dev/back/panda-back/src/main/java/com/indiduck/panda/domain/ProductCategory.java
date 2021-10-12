@@ -21,11 +21,9 @@ public class ProductCategory {
     private String name;
 
     @ManyToOne(fetch = LAZY)
-    @JsonBackReference
     private Product products;
 
     @ManyToOne(fetch = LAZY)
-    @JsonBackReference
     private Category category;
 
 

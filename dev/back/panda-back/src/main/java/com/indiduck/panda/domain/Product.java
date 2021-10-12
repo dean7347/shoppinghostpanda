@@ -2,6 +2,7 @@ package com.indiduck.panda.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
  */
 
 @Entity
+@EqualsAndHashCode(of = "id")
 @Getter
 public class Product {
 
@@ -22,7 +24,7 @@ public class Product {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     private List<File> images=new ArrayList<>();
 
     private String productName;
@@ -33,24 +35,19 @@ public class Product {
     private LocalDateTime productRegAt;
     private int productHits;
 
-    @OneToMany(mappedBy = "product")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     private List<ProductOption> productOptions=new ArrayList<>();
 
     @OneToMany(mappedBy = "products")
-    @JsonManagedReference
     private List<ProductCategory> categorys=new ArrayList<>();
 
     @OneToMany(mappedBy = "products")
-    @JsonManagedReference
     private List<OrderDetail> orderDetails=new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    @JsonManagedReference
     private List<PandaToProduct> pandas=new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     private Shop shop;
     //연관관계 메서드
     public void setShop(Shop shop){

@@ -1,6 +1,7 @@
 package com.indiduck.panda.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 

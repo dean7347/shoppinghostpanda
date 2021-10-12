@@ -13,11 +13,9 @@ public class PandaToProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     private Panda panda;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     private Product product;
 
     private String link;

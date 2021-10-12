@@ -5,6 +5,7 @@ import com.indiduck.panda.Repository.ProductRepository;
 import com.indiduck.panda.Service.FileService;
 import com.indiduck.panda.Service.ProductService;
 
+import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
 import com.indiduck.panda.domain.dto.FileDao;
@@ -23,8 +24,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -52,9 +53,9 @@ public class ProductController {
             /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
             String savePath = System.getProperty("user.dir") + "\\files"+"\\"+authentication.getName();
             /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
-            if (!new File(savePath).exists()) {
+            if (!new java.io.File(savePath).exists()) {
                 try{
-                    new File(savePath).mkdirs();
+                    new java.io.File(savePath).mkdirs();
                 }
                 catch(Exception e){
                     e.getStackTrace();
@@ -62,7 +63,7 @@ public class ProductController {
             }
 
             String filePath = savePath + "\\" + filename;
-            files.transferTo(new File(filePath+"."+etx));
+            files.transferTo(new java.io.File(filePath+"."+etx));
 
             FileDao fileDao = new FileDao();
             fileDao.setOrigFilename(origFilename);
@@ -105,18 +106,47 @@ public class ProductController {
      //상품 수정
     //상품 삭제
     //상품 조회
-//     @RequestMapping(value = "/api/product/products", method = RequestMethod.GET)
-//     public ResponseEntity<?> viewAll(@CurrentSecurityContext(expression = "authentication")
-//                                                 Authentication authentication, Pageable pageable) throws Exception {
-//
-//         Page<Product> freeView = productRepository.findFreeView(pageable);
-//         freeView.forEach( e->{
-//             System.out.println("e = " + e);
-//         });
-//
-//         return ResponseEntity.ok("ok");
-//
-//     }
+     @RequestMapping(value = "/api/preview", method = RequestMethod.GET)
+     public ResponseEntity<?> viewAll(@CurrentSecurityContext(expression = "authentication")
+                                                             Authentication authentication, Pageable pageable) throws Exception {
+
+         Page<Product> result = productRepository.findAll(pageable);
+         Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
+
+
+         if(!tomap.isEmpty()){
+             return  ResponseEntity.ok(tomap);
+         }
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+     }
+
+    @Data
+    static class ProductDto {
+        String proname;
+        String shopname;
+        List<FileDtopro> images=new ArrayList<>();
+
+        public ProductDto(Product pro) {
+            proname=pro.getProductName();
+            shopname=pro.getShop().getShopName();
+
+
+            List<File> getImages = pro.getImages();
+            for (File getImage : getImages) {
+                if(getImage.isIsthumb()){
+                    images.add(new FileDtopro(getImage));
+                }
+            }
+        }
+    }
+    @Data
+    static class FileDtopro {
+        String filepath;
+        public FileDtopro(File file){
+            filepath= file.getFilepath();
+        }
+    }
+
 
 
          //== 상품 DAO == //
