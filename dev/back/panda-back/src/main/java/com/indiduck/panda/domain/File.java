@@ -4,7 +4,6 @@ package com.indiduck.panda.domain;
 import lombok.*;
 
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.*;
 
@@ -19,15 +18,15 @@ public class File {
     private Long id;
 
     @Column(nullable = false)
-    private String origFilename;
+    private String origfilename;
 
     @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false)
-    private String filePath;
+    @Column( nullable = false,unique = true)
+    private String filepath;
 
-    private boolean isThumb;
+    private boolean isthumb;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
@@ -35,9 +34,9 @@ public class File {
     @Builder
     public File(Long id, String origFilename, String filename, String filePath) {
         this.id = id;
-        this.origFilename = origFilename;
+        this.origfilename = origFilename;
         this.filename = filename;
-        this.filePath = filePath;
+        this.filepath = filePath;
     }
 
     //==//

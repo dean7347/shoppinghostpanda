@@ -8,13 +8,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+
+
 @Service
 public class ProductOptionService {
 
     @Autowired
     ProductOptionRepository productOptionRepository;
-    public void saveOption(List<ProductOption> pro)
-    {
-        pro.forEach(e-> productOptionRepository.save(e));
+
+    public ProductOption saveOption(ProductOption option){
+        ProductOption newO=new ProductOption()
+                .newProductOption(option.getOptionName(), option.getOptionStock(), option.getOptionPrice());
+        productOptionRepository.save(newO);
+        return newO;
     }
 }

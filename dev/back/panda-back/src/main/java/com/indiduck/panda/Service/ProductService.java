@@ -1,8 +1,6 @@
 package com.indiduck.panda.Service;
 
-import com.indiduck.panda.Repository.FileRepository;
-import com.indiduck.panda.Repository.ProductRepository;
-import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Repository.*;
 import com.indiduck.panda.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
@@ -24,15 +23,45 @@ public class ProductService {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    ProductOptionRepository productOptionRepository;
+
+    @Autowired
     ProductOptionService productOptionService;
 
-    public Product createNewProduct(String user, List<Long> Image, String productName, int productPrice, List<ProductOption> productOptions, String productDesc){
+    @Autowired
+    FileService fileService;
+
+    @Autowired
+    ShopRepository shopRepository;
+
+    public Product createNewProduct(String user, List<String> thumb,String title, String descriptoin,
+                                    List<String> images,List<ProductOption> options){
+
+        Product newProduct = Product.newProDuct(title,descriptoin);
+        productRepository.save(newProduct);
+
+        images.forEach(e ->{
+            File filebyFilepath1 = fileService.getFilebyFilepath(e);
+            newProduct.setImage(filebyFilepath1);
+        });
+        thumb.forEach(e ->{
+            File fileByFilename = fileRepository.myqueryfind(e);
+            newProduct.setThumbImage(fileService.getFilebyFilepath(e));
+        });
+
+        options.forEach( e->
+                {
+                    ProductOption productOption = productOptionService.saveOption(e);
+                    newProduct.setProductOptions(productOption);
+                }
+
+        );
         Optional<User> byEmail = userRepository.findByEmail(user);
-        productOptionService.saveOption(productOptions);
-        Shop shop = byEmail.get().getShop();
-        List<File> collect = Image.stream().map(s -> fileRepository.findById(s).get()).collect(Collectors.toList());
-        Product pro=Product.newProDuct(shop,collect,productName,productPrice,productOptions,productDesc);
-        productRepository.save(pro);
-        return pro;
+        Shop shopWithShopNameByUser = shopRepository.findShopWithShopNameByUser(byEmail.get());
+        newProduct.setShop(shopWithShopNameByUser);
+
+
+        return newProduct;
+
     }
 }

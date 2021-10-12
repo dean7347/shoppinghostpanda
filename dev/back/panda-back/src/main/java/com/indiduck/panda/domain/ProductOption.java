@@ -1,5 +1,6 @@
 package com.indiduck.panda.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,16 @@ public class ProductOption {
     private int optionPrice;
 
     @ManyToOne
+    @JsonBackReference
     private Product product;
+
+    //생성메서드
+    public ProductOption newProductOption(String name,int stock,int price){
+        ProductOption newOption =new ProductOption();
+        newOption.optionName=name;
+        newOption.optionStock=stock;
+        newOption.optionPrice=price;
+        return newOption;
+    }
 
 }

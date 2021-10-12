@@ -1,6 +1,7 @@
 package com.indiduck.panda.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -16,11 +17,13 @@ public class OrderDetail {
 
     private int  productCount;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Product products;
 
 
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private UserOrder userOrder;
 }

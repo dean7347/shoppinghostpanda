@@ -4,11 +4,14 @@ import com.indiduck.panda.Repository.FileRepository;
 import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.dto.FileDao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FileService {
+
+    @Autowired
     private FileRepository fileRepository;
 
     public FileService(FileRepository fileRepository) {
@@ -26,10 +29,16 @@ public class FileService {
 
         FileDao fileDao = FileDao.builder()
                 .id(id)
-                .origFilename(file.getOrigFilename())
+                .origFilename(file.getOrigfilename())
                 .filename(file.getFilename())
-                .filePath(file.getFilePath())
+                .filePath(file.getFilepath())
                 .build();
         return fileDao;
+    }
+
+    @Transactional
+    public File getFilebyFilepath(String path){
+        File myqueryfind = fileRepository.myqueryfind(path);
+        return myqueryfind;
     }
 }

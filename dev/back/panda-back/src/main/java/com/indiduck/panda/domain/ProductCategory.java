@@ -1,5 +1,6 @@
 package com.indiduck.panda.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -20,9 +21,11 @@ public class ProductCategory {
     private String name;
 
     @ManyToOne(fetch = LAZY)
+    @JsonBackReference
     private Product products;
 
     @ManyToOne(fetch = LAZY)
+    @JsonBackReference
     private Category category;
 
 
