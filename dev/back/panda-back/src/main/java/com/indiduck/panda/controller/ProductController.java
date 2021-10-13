@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -108,8 +109,10 @@ public class ProductController {
     //상품 조회
      @RequestMapping(value = "/api/preview", method = RequestMethod.GET)
      public ResponseEntity<?> viewAll(@CurrentSecurityContext(expression = "authentication")
-                                                             Authentication authentication, Pageable pageable) throws Exception {
+                                                             Authentication authentication,Pageable pageable) throws Exception {
 
+
+//         System.out.println("limit+offset = " + limit + offset);
          Page<Product> result = productRepository.findAll(pageable);
          Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
@@ -202,4 +205,5 @@ public class ProductController {
     }
 
 
-    }
+
+}
