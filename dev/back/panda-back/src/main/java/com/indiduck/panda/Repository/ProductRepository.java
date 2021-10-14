@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findFreeView(Pageable pageable);
 //        Page<Product> findAllBy(Pageable pageable);
 
+    Page<Product> findByProductNameContaining(Pageable pageable,String productName);
+
 }

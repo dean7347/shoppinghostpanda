@@ -123,6 +123,23 @@ public class ProductController {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
      }
 
+
+    @RequestMapping(value = "/api/searchpreview", method = RequestMethod.GET)
+    public ResponseEntity<?> viewSearch(@CurrentSecurityContext(expression = "authentication")
+                                             Authentication authentication,Pageable pageable,
+                                        @RequestParam(name = "productname") String productName) throws Exception {
+
+        Page<Product> result = productRepository.findByProductNameContaining(pageable, productName);
+
+        Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
+
+
+        if(!tomap.isEmpty()){
+            return  ResponseEntity.ok(tomap);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+    }
+
     @Data
     static class ProductDto {
         String proname;
