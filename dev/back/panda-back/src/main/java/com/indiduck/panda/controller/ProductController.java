@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -140,13 +141,75 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
     }
 
+    //detail
+    @RequestMapping(value = "/api/product/products_by_id", method = RequestMethod.GET)
+    public ResponseEntity<?> viewDetail(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication,
+                                        @RequestParam(name = "id") Long productid) throws Exception {
+
+        Optional<Product> byId = productRepository.findById(productid);
+        System.out.println("byId = " + byId.get());
+        ProductDetailDto productDetailDto = new ProductDetailDto(true,byId.get());
+
+
+        if(!byId.isEmpty())
+        {
+            return ResponseEntity.ok(productDetailDto);
+        }
+
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+    }
+    @Data
+    static class ProductDetailDto {
+        boolean success;
+        String productName;
+        String productDesc;
+        List<DetailOptionDto> Poptions=new ArrayList<>();
+        List<FileDtopro> detailImages=new ArrayList<>();
+        List<FileDtopro> thumbs=new ArrayList<>();
+        public ProductDetailDto(boolean t,Product detail) {
+            success=t;
+            productName=detail.getProductName();
+            productDesc=detail.getProductDesc();
+            List<File> getImages = detail.getImages();
+            for (File getImage : getImages) {
+                if(getImage.isIsthumb()){
+                    thumbs.add(new FileDtopro(getImage));
+                }else{
+                    detailImages.add(new FileDtopro(getImage));
+                }
+            }
+            List <ProductOption> options =detail.getProductOptions();
+            for (ProductOption option : options) {
+                Poptions.add(new DetailOptionDto(option));
+            }
+
+        }
+    }
+    @Data
+    static class DetailOptionDto {
+        String optionName;
+        int optionStock;
+        int optionPrice;
+        public DetailOptionDto(ProductOption o){
+            optionName=o.getOptionName();
+            optionStock=o.getOptionStock();
+            optionPrice=o.getOptionPrice();
+
+        }
+
+    }
+
     @Data
     static class ProductDto {
+        Long proId;
         String proname;
         String shopname;
         List<FileDtopro> images=new ArrayList<>();
 
         public ProductDto(Product pro) {
+            proId = pro.getId();
             proname=pro.getProductName();
             shopname=pro.getShop().getShopName();
 
