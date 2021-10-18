@@ -69,10 +69,6 @@ function ProductInfo(props) {
           .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       })
     );
-
-    // cart.array.find((x) => x.key == key.key).optionCount = event;
-    // let plusnumb = cart.array.find((x) => x.key == key.key).originPrice;
-    // cart.array.find((x) => x.key == key.key).optionPrice = event * plusnumb;
   };
   const onDelete = (title, key) => (event) => {
     setCart(
@@ -112,6 +108,9 @@ function ProductInfo(props) {
   useEffect(() => {
     if (props) {
       setOptions(props.detail.poptions);
+      console.log("props");
+
+      console.log(props);
     } else {
       console.log("빈상품정보 로딩");
     }
@@ -143,15 +142,6 @@ function ProductInfo(props) {
       );
     });
 
-  const clickHandler = () => {
-    console.log(props);
-    console.log(cart.array);
-  };
-
-  const clickTable = () => {
-    console.log("테이블클릭");
-  };
-
   return (
     <div>
       <Descriptions title="Product Info">
@@ -168,12 +158,7 @@ function ProductInfo(props) {
       <br />
       <div style={{ display: "flex", justityContent: "center" }}>
         {/* {cartinfo} */}
-        <Table
-          columns={columns}
-          dataSource={cart.array}
-          pagination={false}
-          onClick={clickTable}
-        />
+        <Table columns={columns} dataSource={cart.array} pagination={false} />
       </div>
       <div style={{ display: "flex", justityContent: "center" }}>
         <Menu
@@ -198,7 +183,7 @@ function ProductInfo(props) {
       </div>
 
       <div style={{ display: "flex", justityContent: "center" }}>
-        <Button size="large" shape="round" type="danger" onClick={clickHandler}>
+        <Button size="large" shape="round" type="danger">
           Add to Cart
         </Button>
       </div>

@@ -51,7 +51,7 @@ function DetailProductPage(props) {
           </Col>
 
           <Col lg={12} sm={24}>
-            <ProductInfo detail={(Product, productId)} />
+            <ProductInfo detail={Product} proId={productId} />
           </Col>
 
           <Col lg={24} sm={24}>
