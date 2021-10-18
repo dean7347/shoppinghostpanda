@@ -170,6 +170,7 @@ public class ProductController {
         List<FileDtopro> thumbs=new ArrayList<>();
         public ProductDetailDto(boolean t,Product detail) {
             success=t;
+
             productName=detail.getProductName();
             productDesc=detail.getProductDesc();
             List<File> getImages = detail.getImages();
@@ -190,9 +191,11 @@ public class ProductController {
     @Data
     static class DetailOptionDto {
         String optionName;
+        Long optionId;
         int optionStock;
         int optionPrice;
         public DetailOptionDto(ProductOption o){
+            optionId=o.getId();
             optionName=o.getOptionName();
             optionStock=o.getOptionStock();
             optionPrice=o.getOptionPrice();
