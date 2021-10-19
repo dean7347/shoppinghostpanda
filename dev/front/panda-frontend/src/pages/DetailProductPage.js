@@ -26,14 +26,14 @@ function DetailProductPage(props) {
 
   const detailImage = DetailImage.map((item, index) => {
     return (
-      <>
+      <div key={index + item.filepath}>
         <img
           style={{ width: "100%", objectFit: "cover" }}
           src={`http://localhost:8080/upload/${item.filepath}`}
           alt=""
         />
         <br />
-      </>
+      </div>
     );
   });
 

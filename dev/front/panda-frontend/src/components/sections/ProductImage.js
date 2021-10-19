@@ -8,7 +8,7 @@ function ProductImage(props) {
   useEffect(() => {
     if (props.detail.thumbs && props.detail.thumbs.length > 0) {
       let images = [];
-      props.detail.thumbs.map((item) => {
+      props.detail.thumbs.map((item, index) => {
         images.push({
           original: `http://localhost:8080/upload/${item.filepath}`,
           thumbnail: `http://localhost:8080/upload/${item.filepath}`,

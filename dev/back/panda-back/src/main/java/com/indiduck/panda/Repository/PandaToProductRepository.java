@@ -1,18 +1,17 @@
 package com.indiduck.panda.Repository;
 
-import com.indiduck.panda.domain.Panda;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.PandaToProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Repository
-public interface PandaRespository extends JpaRepository<Panda,Long> {
+public interface PandaToProductRepository extends JpaRepository<PandaToProduct,Long> {
 
 
-    Optional<Panda> findByUser(User user);
+    List<PandaToProduct> findByProductId(Long productId);
 }

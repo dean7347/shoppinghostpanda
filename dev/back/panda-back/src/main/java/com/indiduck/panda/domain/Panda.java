@@ -3,6 +3,7 @@ package com.indiduck.panda.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,7 +28,7 @@ public class Panda {
     private boolean recognize;
 
     @OneToMany(mappedBy = "panda")
-    private List<PandaToProduct> pandaToproducts;
+    private List<PandaToProduct> pandaToproducts= new ArrayList<>();
 
     //==생성메서드==//
     public static Panda newPanda(String pandaName,String mainCh,String intCategory,boolean T,boolean I){

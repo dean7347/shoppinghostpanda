@@ -9,15 +9,56 @@ import {
   Space,
   Form,
   Input,
+  Row,
+  Col,
   Checkbox,
+  Select,
 } from "antd";
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
-import { ReactTinyLink } from "react-tiny-link";
 
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
+import axios from "../../../node_modules/axios/index";
 const { SubMenu } = Menu;
 
 function ProductInfo(props) {
+  const { Option, OptGroup } = Select;
+  const [SelectPanda, setSelectPanda] = useState("");
+
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+    setSelectPanda(value);
+  }
+  const [Link, SetLink] = useState("");
+  const [Pandas, SetPandas] = useState([{}]);
+  const [form] = Form.useForm();
+  const [PandaDisplay, SetPandaDisplay] = useState("none");
+
+  const onSubmit = (e) => {
+    const body = {
+      productId: props.proId,
+      link: Link,
+    };
+    axios.post("/api/addpropanda", body).then((response) => {
+      console.log(response.data);
+      if (response.data.success) {
+        alert("판다링크 생성 완료");
+      } else {
+        alert(
+          "판다링크생성에 실패했습니다. 해당 현상이 계속된다면 문의주시기 바랍니다"
+        );
+      }
+    });
+    SetLink("");
+    form.resetFields();
+    SetPandaDisplay("none");
+  };
+
+  const LinkHandler = (e) => {
+    e.preventDefault();
+    SetLink(e.target.value);
+  };
+
   const columns = [
     {
       title: "상품명",
@@ -62,6 +103,14 @@ function ProductInfo(props) {
     array: [],
   });
 
+  const pandaClick = () => {
+    if (PandaDisplay === "none") {
+      SetPandaDisplay("block");
+    }
+    if (PandaDisplay === "block") {
+      SetPandaDisplay("none");
+    }
+  };
   const onChange = (title, key) => (event) => {
     setCart(
       produce(cart, (draft) => {
@@ -84,6 +133,7 @@ function ProductInfo(props) {
       })
     );
   };
+
   const handleClick = (e) => {
     console.log("clickㄷㄴㅇ " + e.key);
     if (cart.array.find((x) => x.key == e.key)) {
@@ -146,6 +196,16 @@ function ProductInfo(props) {
       );
     });
 
+  const renderPanda =
+    Pandas &&
+    Pandas.map((panda, index) => {
+      return (
+        <Option value={panda.pandaId} key={index}>
+          <div style={{ float: "left" }}>{panda.panda}</div>
+        </Option>
+      );
+    });
+
   return (
     <div>
       <Descriptions title="Product Info">
@@ -162,89 +222,77 @@ function ProductInfo(props) {
       <br />
       {/* //왼오 */}
       <div style={{ justityContent: "center" }}>
-        <Menu
-          onClick={handleClick}
+        <Select
+          defaultValue="도움을 준 판다를 선택해주세요"
           style={{ width: "100%" }}
-          defaultSelectedKeys={["1"]}
-          mode="inline"
+          onChange={handleChange}
         >
-          <SubMenu
-            key="sub1"
-            icon={<DatabaseOutlined />}
-            title="구매에 도움을 준 판다를 선택해주세요!"
-          >
-            {renderOption}
-            {/* <Menu.Item key="1">
-              <div style={{ float: "left" }}>ㅁㅁㅁ</div>
-              <div style={{ float: "right" }}>3000원</div>
-            </Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item> */}
-          </SubMenu>
-        </Menu>
-        <div>
-          <div style={{ float: "left" }}>
+          <OptGroup label="PANDAS">{renderPanda}</OptGroup>
+        </Select>
+
+        <Row gutter={[16, 16]}>
+          <Col lg={12} sm={12}>
             <Table
               columns={columns}
               dataSource={cart.array}
               pagination={false}
             />
-          </div>
-          <div style={{ float: "right" }}>
-            <div style={{ background: "red", width: "100%", height: "100%" }}>
-              <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                initialValues={{ remember: true }}
-                autoComplete="off"
+            <Menu
+              onClick={handleClick}
+              style={{ width: "100%" }}
+              defaultSelectedKeys={["1"]}
+              mode="inline"
+            >
+              <SubMenu
+                key="sub1"
+                icon={<DatabaseOutlined />}
+                title="옵션을 선택해주세요"
               >
-                <Form.Item
-                  label="Username"
-                  name="username"
-                  rules={[
-                    { required: true, message: "Please input your username!" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                {renderOption}
+                {/* <Menu.Item key="1">
+              <div style={{ float: "left" }}>ㅁㅁㅁ</div>
+              <div style={{ float: "right" }}>3000원</div>
+            </Menu.Item>
+            <Menu.Item key="2">Option 2</Menu.Item> */}
+              </SubMenu>
+            </Menu>
+          </Col>
+          <Col lg={12} sm={12}>
+            <Form
+              form={form}
+              name="basic"
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              initialValues={{ remember: true }}
+              autoComplete="off"
+              onFinish={onSubmit}
+              style={{ display: `${PandaDisplay}` }}
+            >
+              <Form.Item
+                label="링크"
+                name="Link"
+                rules={[{ required: true, message: "Please input your Link" }]}
+              >
+                <Input onChange={LinkHandler} />
+              </Form.Item>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                  ]}
-                >
-                  <Input.Password />
-                </Form.Item>
+              <Form.Item
+                name="remember"
+                valuePropName="checked"
+                wrapperCol={{ offset: 8, span: 16 }}
+              >
+                <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
+              </Form.Item>
 
-                <Form.Item
-                  name="remember"
-                  valuePropName="checked"
-                  wrapperCol={{ offset: 8, span: 16 }}
-                >
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div>
-            <div style={{ display: "none", width: "400px" }}>
-              dd
-              <ReactTinyLink
-                cardSize="large"
-                showGraphic={true}
-                maxLine={1}
-                minLine={1}
-                url="https://www.amazon.com/Steve-Madden-Mens-Jagwar-10-5/dp/B016X44MKA/ref=lp_18637582011_1_1?srs=18637582011&ie=UTF8&qid=1550721409&sr=8-1"
-              />
-            </div>
-          </div>
-        </div>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+            <LinkPreview url={`${Link}`} width="400px" />
+          </Col>
+        </Row>
       </div>
       <div
         style={{
@@ -253,27 +301,7 @@ function ProductInfo(props) {
           minWidth: "100%",
           background: "red",
         }}
-      >
-        <Menu
-          onClick={handleClick}
-          style={{ width: "100%" }}
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-        >
-          <SubMenu
-            key="sub1"
-            icon={<DatabaseOutlined />}
-            title="옵션을 선택해주세요"
-          >
-            {renderOption}
-            {/* <Menu.Item key="1">
-              <div style={{ float: "left" }}>ㅁㅁㅁ</div>
-              <div style={{ float: "right" }}>3000원</div>
-            </Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item> */}
-          </SubMenu>
-        </Menu>
-      </div>
+      ></div>
       <div style={{ justityContent: "center" }}>
         <div style={{ float: "left" }}>
           <Button size="large" shape="round" type="danger">
@@ -281,7 +309,12 @@ function ProductInfo(props) {
           </Button>
         </div>
         <div style={{ float: "right", margin: "0 40px 30px" }}>
-          <Button size="large" shape="round" type="primary">
+          <Button
+            size="large"
+            shape="round"
+            type="primary"
+            onClick={pandaClick}
+          >
             판다!
           </Button>
         </div>
