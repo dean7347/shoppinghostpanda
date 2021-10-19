@@ -51,6 +51,10 @@ public class User implements UserDetails {
     @OneToOne
     private Shop shop;
 
+
+    @OneToOne(mappedBy = "user")
+    private Panda panda;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
