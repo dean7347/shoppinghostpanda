@@ -114,7 +114,6 @@ public class OrderDetailController {
                 }
                 else
                 {
-                    System.out.println("중복이 없습니다");
                     ds.add(new DetailedShop(orderDetail));
                 }
 
@@ -141,7 +140,6 @@ public class OrderDetailController {
 
         @Override
         public boolean equals(Object o) {
-            System.out.println("먼가실행");
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             DetailedShop that = (DetailedShop) o;
@@ -150,7 +148,6 @@ public class OrderDetailController {
 
         @Override
         public int hashCode() {
-            System.out.println("먼가실행");
 
             return Objects.hash(shopId);
         }
