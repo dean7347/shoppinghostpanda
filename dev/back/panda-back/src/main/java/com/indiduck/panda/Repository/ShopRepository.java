@@ -15,9 +15,10 @@ import java.util.Optional;
 @Repository
 public interface ShopRepository extends JpaRepository<Shop,Long> {
 
-    @EntityGraph(attributePaths = {"shopName"})
-    Shop findShopWithShopNameByUser(User user);
+//    @EntityGraph(attributePaths = {"shopName"})
+//    Shop findShopWithShopNameByUser(User user);
 
 
 
+    Optional<Shop> findByUserId(Long id);
 }

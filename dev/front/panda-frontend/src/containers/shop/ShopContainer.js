@@ -11,8 +11,6 @@ const ShopContainer = ({ location, match }) => {
     // shopName: shop.shop.shopName,
   }));
   const dispatch = useDispatch();
-
-  console.log("haveShop?");
   //랜더링될때마다 특정작업 실행
   useEffect(() => {
     dispatch(haveShop());

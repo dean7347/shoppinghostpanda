@@ -1,6 +1,8 @@
 package com.indiduck.panda.controller;
 
 
+import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.Shop;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RequiredArgsConstructor
@@ -28,6 +32,10 @@ public class ShopController {
     private ShopService shopService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    ShopRepository shopRepository;
+    @Autowired
+    UserRepository userRepository;
 
     //샵 생성메소드
     @RequestMapping(value = "/createShop", method = RequestMethod.POST)
@@ -61,12 +69,17 @@ public class ShopController {
         String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
         if(usernameFromToken !=null)
         {
-            Shop shop = shopService.haveShop(usernameFromToken);
-            if(shop ==null)
+            Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
+            System.out.println("byEmail = " + byEmail.get().getEmail());
+
+            Optional<Shop> byUser = shopRepository.findByUserId(byEmail.get().getId());
+            System.out.println("byUser = " + byUser);
+
+            if(byUser.isEmpty())
             {
                 return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto("null",false));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(shop.getShopName(),true));
+            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(byUser.get().getShopName(),true));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 못한 요청입니다 ");
 

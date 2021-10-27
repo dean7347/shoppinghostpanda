@@ -5,12 +5,26 @@ import ProductImage from "../components/sections/ProductImage";
 import ProductInfo from "../components/sections/ProductInfo";
 import { Row, Col, Tabs, Radio } from "antd";
 import { Button } from "bootstrap";
-
+import PandaView from "../components/common/PandaView";
 function DetailProductPage(props) {
   const { TabPane } = Tabs;
   const productId = props.match.params.productId;
   const [Product, setProduct] = useState({});
   const [DetailImage, setDetailImage] = useState([{}]);
+  const [Pandas, SetPandas] = useState([{}]);
+
+  useEffect(() => {
+    axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
+      if (response.data.success) {
+        SetPandas(response.data.details);
+        console.log("판다스정보");
+        console.log(response.data.details);
+      } else {
+        console.log("판다스 정보를 가져오지 못했습니다");
+      }
+    });
+  }, []);
+
   useEffect(() => {
     axios
       .get(`/api/product/products_by_id?id=${productId}`)
@@ -51,7 +65,7 @@ function DetailProductPage(props) {
           </Col>
 
           <Col lg={12} sm={24}>
-            <ProductInfo detail={Product} proId={productId} />
+            <ProductInfo detail={Product} proId={productId} pandas={Pandas} />
           </Col>
 
           <Col lg={24} sm={24}>
@@ -67,7 +81,7 @@ function DetailProductPage(props) {
                 </div>
               </TabPane>
               <TabPane tab="판다보기" key="2">
-                판다보기
+                <PandaView pandas={Pandas} />
               </TabPane>
               <TabPane tab="상품 후기" key="3">
                 상품후기 페이지

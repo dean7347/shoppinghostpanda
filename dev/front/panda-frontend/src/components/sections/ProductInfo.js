@@ -16,12 +16,15 @@ import {
 } from "antd";
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
+import { ReactTinyLink } from "react-tiny-link";
 
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import axios from "../../../node_modules/axios/index";
 const { SubMenu } = Menu;
 
 function ProductInfo(props) {
+  console.log("eeee");
+  console.log(props);
+
   const { Option, OptGroup } = Select;
   const [SelectPanda, setSelectPanda] = useState("");
 
@@ -29,8 +32,8 @@ function ProductInfo(props) {
     console.log(`selected ${value}`);
     setSelectPanda(value);
   }
-  const [Link, SetLink] = useState("");
-  const [Pandas, SetPandas] = useState([{}]);
+  const [Link, SetLink] = useState("http://localhost:3000/");
+
   const [form] = Form.useForm();
   const [PandaDisplay, SetPandaDisplay] = useState("none");
 
@@ -49,7 +52,7 @@ function ProductInfo(props) {
         );
       }
     });
-    SetLink("");
+    SetLink("http://localhost:3000/");
     form.resetFields();
     SetPandaDisplay("none");
   };
@@ -135,7 +138,6 @@ function ProductInfo(props) {
   };
 
   const handleClick = (e) => {
-    console.log("clickㄷㄴㅇ " + e.key);
     if (cart.array.find((x) => x.key == e.key)) {
       alert("이미 존재하는 상품입니다");
     } else {
@@ -170,17 +172,6 @@ function ProductInfo(props) {
     }
   }, [props]);
 
-  // const cartinfo = cart.array.map((o, index) => {
-  //   return (
-  //     <>
-  //       <div>{o.optionName}</div>
-  //       <InputNumber min={1} defaultValue={1} onChange={onChange} />
-  //       <div>{o.optionPrice}</div>
-  //       <br />
-  //     </>
-  //   );
-  // });
-
   const renderOption =
     options &&
     options.map((options, index) => {
@@ -195,16 +186,43 @@ function ProductInfo(props) {
         </Menu.Item>
       );
     });
+  const unique_user = props.pandas.reduce((prev, now) => {
+    if (!prev.some((obj) => obj.pandaId === now.pandaId)) prev.push(now);
+    return prev;
+  }, []);
 
+  console.log("변경된정보");
+  console.log(unique_user);
   const renderPanda =
-    Pandas &&
-    Pandas.map((panda, index) => {
+    unique_user &&
+    unique_user.map((panda, index) => {
       return (
         <Option value={panda.pandaId} key={index}>
           <div style={{ float: "left" }}>{panda.panda}</div>
         </Option>
       );
     });
+
+  const clickHandler = () => {
+    //필요한 정보를 cart 필드에다가 넣어준다
+    console.log("카트전달정보");
+
+    const body = {
+      productid: props.proId,
+      cart: cart.array,
+      selectpanda: SelectPanda,
+    };
+    axios.post("/api/addcart", body).then((response) => {
+      if (response.data.success) {
+        alert("상품을 장바구니에 성공적으로 담았습니다");
+      } else {
+        alert("장바구니담기에 실패했습니다");
+        console.log(response.data);
+      }
+    });
+
+    console.log(body);
+  };
 
   return (
     <div>
@@ -289,8 +307,17 @@ function ProductInfo(props) {
                   Submit
                 </Button>
               </Form.Item>
+              <ReactTinyLink
+                cardSize="large"
+                showGraphic={true}
+                maxLine={2}
+                minLine={1}
+                onError={false}
+                proxyUrl={`api/proxy?url=`}
+                description={true}
+                url={`${Link}`}
+              />
             </Form>
-            <LinkPreview url={`${Link}`} width="400px" />
           </Col>
         </Row>
       </div>
@@ -304,7 +331,12 @@ function ProductInfo(props) {
       ></div>
       <div style={{ justityContent: "center" }}>
         <div style={{ float: "left" }}>
-          <Button size="large" shape="round" type="danger">
+          <Button
+            size="large"
+            shape="round"
+            type="danger"
+            onClick={clickHandler}
+          >
             Add to Cart
           </Button>
         </div>

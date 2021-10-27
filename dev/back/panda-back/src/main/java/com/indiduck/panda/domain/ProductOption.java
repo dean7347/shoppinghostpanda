@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,6 +22,9 @@ public class ProductOption {
 
     @ManyToOne
     private Product product;
+
+    @OneToMany(mappedBy = "options")
+    private List<OrderDetail> orderDetail=new ArrayList<>();
 
     //생성메서드
     public ProductOption newProductOption(String name,int stock,int price){

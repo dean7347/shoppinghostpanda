@@ -37,12 +37,13 @@ public class ShopService {
         }
         return null;
     }
-    //샵이 있는지 조회
-    public Shop haveShop(String userName)
-    {
-        Optional<User> byEmail = userRepository.findByEmail(userName);
-        Shop shopWithUserByusername = shopRepository.findShopWithShopNameByUser(byEmail.get());
-        System.out.println("shopWithUserByusername = " + shopWithUserByusername);
-        return shopWithUserByusername;
-    }
+//    //샵이 있는지 조회
+//    public Shop haveShop(String userName)
+//    {
+//        Optional<User> byEmail = userRepository.findByEmail(userName);
+//        System.out.println("byEmail = " + byEmail.get().getEmail());
+//        Optional<Shop> byUserUsername = shopRepository.findShopByUser(byEmail.get());
+//        System.out.println("shopWithUserByusername = " + byUserUsername);
+//        return byUserUsername.get();
+//    }
 }

@@ -12,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import ProductSearchPage from "./pages/ProductSearchPage";
 import DetailProductPage from "./pages/DetailProductPage";
 import PandaPage from "./pages/PandaPage";
+import CartPage from "./pages/CartPage";
 import "antd/dist/antd.css";
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
       <Route component={newProductPage} path={"/shop/newProduct"} exact />
       <Route component={DetailProductPage} path={"/product/:productId"} exact />
       <Route component={PandaPage} path={"/panda"} exact />
+      <Route component={CartPage} path={"/user/cart"} exact />
 
       {/* <Route component={myShopPage} path={"/:shopName"} exact /> */}
     </>

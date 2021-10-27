@@ -32,7 +32,10 @@ public class Shop {
     @OneToMany(mappedBy = "shop")
     private List<Product> products;
 
-    @OneToOne(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop")
+    private List<OrderDetail> details;
+
+    @OneToOne(optional = true,mappedBy = "shop")
     private User user;
 
     //== 연관관계메서드 ==//

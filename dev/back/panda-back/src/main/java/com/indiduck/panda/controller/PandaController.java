@@ -8,6 +8,7 @@ import com.indiduck.panda.domain.Panda;
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.Shop;
 import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.dto.ResultDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,13 +100,5 @@ public class PandaController {
         boolean infoagree;
     }
 
-    @Data
-    private class ResultDto {
-        boolean success;
-        String message;
-        public ResultDto(boolean b, String message) {
-            success=b;
-            message=message;
-        }
-    }
+
 }

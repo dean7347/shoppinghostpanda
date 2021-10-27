@@ -26,6 +26,6 @@ public class UserOrder {
     private String reveiverName;
     private String receiverPhone;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderDetail orderDetails;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private OrderDetail orderDetails;
 }

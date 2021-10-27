@@ -30,6 +30,10 @@ public class Panda {
     @OneToMany(mappedBy = "panda")
     private List<PandaToProduct> pandaToproducts= new ArrayList<>();
 
+    @OneToMany(mappedBy = "panda")
+    private List<OrderDetail> orderDetailPandas= new ArrayList<>();
+
+
     //==생성메서드==//
     public static Panda newPanda(String pandaName,String mainCh,String intCategory,boolean T,boolean I){
         Panda panda= new Panda();

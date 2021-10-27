@@ -31,7 +31,7 @@ const Wrapper = styled(Responsive)`
 `;
 
 const Shop = ({ shop }) => {
-  // console.log("shop==" + shop.shop.shop);
+  // console.log("shop==" + shop.haveshop.shop);
   return (
     <>
       <HeaderBlock>

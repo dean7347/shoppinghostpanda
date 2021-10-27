@@ -57,8 +57,8 @@ public class ProductService {
 
         );
         Optional<User> byEmail = userRepository.findByEmail(user);
-        Shop shopWithShopNameByUser = shopRepository.findShopWithShopNameByUser(byEmail.get());
-        newProduct.setShop(shopWithShopNameByUser);
+        Optional<Shop> byUserUsername = shopRepository.findByUserId(byEmail.get().getId());
+        newProduct.setShop(byUserUsername.get());
 
 
         return newProduct;

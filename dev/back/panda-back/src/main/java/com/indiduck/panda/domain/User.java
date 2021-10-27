@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name="member_id")
     private Long id;
 
@@ -37,18 +37,18 @@ public class User implements UserDetails {
     private LocalDateTime regAt;
     private boolean isEmail;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "userId")
-    private List<UserOrder> orders;
+
+    @OneToMany(mappedBy = "user")
+    private List<OrderDetail> orders =new ArrayList<>();
 
 
     @OneToMany(mappedBy = "userName")
-    private List<DeliverAddress> userAddress;
+    private List<DeliverAddress> userAddress =new ArrayList<>();
 
     @OneToMany(mappedBy = "writerName")
-    private List<ProductReply> replies;
+    private List<ProductReply> replies =new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(optional = true)
     private Shop shop;
 
 
