@@ -4,6 +4,7 @@ package com.indiduck.panda.controller;
 import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.OrderDetailService;
+import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.OrderDetail;
 import com.indiduck.panda.domain.OrderStatus;
 import com.indiduck.panda.domain.User;
@@ -166,6 +167,7 @@ public class OrderDetailController {
     static class DetailedProduct{
         Long productId;
         String productName;
+        String thumbNail;
         HashSet<DetailedOption> dO = new HashSet<DetailedOption>();
 
         public DetailedProduct(OrderDetail od){
@@ -173,6 +175,13 @@ public class OrderDetailController {
 
             productId =od.getProducts().getId();
             productName=od.getProducts().getProductName();
+            for (File image : od.getProducts().getImages()) {
+                if(image.isIsthumb()==true)
+                {
+                    thumbNail=image.getFilepath();
+                    break;
+                }
+            }
             dO.add(new DetailedOption(od));
         }
 
