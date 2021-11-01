@@ -81,6 +81,22 @@ public class OrderDetailController {
         return ResponseEntity.ok(new thisResultDto(true,myCart));
     }
 
+    //옵션삭제
+    @RequestMapping(value = "/api/cart/removeoption", method = RequestMethod.POST)
+    public ResponseEntity<?> removeoption(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody removeDetailDAO removeDetailDAO) throws Exception {
+
+        try {
+            orderDetailRepository.deleteById(removeDetailDAO.orderDetailId);
+            return ResponseEntity.ok(new ResultDto(true,"성공적으로 삭제했습니다"));
+
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
+        }
+        
+    }
+
 
     ///////////
     @Data
@@ -129,6 +145,8 @@ public class OrderDetailController {
     static class DetailedShop {
         Long shopId;
         String shopName;
+        int freePrice;
+        int shipPrice;
         HashSet<DetailedProduct> dp = new HashSet<>();
 
 
@@ -136,6 +154,8 @@ public class OrderDetailController {
         public DetailedShop(OrderDetail od) {
             shopId = od.getShop().getId();
             shopName = od.getShop().getShopName();
+            freePrice=od.getShop().getFreePrice();
+            shipPrice=od.getShop().getShipPrice();
             dp.add(new DetailedProduct(od));
         }
 
@@ -204,10 +224,14 @@ public class OrderDetailController {
         Long optionId;
         int optionCount;
         int originPrice;
+        String optionName;
+        Long detailedId;
         public DetailedOption(OrderDetail detail){
+            detailedId=detail.getId();
             optionId=detail.getOptions().getId();
             optionCount=detail.getProductCount();
             originPrice=detail.getOptions().getOptionPrice();
+            optionName=detail.getOptions().getOptionName();
         }
 
     }
@@ -244,4 +268,8 @@ public class OrderDetailController {
                 dtos = mycart;
             }
         }
+        @Data
+    static class removeDetailDAO {
+        private Long orderDetailId;
     }
+}

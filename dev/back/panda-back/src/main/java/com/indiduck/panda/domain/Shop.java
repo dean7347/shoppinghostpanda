@@ -3,6 +3,7 @@ package com.indiduck.panda.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,6 +21,9 @@ public class Shop {
     private String CRN;
 
     private int freePrice;
+
+    @Nullable
+    private int shipPrice;
     //택배사
     private String courier;
 
