@@ -2,12 +2,10 @@ package com.indiduck.panda.controller;
 
 
 import com.indiduck.panda.Repository.OrderDetailRepository;
+import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.OrderDetailService;
-import com.indiduck.panda.domain.File;
-import com.indiduck.panda.domain.OrderDetail;
-import com.indiduck.panda.domain.OrderStatus;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.ResultDto;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,8 @@ public class OrderDetailController {
     UserRepository userRepository;
     @Autowired
     OrderDetailRepository orderDetailRepository;
+    @Autowired
+    ShopRepository shopRepository;
 
     //상품 주문
     @RequestMapping(value = "/api/addcart", method = RequestMethod.POST)
@@ -73,6 +73,33 @@ public class OrderDetailController {
         DetailedCart myCart = new DetailedCart(orderDetails);
         System.out.println("myCart = " + myCart);
 
+
+
+
+
+
+        return ResponseEntity.ok(new thisResultDto(true,myCart));
+    }
+
+    //결제페이지
+    @RequestMapping(value = "/api/payment", method = RequestMethod.POST)
+    public ResponseEntity<?> payMyCart(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication,@RequestBody paymentDAO paymentDAO) throws Exception {
+        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        List<OrderDetail> byUserAndOrderStatus = new ArrayList<>();
+        for (Long id : paymentDAO.shopId) {
+            Optional<Shop> byId = shopRepository.findById(id);
+            if(byId!=null)
+            {
+//
+                Optional<List<OrderDetail>> byUserAndOrderStatusAndShop = orderDetailRepository.findByUserAndOrderStatusAndShop(byEmail.get(), OrderStatus.결제대기, byId.get());
+                byUserAndOrderStatus.addAll(byUserAndOrderStatusAndShop.get());
+
+            }
+
+        }
+
+        DetailedCart myCart = new DetailedCart(byUserAndOrderStatus);
 
 
 
@@ -226,12 +253,19 @@ public class OrderDetailController {
         int originPrice;
         String optionName;
         Long detailedId;
+        String pandaName;
+        boolean discount=false;
         public DetailedOption(OrderDetail detail){
             detailedId=detail.getId();
             optionId=detail.getOptions().getId();
             optionCount=detail.getProductCount();
             originPrice=detail.getOptions().getOptionPrice();
             optionName=detail.getOptions().getOptionName();
+            if(detail.getPanda() !=null)
+            {
+                pandaName=detail.getPanda().getPandaName();
+                discount=true;
+            }
         }
 
     }
@@ -271,5 +305,10 @@ public class OrderDetailController {
         @Data
     static class removeDetailDAO {
         private Long orderDetailId;
+    }
+
+    @Data
+    static class paymentDAO {
+        private ArrayList<Long> shopId;
     }
 }

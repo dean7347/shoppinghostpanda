@@ -1,9 +1,6 @@
 package com.indiduck.panda.Repository;
 
-import com.indiduck.panda.domain.OrderDetail;
-import com.indiduck.panda.domain.OrderStatus;
-import com.indiduck.panda.domain.ProductOption;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,4 +17,6 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
 
 
     Optional<List<OrderDetail>> findByUserAndOrderStatus(User user, OrderStatus orderStatus);
+    Optional<List<OrderDetail>> findByUserAndOrderStatusAndShop(User user, OrderStatus orderStatus, Shop shop);
+
 }

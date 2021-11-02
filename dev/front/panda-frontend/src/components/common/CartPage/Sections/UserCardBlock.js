@@ -4,6 +4,8 @@ import "./UserCardBlock.css";
 import { Button, Checkbox, Divider } from "antd";
 import axios from "../../../../../node_modules/axios/index";
 import shop from "../../../../modules/shop";
+import Button2 from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 function UserCardBlock(props) {
   const CheckboxGroup = Checkbox.Group;
   const plainOptions = [];
@@ -11,9 +13,18 @@ function UserCardBlock(props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
+  const [checkprice, setCheckprice] = useState([]);
+
+  const [payment, setPayment] = useState(0);
+
   useEffect(() => {
     setCheckedList(defaultCheckedList);
   }, [props]);
+
+  const onChanges = (e, mo) => {
+    console.log(`checked = ${e.target.checked}`);
+    console.log(mo);
+  };
   const onChange = (list) => {
     setCheckedList(list);
     setIndeterminate(!!list.length && list.length < plainOptions.length);
@@ -132,6 +143,7 @@ function UserCardBlock(props) {
                             <td style={{ width: "50%" }}>
                               {product.do.map((option, index) => (
                                 <tr key={index}>
+                                  <td>{option.pandaName}</td>
                                   <td>{option.optionName}</td>
                                   <td>{option.optionCount} EA</td>
                                   <td>
@@ -140,14 +152,51 @@ function UserCardBlock(props) {
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                   </td>
                                   <td>
-                                    {(option.originPrice * option.optionCount)
+                                    {/* {(option.originPrice * option.optionCount)
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    원
+                                    원 */}
+                                    {option.discount ? (
+                                      <div>
+                                        {(
+                                          option.originPrice *
+                                          option.optionCount *
+                                          0.95
+                                        )
+                                          .toString()
+                                          .replace(
+                                            /\B(?=(\d{3})+(?!\d))/g,
+                                            ","
+                                          )}
+                                        <br />
+                                        (판다 할인 : 5% )
+                                      </div>
+                                    ) : (
+                                      <div>
+                                        {(
+                                          option.originPrice *
+                                          option.optionCount
+                                        )
+                                          .toString()
+                                          .replace(
+                                            /\B(?=(\d{3})+(?!\d))/g,
+                                            ","
+                                          )}
+                                        <br />
+                                        (판다 할인 미적용)
+                                      </div>
+                                    )}
                                   </td>
-                                  {pricePlus(
-                                    option.originPrice * option.optionCount
-                                  )}
+                                  {option.discount
+                                    ? pricePlus(
+                                        option.originPrice *
+                                          option.optionCount *
+                                          0.95
+                                      )
+                                    : pricePlus(
+                                        option.originPrice * option.optionCount
+                                      )}
+
                                   <td>
                                     <Button
                                       type="primary"
@@ -183,7 +232,12 @@ function UserCardBlock(props) {
                       </td>
 
                       <td>
-                        <Checkbox value={item.shopId}>{item.shopId}</Checkbox>
+                        <Checkbox
+                          onChange={(e) => onChanges(e, allPrice)}
+                          value={item.shopId}
+                        >
+                          {item.shopId}
+                        </Checkbox>
                       </td>
                     </tr>
                   );
@@ -195,12 +249,78 @@ function UserCardBlock(props) {
     );
   };
 
+  let calculateTotla = () => {
+    let total = 0;
+    let ship = 0;
+    props.products.ds &&
+      props.products.ds.map((item, index) => {
+        if (!(checkedList.indexOf(item.shopId) === -1)) {
+          console.log("들어옴");
+          console.log(item.shopId);
+          item.dp.map((product, index) => {
+            product.do.map((options, index) => {
+              if (options.pandaName) {
+                total += options.originPrice * options.optionCount * 0.95;
+                if (
+                  item.freePrice <=
+                  options.originPrice * options.optionCount
+                ) {
+                  ship += item.shipPrice;
+                }
+              } else {
+                total += options.originPrice * options.optionCount;
+                if (
+                  item.freePrice <=
+                  options.originPrice * options.optionCount
+                ) {
+                  ship += item.shipPrice;
+                }
+              }
+            });
+          });
+        }
+      });
+    console.log("총금액" + total);
+    console.log("배송비" + ship);
+    return { total, ship };
+  };
   return (
     <div>
       {renderbox()}
 
       <div style={{ marginTop: "3rem" }}>
-        <h2>총 결제금액 :</h2>
+        <div style={{ float: "left" }}>
+          {" "}
+          <h2>
+            총 결제금액 :
+            {calculateTotla()
+              .total.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            (상품금액) +{" "}
+            {calculateTotla()
+              .ship.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            (배송비)
+            <br />=
+            {(calculateTotla().total + calculateTotla().ship)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            원{" "}
+          </h2>
+        </div>
+
+        <div style={{ float: "right" }}>
+          <Link
+            to={{
+              pathname: `/user/payments`,
+              state: { amount: calculateTotla(), selectShopId: checkedList },
+            }}
+          >
+            <Button2 variant="success" size="lg">
+              결제하기
+            </Button2>
+          </Link>
+        </div>
       </div>
     </div>
   );

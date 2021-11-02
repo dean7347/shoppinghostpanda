@@ -36,11 +36,11 @@ public class User implements UserDetails {
     private String userPhoneNumber;
     private LocalDateTime regAt;
     private boolean isEmail;
+    private String recentAddress;
 
 
     @OneToMany(mappedBy = "user")
     private List<OrderDetail> orders =new ArrayList<>();
-
 
     @OneToMany(mappedBy = "userName")
     private List<DeliverAddress> userAddress =new ArrayList<>();

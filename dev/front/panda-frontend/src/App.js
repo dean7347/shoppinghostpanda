@@ -14,6 +14,7 @@ import DetailProductPage from "./pages/DetailProductPage";
 import PandaPage from "./pages/PandaPage";
 import CartPage from "./pages/CartPage";
 import "antd/dist/antd.css";
+import PaymentPage from "./pages/PaymentPage";
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
       <Route component={DetailProductPage} path={"/product/:productId"} exact />
       <Route component={PandaPage} path={"/panda"} exact />
       <Route component={CartPage} path={"/user/cart"} exact />
+      <Route component={PaymentPage} path={"/user/payments"} exact />
 
       {/* <Route component={myShopPage} path={"/:shopName"} exact /> */}
     </>
