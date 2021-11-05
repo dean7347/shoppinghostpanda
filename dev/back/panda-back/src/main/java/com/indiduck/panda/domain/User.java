@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String userPhoneNumber;
     private LocalDateTime regAt;
     private boolean isEmail;
-    private String recentAddress;
+    private Long recentAddress;
 
 
     @OneToMany(mappedBy = "user")

@@ -108,6 +108,25 @@ public class OrderDetailController {
         return ResponseEntity.ok(new thisResultDto(true,myCart));
     }
 
+    //결제완료
+    //결제페이지
+    @RequestMapping(value = "/api/payment/complete", method = RequestMethod.POST)
+    public ResponseEntity<?> finishpayment(@CurrentSecurityContext(expression = "authentication")
+                                               Authentication authentication,@RequestBody finishPaymentDAO finishpaymentDAO) throws Exception {
+        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        System.out.println("결제검증로직");
+        System.out.println(finishpaymentDAO);
+        
+        //import와 통신하기
+
+
+
+
+
+
+        return ResponseEntity.ok(new tfResultDto(true));
+    }
+
     //옵션삭제
     @RequestMapping(value = "/api/cart/removeoption", method = RequestMethod.POST)
     public ResponseEntity<?> removeoption(@CurrentSecurityContext(expression = "authentication")
@@ -302,6 +321,17 @@ public class OrderDetailController {
                 dtos = mycart;
             }
         }
+
+    @Data
+    static class tfResultDto {
+        boolean success;
+
+
+        public tfResultDto(boolean b) {
+            success = b;
+
+        }
+    }
         @Data
     static class removeDetailDAO {
         private Long orderDetailId;
@@ -310,5 +340,13 @@ public class OrderDetailController {
     @Data
     static class paymentDAO {
         private ArrayList<Long> shopId;
+    }
+    @Data
+    static class finishPaymentDAO {
+        String impuid;
+        String merchantuid;
+        String paymethod;
+        String paid_amount;
+        String stat;
     }
 }

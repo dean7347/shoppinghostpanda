@@ -252,8 +252,10 @@ function UserCardBlock(props) {
   let calculateTotla = () => {
     let total = 0;
     let ship = 0;
+    let shopPrice = 0;
     props.products.ds &&
       props.products.ds.map((item, index) => {
+        shopPrice = 0;
         if (!(checkedList.indexOf(item.shopId) === -1)) {
           console.log("들어옴");
           console.log(item.shopId);
@@ -261,23 +263,17 @@ function UserCardBlock(props) {
             product.do.map((options, index) => {
               if (options.pandaName) {
                 total += options.originPrice * options.optionCount * 0.95;
-                if (
-                  item.freePrice <=
-                  options.originPrice * options.optionCount
-                ) {
-                  ship += item.shipPrice;
-                }
               } else {
                 total += options.originPrice * options.optionCount;
-                if (
-                  item.freePrice <=
-                  options.originPrice * options.optionCount
-                ) {
-                  ship += item.shipPrice;
-                }
               }
+              shopPrice += options.originPrice * options.optionCount;
+              console.log("------");
             });
           });
+
+          if (item.freePrice >= shopPrice) {
+            ship += item.shipPrice;
+          }
         }
       });
     console.log("총금액" + total);
