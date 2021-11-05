@@ -19,6 +19,7 @@ import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
 import { data } from "../../node_modules/browserslist/index";
 import { assertClassProperty } from "../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
+import { Link } from "react-router-dom";
 
 function PaymentPage(props) {
   const [posts, setPosts] = useState([]);
@@ -29,6 +30,8 @@ function PaymentPage(props) {
     recentAddress: "",
     phoneNumber: "",
   });
+  const [paymentResult, setPaymentResult] = useState("");
+  const [paymentLoad, setPaymentLoadResult] = useState(false);
   const pageSize = 5;
   //   const [page, setPage] = useState(1);
   const [AddrList, setAddrList] = useState({
@@ -81,13 +84,19 @@ function PaymentPage(props) {
       };
       axios.post("/api/payment/complete", body).then((response) => {
         if (response.data.success) {
-          alert("결제 성공");
+          setPaymentResult(true);
+          setPaymentLoadResult(true);
         } else {
+          setPaymentResult(false);
+          setPaymentLoadResult(true);
+
           alert("서버검증에 실패했습니다 결제가 취소됩니다");
         }
       });
     } else {
       alert(`결제 실패 : ${error_msg}`);
+      setPaymentResult(true);
+      setPaymentLoadResult(true);
     }
   };
 
@@ -435,6 +444,33 @@ function PaymentPage(props) {
       }
     } else {
       console.log("최근배송지입니다");
+
+      if (
+        !recentreceiver ||
+        !recentaddressName ||
+        !recentphonenumb ||
+        !recentzone ||
+        !recentfulladdr ||
+        !recentaddressdetail
+      ) {
+        console.log(
+          !recentreceiver +
+            "," +
+            !recentaddressName +
+            "," +
+            !recentphonenumb +
+            "," +
+            !phonenummiddle +
+            "," +
+            !recentzone +
+            "," +
+            !recentfulladdr +
+            "," +
+            !recentaddressdetail +
+            ","
+        );
+        return alert("배송지를 정확히 입력해주세요");
+      }
       console.log(value);
     }
 
@@ -513,7 +549,7 @@ function PaymentPage(props) {
     if (value === 1) {
       SetPayMentForm({
         merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
-        name: defaultInfo.userName + uid, // 주문명 (필수항목)
+        name: value + defaultInfo.userName + uid, // 주문명 (필수항목)
         custom_data: customData,
         amount:
           props.location.state.amount.total + props.location.state.amount.ship, // 금액 (필수항목)
@@ -526,7 +562,7 @@ function PaymentPage(props) {
     } else {
       SetPayMentForm({
         merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
-        name: defaultInfo.userName, //defaultInfo.userName + tname, // 주문명 (필수항목)
+        name: value + defaultInfo.userName + uid, //defaultInfo.userName + tname, // 주문명 (필수항목)
         custom_data: customData,
         amount:
           props.location.state.amount.total + props.location.state.amount.ship, // 금액 (필수항목)
@@ -536,8 +572,9 @@ function PaymentPage(props) {
         buyer_addr: fulladdress + form.addressdetail,
         buyer_postalcode: zonecode,
       });
-      console.log("2번밸류 실행");
     }
+    console.log("부가데이터");
+    console.log(customData);
   }, [value]);
 
   useState(() => {
@@ -958,10 +995,17 @@ function PaymentPage(props) {
               </div>
             )}
             <div>
-              <Button onClick={paymentClick} htmlType="submit">
-                <CreditCardOutlined />
-                결제버튼
-              </Button>
+              <Link
+                to={{
+                  pathname: `/user/payments/complete`,
+                  state: { payresult: paymentResult, payLoad: paymentResult },
+                }}
+              >
+                <Button onClick={paymentClick} htmlType="submit">
+                  <CreditCardOutlined />
+                  결제버튼
+                </Button>
+              </Link>
             </div>
           </Form>
         </div>

@@ -1,21 +1,32 @@
 package com.indiduck.panda.controller;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.OrderDetailService;
+import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.ResultDto;
+import com.siot.IamportRestClient.IamportClient;
 import lombok.Data;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -29,7 +40,8 @@ public class OrderDetailController {
     OrderDetailRepository orderDetailRepository;
     @Autowired
     ShopRepository shopRepository;
-
+    @Autowired
+    private ApiKey apiKey;
     //상품 주문
     @RequestMapping(value = "/api/addcart", method = RequestMethod.POST)
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
@@ -118,13 +130,90 @@ public class OrderDetailController {
         System.out.println(finishpaymentDAO);
         
         //import와 통신하기
-
-
-
-
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("imp_uid",finishpaymentDAO.impuid);
+        params.add("merchant_uid",finishpaymentDAO.merchantuid);
 
 
         return ResponseEntity.ok(new tfResultDto(true));
+    }
+
+    @RequestMapping(value = "/api/test", method = RequestMethod.POST)
+    public ResponseEntity<?> test(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication) throws Exception {
+        System.out.println(apiKey.getRESTAPIKEY()+"  "+apiKey.getRESTAPISECRET());
+        //결제내역에서
+        String paymentresult = getTokentoInfo("imp_533942314486", "1636078940675");
+        JSONObject jsonObject = new JSONObject(paymentresult);
+        System.out.println("변환완료");
+        Object response = jsonObject.get("response");
+        JSONObject resp = new JSONObject(response.toString());
+        resp.get("buyer_name");
+        System.out.println(jsonObject);
+
+        System.out.println(resp.get("buyer_name"));
+
+        return ResponseEntity.ok(new tfResultDto(true));
+    }
+
+
+    public String getTokentoInfo(String imp,String merchuid) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //서버로 요청할 Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("imp_key", apiKey.getRESTAPIKEY());
+        map.put("imp_secret", apiKey.getRESTAPISECRET());
+
+
+        Gson var = new Gson();
+        String json = var.toJson(map);
+        //서버로 요청할 Body
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+
+        String s = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+
+
+        Gson str = new Gson();
+        s = s.substring(s.indexOf("response") + 10);
+        s = s.substring(0, s.length() - 1);
+        GetTokenVO vo = str.fromJson(s, GetTokenVO.class);
+        String access_token = vo.getAccess_token();
+        //겟토큰
+        System.out.println("gettoken");
+        System.out.println(access_token);
+        RestTemplate NewrestTemplate = new RestTemplate();
+        headers.setBearerAuth(access_token);
+        Map<String, Object> newmap = new HashMap<>();
+        newmap.put("imp_uid", imp);
+        newmap.put("merchant_uid", merchuid);
+
+        Gson newvar = new Gson();
+        String newjson = newvar.toJson(newmap);
+        System.out.println(newjson);
+        HttpEntity<String> newentity = new HttpEntity<>(newjson, headers);
+        String s1 = NewrestTemplate.postForObject("https://api.iamport.kr/payments/"+imp, newentity, String.class);
+
+        System.out.println("파싱결과");
+        System.out.println();
+
+
+        return NewrestTemplate.postForObject("https://api.iamport.kr/payments/"+imp, newentity, String.class);
+
+    }
+    @Data
+    public class GetTokenVO {
+        private String access_token;
+        private long now;
+        private long expired_at;
+
+
+
     }
 
     //옵션삭제
