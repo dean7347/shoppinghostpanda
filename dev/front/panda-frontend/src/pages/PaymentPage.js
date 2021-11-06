@@ -17,11 +17,10 @@ import {
 } from "antd";
 import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
-import { data } from "../../node_modules/browserslist/index";
-import { assertClassProperty } from "../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-function PaymentPage(props) {
+function PaymentPage(gprops) {
+  let history = useHistory();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rerender, setRerender] = useState(1);
@@ -55,12 +54,50 @@ function PaymentPage(props) {
       document.head.removeChild(iamport);
     };
   }, []);
+  const [Pbutton, setPbutton] = useState(false);
 
   const onClickPayment = () => {
-    const { IMP } = window;
-    IMP.init("imp16473466"); // 가맹점 식별코드
+    var date = new Date();
+    var uid = new Date().getTime();
+    var year = date.getFullYear();
+    var month = ("0" + (1 + date.getMonth())).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+    var tname = year + month + day;
+    console.log("결제하기!!!!!");
+    console.log(defaultInfo);
+    console.log(paymentForm);
 
-    IMP.request_pay(paymentForm, callback);
+    if (value === 1) {
+      SetPayMentForm({
+        merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
+        name: value + defaultInfo.userName + uid, // 주문명 (필수항목)
+        custom_data: customData,
+        amount:
+          gprops.location.state.amount.total +
+          gprops.location.state.amount.ship, // 금액 (필수항목)
+        buyer_name: recentShip.recentreceiver, // 구매자 이름
+        //   buyer_email: "", // 구매자 이메일
+        buyer_tel: recentShip.recentphonenumb, // 구매자 전화번호 (필수항목)
+        buyer_addr: recentShip.recentfulladdr + recentShip.recentaddressdetail,
+        buyer_postcode: recentShip.recentzone,
+      });
+    } else {
+      SetPayMentForm({
+        merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
+        name: value + defaultInfo.userName + uid, //defaultInfo.userName + tname, // 주문명 (필수항목)
+        custom_data: customData,
+        amount:
+          gprops.location.state.amount.total +
+          gprops.location.state.amount.ship, // 금액 (필수항목)
+        buyer_name: form.receiver, // 구매자 이름
+        //   buyer_email: "", // 구매자 이메일
+        buyer_tel: form.phonenumb + form.phonenummiddle + form.phonenumlast, // 구매자 전화번호 (필수항목)
+        buyer_addr: fulladdress + form.addressdetail,
+        buyer_postcode: zonecode,
+      });
+    }
+    setPbutton(true);
+    // IMP.request_pay(paymentForm, callback);
   };
 
   const callback = (response) => {
@@ -84,82 +121,23 @@ function PaymentPage(props) {
       };
       axios.post("/api/payment/complete", body).then((response) => {
         if (response.data.success) {
-          setPaymentResult(true);
-          setPaymentLoadResult(true);
+          alert("결제성공");
+          history.push({
+            pathname: "/user/payments/complete",
+            state: { prevPath: history.location.pathname, re: "ok" },
+          });
         } else {
-          setPaymentResult(false);
-          setPaymentLoadResult(true);
-
           alert("서버검증에 실패했습니다 결제가 취소됩니다");
         }
       });
     } else {
-      alert(`결제 실패 : ${error_msg}`);
-      setPaymentResult(true);
-      setPaymentLoadResult(true);
+      alert(`결제에 실패했습니다 : ${error_msg}`);
     }
   };
 
   //결제로직
 
-  useEffect(() => {
-    async function fetchList() {
-      setLoading(true);
-      const response = await axios.get("/api/myaddress");
-      setPosts(response.data);
-      setLoading(false);
-      console.log("리스트 로딩완료");
-      console.log(response.data);
-      SetDefaultInfo({
-        ...defaultInfo,
-        userName: response.data.name,
-        recentAddress: response.data.recent,
-        phoneNumber: response.data.phoneNumb,
-      });
-
-      setAddrList({
-        ...AddrList,
-        data: response.data,
-        totalPage: response.data.list.length / pageSize,
-        minIndex: 0,
-        maxIndex: pageSize,
-        length: response.data.list.length,
-      });
-
-      if (defaultInfo.recentAddress === "null") {
-        setValue(2);
-      } else if (AddrList.data && AddrList.data.list) {
-        for (const pa of AddrList.data.list) {
-          if (pa.id === defaultInfo.recentAddress) {
-            SetRecentShip({
-              recentreceiver: pa.receiver,
-              recentaddressName: pa.addressName,
-              recentphonenumb: pa.mainPhoneNumber,
-              recentsubphonenum: pa.subPhoneNumber,
-              recentzone: pa.zonecode,
-              recentfulladdr: pa.fulladdress,
-              recentaddressdetail: pa.addressdetail,
-            });
-            setValue(1);
-            break;
-          }
-        }
-        setValue(2);
-      }
-
-      // AddrList.data.list?.map((pa, index) => {
-      //   console.log(pa.id);
-      //   console.log(defaultInfo.recentAddress);
-      //   if (pa.id === defaultInfo.recentAddress) {
-      //     console.log("들어옴");
-
-      //     console.log(recentShip);
-      //   }
-      // });
-      //   }
-    }
-    fetchList();
-  }, [rerender]);
+  useEffect(() => {}, []);
 
   const handlePageChange = (page) => {
     // setPage(page);
@@ -171,8 +149,8 @@ function PaymentPage(props) {
     });
   };
 
-  console.log(props.location.state.amount);
-  console.log(props.location.state.selectShopId);
+  //   console.log(props.location.state.amount);
+  //   console.log(props.location.state.selectShopId);
   const [componentSize, setComponentSize] = useState("default");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddrModalVisible, setIsAddrModalVisible] = useState(false);
@@ -250,7 +228,53 @@ function PaymentPage(props) {
       setForm(nextForm);
     }
   };
+  useEffect(() => {
+    async function fetchList() {
+      setLoading(true);
+      const response = await axios.get("/api/myaddress");
+      setPosts(response.data);
+      setLoading(false);
+      console.log("리스트 로딩완료");
+      console.log(response.data);
+      SetDefaultInfo({
+        ...defaultInfo,
+        userName: response.data.name,
+        recentAddress: response.data.recent,
+        phoneNumber: response.data.phoneNumb,
+      });
 
+      setAddrList({
+        ...AddrList,
+        data: response.data,
+        totalPage: response.data.list.length / pageSize,
+        minIndex: 0,
+        maxIndex: pageSize,
+        length: response.data.list.length,
+      });
+      if (response.data.recent === "null") {
+        setValue(2);
+      } else if (response.data && response.data.list) {
+        for (const pa of response.data.list) {
+          if (pa.id === response.data.recent) {
+            console.log(pa);
+            SetRecentShip({
+              recentreceiver: pa.receiver,
+              recentaddressName: pa.addressName,
+              recentphonenumb: pa.mainPhoneNumber,
+              recentsubphonenum: pa.subPhoneNumber,
+              recentzone: pa.zonecode,
+              recentfulladdr: pa.fulladdress,
+              recentaddressdetail: pa.addressdetail,
+            });
+            addrselect(pa);
+
+            break;
+          }
+        }
+      }
+    }
+    fetchList();
+  }, [rerender]);
   const { Option } = Select;
   const phonenum = (
     <Select defaultValue="010" className="select-after">
@@ -378,6 +402,27 @@ function PaymentPage(props) {
       recentfulladdr: pa.fulladdress,
       recentaddressdetail: pa.addressdetail,
     });
+
+    // var date = new Date();
+    // var uid = new Date().getTime();
+    // var year = date.getFullYear();
+    // var month = ("0" + (1 + date.getMonth())).slice(-2);
+    // var day = ("0" + date.getDate()).slice(-2);
+    // var tname = year + month + day;
+
+    // SetPayMentForm({
+    //   merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
+    //   name: value + defaultInfo.userName + uid, // 주문명 (필수항목)
+    //   custom_data: customData,
+    //   amount:
+    //     gprops.location.state.amount.total + gprops.location.state.amount.ship, // 금액 (필수항목)
+    //   buyer_name: defaultInfo.userName, // 구매자 이름
+    //   //   buyer_email: "", // 구매자 이메일
+    //   buyer_tel: defaultInfo.phoneNumber, // 구매자 전화번호 (필수항목)
+    //   buyer_addr: recentShip.recentfulladdr + recentShip.recentaddressdetail,
+    //   buyer_postcode: recentShip.recentzone,
+    // });
+
     setIsAddrModalVisible(false);
   };
   const adddelete = (pa) => {
@@ -471,7 +516,6 @@ function PaymentPage(props) {
         );
         return alert("배송지를 정확히 입력해주세요");
       }
-      console.log(value);
     }
 
     //결제창 오픈
@@ -530,8 +574,20 @@ function PaymentPage(props) {
     buyer_tel: "", // 구매자 전화번호 (필수항목)
     buyer_email: "", // 구매자 이메일
     buyer_addr: "",
-    buyer_postalcode: "",
+    buyer_postcode: "",
   });
+
+  useEffect(() => {
+    console.log(paymentForm);
+    if (Pbutton === true) {
+      const { IMP } = window;
+      // TODO : 식별코드 숨기기
+      IMP.init("imp16473466"); // TODO: 식별코드 숨기기
+      IMP.request_pay(paymentForm, callback);
+      setPbutton(false);
+    }
+  }, [paymentForm]);
+
   const resultDetail = [];
   const [customData, setCustomData] = useState({
     allPrice: "",
@@ -539,48 +595,10 @@ function PaymentPage(props) {
     detaildId: [],
   });
 
-  useEffect(() => {
-    var date = new Date();
-    var uid = new Date().getTime();
-    var year = date.getFullYear();
-    var month = ("0" + (1 + date.getMonth())).slice(-2);
-    var day = ("0" + date.getDate()).slice(-2);
-    var tname = year + month + day;
-    if (value === 1) {
-      SetPayMentForm({
-        merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
-        name: value + defaultInfo.userName + uid, // 주문명 (필수항목)
-        custom_data: customData,
-        amount:
-          props.location.state.amount.total + props.location.state.amount.ship, // 금액 (필수항목)
-        buyer_name: defaultInfo.userName, // 구매자 이름
-        //   buyer_email: "", // 구매자 이메일
-        buyer_tel: defaultInfo.phoneNumber, // 구매자 전화번호 (필수항목)
-        buyer_addr: recentShip.recentfulladdr + recentShip.recentaddressdetail,
-        buyer_postalcode: recentShip.recentzone,
-      });
-    } else {
-      SetPayMentForm({
-        merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
-        name: value + defaultInfo.userName + uid, //defaultInfo.userName + tname, // 주문명 (필수항목)
-        custom_data: customData,
-        amount:
-          props.location.state.amount.total + props.location.state.amount.ship, // 금액 (필수항목)
-        buyer_name: defaultInfo.userName, // 구매자 이름
-        //   buyer_email: "", // 구매자 이메일
-        buyer_tel: defaultInfo.phoneNumber, // 구매자 전화번호 (필수항목)
-        buyer_addr: fulladdress + form.addressdetail,
-        buyer_postalcode: zonecode,
-      });
-    }
-    console.log("부가데이터");
-    console.log(customData);
-  }, [value]);
-
   useState(() => {
     const body = {
       //   amount: props.location.state.amount,
-      shopId: props.location.state.selectShopId,
+      shopId: gprops.location.state.selectShopId,
     };
     axios.post("/api/payment", body).then((response) => {
       if (response.data.success) {
@@ -597,8 +615,8 @@ function PaymentPage(props) {
           );
         });
         setCustomData({
-          allPrice: props.location.state.amount.total,
-          shipPrice: props.location.state.amount.ship,
+          allPrice: gprops.location.state.amount.total,
+          shipPrice: gprops.location.state.amount.ship,
           detaildId: resultDetail,
         });
       } else {
@@ -621,9 +639,10 @@ function PaymentPage(props) {
             {paydata.ds &&
               paydata.ds.map((item, index) => {
                 var allPrice = 0;
-
-                function pricePlus(getprice) {
+                var purePrice = 0;
+                function pricePlus(getprice, getpure) {
                   allPrice = allPrice + getprice;
+                  purePrice = purePrice + getpure;
                 }
                 var freePrice = item.freePrice;
                 var shipPrice = item.shipPrice;
@@ -634,8 +653,8 @@ function PaymentPage(props) {
                 //   function getShipPrice(getPrice) {
                 //     shipPrice = getPrice;
                 //   }
-                function isfree(allPrice) {
-                  if (allPrice >= freePrice) {
+                function isfree(getallPrice) {
+                  if (getallPrice >= freePrice) {
                     return "무료배송";
                   } else {
                     return shipPrice;
@@ -684,10 +703,10 @@ function PaymentPage(props) {
                                     원 */}
                                   {option.discount ? (
                                     <div>
-                                      {(
+                                      {Math.round(
                                         option.originPrice *
-                                        option.optionCount *
-                                        0.95
+                                          option.optionCount *
+                                          0.95
                                       )
                                         .toString()
                                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -706,11 +725,15 @@ function PaymentPage(props) {
                                 </td>
                                 {option.discount
                                   ? pricePlus(
-                                      option.originPrice *
-                                        option.optionCount *
-                                        0.95
+                                      Math.round(
+                                        option.originPrice *
+                                          option.optionCount *
+                                          0.95
+                                      ),
+                                      option.originPrice * option.optionCount
                                     )
                                   : pricePlus(
+                                      option.originPrice * option.optionCount,
                                       option.originPrice * option.optionCount
                                     )}
                               </tr>
@@ -726,9 +749,15 @@ function PaymentPage(props) {
                       원
                     </td>
                     <td>
-                      {isfree(allPrice)
+                      {isfree(purePrice)
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      <br />
+                      (할인전 금액:
+                      {purePrice
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      )
                       <br />(
                       {freePrice
                         .toString()
@@ -756,11 +785,11 @@ function PaymentPage(props) {
         <div style={{ border: "1px solid" }}>
           <div style={{ float: "left" }}>
             <h2>
-              {props.location.state.amount.total
+              {gprops.location.state.amount.total
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               +
-              {props.location.state.amount.ship
+              {gprops.location.state.amount.ship
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </h2>
@@ -774,8 +803,8 @@ function PaymentPage(props) {
           >
             <h2>
               {(
-                props.location.state.amount.total +
-                props.location.state.amount.ship
+                gprops.location.state.amount.total +
+                gprops.location.state.amount.ship
               )
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -995,17 +1024,10 @@ function PaymentPage(props) {
               </div>
             )}
             <div>
-              <Link
-                to={{
-                  pathname: `/user/payments/complete`,
-                  state: { payresult: paymentResult, payLoad: paymentResult },
-                }}
-              >
-                <Button onClick={paymentClick} htmlType="submit">
-                  <CreditCardOutlined />
-                  결제버튼
-                </Button>
-              </Link>
+              <Button onClick={paymentClick} htmlType="submit">
+                <CreditCardOutlined />
+                결제버튼
+              </Button>
             </div>
           </Form>
         </div>

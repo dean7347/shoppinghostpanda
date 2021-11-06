@@ -96,9 +96,12 @@ function UserCardBlock(props) {
               {props.products.ds &&
                 props.products.ds.map((item, index) => {
                   var allPrice = 0;
-                  function pricePlus(getprice) {
+                  var purePrice = 0;
+                  function pricePlus(getprice, getpureprice) {
                     allPrice = allPrice + getprice;
+                    purePrice = purePrice + getpureprice;
                   }
+
                   var freePrice = item.freePrice;
                   var shipPrice = item.shipPrice;
                   //   function getfreePrice(getPrice) {
@@ -108,8 +111,8 @@ function UserCardBlock(props) {
                   //   function getShipPrice(getPrice) {
                   //     shipPrice = getPrice;
                   //   }
-                  function isfree(allPrice) {
-                    if (allPrice >= freePrice) {
+                  function isfree(getpurePrice) {
+                    if (getpurePrice >= freePrice) {
                       return "무료배송";
                     } else {
                       return shipPrice;
@@ -158,10 +161,10 @@ function UserCardBlock(props) {
                                     원 */}
                                     {option.discount ? (
                                       <div>
-                                        {(
+                                        {Math.round(
                                           option.originPrice *
-                                          option.optionCount *
-                                          0.95
+                                            option.optionCount *
+                                            0.95
                                         )
                                           .toString()
                                           .replace(
@@ -189,11 +192,15 @@ function UserCardBlock(props) {
                                   </td>
                                   {option.discount
                                     ? pricePlus(
-                                        option.originPrice *
-                                          option.optionCount *
-                                          0.95
+                                        Math.round(
+                                          option.originPrice *
+                                            option.optionCount *
+                                            0.95
+                                        ),
+                                        option.originPrice * option.optionCount
                                       )
                                     : pricePlus(
+                                        option.originPrice * option.optionCount,
                                         option.originPrice * option.optionCount
                                       )}
 
@@ -221,7 +228,7 @@ function UserCardBlock(props) {
                         원
                       </td>
                       <td>
-                        {isfree(allPrice)
+                        {isfree(purePrice)
                           .toString()
                           .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                         <br />(
@@ -251,6 +258,7 @@ function UserCardBlock(props) {
 
   let calculateTotla = () => {
     let total = 0;
+
     let ship = 0;
     let shopPrice = 0;
     props.products.ds &&
@@ -262,16 +270,20 @@ function UserCardBlock(props) {
           item.dp.map((product, index) => {
             product.do.map((options, index) => {
               if (options.pandaName) {
-                total += options.originPrice * options.optionCount * 0.95;
+                total += Math.round(
+                  options.originPrice * options.optionCount * 0.95
+                );
               } else {
-                total += options.originPrice * options.optionCount;
+                total += Math.round(options.originPrice * options.optionCount);
               }
               shopPrice += options.originPrice * options.optionCount;
               console.log("------");
             });
           });
+          console.log("검증!!!!");
+          console.log(item.freePrice);
 
-          if (item.freePrice >= shopPrice) {
+          if (item.freePrice > shopPrice) {
             ship += item.shipPrice;
           }
         }

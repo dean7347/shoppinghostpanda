@@ -1,17 +1,5 @@
-import React, { useEffect, useCallback, useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Collapse,
-} from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, Switch, Collapse } from "antd";
 import styled from "styled-components";
 import axios from "../../../node_modules/axios/index";
 

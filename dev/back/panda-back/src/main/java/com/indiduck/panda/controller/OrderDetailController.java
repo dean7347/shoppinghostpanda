@@ -2,35 +2,39 @@ package com.indiduck.panda.controller;
 
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
 import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.OrderDetailService;
 import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.Data;
+
+import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
-
+@CrossOrigin
 @RestController
+@RequiredArgsConstructor
 public class OrderDetailController {
     @Autowired
     OrderDetailService orderDetailService;
@@ -42,6 +46,10 @@ public class OrderDetailController {
     ShopRepository shopRepository;
     @Autowired
     private ApiKey apiKey;
+
+    @Autowired
+    UserOrderRepository userOrderRepository;
+
     //상품 주문
     @RequestMapping(value = "/api/addcart", method = RequestMethod.POST)
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
@@ -53,10 +61,14 @@ public class OrderDetailController {
             try {
                 if(createProductDAO.selectpanda==null)
                 {
+                    System.out.println("컨트롤러");
                     orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
                             , detailOptionDAO.optionId, detailOptionDAO.optionCount);
                 }else
                 {
+
+                    System.out.println("컨트롤러");
+
                     orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
                             , detailOptionDAO.optionId, detailOptionDAO.optionCount, createProductDAO.selectpanda);
                 }
@@ -64,6 +76,8 @@ public class OrderDetailController {
             }catch (Exception e)
 
             {
+                System.out.println("오더디테일 컨트롤러 에러발생"+e);
+
                 return ResponseEntity.ok(new ResultDto(false,"상품을 담는중 오류가 발생했습니다" +
                         "계속 발생할시 1:1 문의바랍니다"));
             }
@@ -81,11 +95,7 @@ public class OrderDetailController {
         Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
         List<OrderDetail> orderDetails = byUserAndOrderStatus.get();
 
-
         DetailedCart myCart = new DetailedCart(orderDetails);
-        System.out.println("myCart = " + myCart);
-
-
 
 
 
@@ -121,90 +131,289 @@ public class OrderDetailController {
     }
 
     //결제완료
-    //결제페이지
     @RequestMapping(value = "/api/payment/complete", method = RequestMethod.POST)
     public ResponseEntity<?> finishpayment(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication,@RequestBody finishPaymentDAO finishpaymentDAO) throws Exception {
+
+        //TODO:여기 상품 검증 실패면 취소로직해줘야댐
+        Payment tokentoInfo = getTokentoInfo(finishpaymentDAO.impuid);
+//        orderDetailService.paymentOrderDetail(tokentoInfo);
+        String customData = tokentoInfo.getCustomData();
+        JSONObject jsonObject=new JSONObject(customData);
+        //디테일배열
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
-        System.out.println("결제검증로직");
-        System.out.println(finishpaymentDAO);
-        
-        //import와 통신하기
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("imp_uid",finishpaymentDAO.impuid);
-        params.add("merchant_uid",finishpaymentDAO.merchantuid);
+        JSONArray detail =jsonObject.getJSONArray("detaildId");
+        HashSet<Shop> shopId =new HashSet<>();
+        HashSet<OrderDetail> orders= new HashSet<>();
+        HashSet<Verification> Veri=new HashSet<>();
+
+        List<OrderDetail> orderDetails =new ArrayList<>();
+        for (Object o : detail) {
+            Optional<OrderDetail> byId = orderDetailRepository.findById(Long.parseLong(o.toString()));
+            orderDetails.add(byId.get());
+            shopId.add(byId.get().getShop());
+            orders.add(byId.get());
+        }
+
+        for (Shop shop : shopId) {
+            Veri.add(new Verification(shop));
+
+        }
 
 
-        return ResponseEntity.ok(new tfResultDto(true));
+        for (Verification verification : Veri) {
+            for (OrderDetail order : orders) {
+                if(order.getShop().getId()== verification.shopId)
+                {
+                    if(order.getPanda() ==null)
+                    {
+                        verification.amount+=Math.round(order.getTotalPrice());
+                        verification.pure+=Math.round(order.getTotalPrice());
+
+                    }else
+                    {
+                        verification.amount+=(Math.round(order.getTotalPrice()*0.95));
+                        verification.pure+=Math.round(order.getTotalPrice());
+
+                    }
+
+                }
+            }
+            if(verification.free > verification.pure)
+            {
+
+                verification.amount= verification.amount+ verification.shipprice;
+            }
+        }
+
+        DetailedCart myCart = new DetailedCart(orderDetails);
+
+        int allamount = 0;
+        for (Verification verification : Veri) {
+            allamount+=verification.amount;
+        }
+
+        BigDecimal amount = tokentoInfo.getAmount();
+
+        System.out.println("검증중");
+        System.out.println("allamount = " + allamount);
+        System.out.println("amount.intValue() = " + amount.intValue());
+        System.out.println(allamount+amount.intValue());
+        if(allamount==amount.intValue())
+        {
+            System.out.println("검증성공");
+            System.out.println(myCart);
+            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
+                    tokentoInfo.getName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
+            if(b){
+                return ResponseEntity.ok(new tfResultDto(b));
+
+            }else
+            {
+                paymentAlreadyCancelled(finishpaymentDAO.impuid);
+                return ResponseEntity.ok(new tfResultDto(false));
+            }
+
+        }else
+        {
+            paymentAlreadyCancelled(finishpaymentDAO.impuid);
+            return ResponseEntity.ok(new tfResultDto(false));
+
+        }
+
     }
+    @RequestMapping(value = "/api/test2", method = RequestMethod.POST)
+    public ResponseEntity<?> testt(@CurrentSecurityContext(expression = "authentication")
+                                          Authentication authentication) throws Exception {
+        List<UserOrder> all = userOrderRepository.findAll();
+        for (UserOrder userOrder : all) {
+            System.out.println("userOrder = " + userOrder.getDetail());
+        }
+        return ResponseEntity.ok(new tfResultDto(false));
+    }
+
 
     @RequestMapping(value = "/api/test", method = RequestMethod.POST)
     public ResponseEntity<?> test(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication) throws Exception {
-        System.out.println(apiKey.getRESTAPIKEY()+"  "+apiKey.getRESTAPISECRET());
-        //결제내역에서
-        String paymentresult = getTokentoInfo("imp_533942314486", "1636078940675");
-        JSONObject jsonObject = new JSONObject(paymentresult);
-        System.out.println("변환완료");
-        Object response = jsonObject.get("response");
-        JSONObject resp = new JSONObject(response.toString());
-        resp.get("buyer_name");
-        System.out.println(jsonObject);
+//        System.out.println(apiKey.getRESTAPIKEY()+"  "+apiKey.getRESTAPISECRET());
+        //TODO:여기 상품 검증 실패면 취소로직해줘야댐
+        Payment tokentoInfo = getTokentoInfo("imp_982372597875");
+//        orderDetailService.paymentOrderDetail(tokentoInfo);
+        String customData = tokentoInfo.getCustomData();
+        JSONObject jsonObject=new JSONObject(customData);
+        //디테일배열
+        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        JSONArray detail =jsonObject.getJSONArray("detaildId");
+        HashSet<Shop> shopId =new HashSet<>();
+        HashSet<OrderDetail> orders= new HashSet<>();
+        HashSet<Verification> Veri=new HashSet<>();
 
-        System.out.println(resp.get("buyer_name"));
+        List<OrderDetail> orderDetails =new ArrayList<>();
+        for (Object o : detail) {
+            Optional<OrderDetail> byId = orderDetailRepository.findById(Long.parseLong(o.toString()));
+            orderDetails.add(byId.get());
+            shopId.add(byId.get().getShop());
+            orders.add(byId.get());
+        }
 
-        return ResponseEntity.ok(new tfResultDto(true));
+        for (Shop shop : shopId) {
+            Veri.add(new Verification(shop));
+
+        }
+
+
+        for (Verification verification : Veri) {
+            for (OrderDetail order : orders) {
+                if(order.getShop().getId()== verification.shopId)
+                {
+                    if(order.getPanda() ==null)
+                    {
+                        verification.amount+=Math.round(order.getTotalPrice());
+                        verification.pure+=Math.round(order.getTotalPrice());
+
+                    }else
+                    {
+                        verification.amount+=(Math.round(order.getTotalPrice()*0.95));
+                        verification.pure+=Math.round(order.getTotalPrice());
+
+                    }
+
+                }
+            }
+            if(verification.free > verification.pure)
+            {
+
+                verification.amount= verification.amount+ verification.shipprice;
+            }
+        }
+
+        DetailedCart myCart = new DetailedCart(orderDetails);
+
+        int allamount = 0;
+        for (Verification verification : Veri) {
+            allamount+=verification.amount;
+        }
+
+        BigDecimal amount = tokentoInfo.getAmount();
+
+        System.out.println("검증중");
+        System.out.println("allamount = " + allamount);
+        System.out.println("amount.intValue() = " + amount.intValue());
+        System.out.println(allamount+amount.intValue());
+        if(allamount==amount.intValue())
+        {
+            System.out.println("검증성공");
+            System.out.println(myCart);
+            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
+                    tokentoInfo.getName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
+            if(b){
+                return ResponseEntity.ok(new tfResultDto(b));
+
+            }else
+            {
+                return ResponseEntity.ok(new tfResultDto(false));
+            }
+
+        }else
+        {
+            return ResponseEntity.ok(new tfResultDto(false));
+
+        }
+
+
+
+
+
+    }
+    @Data
+    public class Verification {
+        private Long shopId;
+        private int amount;
+        private int pure;
+        private int free;
+        private int shipprice;
+        public Verification(Shop shopId)
+        {
+            this.shopId=shopId.getId();
+            this.free=shopId.getFreePrice();
+            this.shipprice=shopId.getShipPrice();
+        }
+
+
     }
 
-
-    public String getTokentoInfo(String imp,String merchuid) {
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        //서버로 요청할 Header
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("imp_key", apiKey.getRESTAPIKEY());
-        map.put("imp_secret", apiKey.getRESTAPISECRET());
+    public void paymentAlreadyCancelled(String merchuid)
+    {
+        CancelData cancel_data = new CancelData(merchuid, true); //imp_uid를 통한 전액취소
+        IamportClient client;
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = merchuid;
 
 
-        Gson var = new Gson();
-        String json = var.toJson(map);
-        //서버로 요청할 Body
-        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        client = new IamportClient(test_api_key, test_api_secret);
+        try {
+            IamportResponse<Payment> payment_response = client.cancelPaymentByImpUid(cancel_data);
 
-        String s = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    break;
+                case 500 :
+                    //TODO
+                    break;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public Payment getTokentoInfo(String merchuid) {
+        IamportClient client;
+//        String test_api_key = "imp_apikey";
+//        String test_api_secret = "ekKoeW8RyKuT0zgaZsUtXXTLQ4AhPFW3ZGseDA6bkA5lamv9OqDMnxyeB9wqOsuO9W3Mx9YSJ4dTqJ3f";
+//        String test_imp_uid = "imp_448280090638";
+        //restapi키
+
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = merchuid;
 
 
-        Gson str = new Gson();
-        s = s.substring(s.indexOf("response") + 10);
-        s = s.substring(0, s.length() - 1);
-        GetTokenVO vo = str.fromJson(s, GetTokenVO.class);
-        String access_token = vo.getAccess_token();
-        //겟토큰
-        System.out.println("gettoken");
-        System.out.println(access_token);
-        RestTemplate NewrestTemplate = new RestTemplate();
-        headers.setBearerAuth(access_token);
-        Map<String, Object> newmap = new HashMap<>();
-        newmap.put("imp_uid", imp);
-        newmap.put("merchant_uid", merchuid);
+        client = new IamportClient(test_api_key, test_api_secret);
+        try {
+            IamportResponse<com.siot.IamportRestClient.response.Payment> payment_response = client.paymentByImpUid(test_imp_uid);
+            System.out.println("결제정보");
 
-        Gson newvar = new Gson();
-        String newjson = newvar.toJson(newmap);
-        System.out.println(newjson);
-        HttpEntity<String> newentity = new HttpEntity<>(newjson, headers);
-        String s1 = NewrestTemplate.postForObject("https://api.iamport.kr/payments/"+imp, newentity, String.class);
+            return payment_response.getResponse();
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
 
-        System.out.println("파싱결과");
-        System.out.println();
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    break;
+                case 500 :
+                    //TODO
+                    break;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 
-        return NewrestTemplate.postForObject("https://api.iamport.kr/payments/"+imp, newentity, String.class);
+//        return NewrestTemplate.postForObject("https://api.iamport.kr/payments/"+imp, newentity, String.class);
 
+        return null;
     }
     @Data
     public class GetTokenVO {
@@ -235,7 +444,7 @@ public class OrderDetailController {
 
     ///////////
     @Data
-    static class DetailedCart{
+    public static class DetailedCart{
 
         HashSet<DetailedShop> ds = new HashSet<>();
 
@@ -277,7 +486,7 @@ public class OrderDetailController {
     }
 
     @Data
-    static class DetailedShop {
+    public static class DetailedShop {
         Long shopId;
         String shopName;
         int freePrice;
@@ -319,7 +528,7 @@ public class OrderDetailController {
 
 
     @Data
-    static class DetailedProduct{
+    public static class DetailedProduct{
         Long productId;
         String productName;
         String thumbNail;
@@ -355,7 +564,7 @@ public class OrderDetailController {
     }
 
     @Data
-    static class DetailedOption{
+    public static class DetailedOption{
         Long optionId;
         int optionCount;
         int originPrice;

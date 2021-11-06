@@ -27,6 +27,11 @@ public class Panda {
 
     private boolean recognize;
 
+    //예상된 획득 수수료
+    private int expectedFees;
+    //출금 가능 수수료
+    private int possibleFees;
+
     @OneToMany(mappedBy = "panda")
     private List<PandaToProduct> pandaToproducts= new ArrayList<>();
 

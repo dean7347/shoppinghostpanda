@@ -51,7 +51,8 @@ public class User implements UserDetails {
     @OneToOne(optional = true)
     private Shop shop;
 
-
+    @OneToMany(mappedBy = "userId")
+    private List<UserOrder> userOrders;
     @OneToOne(mappedBy = "user")
     private Panda panda;
 

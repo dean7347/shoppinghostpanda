@@ -129,6 +129,19 @@ const ShopRegForm = ({ form, onChange, onSubmit, error }) => {
               <StyledInput
                 autoComplete="off"
                 name="freePrice"
+                placeholder="000원 이상 무료배송"
+                onChange={onChange}
+                value={form.freePrice}
+              />
+            </Righttdiv>
+          </LabelBox>
+
+          <LabelBox>
+            <Leftdiv>유료배송시 비용 </Leftdiv>
+            <Righttdiv>
+              <StyledInput
+                autoComplete="off"
+                name="freePrice"
                 placeholder="무료배송 비용"
                 onChange={onChange}
                 value={form.freePrice}

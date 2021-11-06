@@ -28,6 +28,8 @@ public class OrderDetail {
 
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserOrder userOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product products;
@@ -110,11 +112,22 @@ public class OrderDetail {
         this.shop=shop;
         shop.getDetails().add(this);
     }
+    public void setUserOrder(UserOrder userOrder)
+    {
+        this.userOrder=userOrder;
+        this.orderStatus=OrderStatus.결제완료;
+        this.paymentAt=LocalDateTime.now();
+    }
 
     //=비즈니스 매서드=//
     public void plusCount(int count)
     {
         this.productCount+=count;
         this.totalPrice=this.getIndividualPrice()*this.productCount;
+    }
+    public void setOrderStatus(OrderStatus status)
+    {
+        this.orderStatus=status;
+        this.paymentAt=LocalDateTime.now();
     }
 }

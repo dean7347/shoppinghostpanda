@@ -31,6 +31,11 @@ public class Shop {
 
     private String number;
 
+    //예상된 획득 수수료
+    int expectedFees;
+    //정산 가능 수수료
+    int possibleFees;
+
     private boolean isApprove;
 
     @OneToMany(mappedBy = "shop")
@@ -38,6 +43,9 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop")
     private List<OrderDetail> details;
+
+    @OneToMany(mappedBy = "shop")
+    private List<UserOrder> userOrders;
 
     @OneToOne(optional = true,mappedBy = "shop")
     private User user;

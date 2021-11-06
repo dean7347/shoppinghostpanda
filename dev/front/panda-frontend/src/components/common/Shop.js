@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Responsive from "./Responsive";
 import styled from "styled-components";
 import ShopRegFormContainer from "../../containers/shop/ShopRegFormContainer";
+import HeaderContainer from "../../containers/common/HeaderContainer";
 
 const HeaderBlock = styled.div`
   position: fixed;
@@ -34,23 +35,22 @@ const Shop = ({ shop }) => {
   // console.log("shop==" + shop.haveshop.shop);
   return (
     <>
-      <HeaderBlock>
-        <Wrapper>
-          {shop.haveshop.shop === true && (
-            <div>
-              {shop.haveshop.shopName} 쇼핑몰 회원님 반갑습니다!
-              <br />
-              <Button to="/shop/newProduct">상품등록하기</Button>
-            </div>
-          )}
-          {shop.haveshop.shop === false && (
-            <div>
-              상점이 없으시군요!
-              <ShopRegFormContainer />
-            </div>
-          )}
-        </Wrapper>
-      </HeaderBlock>
+      {shop.haveshop.shop === true && (
+        <div>
+          {shop.haveshop.shopName} 쇼핑몰 회원님 반갑습니다!
+          <br />
+          <Button to="/shop/newProduct">상품등록하기</Button>
+        </div>
+      )}
+      {shop.haveshop.shop === false && (
+        <div style={{ textAlign: "center" }}>
+          <div>
+            <h1>상점이 없으시군요!</h1>
+            <h3>신청중이시라면 최대한 빠르게 검토하겠습니다!</h3>
+          </div>
+          <ShopRegFormContainer />
+        </div>
+      )}
     </>
   );
 };
