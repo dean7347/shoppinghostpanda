@@ -10,7 +10,7 @@ const ShopRegFormContainer = ({ history }) => {
     font-size: 0.875rem;
     margin-top: 1rem;
   `;
-  const [componentSize, setComponentSize] = useState("default");
+
   const { Panel } = Collapse;
   function callback(key) {
     console.log(key);
@@ -61,48 +61,138 @@ const ShopRegFormContainer = ({ history }) => {
     setForm(nextForm);
   };
 
-  const onSubmit = (e) => {
-    if (
-      !shopName ||
-      !representative ||
-      !crn ||
-      !telnum ||
-      !freepee ||
-      !nofree ||
-      !priPhone ||
-      !csPhone ||
-      !csTime ||
-      !toPanda ||
-      !reship ||
-      !returnpee ||
-      !tradepee ||
-      !returnaddress ||
-      !candate ||
-      !noreturn
-    ) {
-      alert("모든정보를 입력해 주세요");
+  // Infoagree: "",
+  // Termsagree: "",
+  // const [Infoagree, setInfoAgree] = useState(false);
+  // function onChangeInfo(checked) {
+  //   console.log(`switch to ${checked}`);
+  //   setInfoAgree(checked);
+  // }
+
+  const onClick = async (e) => {
+    try {
+      const body = {
+        shopName: shopName,
+        representative: representative,
+        crn: crn,
+        telnum: telnum,
+        freepee: freepee,
+        nofree: nofree,
+        priPhone: priPhone,
+        csPhone: csPhone,
+        csTime: csTime,
+        toPanda: toPanda,
+        reship: reship,
+        returnpee: returnpee,
+        tradepee: tradepee,
+        returnaddress: returnaddress,
+        candate: candate,
+        noreturn: noreturn,
+        tagree: e.Termsagree,
+        iagree: e.Infoagree,
+      };
+
+      if (
+        !shopName ||
+        !representative ||
+        !crn ||
+        !telnum ||
+        !freepee ||
+        !nofree ||
+        !priPhone ||
+        !csPhone ||
+        !csTime ||
+        !toPanda ||
+        !reship ||
+        !returnpee ||
+        !tradepee ||
+        !returnaddress ||
+        !candate ||
+        !noreturn
+      ) {
+        alert("모든정보를 입력해 주세요");
+        return;
+      }
+
+      if (e.Termsagree === false || e.Infoagree === false) {
+        alert("약관,정보수신에 동의하셔야 합니다");
+        return;
+      }
+      await axios.post("/createShop", body).then((response) => {
+        if (response.data.success) {
+          alert("샵등록신청 성공!");
+        } else {
+          console.log("실패");
+
+          console.log(body);
+        }
+      });
+    } catch (e) {
+      console.log(e);
     }
-
-    if (Termsagree === false || Infoagree === false) {
-      alert("약관,정보수신에 동의하셔야 합니다");
-    }
-
-    console.log(form);
-    console.log("console.log");
-    console.log(Termsagree);
   };
 
-  const [Termsagree, SetTermsagree] = useState(false);
-  const TermsagreeHandler = (e) => {
-    // e.preventDefault();
-    SetTermsagree(e);
-  };
+  // async function onSubmit(e) {
+  //   console.log("온서브밋");
+  //   console.log(e);
+  //   if (
+  //     !shopName ||
+  //     !representative ||
+  //     !crn ||
+  //     !telnum ||
+  //     !freepee ||
+  //     !nofree ||
+  //     !priPhone ||
+  //     !csPhone ||
+  //     !csTime ||
+  //     !toPanda ||
+  //     !reship ||
+  //     !returnpee ||
+  //     !tradepee ||
+  //     !returnaddress ||
+  //     !candate ||
+  //     !noreturn
+  //   ) {
+  //     alert("모든정보를 입력해 주세요");
+  //   }
 
-  const [Infoagree, SetInfoagree] = useState(false);
-  const InfoagreeHandler = (e) => {
-    // e.preventDefault();
-    SetInfoagree(e);
-  };
+  //   if (e.Termsagree === false || e.Infoagree === false) {
+  //     alert("약관,정보수신에 동의하셔야 합니다");
+  //   }
+
+  //   const body = {
+  //     shopName: shopName,
+  //     representative: representative,
+  //     crn: crn,
+  //     telnum: telnum,
+  //     freepee: freepee,
+  //     nofree: nofree,
+  //     priPhone: priPhone,
+  //     csPhone: csPhone,
+  //     csTime: csTime,
+  //     toPanda: toPanda,
+  //     reship: reship,
+  //     returnpee: returnpee,
+  //     tradepee: tradepee,
+  //     returnaddress: returnaddress,
+  //     candate: candate,
+  //     noreturn: noreturn,
+  //     Termsagree: e.Termsagree,
+  //     Infoagree: e.Termsagree,
+  //   };
+  //   console.log("body");
+  //   const data = await body;
+  //   console.log(data);
+  //   console.log(e.Termsagree);
+
+  //   await axios.post("/createShop", data).then((response) => {
+  //     if (response.data.success) {
+  //       alert("샵등록신청 성공!");
+  //     } else {
+  //       alert("샵등록에 실패했습니다");
+  //     }
+  //   });
+  // }
 
   const text = `
     A dog is a type of domesticated animal.
@@ -140,14 +230,14 @@ const ShopRegFormContainer = ({ history }) => {
           span: 14,
         }}
         layout="horizontal"
-        initialValues={{
-          size: componentSize,
-        }}
-        size={componentSize}
-        onFinish={onSubmit}
+        onFinish={onClick}
       >
-        <Form.Item label="약관 동의" valuePropName="checked">
-          <Switch checked={Termsagree} onChange={TermsagreeHandler} />
+        <Form.Item
+          label="약관 동의"
+          name="Termsagree"
+          valuePropName="Termsagree"
+        >
+          <Switch />
         </Form.Item>
         <h1>상점 관련 정보</h1>
         <Form.Item label="상호명">
@@ -193,9 +283,9 @@ const ShopRegFormContainer = ({ history }) => {
           />
         </Form.Item>
 
-        <Form.Item label="유료 배송 비용">
+        <Form.Item label="유료 배송시 택배 비용">
           <Input
-            type={text}
+            type={"number"}
             name="nofree"
             onChange={onChangeF}
             placeholder="유료배송시 택배 비용을 입력해 주세요"
@@ -228,8 +318,12 @@ const ShopRegFormContainer = ({ history }) => {
             placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
           />
         </Form.Item>
-        <Form.Item label="정보수신동의" valuePropName="checked">
-          <Switch checked={Infoagree} onChange={InfoagreeHandler} />
+        <Form.Item
+          label="정보수신 동의"
+          name="Infoagree"
+          valuePropName="Infoagree"
+        >
+          <Switch />
         </Form.Item>
 
         <Form.Item
@@ -266,7 +360,7 @@ const ShopRegFormContainer = ({ history }) => {
 
         <Form.Item label="반품 배송비">
           <Input
-            type={text}
+            type={"number"}
             name="returnpee"
             onChange={onChangeF}
             placeholder="ex)편도 3000원 (최초 배송비 무료인 경우 6000원 부과)"
@@ -275,7 +369,7 @@ const ShopRegFormContainer = ({ history }) => {
 
         <Form.Item label="교환 배송비">
           <Input
-            type={text}
+            type={"number"}
             name="tradepee"
             onChange={onChangeF}
             placeholder="구매자 귀책사유로 인한 교환배송"
@@ -323,7 +417,7 @@ const ShopRegFormContainer = ({ history }) => {
         >
           <Input.TextArea
             showCount
-            maxLength={250}
+            maxLength={500}
             name="noreturn"
             onChange={onChangeF}
           />

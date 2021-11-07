@@ -337,7 +337,7 @@ public class OrderDetailController {
         {
             this.shopId=shopId.getId();
             this.free=shopId.getFreePrice();
-            this.shipprice=shopId.getShipPrice();
+            this.shipprice=shopId.getNofree();
         }
 
 
@@ -499,7 +499,9 @@ public class OrderDetailController {
             shopId = od.getShop().getId();
             shopName = od.getShop().getShopName();
             freePrice=od.getShop().getFreePrice();
-            shipPrice=od.getShop().getShipPrice();
+
+
+            shipPrice=od.getShop().getNofree();
             dp.add(new DetailedProduct(od));
         }
 

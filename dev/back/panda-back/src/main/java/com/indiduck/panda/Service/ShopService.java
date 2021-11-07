@@ -23,15 +23,24 @@ public class ShopService {
     @Autowired
     private UserRepository userRepository;
 
-    public Shop createNewShop(String ShopName,String CRN, int freePrice,String address,
-                              String number,String username){
-        System.out.println("ShopName 서비스 = " + ShopName);
+    public Shop createNewShop(String username,String shopName, String representative,String crn,
+                              String telnum, int freepee, int nofree,
+                              String priPhone, String csPhone, String csTime,
+                              String toPanda, String reship,
+                              int returnpee, int tradepee, String returnaddress, String candate,
+                              String noreturn, boolean Termsagree, boolean Infoagree)
+    {
+
         //TODO: 처리할것 도메인에서 쓰로우 런타임으로 우류처리
         Optional<User> byEmail = userRepository.findByEmail(username);
         //유저가 이미 샵을 가지고 있다면
 
         if(byEmail.get().getShop()==null){
-            Shop shop =Shop.createShop(ShopName,CRN,freePrice,address,number,byEmail.get());
+            Shop shop =Shop.createShop(byEmail.get(), shopName, representative,
+                    crn, telnum, freepee, nofree,
+                    priPhone, csPhone, csTime, toPanda, reship,
+                    returnpee, tradepee, returnaddress, candate,
+                    noreturn, Termsagree, Infoagree);
             Shop save = shopRepository.save(shop);
             return save;
         }

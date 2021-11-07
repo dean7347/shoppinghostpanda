@@ -65,7 +65,7 @@ public class UserOrder {
         uo.setUser(user);
         uo.setShop(shop);
         uo.freeprice=shop.getFreePrice();
-        uo.shipPrice=shop.getShipPrice();
+        uo.shipPrice=shop.getNofree();
         uo.createdAt=LocalDateTime.now();
         uo.mid=mid;
         uo.reveiverName=name;

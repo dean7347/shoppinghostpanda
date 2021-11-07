@@ -41,20 +41,30 @@ public class ShopController {
     @RequestMapping(value = "/createShop", method = RequestMethod.POST)
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateShopDAO createShopDAO) throws Exception{
+        String name = authentication.getName();
 
+        System.out.println("createShopDAO = " + createShopDAO);
 
-
-        Shop newShop = shopService.createNewShop(
+        try{ Shop newShop = shopService.createNewShop(
+                name,
                 createShopDAO.shopName,
-                createShopDAO.crn,
-                createShopDAO.freePrice,
-                createShopDAO.address,
-                createShopDAO.number,
-                authentication.getName());
-        if (newShop!=null){
-            return ResponseEntity.ok("샵 생성 완료"+newShop.getId()+" 샵소유주"+newShop.getUser().getUsername());
+                createShopDAO.representative,
+                createShopDAO.crn,createShopDAO.telnum,
+                createShopDAO.freepee,createShopDAO.nofree,createShopDAO.priPhone,
+                createShopDAO.csPhone,createShopDAO.csTime,createShopDAO.toPanda,
+                createShopDAO.reship,createShopDAO.returnpee,createShopDAO.tradepee,
+                createShopDAO.returnaddress,createShopDAO.candate,createShopDAO.noreturn,
+                createShopDAO.tagree,createShopDAO.iagree);
+            if (newShop!=null){
+                return ResponseEntity.ok(new shopControllerResultDto(true,"샵등록 성공"));
+            }
+        }catch (Exception e){
+            return ResponseEntity.ok(new shopControllerResultDto(false,"샵등록 실패 "));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 상점이 존재합니다");
+
+
+        return ResponseEntity.ok(new shopControllerResultDto(false,"샵등록 실패 "));
+
 
     }
 
@@ -92,10 +102,24 @@ public class ShopController {
         @Data
         static class CreateShopDAO {
         private String shopName;
+        private String representative;
         private String crn;
-        private int freePrice;
-        private String address;
-        private String number;
+        private String telnum;
+        private int freepee;
+        private int nofree;
+        private String priPhone;
+        private String csPhone;
+        private String csTime;
+        private String toPanda;
+        private String reship;
+        private int returnpee;
+        private int tradepee;
+        private String returnaddress;
+        private String candate;
+        private String noreturn;
+        private boolean tagree;
+        private boolean iagree;
+
     }
 
     @Data
@@ -108,6 +132,16 @@ public class ShopController {
             this.shopName=name;
             this.isShop=isShop;
 
+        }
+    }
+    @Data
+    static class shopControllerResultDto {
+        boolean success;
+        String  message;
+
+        public shopControllerResultDto(boolean b, String mes) {
+            success = b;
+            message = mes;
         }
     }
 }

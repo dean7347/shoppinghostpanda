@@ -28,7 +28,7 @@ public class Shop {
     //freepee
     private int freePrice;
 
-    //nofree
+    //nofree 택배비용
     private int nofree;
     //priPhone
     private String priPhone;
@@ -47,18 +47,20 @@ public class Shop {
     private String reship;
 
     //returnpee
-    private String returnpee;
+    private int returnpee;
 
     //tradepee
-    private String tradepee;
+    private int tradepee;
 
     //returnaddress
     private String returnaddress;
 
     //candate
+    @Lob
     private String candate;
 
     //noreturn
+    @Lob
     private String noreturn;
 
     //Termsagree
@@ -69,6 +71,8 @@ public class Shop {
 
     //승인받았는지에 대한 내역
     private boolean isApprove;
+    //샵이 운영중인지에 대한 내역
+    private boolean isOpen;
 
 
 
@@ -98,16 +102,32 @@ public class Shop {
     }
 
     //==생성메서드 ==//
-    public static Shop createShop(String shopName,String CRN,int freePrice
-    ,String address,String number,User user){
+    public static Shop createShop(User user,String shopName, String representative,String crn, String telnum, int freepee, int nofree,
+                                  String priPhone, String csPhone, String csTime, String toPanda, String reship,
+                                  int returnpee, int tradepee, String returnaddress, String candate,
+                                  String noreturn, boolean Termsagree, boolean Infoagree){
         Shop shop = new Shop();
-        shop.setShopName(shopName);
-        shop.setCRN(CRN);
-        shop.setFreePrice(freePrice);
-        shop.setAddress(address);
-        shop.setNumber(number);
-        shop.setApprove(false);
         shop.setUser(user);
+        shop.shopName=shopName;
+        shop.representative=representative;
+        shop.CRN=crn;
+        shop.number=telnum;
+        shop.freePrice=freepee;
+        shop.nofree=nofree;
+        shop.priPhone=priPhone;
+        shop.csPhone=csPhone;
+        shop.csTime=csTime;
+        shop.toPanda=toPanda;
+        shop.reship=reship;
+        shop.returnpee=returnpee;
+        shop.tradepee=tradepee;
+        shop.returnaddress=returnaddress;
+        shop.candate=candate;
+        shop.noreturn=noreturn;
+        shop.Termsagree=Termsagree;
+        shop.Infoagree=Infoagree;
+        shop.isApprove=false;
+        shop.isOpen=false;
 
         return shop;
     }
