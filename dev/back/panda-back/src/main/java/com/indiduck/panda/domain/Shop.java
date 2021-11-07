@@ -15,28 +15,69 @@ public class Shop {
     @Id
     @GeneratedValue
     private Long id;
-
+    //shopName
     private String shopName;
-    //사업자 등록번호
+    //representative
+    private String representative;
+    //crn
     private String CRN;
 
+    //telnum
+    private String number;
+
+    //freepee
     private int freePrice;
 
-    @Nullable
-    private int shipPrice;
-    //택배사
-    private String courier;
+    //nofree
+    private int nofree;
+    //priPhone
+    private String priPhone;
+ //csPhone
+    private String csPhone;
 
-    private String address;
+    //csTime
+    @Lob
+    private String csTime;
 
-    private String number;
+    //toPanda
+    @Lob
+    private String toPanda;
+
+    //reship
+    private String reship;
+
+    //returnpee
+    private String returnpee;
+
+    //tradepee
+    private String tradepee;
+
+    //returnaddress
+    private String returnaddress;
+
+    //candate
+    private String candate;
+
+    //noreturn
+    private String noreturn;
+
+    //Termsagree
+    private boolean Termsagree;
+
+    //Infoagree
+    private boolean Infoagree;
+
+    //승인받았는지에 대한 내역
+    private boolean isApprove;
+
+
+
 
     //예상된 획득 수수료
     int expectedFees;
     //정산 가능 수수료
     int possibleFees;
 
-    private boolean isApprove;
 
     @OneToMany(mappedBy = "shop")
     private List<Product> products;

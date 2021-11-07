@@ -35,7 +35,14 @@ const Shop = ({ shop }) => {
   // console.log("shop==" + shop.haveshop.shop);
   return (
     <>
-      {shop.haveshop.shop === true && (
+      <div style={{ textAlign: "center" }}>
+        <div>
+          <h1>상점이 없으시군요!</h1>
+          <h3>신청중이시라면 최대한 빠르게 검토하겠습니다!</h3>
+        </div>
+        <ShopRegFormContainer />
+      </div>
+      {/* {shop.haveshop.shop === true && (
         <div>
           {shop.haveshop.shopName} 쇼핑몰 회원님 반갑습니다!
           <br />
@@ -50,7 +57,7 @@ const Shop = ({ shop }) => {
           </div>
           <ShopRegFormContainer />
         </div>
-      )}
+      )} */}
     </>
   );
 };

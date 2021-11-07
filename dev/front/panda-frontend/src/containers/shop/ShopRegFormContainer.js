@@ -16,37 +16,80 @@ const ShopRegFormContainer = ({ history }) => {
     console.log(key);
   }
 
-  const onSubmit = (e) => {
-    console.log("w");
-    // const { shopName, crn, freePrice, address, number } = form;
-    // dispatch(shopRegister({ shopName, crn, freePrice, address, number }));
-    // if ([PandaName, MainChName, intCategory].includes("")) {
-    //   SetError("빈 칸을 모두 입력하세요");
-    //   return;
-    // }
-    // if (Termsagree === false) {
-    //   SetError("약관에 필수 동의해야 합니다");
-    // }
-    // const body = {
-    //   pandaname: PandaName,
-    //   mainchname: MainChName,
-    //   intcategory: intCategory,
-    //   termsagree: Termsagree,
-    //   infoagree: Infoagree,
-    // };
+  const [form, setForm] = useState({
+    shopName: "",
+    representative: "",
+    crn: "",
+    telnum: "",
+    freepee: "",
+    nofree: "",
+    priPhone: "",
+    csPhone: "",
+    csTime: "",
+    toPanda: "",
+    reship: "",
+    returnpee: "",
+    tradepee: "",
+    returnaddress: "",
+    candate: "",
+    noreturn: "",
+  });
+  const {
+    shopName,
+    representative,
+    crn,
+    telnum,
+    freepee,
+    nofree,
+    priPhone,
+    csPhone,
+    csTime,
+    toPanda,
+    reship,
+    returnpee,
+    tradepee,
+    returnaddress,
+    candate,
+    noreturn,
+  } = form;
 
-    // axios.post("/api/regpanda", body).then((response) => {
-    //   console.log(response.data);
-    //   if (response.data.success) {
-    //     alert(
-    //       "판다가입신청이 완료되었습니다 승인이후 판다로 활동할 수 있습니다"
-    //     );
-    //   } else {
-    //     alert(
-    //       "판다가입신청에 실패했습니다. 해당 현상이 계속된다면 문의주시기 바랍니다"
-    //     );
-    //   }
-    // });
+  const onChangeF = (e) => {
+    const nextForm = {
+      ...form,
+      [e.target.name]: e.target.value,
+    };
+    setForm(nextForm);
+  };
+
+  const onSubmit = (e) => {
+    if (
+      !shopName ||
+      !representative ||
+      !crn ||
+      !telnum ||
+      !freepee ||
+      !nofree ||
+      !priPhone ||
+      !csPhone ||
+      !csTime ||
+      !toPanda ||
+      !reship ||
+      !returnpee ||
+      !tradepee ||
+      !returnaddress ||
+      !candate ||
+      !noreturn
+    ) {
+      alert("모든정보를 입력해 주세요");
+    }
+
+    if (Termsagree === false || Infoagree === false) {
+      alert("약관,정보수신에 동의하셔야 합니다");
+    }
+
+    console.log(form);
+    console.log("console.log");
+    console.log(Termsagree);
   };
 
   const [Termsagree, SetTermsagree] = useState(false);
@@ -106,19 +149,46 @@ const ShopRegFormContainer = ({ history }) => {
         <Form.Item label="약관 동의" valuePropName="checked">
           <Switch checked={Termsagree} onChange={TermsagreeHandler} />
         </Form.Item>
-        <Form.Item label="상점 이름">
+        <h1>상점 관련 정보</h1>
+        <Form.Item label="상호명">
           <Input
             type={text}
-            // value={PandaName}
-            // onChange={PandaNameHandler}
+            name="shopName"
+            onChange={onChangeF}
+            placeholder="상점 이름을 입력해주세요"
+          />
+        </Form.Item>
+        <Form.Item label="대표자">
+          <Input
+            type={text}
+            name="representative"
+            onChange={onChangeF}
+            placeholder="상점 이름을 입력해주세요"
+          />
+        </Form.Item>
+
+        <Form.Item label="사업자등록번호">
+          <Input
+            type={text}
+            name="crn"
+            onChange={onChangeF}
+            placeholder="상점 이름을 입력해주세요"
+          />
+        </Form.Item>
+
+        <Form.Item label="통신판매업 신고번호">
+          <Input
+            type={text}
+            name="telnum"
+            onChange={onChangeF}
             placeholder="상점 이름을 입력해주세요"
           />
         </Form.Item>
         <Form.Item label="무료 배송 비용">
           <Input
             type={"number"}
-            // value={MainChName}
-            // onChange={MainChHandler}
+            name="freepee"
+            onChange={onChangeF}
             placeholder="무료배송 비용을 입력해주세요 무료배송시 총액 산정은 할인,수수료 등 산정 전 순수한 상품 금액입니다"
           />
         </Form.Item>
@@ -126,8 +196,8 @@ const ShopRegFormContainer = ({ history }) => {
         <Form.Item label="유료 배송 비용">
           <Input
             type={text}
-            // value={intCategory}
-            // onChange={intCategoryHandler}
+            name="nofree"
+            onChange={onChangeF}
             placeholder="유료배송시 택배 비용을 입력해 주세요"
           />
         </Form.Item>
@@ -135,17 +205,26 @@ const ShopRegFormContainer = ({ history }) => {
         <Form.Item label="개인 전화번호">
           <Input
             type={text}
-            // value={intCategory}
-            // onChange={intCategoryHandler}
-            placeholder="긴급상황시 연락할 연락처(개인)을 입력해주세요"
+            name="priPhone"
+            onChange={onChangeF}
+            placeholder="긴급상황시 연락할 연락처(개인)을 입력해주세요(외부노출 x)"
           />
         </Form.Item>
 
-        <Form.Item label="영업장 전화번호">
+        <Form.Item label="고객센터 전화번호">
           <Input
             type={text}
-            // value={intCategory}
-            // onChange={intCategoryHandler}
+            name="csPhone"
+            onChange={onChangeF}
+            placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
+          />
+        </Form.Item>
+
+        <Form.Item label="고객센터 운영시간">
+          <Input
+            type={text}
+            name="csTime"
+            onChange={onChangeF}
             placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
           />
         </Form.Item>
@@ -153,15 +232,103 @@ const ShopRegFormContainer = ({ history }) => {
           <Switch checked={Infoagree} onChange={InfoagreeHandler} />
         </Form.Item>
 
-        <Form.Item label="To 판다">
-          <Input
-            type={text}
-            // value={intCategory}
-            // onChange={intCategoryHandler}
-            placeholder="판다(상품홍보인)에게 전달할 메세지입니다 ex) 매장방문,제작체험 가능합니다"
+        <Form.Item
+          name="toPanda"
+          onChange={onChangeF}
+          label="To 판다"
+          rules={[
+            {
+              required: true,
+              message:
+                "판다(상품홍보인)에게 전달할 메세지입니다 ex) 매장방문,제작체험 가능합니다",
+            },
+          ]}
+        >
+          <Input.TextArea
+            showCount
+            maxLength={250}
+            name="toPanda"
+            onChange={onChangeF}
           />
         </Form.Item>
-        {/* {error && <ErrorMessage>{error}</ErrorMessage>} */}
+
+        <h1>반품 관련 정보</h1>
+        {/* 반품 교환 정보 */}
+
+        <Form.Item label="반품 지정 택배사">
+          <Input
+            type={text}
+            name="reship"
+            onChange={onChangeF}
+            placeholder="반품 지정택배사를 입력해주세요"
+          />
+        </Form.Item>
+
+        <Form.Item label="반품 배송비">
+          <Input
+            type={text}
+            name="returnpee"
+            onChange={onChangeF}
+            placeholder="ex)편도 3000원 (최초 배송비 무료인 경우 6000원 부과)"
+          />
+        </Form.Item>
+
+        <Form.Item label="교환 배송비">
+          <Input
+            type={text}
+            name="tradepee"
+            onChange={onChangeF}
+            placeholder="구매자 귀책사유로 인한 교환배송"
+          />
+        </Form.Item>
+
+        <Form.Item label="보내실 곳">
+          <Input
+            type={text}
+            name="returnaddress"
+            onChange={onChangeF}
+            placeholder="구매자 귀책사유로 인한 교환배송"
+          />
+        </Form.Item>
+        <h3>반품/교환 사유에 따른 요청 가능 기간</h3>
+        <Form.Item
+          name="candate"
+          onChange={onChangeF}
+          label="입력"
+          rules={[
+            {
+              required: true,
+              message: "반품/교환 사유에 따른 요청 가능 기간",
+            },
+          ]}
+        >
+          <Input.TextArea
+            showCount
+            maxLength={250}
+            name="candate"
+            onChange={onChangeF}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="noreturn"
+          onChange={onChangeF}
+          label="반품 교환 불가능 사유"
+          rules={[
+            {
+              required: true,
+              message: "반품 교환 불가능 사유",
+            },
+          ]}
+        >
+          <Input.TextArea
+            showCount
+            maxLength={250}
+            name="noreturn"
+            onChange={onChangeF}
+          />
+        </Form.Item>
+
         <Form.Item label="제출하기">
           <Button type="primary" htmlType="submit">
             submit
