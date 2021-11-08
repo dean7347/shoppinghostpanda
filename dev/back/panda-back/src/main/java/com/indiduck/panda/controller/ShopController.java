@@ -7,20 +7,17 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.*;
-import com.indiduck.panda.domain.dao.JwtRequest;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -104,22 +101,28 @@ public class ShopController {
     //샵 대시보드 메인
     @RequestMapping(value = "/api/shop/dashboard", method = RequestMethod.GET)
     public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication) throws Exception{
+                                                Authentication authentication, Pageable pageable) throws Exception{
         try{
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
-            Optional<List<UserOrder>> allByUserId = userOrderRepository.findAllByShop(byEmail.get().getShop());
-            System.out.println("allByUserId.get() = " + allByUserId.get());
+            Page<UserOrder> allByShop = userOrderRepository.findAllByShop(byEmail.get().getShop(), pageable);
+
+            long totalElements = allByShop.getTotalElements();
+            int totalPages = allByShop.getTotalPages();
+
+
+
             List<userOrderShopDto> uosd= new ArrayList<>();
-            for (UserOrder userOrder : allByUserId.get()) {
+            for (UserOrder userOrder : allByShop) {
                 uosd.add(new userOrderShopDto(userOrder));
+
             }
 
-            return ResponseEntity.ok(new uorsDto(true,uosd));
+            return ResponseEntity.ok(new uorsDto(true,totalElements,totalPages,uosd));
 
         }catch (Exception e)
         {
-            return ResponseEntity.ok(new uorsDto(false,null));
+            return ResponseEntity.ok(new uorsDto(false,0,0,null));
         }
 
     }
@@ -179,7 +182,16 @@ public class ShopController {
             orderStatus=uo.getOrderStatus();
             amount=uo.getAmount();
             pureamount=uo.getPureAmount();
-            shipprice=uo.getShipPrice();
+            if(uo.getPureAmount()>=uo.getFreeprice())
+            {
+                shipprice=0;
+
+
+
+            }else
+            {
+                shipprice=uo.getShipPrice();
+            }
             fullprice=uo.getFullprice();
 
             HashSet<Long> pro=new HashSet<>();
@@ -292,11 +304,16 @@ public class ShopController {
     @Data
     static class uorsDto {
         boolean success;
+        long totalElements;
+        int totalPages;
         List<userOrderShopDto> uosd;
 
-        public uorsDto(boolean b,  List<userOrderShopDto> getuosd) {
+        public uorsDto(boolean b,long te,int tp,  List<userOrderShopDto> getuosd) {
             success = b;
+            totalElements=te;
+            totalPages=tp;
             uosd=getuosd;
+
         }
     }
 
