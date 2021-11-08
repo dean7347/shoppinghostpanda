@@ -61,14 +61,6 @@ const ShopRegFormContainer = ({ history }) => {
     setForm(nextForm);
   };
 
-  // Infoagree: "",
-  // Termsagree: "",
-  // const [Infoagree, setInfoAgree] = useState(false);
-  // function onChangeInfo(checked) {
-  //   console.log(`switch to ${checked}`);
-  //   setInfoAgree(checked);
-  // }
-
   const onClick = async (e) => {
     try {
       const body = {
@@ -91,6 +83,8 @@ const ShopRegFormContainer = ({ history }) => {
         tagree: e.Termsagree,
         iagree: e.Infoagree,
       };
+      console.log("체크크크크");
+      console.log(body.Infoagree);
 
       if (
         !shopName ||
@@ -122,9 +116,9 @@ const ShopRegFormContainer = ({ history }) => {
         if (response.data.success) {
           alert("샵등록신청 성공!");
         } else {
-          console.log("실패");
-
-          console.log(body);
+          alert(
+            "샵등록신청에 실패했습니다, 신청중이시라면 최대한 빠르게 검토하겠습니다"
+          );
         }
       });
     } catch (e) {
@@ -234,7 +228,7 @@ const ShopRegFormContainer = ({ history }) => {
       >
         <Form.Item
           label="약관 동의"
-          name="Termsagree"
+          // name="Termsagree"
           valuePropName="Termsagree"
         >
           <Switch />
@@ -320,7 +314,7 @@ const ShopRegFormContainer = ({ history }) => {
         </Form.Item>
         <Form.Item
           label="정보수신 동의"
-          name="Infoagree"
+          // name="Infoagree"
           valuePropName="Infoagree"
         >
           <Switch />

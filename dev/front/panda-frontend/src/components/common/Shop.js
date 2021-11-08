@@ -32,7 +32,7 @@ const Wrapper = styled(Responsive)`
 `;
 
 const Shop = ({ shop }) => {
-  // console.log("shop==" + shop.haveshop.shop);
+  console.log("shop" + shop);
   return (
     <>
       <div style={{ textAlign: "center" }}>

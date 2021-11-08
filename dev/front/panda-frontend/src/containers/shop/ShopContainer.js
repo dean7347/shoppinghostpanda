@@ -1,26 +1,62 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-
-import shop, { haveShop } from "../../modules/shop";
+import axios from "../../../node_modules/axios/index";
 import Shop from "../../components/common/Shop";
+import AdminShop from "../../containers/shop/AdminShop";
 
 const ShopContainer = ({ location, match }) => {
-  const { shop } = useSelector(({ shop }) => ({
-    shop: shop,
-    // shopName: shop.shop.shopName,
-  }));
-  const dispatch = useDispatch();
-  //랜더링될때마다 특정작업 실행
-  useEffect(() => {
-    dispatch(haveShop());
-  }, [dispatch]);
-
-  // const onShop = () => {
+  // const { shop } = useSelector(({ shop }) => ({
+  //   shop: shop,
+  //   // shopName: shop.shop.shopName,
+  // }));
+  // const dispatch = useDispatch();
+  // //랜더링될때마다 특정작업 실행
+  // useEffect(() => {
   //   dispatch(haveShop());
-  // };
+  // }, [dispatch]);
 
-  return <Shop shop={shop} />;
+  const [haveshop, sethaveshop] = useState({ shop: "", isapprove: "" });
+  useEffect(() => {
+    axios.get("/haveshop").then((response) => {
+      console.log("헤브샵");
+
+      console.log(response);
+      if (response.data.success) {
+        sethaveshop({
+          shop: response.data.shop,
+          isapprove: response.data.approve,
+        });
+      } else {
+        sethaveshop({
+          shop: false,
+          isapprove: false,
+        });
+      }
+    });
+  }, []);
+
+  if (haveshop.shop === false) {
+    return (
+      <>
+        <Shop />
+      </>
+    );
+  }
+
+  if (haveshop.shop === true && haveshop.isapprove === false) {
+    return <>승인이전</>;
+  }
+
+  if (haveshop.shop === true && haveshop.isapprove === true) {
+    return (
+      <>
+        <AdminShop />
+      </>
+    );
+  }
+
+  return <>상점정보를 읽어오는중입니다</>;
 };
 
 export default ShopContainer;

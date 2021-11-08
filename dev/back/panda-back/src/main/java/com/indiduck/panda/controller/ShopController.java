@@ -87,9 +87,10 @@ public class ShopController {
 
             if(byUser.isEmpty())
             {
-                return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto("null",false));
+                return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto("null",false,false,false));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(byUser.get().getShopName(),true));
+            return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(byUser.get().getShopName(),true,
+                    byUser.get().isApprove(),true));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 못한 요청입니다 ");
 
@@ -126,11 +127,15 @@ public class ShopController {
     static class haveShopDto {
 
         private String shopName;
+        private boolean success;
         private boolean isShop;
-        public haveShopDto(String name,Boolean isShop){
+        private boolean isApprove;
+        public haveShopDto(String name,Boolean isShop,Boolean ap,Boolean su){
 
             this.shopName=name;
             this.isShop=isShop;
+            this.isApprove =ap;
+            this.success=su;
 
         }
     }
