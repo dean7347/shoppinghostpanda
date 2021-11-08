@@ -5,7 +5,7 @@ import axios from "../../../node_modules/axios/index";
 import OptionTemplate from "../common/List/OptionTemplate";
 import TodoInsert from "../common/List/TodoInsert";
 import TodoList from "../common/List/TodoList";
-
+import { useHistory } from "react-router-dom";
 const Continents = [
   { key: 1, value: "afr" },
   { key: 2, value: "europe" },
@@ -18,6 +18,8 @@ const { Titled } = Typography;
 const { TextArea } = Input;
 
 function NewProductForm() {
+  const history = useHistory();
+
   const [Title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [Price, setPrice] = useState(0);
@@ -94,6 +96,7 @@ function NewProductForm() {
     axios.post("/regnewproduct", body).then((response) => {
       if (response.data.success) {
         alert("상품 업로드에 성공했습니다");
+        history.push("/");
       } else {
         alert("상품업로드에 실패 했습니다.");
       }

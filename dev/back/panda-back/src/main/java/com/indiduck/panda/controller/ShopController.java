@@ -2,11 +2,11 @@ package com.indiduck.panda.controller;
 
 
 import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
 import com.indiduck.panda.config.JwtTokenUtil;
-import com.indiduck.panda.domain.Shop;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +39,8 @@ public class ShopController {
     ShopRepository shopRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserOrderRepository userOrderRepository;
 
     //샵 생성메소드
     @RequestMapping(value = "/createShop", method = RequestMethod.POST)
@@ -64,7 +69,6 @@ public class ShopController {
 
 
         return ResponseEntity.ok(new shopControllerResultDto(false,"샵등록 실패 "));
-
 
     }
 
@@ -97,9 +101,144 @@ public class ShopController {
     }
 
 
+    //샵 대시보드 메인
+    @RequestMapping(value = "/api/shop/dashboard", method = RequestMethod.GET)
+    public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication) throws Exception{
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Optional<List<UserOrder>> allByUserId = userOrderRepository.findAllByShop(byEmail.get().getShop());
+            System.out.println("allByUserId.get() = " + allByUserId.get());
+            List<userOrderShopDto> uosd= new ArrayList<>();
+            for (UserOrder userOrder : allByUserId.get()) {
+                uosd.add(new userOrderShopDto(userOrder));
+            }
+
+            return ResponseEntity.ok(new uorsDto(true,uosd));
+
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new uorsDto(false,null));
+        }
+
+    }
+
+    @RequestMapping(value = "/api/shop/nochecked", method = RequestMethod.GET)
+    public ResponseEntity<?> nochecked(@CurrentSecurityContext(expression = "authentication")
+                                               Authentication authentication) throws Exception{
+
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Optional<List<UserOrder>> allByUserId = userOrderRepository.findAllByShopAndOrderStatus(byEmail.get().getShop(),OrderStatus.결제완료);
+
+        int size = allByUserId.get().size();
+        return ResponseEntity.ok(new uorsCheck(true,size));
+
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new uorsCheck(false,0));
+
+        }
+
+    }
+
+
 
 
     //==DAO DTO ==//
+
+    @Data
+    static class userOrderShopDto {
+
+        private Long userOrderId;
+        private String orderuser;
+        private String orderuserPhone;
+        private String receiverName;
+        private String receiverZipCode;
+        private String receiverAddress;
+        private String receiverPhone;
+        private  int amount;
+        private int pureamount;
+        private int shipprice;
+        private int fullprice;
+
+        private OrderStatus orderStatus;
+        private List<OrderItems> orders=new ArrayList<>();
+
+
+        public userOrderShopDto(UserOrder uo){
+            userOrderId=uo.getId();
+            orderuser=uo.getUserId().getUserRName();
+            orderuserPhone=uo.getUserId().getUserPhoneNumber();
+            receiverName=uo.getReveiverName();
+            receiverZipCode=uo.getReceiverZipCode();
+            receiverAddress=uo.getReceiverAddress();
+            receiverPhone=uo.getReceiverPhone();
+            orderStatus=uo.getOrderStatus();
+            amount=uo.getAmount();
+            pureamount=uo.getPureAmount();
+            shipprice=uo.getShipPrice();
+            fullprice=uo.getFullprice();
+
+            HashSet<Long> pro=new HashSet<>();
+            //pro에 프로덕트 목록을 만든다
+            for (OrderDetail od : uo.getDetail()) {
+                pro.add(od.getProducts().getId());
+            }
+
+            for (Long aLong : pro) {
+                orders.add(new OrderItems(aLong));
+            }
+
+            for (OrderDetail orderDetail : uo.getDetail()) {
+                for (OrderItems order : orders) {
+                    if(orderDetail.getProducts().getId()==order.productId)
+                    {
+                        order.productName=orderDetail.getProducts().getProductName();
+                        order.options.add(new ProductOptions(orderDetail));
+                    }
+                }
+            }
+
+
+
+
+        }
+
+        @Data
+        private static class OrderItems {
+            Long productId;
+            String productName;
+            List<ProductOptions> options=new ArrayList<>();
+            public OrderItems(Long productId)
+            {
+                this.productId=productId;
+
+
+            }
+        }
+        @Data
+        private static class ProductOptions {
+            Long optionId;
+            String optionName;
+            int optionCount;
+            boolean ispanda;
+            public ProductOptions(OrderDetail od)
+            {
+                optionId=od.getOptions().getId();
+                optionName=od.getOptions().getOptionName();
+                optionCount=od.getProductCount();
+                if(od.getPanda() !=null){
+                    ispanda=true;
+            }else
+                {
+                    ispanda=false;
+                }
+            }
+        }
+    }
         @Data
         static class CreateShopDAO {
         private String shopName;
@@ -147,6 +286,27 @@ public class ShopController {
         public shopControllerResultDto(boolean b, String mes) {
             success = b;
             message = mes;
+        }
+    }
+
+    @Data
+    static class uorsDto {
+        boolean success;
+        List<userOrderShopDto> uosd;
+
+        public uorsDto(boolean b,  List<userOrderShopDto> getuosd) {
+            success = b;
+            uosd=getuosd;
+        }
+    }
+
+    @Data
+    private class uorsCheck {
+        boolean success;
+        int num;
+        public uorsCheck(boolean b, int numb) {
+            success=b;
+            num=numb;
         }
     }
 }

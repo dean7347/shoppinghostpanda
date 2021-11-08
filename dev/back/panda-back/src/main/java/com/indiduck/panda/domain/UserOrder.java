@@ -61,6 +61,7 @@ public class UserOrder {
     public static UserOrder newUserOrder(User user,Shop shop,String mid,
                                          String name,String phoneNumber,String zipCode,String Address)
     {
+        System.out.println("생성메서드 네임"+name);
         UserOrder uo = new UserOrder();
         uo.setUser(user);
         uo.setShop(shop);
@@ -72,6 +73,7 @@ public class UserOrder {
         uo.receiverPhone=phoneNumber;
         uo.receiverZipCode=zipCode;
         uo.receiverAddress=Address;
+        uo.orderStatus=OrderStatus.결제완료;
 
         return  uo;
     }

@@ -202,9 +202,11 @@ public class OrderDetailController {
         if(allamount==amount.intValue())
         {
             System.out.println("검증성공");
+            System.out.println("검증네임"+tokentoInfo.getName()+tokentoInfo.getBuyerName());
+
             System.out.println(myCart);
             boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
-                    tokentoInfo.getName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
+                    tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
             if(b){
                 return ResponseEntity.ok(new tfResultDto(b));
 
