@@ -33,6 +33,7 @@ const ShopRegFormContainer = ({ history }) => {
     returnaddress: "",
     candate: "",
     noreturn: "",
+    comaddress: "",
   });
   const {
     shopName,
@@ -51,6 +52,7 @@ const ShopRegFormContainer = ({ history }) => {
     returnaddress,
     candate,
     noreturn,
+    comaddress,
   } = form;
 
   const onChangeF = (e) => {
@@ -82,6 +84,7 @@ const ShopRegFormContainer = ({ history }) => {
         noreturn: noreturn,
         tagree: e.Termsagree,
         iagree: e.Infoagree,
+        comaddress: comaddress,
       };
       console.log("체크크크크");
       console.log(body.Infoagree);
@@ -102,7 +105,8 @@ const ShopRegFormContainer = ({ history }) => {
         !tradepee ||
         !returnaddress ||
         !candate ||
-        !noreturn
+        !noreturn ||
+        !comaddress
       ) {
         alert("모든정보를 입력해 주세요");
         return;
@@ -303,6 +307,14 @@ const ShopRegFormContainer = ({ history }) => {
             placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
           />
         </Form.Item>
+        <Form.Item label="사업장 소재지">
+          <Input
+            type={text}
+            name="comaddress"
+            onChange={onChangeF}
+            placeholder="사업자 상 소재지를 입력해 주세요"
+          />
+        </Form.Item>
 
         <Form.Item label="고객센터 운영시간">
           <Input
@@ -357,7 +369,7 @@ const ShopRegFormContainer = ({ history }) => {
             type={"number"}
             name="returnpee"
             onChange={onChangeF}
-            placeholder="ex)편도 3000원 (최초 배송비 무료인 경우 6000원 부과)"
+            placeholder="3000"
           />
         </Form.Item>
 

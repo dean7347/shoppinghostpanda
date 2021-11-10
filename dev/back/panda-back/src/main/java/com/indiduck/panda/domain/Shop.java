@@ -51,6 +51,8 @@ public class Shop {
 
     //tradepee
     private int tradepee;
+    //comaddress
+    private String comaddress;
 
     //returnaddress
     private String returnaddress;
@@ -105,7 +107,7 @@ public class Shop {
     public static Shop createShop(User user,String shopName, String representative,String crn, String telnum, int freepee, int nofree,
                                   String priPhone, String csPhone, String csTime, String toPanda, String reship,
                                   int returnpee, int tradepee, String returnaddress, String candate,
-                                  String noreturn, boolean Termsagree, boolean Infoagree){
+                                  String noreturn, boolean Termsagree, boolean Infoagree,String comaddress){
         Shop shop = new Shop();
         shop.setUser(user);
         shop.shopName=shopName;
@@ -128,6 +130,7 @@ public class Shop {
         shop.Infoagree=Infoagree;
         shop.isApprove=false;
         shop.isOpen=false;
+        shop.comaddress=comaddress;
 
         return shop;
     }

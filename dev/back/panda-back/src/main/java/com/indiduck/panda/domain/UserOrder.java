@@ -120,6 +120,17 @@ public class UserOrder {
         }
 
     }
+    public void changeStatuspaymentfinishtoready(){
+        if(this.orderStatus==OrderStatus.결제완료)
+        {
+            this.orderStatus=OrderStatus.준비중;
+//           this.detail
+            for (OrderDetail orderDetail : this.detail) {
+                orderDetail.setOrderready(OrderStatus.준비중);
+            }
+        }
+
+    }
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;

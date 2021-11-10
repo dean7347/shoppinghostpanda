@@ -28,7 +28,7 @@ public class ShopService {
                               String priPhone, String csPhone, String csTime,
                               String toPanda, String reship,
                               int returnpee, int tradepee, String returnaddress, String candate,
-                              String noreturn, boolean Termsagree, boolean Infoagree)
+                              String noreturn, boolean Termsagree, boolean Infoagree,String comAddress)
     {
 
         //TODO: 처리할것 도메인에서 쓰로우 런타임으로 우류처리
@@ -40,7 +40,7 @@ public class ShopService {
                     crn, telnum, freepee, nofree,
                     priPhone, csPhone, csTime, toPanda, reship,
                     returnpee, tradepee, returnaddress, candate,
-                    noreturn, Termsagree, Infoagree);
+                    noreturn, Termsagree, Infoagree,comAddress);
             Shop save = shopRepository.save(shop);
             return save;
         }

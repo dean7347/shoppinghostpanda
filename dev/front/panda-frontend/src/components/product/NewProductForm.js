@@ -111,7 +111,7 @@ function NewProductForm() {
         <Form onSubmit={submitHandler}>
           <label>썸네일</label>
           <FileUpload refreshFunction={updateThumb} />
-          <label>상품설명</label>
+          <label>상품상세사진</label>
           <FileUpload refreshFunction={updateImages} />
 
           <br />

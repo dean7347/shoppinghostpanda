@@ -3,7 +3,7 @@ import { check } from "../../../../lib/api/auth";
 import "./UserCardBlock.css";
 import { Button, Checkbox, Divider } from "antd";
 import axios from "../../../../../node_modules/axios/index";
-import shop from "../../../../modules/shop";
+
 import Button2 from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 function UserCardBlock(props) {

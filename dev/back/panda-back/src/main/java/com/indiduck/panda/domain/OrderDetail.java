@@ -130,4 +130,9 @@ public class OrderDetail {
         this.orderStatus=status;
         this.paymentAt=LocalDateTime.now();
     }
+    public void setOrderready(OrderStatus status)
+    {
+        this.orderStatus=status;
+        this.checkedAt=LocalDateTime.now();
+    }
 }

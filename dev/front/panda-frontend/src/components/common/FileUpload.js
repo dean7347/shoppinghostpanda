@@ -7,6 +7,29 @@ function FileUpload(props) {
   const [Images, setImages] = useState([]);
 
   const dropHandler = (files) => {
+    console.log(files.length);
+    const image = new Image();
+    let fr = new FileReader();
+
+    fr.onload = function () {
+      if (fr !== null && typeof fr.result == "string") {
+        image.src = fr.result;
+      }
+    };
+    fr.readAsDataURL(files[0]);
+
+    image.onload = async function () {
+      console.log("찾았다!");
+      console.log(image.width);
+      console.log(image.height);
+      console.log(props.name);
+    };
+
+    if (files.length > 1) {
+      alert("하나씩 업로드해 주세요");
+      return;
+    }
+
     let formData = new FormData();
     const config = {
       header: { "content-type": "multipart/form-data" },

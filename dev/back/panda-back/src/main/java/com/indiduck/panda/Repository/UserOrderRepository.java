@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
 
     Page<UserOrder> findAllByShop(Shop shop, Pageable pageable);
-    Optional<List<UserOrder>> findAllByShopAndOrderStatus(Shop shop, OrderStatus orderStatus);
+    Page<UserOrder> findAllByShopAndOrderStatus(Shop shop, OrderStatus orderStatus,Pageable pageable);
 //    Page<UserOrder> findAllByShopAndOrderStatus(Shop shop, OrderStatus orderStatus);
 
 

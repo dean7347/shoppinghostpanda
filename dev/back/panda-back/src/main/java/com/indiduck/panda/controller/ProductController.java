@@ -46,7 +46,7 @@ public class ProductController {
 
     //상품사진 등록
     @RequestMapping(value = "/createFile", method = RequestMethod.POST)
-    public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestParam("file") MultipartFile files) throws Exception{
         try {
             String origFilename = files.getOriginalFilename();
@@ -87,7 +87,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/regnewproduct", method = RequestMethod.POST)
-    public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
 
 

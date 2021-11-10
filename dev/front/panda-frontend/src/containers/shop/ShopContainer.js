@@ -45,7 +45,21 @@ const ShopContainer = ({ location, match }) => {
   }
 
   if (haveshop.shop === true && haveshop.isapprove === false) {
-    return <>승인이전</>;
+    return (
+      <>
+        <div style={{ textAlign: "center" }}>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <h1>상점 승인 신청 대기중입니다</h1>
+          <h2>문의사항이 있으신경우 </h2>
+          <h2>shoppinghostpanda@gmail.com </h2>
+          <h2>으로 문의남겨주세요 </h2>
+        </div>
+      </>
+    );
   }
 
   if (haveshop.shop === true && haveshop.isapprove === true) {

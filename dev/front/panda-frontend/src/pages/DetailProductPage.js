@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import HeaderContainer from "../containers/common/HeaderContainer";
+import Footer from "../components/common/Footer";
+
 import ProductImage from "../components/sections/ProductImage";
 import ProductInfo from "../components/sections/ProductInfo";
-import { Row, Col, Tabs, Radio } from "antd";
-import { Button } from "bootstrap";
+import { Row, Col, Tabs } from "antd";
+
 import PandaView from "../components/common/PandaView";
 function DetailProductPage(props) {
   const { TabPane } = Tabs;
