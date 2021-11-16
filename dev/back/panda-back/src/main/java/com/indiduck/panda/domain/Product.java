@@ -35,7 +35,13 @@ public class Product {
     private LocalDateTime productRegAt;
     private int productHits;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
+    //전자상거래등에서의상품등의정보제공에관한고시
+
+    @Lob
+    private String low;
+
+
+   @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     private List<ProductOption> productOptions=new ArrayList<>();
 
     @OneToMany(mappedBy = "products")

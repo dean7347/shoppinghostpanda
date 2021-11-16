@@ -240,7 +240,7 @@ const ShopRegFormContainer = ({ history }) => {
         <h1>상점 관련 정보</h1>
         <Form.Item label="상호명">
           <Input
-            type={text}
+            type={"text"}
             name="shopName"
             onChange={onChangeF}
             placeholder="상점 이름을 입력해주세요"
@@ -248,7 +248,7 @@ const ShopRegFormContainer = ({ history }) => {
         </Form.Item>
         <Form.Item label="대표자">
           <Input
-            type={text}
+            type={"text"}
             name="representative"
             onChange={onChangeF}
             placeholder="상점 이름을 입력해주세요"
@@ -257,7 +257,7 @@ const ShopRegFormContainer = ({ history }) => {
 
         <Form.Item label="사업자등록번호">
           <Input
-            type={text}
+            type={"text"}
             name="crn"
             onChange={onChangeF}
             placeholder="상점 이름을 입력해주세요"
@@ -266,7 +266,7 @@ const ShopRegFormContainer = ({ history }) => {
 
         <Form.Item label="통신판매업 신고번호">
           <Input
-            type={text}
+            type={"text"}
             name="telnum"
             onChange={onChangeF}
             placeholder="상점 이름을 입력해주세요"

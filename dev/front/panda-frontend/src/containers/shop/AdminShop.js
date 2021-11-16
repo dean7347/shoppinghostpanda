@@ -565,7 +565,7 @@ const AdminShop = () => {
                 >
                   {" "}
                   <div style={{ textAlign: "center" }}>
-                    <h1>0</h1>
+                    <h1>0 </h1>
                   </div>
                 </Card>
               </Col>
