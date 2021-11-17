@@ -47,6 +47,7 @@ public class Panda {
         panda.intCategory=intCategory;
         panda.Terms=T;
         panda.info=I;
+        panda.recognize=false;
         return panda;
 
     }

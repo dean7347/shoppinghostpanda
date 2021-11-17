@@ -53,9 +53,16 @@ public class PandaController {
 
                 if(byUser.isEmpty())
                 {
-                    return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(false));
+                    return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(false,false));
+                }else
+                {
+                    if(byUser.get().isRecognize())
+                    {
+                        return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true,true));
+
+                    }
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true));
+                return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true,false));
 
             }
         }
@@ -87,8 +94,10 @@ public class PandaController {
     @Data
     static class isPandaDto {
         boolean ispanda;
-        public isPandaDto(boolean b) {
+        boolean approve;
+        public isPandaDto(boolean b,boolean a) {
             ispanda=b;
+            approve=a;
         }
     }
     @Data

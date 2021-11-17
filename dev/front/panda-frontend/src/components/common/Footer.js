@@ -26,12 +26,12 @@ const Footer = () => {
           justifyContent: "center",
         }}
       >
-        <div>
+        <div style={{ marginLeft: "20px", marginRight: "20px" }}>
           <hr />
           쇼핑호스트 판다 <br />
           대표: 김진동 <br />
           사업자 등록번호 : 484-08-01858 <br />
-          통신판매업 신고 : 신고예정 <br />
+          통신판매업 신고 : 2021-경북칠곡-0409 <br />
           <br />
           경상북도 칠곡군 왜관읍 공단로1길 7, 1-1호 청년 1-1호 <br />
           (칠곡군 1인 창조기업 중장년 기술창업센터)

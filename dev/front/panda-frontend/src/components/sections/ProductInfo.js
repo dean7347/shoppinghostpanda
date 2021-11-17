@@ -35,10 +35,12 @@ function ProductInfo(props) {
   const [PandaDisplay, SetPandaDisplay] = useState("none");
 
   const onSubmit = (e) => {
-    console.log(e.Link);
-    console.log(isValidHttpUrl(e.Link));
     if (!isValidHttpUrl(e.Link)) {
       alert("올바른 URL가 아닙니다");
+      return;
+    }
+    if (approvePanda) {
+      alert("판다 승인후 활동가능합니다");
       return;
     }
     const body = {
@@ -220,6 +222,18 @@ function ProductInfo(props) {
         </Option>
       );
     });
+  const [Ispanda, setIspanda] = useState();
+  const [approvePanda, setapprovePanda] = useState();
+
+  useEffect(() => {
+    axios.get("/api/ispanda").then((response) => {
+      console.log("판다스데이터확인");
+
+      console.log(response.data);
+      setIspanda(response.data.ispanda);
+      setapprovePanda(response.data.approve);
+    });
+  });
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
@@ -316,14 +330,16 @@ function ProductInfo(props) {
           </Button>
         </div>
         <div style={{ float: "right", margin: "0 40px 30px" }}>
-          <Button
-            size="large"
-            shape="round"
-            type="primary"
-            onClick={pandaClick}
-          >
-            판다!
-          </Button>
+          {approvePanda && (
+            <Button
+              size="large"
+              shape="round"
+              type="primary"
+              onClick={pandaClick}
+            >
+              판다!
+            </Button>
+          )}
         </div>
       </div>
       <Form
