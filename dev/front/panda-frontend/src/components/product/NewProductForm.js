@@ -48,17 +48,19 @@ function NewProductForm() {
   };
   const onClickForm = async (e) => {
     const tostringform = JSON.stringify(form);
+    console.log("데이터체크");
+    console.log(tostringform);
 
     if (
       !Title ||
       !Description ||
-      Images.length > 0 ||
+      !Images.length > 0 ||
       !Options ||
       !Thumb.length > 0
     ) {
       return alert("모든 값을 넣어주셔야 합니다");
     }
-
+    // console.log(tostringform.toString());
     //서버에 채운 값들 request로 보낸다
     const body = {
       //로그인 된 사람의 ID
@@ -70,15 +72,15 @@ function NewProductForm() {
       type: Low,
       lowform: tostringform,
     };
-    console.log(body);
-    // axios.post("/regnewproduct", body).then((response) => {
-    //   if (response.data.success) {
-    //     alert("상품 업로드에 성공했습니다");
-    //     history.push("/");
-    //   } else {
-    //     alert("상품업로드에 실패 했습니다.");
-    //   }
-    // });
+    // console.log(body);
+    axios.post("/regnewproduct", body).then((response) => {
+      if (response.data.success) {
+        alert("상품 업로드에 성공했습니다");
+        history.push("/shop");
+      } else {
+        alert("상품업로드에 실패 했습니다.");
+      }
+    });
   };
   const lowOption = (setOption) => {
     console.log(setOption);
@@ -195,7 +197,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -289,7 +291,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -379,7 +381,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -462,7 +464,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -557,7 +559,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -661,7 +663,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -764,7 +766,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -861,7 +863,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -973,7 +975,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1078,7 +1080,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1168,7 +1170,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1265,7 +1267,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1383,7 +1385,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1488,7 +1490,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1592,7 +1594,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1689,7 +1691,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1786,7 +1788,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1890,7 +1892,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -1994,7 +1996,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2091,7 +2093,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2195,7 +2197,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2321,7 +2323,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2432,7 +2434,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2536,7 +2538,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2640,7 +2642,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2716,7 +2718,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2792,7 +2794,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2903,7 +2905,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -2986,7 +2988,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3062,7 +3064,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3138,7 +3140,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3200,7 +3202,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3269,7 +3271,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3338,7 +3340,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3400,7 +3402,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3483,7 +3485,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3587,7 +3589,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3691,7 +3693,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3760,7 +3762,7 @@ function NewProductForm() {
                 span: 14,
               }}
               layout="horizontal"
-              // onFinish={onClick}
+              onFinish={onClickForm}
             >
               <h1>
                 전자상거래 등에서의 상품 등의
@@ -3997,7 +3999,7 @@ function NewProductForm() {
         <br />
         <br />
         {lowOption(Low)}
-        <button onClick={submitHandler}>상품등록하기</button>
+        {/* <button onClick={submitHandler}>상품등록하기</button> */}
       </div>
     </>
   );

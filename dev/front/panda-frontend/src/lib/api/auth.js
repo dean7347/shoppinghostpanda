@@ -12,4 +12,4 @@ export const register = ({ account, password }) =>
 export const check = () => client.get("/auth/check");
 
 //로그아웃
-export const logout = () => client.posts("/auth/logout");
+export const logout = () => client.get("/user/logout");

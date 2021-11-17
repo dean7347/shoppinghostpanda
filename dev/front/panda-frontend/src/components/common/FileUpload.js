@@ -11,11 +11,15 @@ function FileUpload(props) {
   const dropHandler = (files) => {
     console.log(files.length);
     console.log("파일타입체크");
+    console.log(files[0].type);
 
-    if (!(files[0].type === "image/png" || files.type[0] === "image/jpg")) {
-      alert("jpg/png만 허용됩니다");
-      return;
-    }
+    // if (
+    //   files &&
+    //   !(files[0].type === "image/png" || files.type[0] === "image/jpg")
+    // ) {
+    //   alert("jpg/png만 허용됩니다");
+    //   return;
+    // }
 
     const image = new Image();
     let fr = new FileReader();
@@ -32,6 +36,9 @@ function FileUpload(props) {
     };
 
     image.onload = async function () {
+      console.log("어싱크펑션");
+
+      console.log(fr);
       //상세이미지
       if (props.refreshFunction.name === "updateImages") {
         if (image.width > 860) {
@@ -59,25 +66,8 @@ function FileUpload(props) {
           setCheck(false);
 
           return;
-        } else {
-          formData.append("file", files[0]);
-
-          axios.post("/createFile", formData, config).then((response) => {
-            setCheck(false);
-            if (response.data.success) {
-              setImages([...Images, response.data.filePath]);
-              props.refreshFunction([...Images, response.data.filePath]);
-            } else {
-              alert("파일 저장 실패");
-            }
-          });
-        }
-
-        if (!(image.width === image.height)) {
+        } else if (!(image.width === image.height)) {
           alert("섬네일의 가로세로크기가 같도록 등록해주세요");
-          setCheck(false);
-
-          return;
         } else {
           formData.append("file", files[0]);
 

@@ -34,6 +34,7 @@ const ShopRegFormContainer = ({ history }) => {
     candate: "",
     noreturn: "",
     comaddress: "",
+    avdtime: "",
   });
   const {
     shopName,
@@ -53,6 +54,7 @@ const ShopRegFormContainer = ({ history }) => {
     candate,
     noreturn,
     comaddress,
+    avdtime,
   } = form;
 
   const onChangeF = (e) => {
@@ -85,9 +87,10 @@ const ShopRegFormContainer = ({ history }) => {
         tagree: e.Termsagree,
         iagree: e.Infoagree,
         comaddress: comaddress,
+        avdtime: avdtime,
       };
       console.log("체크크크크");
-      console.log(body.Infoagree);
+      console.log(body);
 
       if (
         !shopName ||
@@ -106,7 +109,8 @@ const ShopRegFormContainer = ({ history }) => {
         !returnaddress ||
         !candate ||
         !noreturn ||
-        !comaddress
+        !comaddress ||
+        !avdtime
       ) {
         alert("모든정보를 입력해 주세요");
         return;
@@ -320,6 +324,15 @@ const ShopRegFormContainer = ({ history }) => {
           <Input
             type={text}
             name="csTime"
+            onChange={onChangeF}
+            placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
+          />
+        </Form.Item>
+
+        <Form.Item label="평균 배송기간">
+          <Input
+            type={text}
+            name="avdtime"
             onChange={onChangeF}
             placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
           />

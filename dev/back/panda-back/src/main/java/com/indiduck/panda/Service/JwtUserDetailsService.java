@@ -13,6 +13,7 @@ package com.indiduck.panda.Service;
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
 import java.util.Collections;
+import java.util.Optional;
 
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.JwtTokenUtil;
@@ -20,6 +21,8 @@ import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.domain.UserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,6 +59,25 @@ public class JwtUserDetailsService implements UserDetailsService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException((email)));
     }
+    /**
+     * 비밀번호 검증
+     */
+    public User loginUser(String id,String password) throws Exception{
+        Optional<User> byEmail = userRepository.findByEmail(id);
+        User user =byEmail.get();
+        if(user == null) throw new Exception("멤버가 없습니다");
+        String passwordEncode = user.getPassword();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean matches = encoder.matches(password, passwordEncode);
+
+        if(matches)
+        {
+            return user;
+        }
+        return null;
+    }
+
+
     /**
      * 회원정보 저장
      *

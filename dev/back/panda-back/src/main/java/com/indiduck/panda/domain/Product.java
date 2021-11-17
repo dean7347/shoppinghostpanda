@@ -33,12 +33,16 @@ public class Product {
     @Lob @Basic(fetch = FetchType.EAGER)
     private String productDesc;
     private LocalDateTime productRegAt;
+    private LocalDateTime productEditAt;
+    private LocalDateTime productDeleteAt;
+
+
     private int productHits;
 
     //전자상거래등에서의상품등의정보제공에관한고시
-
+    private int type;
     @Lob
-    private String low;
+    private String lowvalue;
 
 
    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
@@ -82,10 +86,13 @@ public class Product {
 
     }
     //==생성==//
-    public static Product newProDuct(String name, String desc){
+    public static Product newProDuct(String name, String desc,int type,String lowvalue){
         Product pro = new Product();
         pro.productName=name;
         pro.productDesc=desc;
+        pro.type=type;
+        pro.lowvalue=lowvalue;
+        pro.productRegAt=LocalDateTime.now();
 
 
         return pro;

@@ -35,9 +35,9 @@ public class ProductService {
     ShopRepository shopRepository;
 
     public Product createNewProduct(String user, List<String> thumb,String title, String descriptoin,
-                                    List<String> images,List<ProductOption> options){
+                                    List<String> images,List<ProductOption> options,int type,String lowvalue){
 
-        Product newProduct = Product.newProDuct(title,descriptoin);
+        Product newProduct = Product.newProDuct(title,descriptoin,type,lowvalue);
         productRepository.save(newProduct);
 
         images.forEach(e ->{

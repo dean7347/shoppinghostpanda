@@ -8,6 +8,7 @@ import com.indiduck.panda.Service.ProductService;
 import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
+import com.indiduck.panda.domain.Shop;
 import com.indiduck.panda.domain.dto.FileDao;
 
 import com.indiduck.panda.util.MD5Generator;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Lob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +91,7 @@ public class ProductController {
     @RequestMapping(value = "/regnewproduct", method = RequestMethod.POST)
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
-
+        System.out.println("createProductDAO = " + createProductDAO);
 
         Product product=productService.createNewProduct(
                 authentication.getName(),
@@ -97,7 +99,10 @@ public class ProductController {
                 createProductDAO.title,
                 createProductDAO.description,
                 createProductDAO.images,
-                createProductDAO.Options
+                createProductDAO.Options,
+                createProductDAO.type,
+                createProductDAO.lowform
+
         );
 
         if(product==null){
@@ -165,7 +170,53 @@ public class ProductController {
         boolean success;
         String productName;
         String productDesc;
-        List<DetailOptionDto> Poptions=new ArrayList<>();
+        //상품타입과 값. 통신판매업법
+        int type;
+        String lowform;
+
+        //상점정보
+        private String shopName;
+        //representative
+        private String representative;
+        //crn
+        private String CRN;
+        //telnum
+        private String number;
+        //freepee
+        private int freePrice;
+        //nofree 택배비용
+        private int nofree;
+        //priPhone
+
+        //csPhone
+        private String csPhone;
+        //csTime
+        @Lob
+        private String csTime;
+        //toPanda
+        @Lob
+        private String toPanda;
+        //reship
+        private String reship;
+        //returnpee
+        private int returnpee;
+        //tradepee
+        private int tradepee;
+        //comaddress
+        private String comaddress;
+        //returnaddress
+        private String returnaddress;
+        //candate
+        @Lob
+        private String candate;
+        //noreturn
+        @Lob
+        private String noreturn;
+        private String AVDtime;
+
+        //반품교환정보
+        //판매자 정보보
+       List<DetailOptionDto> Poptions=new ArrayList<>();
         List<FileDtopro> detailImages=new ArrayList<>();
         List<FileDtopro> thumbs=new ArrayList<>();
         public ProductDetailDto(boolean t,Product detail) {
@@ -173,6 +224,30 @@ public class ProductController {
 
             productName=detail.getProductName();
             productDesc=detail.getProductDesc();
+            type = detail.getType();
+            lowform =detail.getLowvalue();
+            Shop shop = detail.getShop();
+            //상점정보
+            shopName=shop.getShopName();
+            representative= shop.getRepresentative();
+            CRN = shop.getCRN();
+            number=shop.getNumber();
+            freePrice=shop.getFreePrice();
+            nofree=shop.getNofree();
+            csPhone=shop.getCsPhone();
+            csTime=shop.getCsTime();
+            toPanda=shop.getToPanda();
+            reship=shop.getReship();
+            returnpee=shop.getReturnpee();
+            tradepee=shop.getTradepee();
+            comaddress=shop.getComaddress();
+            returnaddress=shop.getReturnaddress();
+            candate=shop.getCandate();
+            noreturn=shop.getNoreturn();
+            AVDtime=shop.getAVDtime();
+
+
+
             List<File> getImages = detail.getImages();
             for (File getImage : getImages) {
                 if(getImage.isIsthumb()){
@@ -243,6 +318,8 @@ public class ProductController {
         private String description;
         private List<String> images;
         private List<ProductOption> Options;
+        private int type;
+        private String lowform;
 
     }
 

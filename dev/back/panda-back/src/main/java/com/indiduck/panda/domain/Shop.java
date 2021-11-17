@@ -75,6 +75,8 @@ public class Shop {
     private boolean isApprove;
     //샵이 운영중인지에 대한 내역
     private boolean isOpen;
+    //평균배송기간
+    private String AVDtime;
 
 
 
@@ -107,7 +109,7 @@ public class Shop {
     public static Shop createShop(User user,String shopName, String representative,String crn, String telnum, int freepee, int nofree,
                                   String priPhone, String csPhone, String csTime, String toPanda, String reship,
                                   int returnpee, int tradepee, String returnaddress, String candate,
-                                  String noreturn, boolean Termsagree, boolean Infoagree,String comaddress){
+                                  String noreturn, boolean Termsagree, boolean Infoagree,String comaddress,String avdtime){
         Shop shop = new Shop();
         shop.setUser(user);
         shop.shopName=shopName;
@@ -131,6 +133,7 @@ public class Shop {
         shop.isApprove=false;
         shop.isOpen=false;
         shop.comaddress=comaddress;
+        shop.AVDtime=avdtime;
 
         return shop;
     }
