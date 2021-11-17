@@ -1964,18 +1964,26 @@ function NewProductForm() {
                 <Input type={"text"} name="i" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
-                label="품질보증기준"
+                label="보증서 제공여부"
                 name="j"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
-                label="AS책임자와 전화번호"
+                label="품질보증기준"
                 name="k"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
                 <Input type={"text"} name="k" onChange={onChangeLow} />
+              </Form.Item>
+
+              <Form.Item
+                label="AS책임자와 전화번호"
+                name="l"
+                rules={[{ required: true, message: "입력은 필수입니다" }]}
+              >
+                <Input type={"text"} name="l" onChange={onChangeLow} />
               </Form.Item>
 
               <Button type="primary" htmlType="submit">
@@ -2262,7 +2270,7 @@ function NewProductForm() {
                 <Input type={"text"} name="h" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
-                label="섭취량섭치방법,주의사항,부작용"
+                label="섭취량,섭취방법,주의사항,부작용"
                 name="i"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
@@ -3307,19 +3315,13 @@ function NewProductForm() {
               >
                 <Input type={"text"} name="d" onChange={onChangeLow} />
               </Form.Item>
+
               <Form.Item
-                label="재질"
+                label="소비자상담관련전화번호"
                 name="e"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
                 <Input type={"text"} name="e" onChange={onChangeLow} />
-              </Form.Item>
-              <Form.Item
-                label="소비자상담관련전화번호"
-                name="f"
-                rules={[{ required: true, message: "입력은 필수입니다" }]}
-              >
-                <Input type={"text"} name="f" onChange={onChangeLow} />
               </Form.Item>
 
               <Button type="primary" htmlType="submit">
@@ -3768,7 +3770,7 @@ function NewProductForm() {
                 전자상거래 등에서의 상품 등의
                 <br /> 정보제공에 관한 고시
                 <br />
-                (영유아용품)
+                (기타재화)
               </h1>
               <Form.Item
                 label="품명 및 모델명"

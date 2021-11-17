@@ -22,9 +22,6 @@ import axios from "../../../node_modules/axios/index";
 const { SubMenu } = Menu;
 
 function ProductInfo(props) {
-  console.log("eeee");
-  console.log(props);
-
   const { Option, OptGroup } = Select;
   const [SelectPanda, setSelectPanda] = useState("");
 
@@ -38,6 +35,12 @@ function ProductInfo(props) {
   const [PandaDisplay, SetPandaDisplay] = useState("none");
 
   const onSubmit = (e) => {
+    console.log(e.Link);
+    console.log(isValidHttpUrl(e.Link));
+    if (!isValidHttpUrl(e.Link)) {
+      alert("올바른 URL가 아닙니다");
+      return;
+    }
     const body = {
       productId: props.proId,
       link: Link,
@@ -56,10 +59,25 @@ function ProductInfo(props) {
     form.resetFields();
     SetPandaDisplay("none");
   };
+  function isValidHttpUrl(string) {
+    let url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
 
   const LinkHandler = (e) => {
     e.preventDefault();
-    SetLink(e.target.value);
+    if (isValidHttpUrl(e.target.value)) {
+      SetLink(e.target.value);
+    } else {
+      alert("오류방지를위해 ctrl c + ctrl v를 이용해주세요");
+    }
   };
 
   const columns = [
@@ -226,14 +244,14 @@ function ProductInfo(props) {
 
   return (
     <div>
-      <Descriptions title="Product Info">
+      {/* <Descriptions title="Product Info">
         <Descriptions.Item label="Price">cdo</Descriptions.Item>
         <Descriptions.Item label="Sold">co1</Descriptions.Item>
         <Descriptions.Item label="View">co2</Descriptions.Item>
         <Descriptions.Item label="Description">
           {props.detail.desc}
         </Descriptions.Item>
-      </Descriptions>
+      </Descriptions> */}
 
       <br />
       <br />
@@ -275,50 +293,7 @@ function ProductInfo(props) {
               </SubMenu>
             </Menu>
           </Col>
-          <Col lg={12} sm={12}>
-            <Form
-              form={form}
-              name="basic"
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ remember: true }}
-              autoComplete="off"
-              onFinish={onSubmit}
-              style={{ display: `${PandaDisplay}` }}
-            >
-              <Form.Item
-                label="링크"
-                name="Link"
-                rules={[{ required: true, message: "Please input your Link" }]}
-              >
-                <Input onChange={LinkHandler} />
-              </Form.Item>
-
-              <Form.Item
-                name="remember"
-                valuePropName="checked"
-                wrapperCol={{ offset: 8, span: 16 }}
-              >
-                <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
-              </Form.Item>
-
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-              <ReactTinyLink
-                cardSize="large"
-                showGraphic={true}
-                maxLine={2}
-                minLine={1}
-                onError={false}
-                proxyUrl={`api/proxy?url=`}
-                description={true}
-                url={`${Link}`}
-              />
-            </Form>
-          </Col>
+          <Col lg={12} sm={12}></Col>
         </Row>
       </div>
       <div
@@ -351,6 +326,48 @@ function ProductInfo(props) {
           </Button>
         </div>
       </div>
+      <Form
+        form={form}
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        initialValues={{ remember: true }}
+        autoComplete="off"
+        onFinish={onSubmit}
+        style={{ display: `${PandaDisplay}` }}
+      >
+        <Form.Item
+          label="링크"
+          name="Link"
+          rules={[{ required: true, message: "Please input your Link" }]}
+        >
+          <Input onChange={LinkHandler} />
+        </Form.Item>
+
+        <Form.Item
+          name="remember"
+          valuePropName="checked"
+          wrapperCol={{ offset: 8, span: 16 }}
+        >
+          <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+        <ReactTinyLink
+          cardSize="large"
+          showGraphic={true}
+          maxLine={2}
+          minLine={1}
+          defaultMedia={true}
+          proxyUrl={`api/proxy?url=`}
+          description={true}
+          url={`${Link}`}
+        />
+      </Form>
     </div>
   );
 }
