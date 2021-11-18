@@ -31,7 +31,7 @@ function LandingPage() {
           setViewCountPage(response.data.size);
           setTotalCountPage(response.data.totalElements);
         } else {
-          console.log("상품들을 가져오는데 실패했습니다.");
+          // console.log("상품들을 가져오는데 실패했습니다.");
         }
       });
     },
@@ -45,17 +45,17 @@ function LandingPage() {
     (Page) => {
       axios.get(`/api/preview?size=1&page=${Page - 1}`).then((response) => {
         if (response.data != null) {
-          console.log(response.data);
+          // console.log(response.data);
           setProducts(response.data.content);
           //page, count, setPage
           //현재 페이지
-          // console.log(response.data.pageable.pageNumber);
+          // // console.log(response.data.pageable.pageNumber);
           //한페이지당 보여줄 리스트 아이템 갯수
           setViewCountPage(response.data.size);
           //총 아이템의 갯수
           setTotalCountPage(response.data.totalElements);
         } else {
-          console.log("상품들을 가져오는데 실패했습니다.");
+          // console.log("상품들을 가져오는데 실패했습니다.");
         }
       });
     },
@@ -80,7 +80,9 @@ function LandingPage() {
 
   return (
     <>
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       <div style={{ width: "75%", margin: "3rem auto" }}>
         <div style={{ textAlign: "center" }}>
           <h2>PandaShop</h2>

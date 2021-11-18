@@ -25,20 +25,20 @@ const AdminShop = () => {
       .get(`/api/shop/dashboard?size=1&page=${page - 1}`)
       .then((response) => {
         if (response.data != null) {
-          // console.log("페이지에이ㅇㅇ블ㅇ");
-          console.log(response.data);
-          console.log("페이지체인지이펙트");
+          // // console.log("페이지에이ㅇㅇ블ㅇ");
+          // console.log(response.data);
+          // console.log("페이지체인지이펙트");
 
           SetUosd(response.data.uosd);
           //page, count, setPage
           //현재 페이지
-          // console.log(response.data.pageable.pageNumber);
+          // // console.log(response.data.pageable.pageNumber);
           // 한페이지당 보여줄 리스트 아이템 갯수
           setViewCountPage(1);
           //총 아이템의 갯수
           setTotalCountPage(response.data.totalElements);
         } else {
-          console.log("상품들을 가져오는데 실패했습니다.");
+          // console.log("상품들을 가져오는데 실패했습니다.");
         }
       });
   }, []);
@@ -48,16 +48,16 @@ const AdminShop = () => {
       axios
         .get(`/api/shop/dashboard?size=1&page=${page - 1}`)
         .then((response) => {
-          console.log("페이지체인지");
+          // console.log("페이지체인지");
           if (response.data != null) {
-            console.log("페이지에이ㅇㅇ블ㅇ");
-            console.log(response.data);
+            // console.log("페이지에이ㅇㅇ블ㅇ");
+            // console.log(response.data);
             SetUosd(response.data.uosd);
-            console.log(uosd);
+            // console.log(uosd);
             setViewCountPage(1);
             setTotalCountPage(response.data.totalElements);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            // console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -145,7 +145,7 @@ const AdminShop = () => {
   const [reload, setreload] = useState(1);
 
   const onClickConFirm = (params) => {
-    console.log("클릭파람" + params);
+    // console.log("클릭파람" + params);
     const body = {
       userorderId: params,
     };
@@ -161,7 +161,7 @@ const AdminShop = () => {
   };
 
   const onClickcancel = (params) => {
-    console.log("클릭파람" + params);
+    // console.log("클릭파람" + params);
     const body = {
       userorderId: params,
     };
@@ -184,20 +184,20 @@ const AdminShop = () => {
         )
         .then((response) => {
           if (response.data != null) {
-            // console.log("페이지에이ㅇㅇ블ㅇ");
-            console.log(response.data);
-            console.log("pfuosd");
+            // // console.log("페이지에이ㅇㅇ블ㅇ");
+            // console.log(response.data);
+            // console.log("pfuosd");
 
             SetpfUosd(response.data.uosd);
             //page, count, setPage
             //현재 페이지
-            // console.log(response.data.pageable.pageNumber);
+            // // console.log(response.data.pageable.pageNumber);
             // 한페이지당 보여줄 리스트 아이템 갯수
             setpfViewCountPage(1);
             //총 아이템의 갯수
             setpfTotalCountPage(response.data.totalElements);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            // console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -206,8 +206,8 @@ const AdminShop = () => {
   const pfonPageChanged = useCallback(
     (page) => {
       setpfPage(page);
-      console.log("두번째");
-      console.log(page);
+      // console.log("두번째");
+      // console.log(page);
       axios
         .get(
           `/api/shop/dashboard/orderStatus?size=1&page=${
@@ -215,16 +215,16 @@ const AdminShop = () => {
           }&orderstatus=${"결제완료"}`
         )
         .then((response) => {
-          console.log("페이지체인지");
+          // console.log("페이지체인지");
           if (response.data != null) {
-            console.log("페이지에이ㅇㅇ블ㅇ");
-            console.log(response.data);
+            // console.log("페이지에이ㅇㅇ블ㅇ");
+            // console.log(response.data);
             SetpfUosd(response.data.uosd);
-            console.log(uosd);
+            // console.log(uosd);
             setpfViewCountPage(1);
             setpfTotalCountPage(response.data.totalElements);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            // console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -328,7 +328,7 @@ const AdminShop = () => {
   const [rdreload, setrdreload] = useState(1);
 
   //   const onClickConFirm = (params) => {
-  //     console.log("클릭파람" + params);
+  //     // console.log("클릭파람" + params);
   //     const body = {
   //       userorderId: params,
   //     };
@@ -344,7 +344,7 @@ const AdminShop = () => {
   //   };
 
   //   const onClickcancel = (params) => {
-  //     console.log("클릭파람" + params);
+  //     // console.log("클릭파람" + params);
   //     const body = {
   //       userorderId: params,
   //     };
@@ -367,20 +367,20 @@ const AdminShop = () => {
         )
         .then((response) => {
           if (response.data != null) {
-            // console.log("페이지에이ㅇㅇ블ㅇ");
-            console.log(response.data);
-            console.log("pfuosd");
+            // // console.log("페이지에이ㅇㅇ블ㅇ");
+            // console.log(response.data);
+            // console.log("pfuosd");
 
             SetrdUosd(response.data.uosd);
             //page, count, setPage
             //현재 페이지
-            // console.log(response.data.pageable.pageNumber);
+            // // console.log(response.data.pageable.pageNumber);
             // 한페이지당 보여줄 리스트 아이템 갯수
             setrdViewCountPage(1);
             //총 아이템의 갯수
             setrdTotalCountPage(response.data.totalElements);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            // console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -389,8 +389,8 @@ const AdminShop = () => {
   const rdonPageChanged = useCallback(
     (page) => {
       setrdPage(page);
-      console.log("두번째");
-      console.log(page);
+      // console.log("두번째");
+      // console.log(page);
       axios
         .get(
           `/api/shop/dashboard/orderStatus?size=1&page=${
@@ -398,16 +398,16 @@ const AdminShop = () => {
           }&orderstatus=${"준비중"}`
         )
         .then((response) => {
-          console.log("페이지체인지");
+          // console.log("페이지체인지");
           if (response.data != null) {
-            console.log("페이지에이ㅇㅇ블ㅇ");
-            console.log(response.data);
+            // console.log("페이지에이ㅇㅇ블ㅇ");
+            // console.log(response.data);
             SetrdUosd(response.data.uosd);
-            console.log(uosd);
+            // console.log(uosd);
             setrdViewCountPage(1);
             setrdTotalCountPage(response.data.totalElements);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            // console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -506,7 +506,7 @@ const AdminShop = () => {
 
   useEffect(() => {
     axios.get("/api/shop/nochecked").then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
         SetNoCheck(response.data.num);
       } else {
@@ -635,11 +635,11 @@ const AdminShop = () => {
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
-            // console.log(broken);
+            // // console.log(broken);
           }}
           onCollapse={(collapsed, type) => {
-            // console.log(collapsed, type);
-            // console.log("클릭");
+            // // console.log(collapsed, type);
+            // // console.log("클릭");
           }}
           style={{ minHeight: "11%" }}
         >

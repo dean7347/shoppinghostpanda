@@ -26,7 +26,7 @@ function ProductInfo(props) {
   const [SelectPanda, setSelectPanda] = useState("");
 
   function handleChange(value) {
-    console.log(`selected ${value}`);
+    // console.log(`selected ${value}`);
     setSelectPanda(value);
   }
   const [Link, SetLink] = useState("http://localhost:3000/");
@@ -48,7 +48,7 @@ function ProductInfo(props) {
       link: Link,
     };
     axios.post("/api/addpropanda", body).then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
         alert("판다링크 생성 완료");
       } else {
@@ -184,11 +184,11 @@ function ProductInfo(props) {
   useEffect(() => {
     if (props) {
       setOptions(props.detail.poptions);
-      console.log("props");
+      // console.log("props");
 
-      console.log(props);
+      // console.log(props);
     } else {
-      console.log("빈상품정보 로딩");
+      // console.log("빈상품정보 로딩");
     }
   }, [props]);
 
@@ -211,8 +211,8 @@ function ProductInfo(props) {
     return prev;
   }, []);
 
-  console.log("변경된정보");
-  console.log(unique_user);
+  // console.log("변경된정보");
+  // console.log(unique_user);
   const renderPanda =
     unique_user &&
     unique_user.map((panda, index) => {
@@ -227,9 +227,9 @@ function ProductInfo(props) {
 
   useEffect(() => {
     axios.get("/api/ispanda").then((response) => {
-      console.log("판다스데이터확인");
+      // console.log("판다스데이터확인");
 
-      console.log(response.data);
+      // console.log(response.data);
       setIspanda(response.data.ispanda);
       setapprovePanda(response.data.approve);
     });
@@ -237,7 +237,7 @@ function ProductInfo(props) {
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
-    console.log("카트전달정보");
+    // console.log("카트전달정보");
 
     const body = {
       productid: props.proId,
@@ -249,11 +249,11 @@ function ProductInfo(props) {
         alert("상품을 장바구니에 성공적으로 담았습니다");
       } else {
         alert("장바구니담기에 실패했습니다");
-        console.log(response.data);
+        // console.log(response.data);
       }
     });
 
-    console.log(body);
+    // console.log(body);
   };
 
   return (

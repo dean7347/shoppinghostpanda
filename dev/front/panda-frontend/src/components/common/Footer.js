@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider } from "antd";
+import { Divider, Row, Col } from "antd";
 
 const Footer = () => {
   return (
@@ -18,15 +18,19 @@ const Footer = () => {
         <div style={{ padding: "3px" }}>|</div>
         <div style={{ padding: "3px" }}>개인정보 처리 방침</div>
       </div>
-      <div
-        style={{
-          textAlign: "left",
-          background: "",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ marginLeft: "20px", marginRight: "20px" }}>
+      <Row gutter={[18, 18]} style={{ justifyContent: "center" }}>
+        {/* <div
+          style={{
+            //   textAlign: "left",
+
+            // display: "flex",
+            justifyContent: "center",
+          }}
+        > */}
+        <Col lg={6} sm={6}>
+          {/* <div
+            // style={{ marginLeft: "20px", marginRight: "20px" }}
+            > */}
           <hr />
           쇼핑호스트 판다 <br />
           대표: 김진동 <br />
@@ -36,10 +40,16 @@ const Footer = () => {
           경상북도 칠곡군 왜관읍 공단로1길 7, 1-1호 청년 1-1호 <br />
           (칠곡군 1인 창조기업 중장년 기술창업센터)
           <br />
-        </div>
-        <div
-          style={{ float: "left", paddingLeft: "10px", paddingRight: "10px" }}
-        >
+          {/* </div> */}
+        </Col>
+        <Col lg={6} sm={6}>
+          {/* <div
+            // style={{
+            //   float: "left",
+            //   paddingLeft: "10px",
+            //   paddingRight: "10px",
+            // }}
+            // > */}
           <hr />
           고객센터 <br />
           (주 5일 오전 10시 ~ 오후 5시까지)
@@ -52,9 +62,10 @@ const Footer = () => {
           <br />
           <br />
           <br />
-        </div>
-
-        <div>
+          {/* </div> */}
+        </Col>
+        <Col lg={6} sm={6}>
+          {/* <div> */}
           <hr />
           Copyright@ 2021 shoppinghostPanda All right reserved.
           <br />
@@ -63,8 +74,10 @@ const Footer = () => {
           따라서 쇼핑호스트 판다는 상품 거래 정보 및 거래에 대하여 책임을 지지
           않습니다.
           <br />
-        </div>
-      </div>
+          {/* </div> */}
+        </Col>
+        {/* </div> */}
+      </Row>
     </>
   );
 };

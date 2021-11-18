@@ -12,7 +12,9 @@ const PandaPage = () => {
   });
   return (
     <>
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       {Ispanda === true ? <div>마이판다페이지</div> : <PandaRegFormContainer />}
     </>
   );

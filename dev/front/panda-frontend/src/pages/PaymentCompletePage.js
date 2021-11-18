@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 function PagementCompletePage(props) {
   let history = useHistory();
 
-  console.log(props);
+  // console.log(props);
   if (props.location.state === undefined) {
     alert("잘못된 접근입니다");
     history.goBack();
@@ -14,7 +14,9 @@ function PagementCompletePage(props) {
   // }
   return (
     <>
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       <div>주문이 완료되었습니다</div>
       <button> 돌아갑니다</button>
     </>

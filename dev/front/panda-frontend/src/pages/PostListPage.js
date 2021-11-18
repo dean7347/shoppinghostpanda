@@ -4,7 +4,9 @@ import HeaderContainer from "../containers/common/HeaderContainer";
 const PostListPage = () => {
   return (
     <>
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       <div>안녕하세요</div>
     </>
   );

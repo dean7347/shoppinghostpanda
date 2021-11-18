@@ -4,10 +4,10 @@ import Pagination from "react-js-pagination";
 
 const Paging = (props) => {
   const { onPageChanged, currentPage, ViewCount, TotalCount } = props;
-  console.log("페이징내부");
+  // console.log("페이징내부");
 
-  console.log(ViewCount);
-  console.log(TotalCount);
+  // console.log(ViewCount);
+  // console.log(TotalCount);
   return (
     <>
       <Pagination

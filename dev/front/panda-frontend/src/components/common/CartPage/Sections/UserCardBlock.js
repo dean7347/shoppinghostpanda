@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { check } from "../../../../lib/api/auth";
+import React, { useState, useEffect } from "react";
+
 import "./UserCardBlock.css";
 import { Button, Checkbox, Divider } from "antd";
 import axios from "../../../../../node_modules/axios/index";
@@ -13,26 +13,22 @@ function UserCardBlock(props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
-  const [checkprice, setCheckprice] = useState([]);
+  // const [checkprice, setCheckprice] = useState([]);
 
-  const [payment, setPayment] = useState(0);
+  // const [payment, setPayment] = useState(0);
 
   useEffect(() => {
     setCheckedList(defaultCheckedList);
   }, [props]);
 
   const onChanges = (e, mo) => {
-    console.log(`checked = ${e.target.checked}`);
-    console.log(mo);
+    // console.log(`checked = ${e.target.checked}`);
+    // console.log(mo);
   };
   const onChange = (list) => {
     setCheckedList(list);
     setIndeterminate(!!list.length && list.length < plainOptions.length);
     setCheckAll(list.length === plainOptions.length);
-  };
-
-  const onde = () => {
-    console.log(checkedList);
   };
 
   const onCheckAllChange = (e) => {
@@ -42,7 +38,7 @@ function UserCardBlock(props) {
   };
 
   const onClick = (params, e) => {
-    console.log(params); // error
+    // console.log(params); // error
     e.preventDefault();
     const body = {
       orderDetailId: params,
@@ -265,8 +261,8 @@ function UserCardBlock(props) {
       props.products.ds.map((item, index) => {
         shopPrice = 0;
         if (!(checkedList.indexOf(item.shopId) === -1)) {
-          console.log("들어옴");
-          console.log(item.shopId);
+          // console.log("들어옴");
+          // console.log(item.shopId);
           item.dp.map((product, index) => {
             product.do.map((options, index) => {
               if (options.pandaName) {
@@ -277,19 +273,19 @@ function UserCardBlock(props) {
                 total += Math.round(options.originPrice * options.optionCount);
               }
               shopPrice += options.originPrice * options.optionCount;
-              console.log("------");
+              // console.log("------");
             });
           });
-          console.log("검증!!!!");
-          console.log(item.freePrice);
+          // console.log("검증!!!!");
+          // console.log(item.freePrice);
 
           if (item.freePrice > shopPrice) {
             ship += item.shipPrice;
           }
         }
       });
-    console.log("총금액" + total);
-    console.log("배송비" + ship);
+    // console.log("총금액" + total);
+    // console.log("배송비" + ship);
     return { total, ship };
   };
   return (

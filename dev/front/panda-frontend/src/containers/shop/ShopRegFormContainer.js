@@ -13,7 +13,7 @@ const ShopRegFormContainer = ({ history }) => {
 
   const { Panel } = Collapse;
   function callback(key) {
-    console.log(key);
+    // console.log(key);
   }
 
   const [form, setForm] = useState({
@@ -89,8 +89,8 @@ const ShopRegFormContainer = ({ history }) => {
         comaddress: comaddress,
         avdtime: avdtime,
       };
-      console.log("체크크크크");
-      console.log(body);
+      // console.log("체크크크크");
+      // console.log(body);
 
       if (
         !shopName ||
@@ -130,13 +130,13 @@ const ShopRegFormContainer = ({ history }) => {
         }
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
   // async function onSubmit(e) {
-  //   console.log("온서브밋");
-  //   console.log(e);
+  //   // console.log("온서브밋");
+  //   // console.log(e);
   //   if (
   //     !shopName ||
   //     !representative ||
@@ -182,10 +182,10 @@ const ShopRegFormContainer = ({ history }) => {
   //     Termsagree: e.Termsagree,
   //     Infoagree: e.Termsagree,
   //   };
-  //   console.log("body");
+  //   // console.log("body");
   //   const data = await body;
-  //   console.log(data);
-  //   console.log(e.Termsagree);
+  //   // console.log(data);
+  //   // console.log(e.Termsagree);
 
   //   await axios.post("/createShop", data).then((response) => {
   //     if (response.data.success) {

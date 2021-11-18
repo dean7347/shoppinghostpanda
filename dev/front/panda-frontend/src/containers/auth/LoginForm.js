@@ -41,14 +41,14 @@ const LoginForm = ({ history }) => {
 
   useEffect(() => {
     if (authError) {
-      console.log("오류발생");
-      console.log(authError);
+      // console.log("오류발생");
+      // console.log(authError);
       setError("로그인 실패");
       return;
     }
     if (auth) {
-      console.log(auth);
-      console.log("로그인 성공");
+      // console.log(auth);
+      // console.log("로그인 성공");
       dispatch(check());
     }
   }, [auth, authError, dispatch]);
@@ -60,7 +60,7 @@ const LoginForm = ({ history }) => {
       try {
         localStorage.setItem("user", JSON.stringify(user));
       } catch (e) {
-        console.log("localStorage is not working");
+        // console.log("localStorage is not working");
       }
     }
   }, [history, user]);

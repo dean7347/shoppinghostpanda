@@ -1,9 +1,9 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import PostListPage from "./pages/PostListPage";
+// import PostListPage from "./pages/PostListPage";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import RegisterPage from "./pages/RegisterPageV2";
 import WritePage from "./pages/WritePage";
 import PostPage from "./pages/PostPage";
 import regShopPage from "./pages/regShopPage";

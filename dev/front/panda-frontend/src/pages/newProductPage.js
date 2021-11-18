@@ -5,7 +5,9 @@ import ProductContainer from "../containers/product/ProductContainer";
 function newProductPage() {
   return (
     <>
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       <ProductContainer />
     </>
   );

@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import palette from "../../lib/palette";
+import { Row, Col } from "antd";
+
 import { Link } from "react-router-dom";
 
-//회원가입 로그인 페이지의 레이아웃을 담당하는 컴포너넌트
+// 회원가입 로그인 페이지의 레이아웃을 담당하는 컴포너넌트
 
 const AuthTemplateBlock = styled.div`
   position: absolute;
@@ -31,21 +33,24 @@ const WhiteBox = styled.div`
 
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.025);
   padding: 2rem;
-  width: 360px;
+  width: 720px;
   background: white;
+
   border-radius: 2px;
 `;
 
 const AuthTemplate = ({ children }) => {
   return (
-    <AuthTemplateBlock>
-      <WhiteBox>
-        <div className="logo-area">
-          <Link to="/">SHOPPINGHOSTPANDA</Link>
-        </div>
-        {children}
-      </WhiteBox>
-    </AuthTemplateBlock>
+    <Row gutter={[8, 16]}>
+      {/* <AuthTemplateBlock>
+        <WhiteBox> */}
+      <div className="logo-area">
+        <Link to="/">SHOPPINGHOSTPANDA</Link>
+      </div>
+      {children}
+      {/* </WhiteBox>
+      </AuthTemplateBlock> */}
+    </Row>
   );
 };
 

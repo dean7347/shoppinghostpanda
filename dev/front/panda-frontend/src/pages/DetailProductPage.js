@@ -20,10 +20,10 @@ function DetailProductPage(props) {
     axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
       if (response.data.success) {
         SetPandas(response.data.details);
-        console.log("판다스정보");
-        console.log(response.data.details);
+        // console.log("판다스정보");
+        // console.log(response.data.details);
       } else {
-        console.log("판다스 정보를 가져오지 못했습니다");
+        // console.log("판다스 정보를 가져오지 못했습니다");
       }
     });
   }, []);
@@ -33,15 +33,15 @@ function DetailProductPage(props) {
       .get(`/api/product/products_by_id?id=${productId}`)
       .then((response) => {
         if (response.data.success) {
-          console.log("디테일정보");
-          console.log(response.data);
+          // console.log("디테일정보");
+          // console.log(response.data);
 
           setProduct(response.data);
           let temp = JSON.parse(response.data.lowform);
           setSto(temp);
-          console.log("콘솔템프정보");
+          // console.log("콘솔템프정보");
 
-          console.log(response.data);
+          // console.log(response.data);
           setDetailImage(response.data.detailImages);
         } else {
           alert("상세정보 가져오기를 실패했습니다");
@@ -2120,7 +2120,9 @@ function DetailProductPage(props) {
   return (
     <>
       <BackTop />
-      <HeaderContainer />
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
       <div style={{ width: "100%", padding: "3rem 4rem" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <h1>{Product.productName}</h1>

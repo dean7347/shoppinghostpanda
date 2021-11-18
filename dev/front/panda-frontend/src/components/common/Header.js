@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Responsive from "./Responsive";
 import Button from "./Button";
 import { Link } from "react-router-dom";
-
+import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 const HeaderBlock = styled.div`
   position: fixed;
   width: 100%;
@@ -51,6 +51,16 @@ const Header = ({ user, onLogout }) => {
 
           {user ? (
             <div className="right">
+              <div style={{ marginRight: "10px" }}>
+                <Link to="/mypage">
+                  <UserOutlined />
+                  마이페이지
+                </Link>
+                <Link to="/user/cart">
+                  <ShoppingCartOutlined />
+                  카트
+                </Link>
+              </div>
               <UserInfo>{user.username}</UserInfo>
               <Button onClick={onLogout}>로그아웃</Button>
             </div>

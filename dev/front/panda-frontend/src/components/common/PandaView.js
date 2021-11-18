@@ -40,8 +40,8 @@ const PandaView = (props) => {
     );
   });
 
-  console.log("판다뷰 프롭스");
-  console.log(props.pandas[0].link);
+  // console.log("판다뷰 프롭스");
+  // console.log(props.pandas[0].link);
   const result =
     props.pandas[0].link === undefined ? (
       <Empty description={<span> 판다가 없습니다</span>} />

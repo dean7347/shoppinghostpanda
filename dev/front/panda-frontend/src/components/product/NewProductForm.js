@@ -48,8 +48,8 @@ function NewProductForm() {
   };
   const onClickForm = async (e) => {
     const tostringform = JSON.stringify(form);
-    console.log("데이터체크");
-    console.log(tostringform);
+    // console.log("데이터체크");
+    // console.log(tostringform);
 
     if (
       !Title ||
@@ -60,7 +60,7 @@ function NewProductForm() {
     ) {
       return alert("모든 값을 넣어주셔야 합니다");
     }
-    // console.log(tostringform.toString());
+    // // console.log(tostringform.toString());
     //서버에 채운 값들 request로 보낸다
     const body = {
       //로그인 된 사람의 ID
@@ -72,7 +72,7 @@ function NewProductForm() {
       type: Low,
       lowform: tostringform,
     };
-    // console.log(body);
+    // // console.log(body);
     axios.post("/regnewproduct", body).then((response) => {
       if (response.data.success) {
         alert("상품 업로드에 성공했습니다");
@@ -83,7 +83,7 @@ function NewProductForm() {
     });
   };
   const lowOption = (setOption) => {
-    console.log(setOption);
+    // console.log(setOption);
     switch (setOption) {
       //의류
       case "1":
@@ -3825,7 +3825,7 @@ function NewProductForm() {
   //고유값으로 사용될 id ref사용하여 번수담기
   const nextId = useRef(1);
   function handleChange(value) {
-    // console.log(`selected ${value}`);
+    // // console.log(`selected ${value}`);
     setLow(value);
   }
   const onInsert = useCallback(
@@ -3875,8 +3875,8 @@ function NewProductForm() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(event);
-    // console.log("등록시작");
+    // console.log(event);
+    // // console.log("등록시작");
 
     // if (!Title || !Description || !Images || !Options || !Thumb) {
     //   return alert("모든 값을 넣어주셔야 합니다");
