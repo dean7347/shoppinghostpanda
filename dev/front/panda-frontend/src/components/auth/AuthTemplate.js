@@ -33,7 +33,7 @@ const WhiteBox = styled.div`
 
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.025);
   padding: 2rem;
-  width: 720px;
+
   background: white;
 
   border-radius: 2px;
@@ -41,16 +41,14 @@ const WhiteBox = styled.div`
 
 const AuthTemplate = ({ children }) => {
   return (
-    <Row gutter={[8, 16]}>
-      {/* <AuthTemplateBlock>
-        <WhiteBox> */}
-      <div className="logo-area">
-        <Link to="/">SHOPPINGHOSTPANDA</Link>
-      </div>
-      {children}
-      {/* </WhiteBox>
-      </AuthTemplateBlock> */}
-    </Row>
+    <AuthTemplateBlock>
+      <WhiteBox>
+        <div className="logo-area">
+          <Link to="/">SHOPPINGHOSTPANDA</Link>
+        </div>
+        {children}
+      </WhiteBox>
+    </AuthTemplateBlock>
   );
 };
 

@@ -16,6 +16,9 @@ import PandaPage from "./pages/PandaPage";
 import CartPage from "./pages/CartPage";
 import "antd/dist/antd.css";
 import PaymentPage from "./pages/PaymentPage";
+import PriPage from "./pages/PriPage";
+import ServicePage from "./pages/ServicePage";
+import TermPage from "./pages/TermPage";
 
 import Footer from "./components/common/Footer";
 
@@ -55,6 +58,11 @@ const App = () => {
           path={"/user/payments/complete"}
           exact
         />
+        <Route component={PriPage} path={"/private"} exact />
+
+        <Route component={TermPage} path={"/terms"} exact />
+
+        <Route component={ServicePage} path={"/service"} exact />
       </div>
       <Footer />
     </>

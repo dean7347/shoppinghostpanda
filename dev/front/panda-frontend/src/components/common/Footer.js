@@ -1,5 +1,6 @@
 import React from "react";
 import { Divider, Row, Col } from "antd";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -12,11 +13,18 @@ const Footer = () => {
           justifyContent: "center",
         }}
       >
-        <div style={{ padding: "3px" }}>서비스 소개</div>
+        <Link to="/service">
+          <div style={{ padding: "3px" }}>서비스 소개</div>
+        </Link>
         <div style={{ padding: "3px" }}>|</div>
-        <div style={{ padding: "3px" }}>이용 약관</div>
+        <Link to="/terms">
+          <div style={{ padding: "3px" }}>이용 약관</div>
+        </Link>
+
         <div style={{ padding: "3px" }}>|</div>
-        <div style={{ padding: "3px" }}>개인정보 처리 방침</div>
+        <Link to="/private">
+          <div style={{ padding: "3px" }}>개인정보 처리 방침</div>
+        </Link>
       </div>
       <Row gutter={[18, 18]} style={{ justifyContent: "center" }}>
         {/* <div

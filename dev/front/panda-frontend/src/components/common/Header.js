@@ -52,14 +52,18 @@ const Header = ({ user, onLogout }) => {
           {user ? (
             <div className="right">
               <div style={{ marginRight: "10px" }}>
-                <Link to="/mypage">
-                  <UserOutlined />
-                  마이페이지
-                </Link>
-                <Link to="/user/cart">
-                  <ShoppingCartOutlined />
-                  카트
-                </Link>
+                <div style={{ margin: "5px" }}>
+                  <Link to="/mypage">
+                    <UserOutlined />
+                    마이페이지
+                  </Link>
+                </div>
+                <div style={{ margin: "5px" }}>
+                  <Link to="/user/cart">
+                    <ShoppingCartOutlined />
+                    카트
+                  </Link>
+                </div>
               </div>
               <UserInfo>{user.username}</UserInfo>
               <Button onClick={onLogout}>로그아웃</Button>

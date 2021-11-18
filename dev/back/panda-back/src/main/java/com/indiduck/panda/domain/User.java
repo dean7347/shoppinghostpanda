@@ -35,8 +35,16 @@ public class User implements UserDetails {
     private String userRName;
     private String userPhoneNumber;
     private LocalDateTime regAt;
+    private LocalDateTime leaveAt;
+
     private boolean isEmail;
     private Long recentAddress;
+    //동의사항
+    private boolean adult;
+    private boolean apprterm;
+    private boolean priagree;
+
+
 
 
     @OneToMany(mappedBy = "user")

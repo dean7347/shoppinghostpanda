@@ -12,6 +12,7 @@ package com.indiduck.panda.Service;
 //- https://www.javainuse.com/onlineBcrypt 에서 user_pw를 Bcrypt화할 수 있습니다.
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -86,14 +87,27 @@ public class JwtUserDetailsService implements UserDetailsService {
      */
     @Transactional
     public Long save(UserDto infoDto) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        infoDto.setPassword(encoder.encode(infoDto.getPassword()));
+        if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
+        {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            infoDto.setPassword(encoder.encode(infoDto.getPassword()));
 
-        return userRepository.save(User.builder()
-                .email(infoDto.getEmail())
-                .auth(infoDto.getAuth())
-                .password(infoDto.getPassword())
-                .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
+
+            return userRepository.save(User.builder()
+                    .email(infoDto.getEmail())
+                    .auth(infoDto.getAuth())
+                    .adult(infoDto.isAdult())
+                    .apprterm(infoDto.isApprterm())
+                    .userRName(infoDto.getName())
+                    .priagree(infoDto.isPriagree())
+                    .userPhoneNumber(infoDto.getPhone())
+                    .regAt(LocalDateTime.now())
+                    .password(infoDto.getPassword())
+                    .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
+
+        }
+        return null;
+
     }
 
 

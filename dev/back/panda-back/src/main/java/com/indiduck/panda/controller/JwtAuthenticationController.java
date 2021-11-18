@@ -14,6 +14,7 @@ import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import com.indiduck.panda.domain.dto.Response;
+import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.util.ApiResponseMessage;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -129,12 +130,18 @@ public class JwtAuthenticationController {
 
 
         try {
-            userDetailsService.save(infoDto);
+            Long save = userDetailsService.save(infoDto);
+            if(save==null)
+            {
+                return ResponseEntity.ok(new signupDto(false,"중복된 아이디가 존재합니다"));
+
+            }
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
+            return ResponseEntity.ok(new signupDto(false,"회원가입에 실패했습니다 같은 오류가 반복될경우 고객센터에 문의남겨주시기 바랍니다"));
+
         }
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok(new signupDto(true,"회원가입에성공했습니다"));
     }
     //체크
     @RequestMapping(path = "/user/logout", method = RequestMethod.GET)
@@ -212,6 +219,16 @@ public class JwtAuthenticationController {
 
             this.username=user;
 
+        }
+    }
+    @Data
+    static class signupDto{
+        private boolean success;
+        private String message;
+        public signupDto(boolean su,String me)
+        {
+            success=su;
+            message=me;
         }
     }
 
