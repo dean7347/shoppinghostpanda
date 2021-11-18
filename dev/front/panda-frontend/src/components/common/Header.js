@@ -4,6 +4,8 @@ import Responsive from "./Responsive";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 const HeaderBlock = styled.div`
   position: fixed;
   width: 100%;
@@ -43,7 +45,176 @@ const UserInfo = styled.div`
 const Header = ({ user, onLogout }) => {
   return (
     <>
-      <HeaderBlock>
+      {/* <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+              <img
+                src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png"
+                height="15"
+                alt=""
+                loading="lazy"
+              />
+            </a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  Team
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  Projects
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="d-flex align-items-center">
+            <a class="text-reset me-3" href="#">
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+
+            <a
+              class="text-reset me-3 dropdown-toggle hidden-arrow"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-mdb-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-bell"></i>
+              <span class="badge rounded-pill badge-notification bg-danger">
+                1
+              </span>
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdownMenuLink"
+            >
+              <li>
+                <a class="dropdown-item" href="#">
+                  Some news
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Another news
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Something else here
+                </a>
+              </li>
+            </ul>
+
+            <a
+              class="dropdown-toggle d-flex align-items-center hidden-arrow"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-mdb-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="https://mdbootstrap.com/img/new/avatars/2.jpg"
+                class="rounded-circle"
+                height="25"
+                alt=""
+                loading="lazy"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdownMenuLink"
+            >
+              <li>
+                <a class="dropdown-item" href="#">
+                  My profile
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Settings
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav> */}
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Navbar.Brand href="/">PanDa</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="/">상점</Nav.Link>
+              <Nav.Link href="/">판다</Nav.Link>
+            </Nav>
+            {user ? (
+              <Nav>
+                <NavDropdown
+                  title="MyPage"
+                  id="basic-nav-dropdown"
+                  style={{ float: "right" }}
+                >
+                  <NavDropdown.Item href="#action/3.1">
+                    마이페이지
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item href="#action/3.2">
+                    주문 배송조회
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">
+                    장바구니
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">
+                    결제내역 조회
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                <Nav.Link href="#deets">
+                  {" "}
+                  <Button onClick={onLogout}>로그아웃</Button>
+                </Nav.Link>
+              </Nav>
+            ) : (
+              <Nav>
+                <Nav.Link href="#deets">
+                  <Button to="/login">로그인</Button>
+                </Nav.Link>
+                <Nav.Link eventKey={2} href="#memes">
+                  <Button to="/register">회원가입</Button>
+                </Nav.Link>
+              </Nav>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      {/* <HeaderBlock>
         <Wrapper>
           <Link to="/" className="logo">
             Panda
@@ -66,16 +237,14 @@ const Header = ({ user, onLogout }) => {
                 </div>
               </div>
               <UserInfo>{user.username}</UserInfo>
-              <Button onClick={onLogout}>로그아웃</Button>
             </div>
           ) : (
             <div className="right">
-              <Button to="/login">로그인</Button>
             </div>
           )}
         </Wrapper>
       </HeaderBlock>
-      <Spacer />
+      <Spacer /> */}
     </>
   );
 };
