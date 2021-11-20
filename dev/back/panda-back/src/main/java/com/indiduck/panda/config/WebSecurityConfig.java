@@ -57,7 +57,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate","/signup","/auth/check","/logout","/test","/test2","/createFile").permitAll().
+                .authorizeRequests().antMatchers("/**","/createShop","/haveshop","/api/shop/dashboard","/api/shop/dashboard/orderStatus","/api/shop/confirm","/createFile","/regnewproduct",
+                "/api/preview","/api/searchpreview","/api/product/products_by_id","/api/addpropanda","/api/getpandas_by_id","/api/ispanda","/api/regpanda"
+                ,"/api/addcart","/api/mycart","/api/payment","/api/payment/complete","/api/test2","/api/test","/authenticate","/signup","/user/logout","/auth/check"
+                ,"/api/addaddress","/api/myaddress","/api/deleteaddr","/product/api/proxy", //여기까지 걍추가함
+                "/shop/**","/authenticate","/signup","/auth/check","/logout","/test","/test2","/createFile", "/index.html",
+                "/favicon.ico",    "/css/**",  "/fonts/**", "/img/**",  "/js/**" ).permitAll().
                 //인증된 회원만
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().

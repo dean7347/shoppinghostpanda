@@ -663,7 +663,7 @@ const RegisterPageV2 = ({ history }) => {
 
   const onClick = async (e) => {
     try {
-      if (isEmail(e.id)) {
+      if (!isEmail(e.id)) {
         alert("email 형식이 올바르지 않습니다");
         return;
       }
