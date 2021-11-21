@@ -42,6 +42,22 @@ public class HelloController {
         System.out.println("test = " + test);
 
     }
+//    @RequestMapping(value = "/**/{[path:[^\\.]*}")
+//    public String redirect() {
+//        // Forward to home page so that route is preserved.
+//        return "index";
+//    }
+//    @RequestMapping( method = {RequestMethod.OPTIONS, RequestMethod.GET}, path = {"/login"} )
+//    public String forwardAngularPathsP() {
+//        System.out.println("겟호출");
+//        return "index";
+//    }
+//    @RequestMapping( method = {RequestMethod.OPTIONS, RequestMethod.POST}, path = {"/login"} )
+//    public String forwardAngularPathsG() {
+//        System.out.println("포스트호출");
+//
+//        return "forward:/index.html";
+//    }
 //    @RequestMapping(value = "/test2", method = RequestMethod.GET)
 //    public Page<ProductDto> viewAll(@CurrentSecurityContext(expression = "authentication")
 //                                             Authentication authentication, Pageable pageable) throws Exception {
