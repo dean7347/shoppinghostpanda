@@ -120,7 +120,7 @@ const ShopRegFormContainer = ({ history }) => {
         alert("약관,정보수신에 동의하셔야 합니다");
         return;
       }
-      await axios.post("/createShop", body).then((response) => {
+      await axios.post("/api/createShop", body).then((response) => {
         if (response.data.success) {
           alert("샵등록신청 성공!");
         } else {

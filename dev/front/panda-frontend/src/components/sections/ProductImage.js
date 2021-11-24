@@ -10,8 +10,8 @@ function ProductImage(props) {
       let images = [];
       props.detail.thumbs.map((item, index) => {
         images.push({
-          original: `http://localhost:8080/upload/${item.filepath}`,
-          thumbnail: `http://localhost:8080/upload/${item.filepath}`,
+          original: `https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${item.filepath}`,
+          thumbnail: `https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${item.filepath}`,
         });
       });
       setImages(images);

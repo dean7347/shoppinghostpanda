@@ -65,7 +65,7 @@ public class JwtAuthenticationController {
     private RedisUtil redisUtil;
 
     //로그인
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/authenticate", method = RequestMethod.POST)
     public  ResponseEntity<ApiResponseMessage> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest req,
                                                                          HttpServletResponse res) throws Exception {
 
@@ -123,7 +123,7 @@ public class JwtAuthenticationController {
     }
 
     //회원가입
-    @PostMapping("/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<?> signup(@RequestBody UserDto infoDto) { // 회원 추가
         System.out.println("infoDto = " + infoDto.getEmail());
 
@@ -144,7 +144,7 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new signupDto(true,"회원가입에성공했습니다"));
     }
     //체크
-    @RequestMapping(path = "/user/logout", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
     private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        SecurityContextHolder 클리어시켜볼까?
@@ -158,7 +158,7 @@ public class JwtAuthenticationController {
 
     }
 
-    @GetMapping("/auth/check")
+    @GetMapping("/api/auth/check")
     @ResponseBody
     public ResponseEntity<?> check(HttpServletRequest request,
                                    @CookieValue(name = "accessToken") String usernameCookie){

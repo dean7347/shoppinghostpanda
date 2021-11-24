@@ -188,7 +188,7 @@ const Header = ({ user, onLogout }) => {
                   <NavDropdown.Item href="#action/3.2">
                     주문 배송조회
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">
+                  <NavDropdown.Item href="/user/cart">
                     장바구니
                   </NavDropdown.Item>
                   <NavDropdown.Item href="#action/3.3">

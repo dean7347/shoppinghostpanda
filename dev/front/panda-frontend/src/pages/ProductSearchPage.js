@@ -28,7 +28,7 @@ function ProductSearchPage(props) {
     (page) => {
       setPage(page);
       axios
-        .get(`/api/searchpreview?size=1&page=${page - 1}&productname=${search}`)
+        .get(`/api/searchpreview?size=5&page=${page - 1}&productname=${search}`)
         .then((response) => {
           if (response.data != null) {
             // // console.log(response.data);
@@ -61,7 +61,7 @@ function ProductSearchPage(props) {
   useEffect(
     (Page) => {
       axios
-        .get(`/api/searchpreview?size=1&page=${Page - 1}&productname=${search}`)
+        .get(`/api/searchpreview?size=5&page=${Page - 1}&productname=${search}`)
         .then((response) => {
           if (response.data != null) {
             // console.log("초기데이터");

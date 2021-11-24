@@ -2109,7 +2109,7 @@ function DetailProductPage(props) {
       <div key={index + item.filepath}>
         <img
           style={{ width: "100%", objectFit: "cover" }}
-          src={`http://localhost:8080/upload/${item.filepath}`}
+          src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${item.filepath}`}
           alt=""
         />
         <br />

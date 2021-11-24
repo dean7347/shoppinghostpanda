@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import "./UserCardBlock.css";
-import { Button, Checkbox, Divider } from "antd";
+import { Button, Checkbox, Divider, Row, Col } from "antd";
 import axios from "../../../../../node_modules/axios/index";
 
 import Button2 from "react-bootstrap/Button";
@@ -20,7 +20,6 @@ function UserCardBlock(props) {
   useEffect(() => {
     setCheckedList(defaultCheckedList);
   }, [props]);
-
   const onChanges = (e, mo) => {
     // console.log(`checked = ${e.target.checked}`);
     // console.log(mo);
@@ -80,173 +79,188 @@ function UserCardBlock(props) {
           value={checkedList}
           onChange={onChange}
         >
-          <table>
-            <thead>
-              <th>상점명</th>
-              <th>상품상세</th>
-              <th>상품금액</th>
-              <th>배송비</th>
-              <th>선택</th>
-            </thead>
-            <tbody>
-              {props.products.ds &&
-                props.products.ds.map((item, index) => {
-                  var allPrice = 0;
-                  var purePrice = 0;
-                  function pricePlus(getprice, getpureprice) {
-                    allPrice = allPrice + getprice;
-                    purePrice = purePrice + getpureprice;
-                  }
+          <Row gutter={16}>
+            <Col span={16}>
+              <table>
+                <thead>
+                  <th>상점명</th>
+                  <th>상품상세</th>
+                  <th>상품금액</th>
+                  <th>배송비</th>
+                  <th>선택</th>
+                </thead>
+                <tbody>
+                  {props.products.ds &&
+                    props.products.ds.map((item, index) => {
+                      var allPrice = 0;
+                      var purePrice = 0;
+                      function pricePlus(getprice, getpureprice) {
+                        allPrice = allPrice + getprice;
+                        purePrice = purePrice + getpureprice;
+                      }
 
-                  var freePrice = item.freePrice;
-                  var shipPrice = item.shipPrice;
-                  //   function getfreePrice(getPrice) {
-                  //     freePrice = getPrice;
-                  //   }
+                      var freePrice = item.freePrice;
+                      var shipPrice = item.shipPrice;
+                      //   function getfreePrice(getPrice) {
+                      //     freePrice = getPrice;
+                      //   }
 
-                  //   function getShipPrice(getPrice) {
-                  //     shipPrice = getPrice;
-                  //   }
-                  function isfree(getpurePrice) {
-                    if (getpurePrice >= freePrice) {
-                      return "무료배송";
-                    } else {
-                      return shipPrice;
-                    }
-                  }
-                  return (
-                    <tr>
-                      <td>{item.shopName}</td>
-                      <td style={{}}>
-                        {item.dp.map((product, index) => (
-                          <tr key={index} style={{}}>
-                            <td
-                              style={{
-                                textAlign: "center",
-                                width: "120px",
-                                height: "120px",
-                              }}
-                            >
-                              <img
-                                style={{
-                                  width: "150px",
-                                  height: "150px",
-                                }}
-                                alt="product"
-                                src={`http://localhost:8080/upload/${product.thumbNail}`}
-                              />
-                            </td>
-                            <td style={{ width: "20%" }}>
-                              {product.productName}
-                            </td>
-                            <td style={{ width: "50%" }}>
-                              {product.do.map((option, index) => (
-                                <tr key={index}>
-                                  <td>{option.pandaName}</td>
-                                  <td>{option.optionName}</td>
-                                  <td>{option.optionCount} EA</td>
-                                  <td>
-                                    {option.originPrice
-                                      .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                  </td>
-                                  <td>
-                                    {/* {(option.originPrice * option.optionCount)
+                      //   function getShipPrice(getPrice) {
+                      //     shipPrice = getPrice;
+                      //   }
+                      function isfree(getpurePrice) {
+                        if (getpurePrice >= freePrice) {
+                          return "무료배송";
+                        } else {
+                          return shipPrice;
+                        }
+                      }
+                      return (
+                        <tr>
+                          <td>{item.shopName}</td>
+                          <td style={{}}>
+                            {item.dp.map((product, index) => (
+                              <tr key={index} style={{}}>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    width: "120px",
+                                    height: "120px",
+                                  }}
+                                >
+                                  <img
+                                    style={{
+                                      width: "150px",
+                                      height: "150px",
+                                    }}
+                                    alt="product"
+                                    src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                  />
+                                </td>
+                                <td>
+                                  <div style={{ width: "200px" }}>
+                                    {product.productName}
+                                  </div>
+                                </td>
+                                <td style={{ width: "50%" }}>
+                                  {product.do.map((option, index) => (
+                                    <tr key={index}>
+                                      <td>{option.pandaName}</td>
+                                      <td>
+                                        <div style={{ width: "80px" }}></div>
+                                        {option.optionName}
+                                      </td>
+                                      <td>{option.optionCount} EA</td>
+                                      <td>
+                                        {option.originPrice
+                                          .toString()
+                                          .replace(
+                                            /\B(?=(\d{3})+(?!\d))/g,
+                                            ","
+                                          )}
+                                      </td>
+                                      <td>
+                                        {/* {(option.originPrice * option.optionCount)
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                     원 */}
-                                    {option.discount ? (
-                                      <div>
-                                        {Math.round(
-                                          option.originPrice *
-                                            option.optionCount *
-                                            0.95
-                                        )
-                                          .toString()
-                                          .replace(
-                                            /\B(?=(\d{3})+(?!\d))/g,
-                                            ","
+                                        {option.discount ? (
+                                          <div>
+                                            {Math.round(
+                                              option.originPrice *
+                                                option.optionCount *
+                                                0.95
+                                            )
+                                              .toString()
+                                              .replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                              )}
+                                            <br />
+                                            (판다 할인 : 5% )
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            {(
+                                              option.originPrice *
+                                              option.optionCount
+                                            )
+                                              .toString()
+                                              .replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                              )}
+                                            <br />
+                                            (판다 할인 미적용)
+                                          </div>
+                                        )}
+                                      </td>
+                                      {option.discount
+                                        ? pricePlus(
+                                            Math.round(
+                                              option.originPrice *
+                                                option.optionCount *
+                                                0.95
+                                            ),
+                                            option.originPrice *
+                                              option.optionCount
+                                          )
+                                        : pricePlus(
+                                            option.originPrice *
+                                              option.optionCount,
+                                            option.originPrice *
+                                              option.optionCount
                                           )}
-                                        <br />
-                                        (판다 할인 : 5% )
-                                      </div>
-                                    ) : (
-                                      <div>
-                                        {(
-                                          option.originPrice *
-                                          option.optionCount
-                                        )
-                                          .toString()
-                                          .replace(
-                                            /\B(?=(\d{3})+(?!\d))/g,
-                                            ","
-                                          )}
-                                        <br />
-                                        (판다 할인 미적용)
-                                      </div>
-                                    )}
-                                  </td>
-                                  {option.discount
-                                    ? pricePlus(
-                                        Math.round(
-                                          option.originPrice *
-                                            option.optionCount *
-                                            0.95
-                                        ),
-                                        option.originPrice * option.optionCount
-                                      )
-                                    : pricePlus(
-                                        option.originPrice * option.optionCount,
-                                        option.originPrice * option.optionCount
-                                      )}
 
-                                  <td>
-                                    <Button
-                                      type="primary"
-                                      danger
-                                      onClick={(e) => {
-                                        onClick(option.detailedId, e);
-                                      }}
-                                    >
-                                      삭제
-                                    </Button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </td>
-                          </tr>
-                        ))}
-                      </td>
-                      <td>
-                        {allPrice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                        원
-                      </td>
-                      <td>
-                        {isfree(purePrice)
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                        <br />(
-                        {freePrice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                        이상 무료배송)
-                      </td>
+                                      <td>
+                                        <Button
+                                          type="primary"
+                                          danger
+                                          onClick={(e) => {
+                                            onClick(option.detailedId, e);
+                                          }}
+                                        >
+                                          삭제
+                                        </Button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </td>
+                              </tr>
+                            ))}
+                          </td>
+                          <td>
+                            {allPrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            원
+                          </td>
+                          <td>
+                            {isfree(purePrice)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            <br />(
+                            {freePrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                            이상 무료배송)
+                          </td>
 
-                      <td>
-                        <Checkbox
-                          onChange={(e) => onChanges(e, allPrice)}
-                          value={item.shopId}
-                        >
-                          {item.shopId}
-                        </Checkbox>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+                          <td>
+                            <Checkbox
+                              onChange={(e) => onChanges(e, allPrice)}
+                              value={item.shopId}
+                            >
+                              {item.shopId}
+                            </Checkbox>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </Col>
+          </Row>
         </CheckboxGroup>
       </>
     );

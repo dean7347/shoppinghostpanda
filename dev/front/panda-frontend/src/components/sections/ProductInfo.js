@@ -39,7 +39,7 @@ function ProductInfo(props) {
       alert("올바른 URL가 아닙니다");
       return;
     }
-    if (approvePanda) {
+    if (!approvePanda) {
       alert("판다 승인후 활동가능합니다");
       return;
     }

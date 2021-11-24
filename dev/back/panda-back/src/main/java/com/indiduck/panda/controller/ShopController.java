@@ -40,7 +40,7 @@ public class ShopController {
     UserOrderRepository userOrderRepository;
 
     //샵 생성메소드
-    @RequestMapping(value = "/createShop", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/createShop", method = RequestMethod.POST)
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateShopDAO createShopDAO) throws Exception{
         String name = authentication.getName();
@@ -72,7 +72,7 @@ public class ShopController {
     //TODO:샵 수정 메소드
     //TODO:샵 삭제 메소드
     //TODO:샵 조회 메소드
-    @GetMapping("/haveshop")
+    @GetMapping("/api/haveshop")
     @ResponseBody
     public ResponseEntity<?> haveShop(@CookieValue(name = "accessToken") String usernameCookie)
     {

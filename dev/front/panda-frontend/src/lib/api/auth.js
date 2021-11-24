@@ -2,14 +2,14 @@ import client from "./client";
 
 //로그인
 export const login = ({ account, password }) =>
-  client.post("/authenticate", { username: account, password });
+  client.post("/api/authenticate", { username: account, password });
 
 //회원가입
 export const register = ({ account, password }) =>
-  client.post("/signup", { email: account, password });
+  client.post("/api/signup", { email: account, password });
 
 //로그인 상태 확인
-export const check = () => client.get("/auth/check");
+export const check = () => client.get("/api/auth/check");
 
 //로그아웃
-export const logout = () => client.get("/user/logout");
+export const logout = () => client.get("/api/user/logout");

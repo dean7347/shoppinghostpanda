@@ -2,13 +2,21 @@ import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import Icon from "@ant-design/icons";
 import axios from "axios";
-import { file } from "../../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
 
 function FileUpload(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
+  console.log("파일입력1");
 
+  console.log(props.thumb === true);
   const dropHandler = (files) => {
+    console.log("파일입력2");
+    console.log(props);
+
+    console.log(props.refreshFunction == "() => updateThumb");
+    console.log(props.refreshFunction == "() => updateImages");
+
+    // console.log(files);
     // console.log(files.length);
     // console.log("파일타입체크");
     // console.log(files[0].type);
@@ -40,7 +48,7 @@ function FileUpload(props) {
 
       // console.log(fr);
       //상세이미지
-      if (props.refreshFunction.name === "updateImages") {
+      if (props.type === "detail") {
         if (image.width > 860) {
           alert("상세 이미지는 가로 860px 이하로 등록해주세요");
           setCheck(false);
@@ -48,19 +56,21 @@ function FileUpload(props) {
         } else {
           formData.append("file", files[0]);
 
-          axios.post("/createFile", formData, config).then((response) => {
+          axios.post("/api/amzonefile", formData, config).then((response) => {
             setCheck(false);
             if (response.data.success) {
               setImages([...Images, response.data.filePath]);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
+              console.log("파일저장실패");
+              console.log(response.data);
               alert("파일 저장 실패");
             }
           });
         }
       }
       //썸네일
-      if (props.refreshFunction.name === "updateThumb") {
+      if (props.type === "thumb") {
         if (image.width > 640 || image.height > 640) {
           alert("섬네일은 640px x 640px이하로 등록해주세요");
           setCheck(false);
@@ -71,15 +81,17 @@ function FileUpload(props) {
         } else {
           formData.append("file", files[0]);
 
-          axios.post("/createFile", formData, config).then((response) => {
+          axios.post("/api/amzonefile", formData, config).then((response) => {
             setCheck(false);
             if (response.data.success) {
               setImages([...Images, response.data.filePath]);
+              console.log(response.data.filePath);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
               alert("파일 저장 실패");
             }
           });
+          // axios.post("/api/amzonfile")
         }
       }
     };
@@ -151,7 +163,7 @@ function FileUpload(props) {
           <div onClick={() => deleteHandler(image)} key={index}>
             <img
               style={{ maxWidth: "300px", width: "300px", height: "240px" }}
-              src={`http://localhost:8080/upload/${image}`}
+              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${image}`}
             />
           </div>
         ))}

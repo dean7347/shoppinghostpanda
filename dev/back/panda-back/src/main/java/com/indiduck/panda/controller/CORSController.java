@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 @CrossOrigin
 @Controller
 public class CORSController {
-    @GetMapping("/product/api/proxy")
+    @GetMapping("/api/product/api/proxy")
     @ResponseBody
     public String proxy( @RequestParam(name = "url") String getproxy) {
 

@@ -48,8 +48,6 @@ function NewProductForm() {
   };
   const onClickForm = async (e) => {
     const tostringform = JSON.stringify(form);
-    // console.log("데이터체크");
-    // console.log(tostringform);
 
     if (
       !Title ||
@@ -73,7 +71,7 @@ function NewProductForm() {
       lowform: tostringform,
     };
     // // console.log(body);
-    axios.post("/regnewproduct", body).then((response) => {
+    axios.post("/api/regnewproduct", body).then((response) => {
       if (response.data.success) {
         alert("상품 업로드에 성공했습니다");
         history.push("/shop");
@@ -3912,13 +3910,13 @@ function NewProductForm() {
             <br />
             jpg/png 파일만 허용됩니다
           </label>
-          <FileUpload refreshFunction={updateThumb} />
+          <FileUpload refreshFunction={updateThumb} type={"thumb"} />
           <label>
             상품상세사진 (가로사이즈 860 이하)
             <br />
             jpg/png 파일만 허용됩니다
           </label>
-          <FileUpload refreshFunction={updateImages} />
+          <FileUpload refreshFunction={updateImages} type={"detail"} />
 
           <br />
           <br />

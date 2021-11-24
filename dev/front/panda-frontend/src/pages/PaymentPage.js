@@ -679,7 +679,7 @@ function PaymentPage(gprops) {
                                 height: "150px",
                               }}
                               alt="product"
-                              src={`http://localhost:8080/upload/${product.thumbNail}`}
+                              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
                             />
                           </td>
                           <td style={{ width: "20%" }}>

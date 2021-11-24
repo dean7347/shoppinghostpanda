@@ -1,10 +1,12 @@
 package com.indiduck.panda.controller;
 
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.indiduck.panda.Repository.ProductRepository;
 import com.indiduck.panda.Service.FileService;
 import com.indiduck.panda.Service.ProductService;
 
+import com.indiduck.panda.Service.S3Uploader;
 import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
@@ -15,6 +17,7 @@ import com.indiduck.panda.util.MD5Generator;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -46,10 +49,57 @@ public class ProductController {
     @Autowired
     private final ProductRepository productRepository;
 
+    private final S3Uploader s3Uploader;
+
+
+    @RequestMapping(value = "/api/amzonefile", method = RequestMethod.POST)
+    public ResponseEntity<?> createFileAmazon(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestPart("file") MultipartFile files) throws Exception{
+//
+        try{
+
+        String origFilename = files.getOriginalFilename();
+        String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
+        String filename = new MD5Generator(origFilename).toString()+System.currentTimeMillis();
+        String savePath = authentication.getName();
+
+
+        String aStatic = s3Uploader.upload(authentication.getName(),files);
+
+            System.out.println("aStatic = " + aStatic);
+
+
+        FileDao fileDao = new FileDao();
+        fileDao.setOrigFilename(origFilename);
+        fileDao.setFilename(filename+"."+etx);
+        fileDao.setFilePath(aStatic);
+        Long fileId = fileService.saveFile(fileDao);
+
+//            return  ResponseEntity.ok(new ResultDtoM(false,aStatic));
+
+        return  ResponseEntity.ok(new FileDto(true,fileDao.getFilePath(),fileDao.getFilename()));
+
+        }
+        catch (Exception e)
+        {
+            return  ResponseEntity.ok(new ResultDtoM(false,"익셉션"+e.toString()));
+
+        }
+//            return  ResponseEntity.ok(new ResultDtoM(false,files.getOriginalFilename()));
+//
+////        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품사진 업로드 실패");
+
+
+
+
+    }
+
+
+
     //상품사진 등록
-    @RequestMapping(value = "/createFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/createFile2", method = RequestMethod.POST)
     public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestParam("file") MultipartFile files) throws Exception{
+                                                Authentication authentication, @RequestPart("file") MultipartFile files) throws Exception{
         try {
             String origFilename = files.getOriginalFilename();
             String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
@@ -88,7 +138,7 @@ public class ProductController {
 
     }
 
-    @RequestMapping(value = "/regnewproduct", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/regnewproduct", method = RequestMethod.POST)
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
         System.out.println("createProductDAO = " + createProductDAO);
@@ -360,6 +410,18 @@ public class ProductController {
 
         public ResultDto(boolean success){
             this.success=success;
+
+        }
+    }
+
+    @Data
+    static class ResultDtoM {
+
+        private boolean success;
+        private String messgae;
+        public ResultDtoM(boolean success,String mes){
+            this.success=success;
+            this.messgae=mes;
 
         }
     }

@@ -8,7 +8,7 @@ function ImageSlider(props) {
           <div key={index}>
             <img
               style={{ width: "100%", maxHeight: "150px", minHeight: "150px" }}
-              src={`http://localhost:8080/upload/${image.filepath}`}
+              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${image.filepath}`}
             />
           </div>
         ))}
