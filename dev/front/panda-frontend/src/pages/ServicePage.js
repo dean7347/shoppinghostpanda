@@ -1,6 +1,22 @@
 import React from "react";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import { Row, Col } from "antd";
+import img1 from "../images/service1.png"
+import img2 from "../images/service2.png"
+import img3 from "../images/service3.png"
+import img4 from "../images/service4.png"
+import img8 from "../images/service8.png"
+
+import im1 from "../images/serv1.png"
+import im2 from "../images/serv2.png"
+import im3 from "../images/serv3.png"
+
+
+
+
+
+
+
 
 const ServicePage = ({ history }) => {
   return (
@@ -14,36 +30,36 @@ const ServicePage = ({ history }) => {
           textAlign: "center",
         }}
       >
-        <img src="images/service1.png" alt="" style={{ width: "70%" }} />
+        <img src={img1} alt="이미지로딩중.." style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
 
-        <img src="images/service2.png" alt="" style={{ width: "70%" }} />
+        <img  src={img2} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/service3.png" alt="" style={{ width: "70%" }} />
+        <img  src={img3} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/service4.png" alt="" style={{ width: "70%" }} />
+        <img  src={img4} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/serv1.png" alt="" style={{ width: "70%" }} />
+        <img src={im1} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/serv2.png" alt="" style={{ width: "70%" }} />
+        <img src={im2} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/serv3.png" alt="" style={{ width: "70%" }} />
+        <img src={im3} alt="" style={{ width: "70%" }} />
         <hr
           style={{ backgroundColor: "red", width: "70%", margin: "5px auto" }}
         />
-        <img src="images/service8.png" alt="" style={{ width: "70%" }} />
+        <img src={img8} alt="" style={{ width: "70%" }} />
       </div>
     </>
   );
