@@ -49,6 +49,7 @@ const TodoInsert = ({ onInsert }) => {
           name="optionStock"
           value={optionStock}
           onChange={onChange}
+          style={{ width: "10%" }}
         />
       </form>
       <button className="button" onClick={onSubmit}>

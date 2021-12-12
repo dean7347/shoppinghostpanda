@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import Footer from "../components/common/Footer";
 import { Form, Input, Button } from "antd";
 import ProductImage from "../components/sections/ProductImage";
 import ProductInfo from "../components/sections/ProductInfo";
-import { Row, Col, Tabs, BackTop } from "antd";
+import ProductInfoFlot from "../components/sections/ProductInfoFloat";
 
+import { Row, Col, Tabs, BackTop, Affix } from "antd";
+import $ from "jquery";
+import { throttledScroll } from "lodash";
 import PandaView from "../components/common/PandaView";
 function DetailProductPage(props) {
   const { TabPane } = Tabs;
@@ -15,7 +18,8 @@ function DetailProductPage(props) {
   const [DetailImage, setDetailImage] = useState([{}]);
   const [Pandas, SetPandas] = useState([{}]);
   const [sto, setSto] = useState();
-
+  const [top, setTop] = useState(10);
+  const [container, setContainer] = useState(null);
   useEffect(() => {
     axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
       if (response.data.success) {
@@ -2108,7 +2112,7 @@ function DetailProductPage(props) {
     return (
       <div key={index + item.filepath}>
         <img
-          style={{ width: "100%", objectFit: "cover" }}
+          style={{ width: "100%", objectFit: "fill" }}
           src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${item.filepath}`}
           alt=""
         />
@@ -2116,9 +2120,55 @@ function DetailProductPage(props) {
       </div>
     );
   });
+  const [ScrollY, setScrollY] = useState(0); // 스크롤값을 저장하기 위한 상태
+  const handleFollow = () => {
+    setScrollY(window.pageYOffset); // window 스크롤 값을 ScrollY에 저장
+  };
+
+  useEffect(() => {
+    console.log("ScrollY is ", ScrollY); // ScrollY가 변화할때마다 값을 콘솔에 출력
+    if (ScrollY >= 1200) {
+      setCartvisible("block");
+      console.log("d오프");
+    } else {
+      setCartvisible("none");
+      console.log("d온");
+    }
+  }, [ScrollY]);
+
+  useEffect(() => {
+    const watch = () => {
+      window.addEventListener("scroll", handleFollow);
+    };
+    watch(); // addEventListener 함수를 실행
+    return () => {
+      window.removeEventListener("scroll", handleFollow); // addEventListener 함수를 삭제
+    };
+  });
+  useEffect(() => {
+    window.addEventListener("scroll", throttledScroll);
+    return () => {
+      window.removeEventListener("scroll", throttledScroll);
+    };
+  }, [throttledScroll]); // 여기에 throttledScroll 대신 isTabnavon을 넣어줘도 정상작동한다
+
+  const [cartvisible, setCartvisible] = useState("none");
 
   return (
     <>
+      <Affix offsetTop={top}>
+        <div
+          className="quickmenu"
+          style={{
+            width: "100%",
+            backgroundColor: "red",
+            display: `${cartvisible}`,
+            // position: "absolute",
+          }}
+        >
+          <ProductInfoFlot detail={Product} proId={productId} pandas={Pandas} />
+        </div>
+      </Affix>
       <BackTop />
       <div style={{ zIndex: "99" }}>
         <HeaderContainer />
@@ -2128,25 +2178,41 @@ function DetailProductPage(props) {
           <h1>{Product.productName}</h1>
         </div>
         <br />
-        <Row gutter={[16, 16]}>
-          <Col lg={12} sm={24}>
-            <ProductImage detail={Product} />
+        <Row gutter={[16, 16]} justify={"center"}>
+          <Col lg={8} sm={16}>
+            <div style={{ maxWidth: "320px" }}>
+              <ProductImage detail={Product} />
+            </div>
           </Col>
 
-          <Col lg={12} sm={24}>
+          <Col lg={8} sm={16}>
             <ProductInfo detail={Product} proId={productId} pandas={Pandas} />
           </Col>
 
           <Col lg={24} sm={24}>
-            <Tabs defaultActiveKey="1" type="card" size={"small"}>
+            <Tabs
+              defaultActiveKey="1"
+              type="card"
+              size={"small"}
+              centered={"true"}
+            >
               <TabPane tab="상품 상세" key="1">
                 <div
                   style={{
-                    background: "red",
+                    Width: "100%",
                     justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
-                  {detailImage}
+                  <div
+                    style={{
+                      Width: "100%",
+                      maxWidth: "860px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {detailImage}
+                  </div>
                 </div>
               </TabPane>
               <TabPane tab="판다보기" key="2">
@@ -2200,7 +2266,7 @@ function DetailProductPage(props) {
                     >
                       고객센터 번호
                     </td>
-                    <td>{Product.shopName}</td>
+                    <td>{Product.csPhone}</td>
                   </tr>
                   <tr>
                     <td

@@ -123,6 +123,7 @@ const ShopRegFormContainer = ({ history }) => {
       await axios.post("/api/createShop", body).then((response) => {
         if (response.data.success) {
           alert("샵등록신청 성공!");
+          window.location.replace("/shop");
         } else {
           alert(
             "샵등록신청에 실패했습니다, 신청중이시라면 최대한 빠르게 검토하겠습니다"
@@ -235,12 +236,19 @@ const ShopRegFormContainer = ({ history }) => {
         onFinish={onClick}
       >
         <Form.Item
-          label="약관 동의"
-          // name="Termsagree"
+          label="약관 동의(필수)"
+          name="Termsagree"
           valuePropName="Termsagree"
+          rules={[
+            {
+              required: true,
+              message: "약관에 필수 동의하셔야합니다",
+            },
+          ]}
         >
           <Switch />
         </Form.Item>
+
         <h1>상점 관련 정보</h1>
         <Form.Item label="상호명">
           <Input
@@ -337,10 +345,17 @@ const ShopRegFormContainer = ({ history }) => {
             placeholder="연락처를 입력해주세요 상품 등록시 외부에 노출됩니다"
           />
         </Form.Item>
+
         <Form.Item
-          label="정보수신 동의"
-          // name="Infoagree"
+          label="정보수신 동의(필수)"
+          name="Infoagree"
           valuePropName="Infoagree"
+          rules={[
+            {
+              required: true,
+              message: "약관에 필수 동의하셔야합니다",
+            },
+          ]}
         >
           <Switch />
         </Form.Item>

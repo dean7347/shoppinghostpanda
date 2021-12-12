@@ -153,7 +153,7 @@ const Header = ({ user, onLogout }) => {
               </li>
               <li>
                 <a class="dropdown-item" href="#">
-                  Settings
+                  
                 </a>
               </li>
               <li>
