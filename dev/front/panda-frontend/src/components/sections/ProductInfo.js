@@ -237,7 +237,7 @@ function ProductInfo(props) {
       setIspanda(response.data.ispanda);
       setapprovePanda(response.data.approve);
     });
-  });
+  }, []);
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
@@ -260,111 +260,307 @@ function ProductInfo(props) {
     // console.log(body);
   };
 
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [confetti, setConfetti] = useState(false);
+  const [floatb, setFloatb] = useState(false);
+  const [displayCart, setDisplayCart] = useState("none");
+  const [cartMessage, setcartMessage] = useState("카트");
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    if (position > 400) {
+      // setConfetti(true);
+      setFloatb(true);
+      console.log("4020보다큼");
+    }
+    if (position < 401) {
+      setFloatb(false);
+      // setConfetti(false);
+      console.log("4021보다작음");
+    }
+  };
+
+  const cartHandler = () => {
+    console.log("클릭");
+    console.log(displayCart);
+    if (displayCart === "none") {
+      setDisplayCart("flex");
+      setcartMessage("닫기");
+    }
+    if (displayCart === "flex") {
+      setDisplayCart("none");
+      setcartMessage("카트");
+    }
+  };
+
   return (
     <div>
-      <div style={{ justityContent: "center" }}>
-        <Select
-          defaultValue="도움을 준 판다를 선택해주세요"
-          style={{ width: "100%" }}
-          onChange={handleChange}
-        >
-          <OptGroup label="PANDAS">{renderPanda}</OptGroup>
-        </Select>
-
-        <Row gutter={[16, 16]}>
-          <Table columns={columns} dataSource={cart.array} pagination={false} />
-          <Menu
-            onClick={handleClick}
-            style={{ width: "100%" }}
-            defaultSelectedKeys={["1"]}
-            mode="inline"
-          >
-            <SubMenu
-              key="sub1"
-              icon={<DatabaseOutlined />}
-              title="옵션을 선택해주세요"
+      {!floatb ? (
+        <div>
+          <div style={{ justityContent: "center" }}>
+            <Select
+              defaultValue="도움을 준 판다를 선택해주세요"
+              style={{ width: "100%" }}
+              onChange={handleChange}
             >
-              {renderOption}
-            </SubMenu>
-          </Menu>
-        </Row>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justityContent: "center",
-          minWidth: "100%",
-        }}
-      ></div>
-      <div style={{ justityContent: "center" }}>
-        <div style={{ float: "left" }}>
-          <Button
-            size="large"
-            shape="round"
-            type="danger"
-            onClick={clickHandler}
+              <OptGroup label="PANDAS">{renderPanda}</OptGroup>
+            </Select>
+
+            <Row gutter={[16, 16]}>
+              <Table
+                columns={columns}
+                dataSource={cart.array}
+                pagination={false}
+              />
+              <Menu
+                onClick={handleClick}
+                style={{ width: "100%" }}
+                defaultSelectedKeys={["1"]}
+                mode="inline"
+              >
+                <SubMenu
+                  key="sub1"
+                  icon={<DatabaseOutlined />}
+                  title="옵션을 선택해주세요"
+                >
+                  {renderOption}
+                </SubMenu>
+              </Menu>
+            </Row>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justityContent: "center",
+              minWidth: "100%",
+            }}
+          ></div>
+          <div style={{ justityContent: "center" }}>
+            <div style={{ float: "left" }}>
+              <Button
+                size="large"
+                shape="round"
+                type="danger"
+                onClick={clickHandler}
+              >
+                상품담기
+              </Button>
+            </div>
+
+            <div style={{ float: "right", margin: "0 40px 30px" }}>
+              {approvePanda && (
+                <Button
+                  size="large"
+                  shape="round"
+                  type="primary"
+                  onClick={pandaClick}
+                >
+                  판다!
+                </Button>
+              )}
+            </div>
+          </div>
+          <Form
+            form={form}
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            initialValues={{ remember: true }}
+            autoComplete="off"
+            onFinish={onSubmit}
+            style={{ display: `${PandaDisplay}` }}
           >
-            상품담기
-          </Button>
-        </div>
-
-        <div style={{ float: "right", margin: "0 40px 30px" }}>
-          {approvePanda && (
-            <Button
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={pandaClick}
+            <Form.Item
+              label="링크"
+              name="Link"
+              rules={[{ required: true, message: "Please input your Link" }]}
             >
-              판다!
-            </Button>
-          )}
+              <Input onChange={LinkHandler} />
+            </Form.Item>
+
+            <Form.Item
+              name="remember"
+              valuePropName="checked"
+              wrapperCol={{ offset: 8, span: 16 }}
+            >
+              <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+            <ReactTinyLink
+              cardSize="large"
+              showGraphic={true}
+              maxLine={2}
+              minLine={1}
+              defaultMedia={true}
+              proxyUrl={`api/proxy?url=`}
+              description={true}
+              url={`${Link}`}
+            />
+          </Form>
         </div>
-      </div>
-      <Form
-        form={form}
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        onFinish={onSubmit}
-        style={{ display: `${PandaDisplay}` }}
-      >
-        <Form.Item
-          label="링크"
-          name="Link"
-          rules={[{ required: true, message: "Please input your Link" }]}
-        >
-          <Input onChange={LinkHandler} />
-        </Form.Item>
+      ) : (
+        <>
+          <div
+            style={{
+              position: "fixed",
+              zIndex: "99",
+              left: "0",
+              right: "0",
+              top: "0",
+              background: "white",
+              display: `${displayCart}`,
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              <div style={{ justityContent: "center" }}>
+                <Select
+                  defaultValue="도움을 준 판다를 선택해주세요"
+                  style={{ width: "100%" }}
+                  onChange={handleChange}
+                >
+                  <OptGroup label="PANDAS">{renderPanda}</OptGroup>
+                </Select>
 
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
-        </Form.Item>
+                <Row gutter={[16, 16]}>
+                  <Table
+                    columns={columns}
+                    dataSource={cart.array}
+                    pagination={false}
+                  />
+                  <Menu
+                    onClick={handleClick}
+                    style={{ width: "100%" }}
+                    defaultSelectedKeys={["1"]}
+                    mode="inline"
+                  >
+                    <SubMenu
+                      key="sub1"
+                      icon={<DatabaseOutlined />}
+                      title="옵션을 선택해주세요"
+                    >
+                      {renderOption}
+                    </SubMenu>
+                  </Menu>
+                </Row>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justityContent: "center",
+                  minWidth: "100%",
+                }}
+              ></div>
+              <div style={{ justityContent: "center" }}>
+                <div style={{ float: "left" }}>
+                  <Button
+                    size="large"
+                    shape="round"
+                    type="danger"
+                    onClick={clickHandler}
+                  >
+                    상품담기
+                  </Button>
+                </div>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-        <ReactTinyLink
-          cardSize="large"
-          showGraphic={true}
-          maxLine={2}
-          minLine={1}
-          defaultMedia={true}
-          proxyUrl={`api/proxy?url=`}
-          description={true}
-          url={`${Link}`}
-        />
-      </Form>
+                <div style={{ float: "right", margin: "0 40px 30px" }}>
+                  {approvePanda && (
+                    <Button
+                      size="large"
+                      shape="round"
+                      type="primary"
+                      onClick={pandaClick}
+                    >
+                      판다!
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <Form
+                form={form}
+                name="basic"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                initialValues={{ remember: true }}
+                autoComplete="off"
+                onFinish={onSubmit}
+                style={{ display: `${PandaDisplay}` }}
+              >
+                <Form.Item
+                  label="링크"
+                  name="Link"
+                  rules={[
+                    { required: true, message: "Please input your Link" },
+                  ]}
+                >
+                  <Input onChange={LinkHandler} />
+                </Form.Item>
+
+                <Form.Item
+                  name="remember"
+                  valuePropName="checked"
+                  wrapperCol={{ offset: 8, span: 16 }}
+                >
+                  <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
+                </Form.Item>
+
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                </Form.Item>
+                <ReactTinyLink
+                  cardSize="large"
+                  showGraphic={true}
+                  maxLine={2}
+                  minLine={1}
+                  defaultMedia={true}
+                  proxyUrl={`api/proxy?url=`}
+                  description={true}
+                  url={`${Link}`}
+                />
+              </Form>
+            </div>
+          </div>
+          <div
+            style={{
+              position: "fixed",
+              zIndex: "99",
+              left: "0",
+              right: "0",
+              top: "0",
+              background: "white",
+              display: "flex",
+              justifyContent: "center",
+              display: "flex",
+            }}
+          >
+            <div style={{ justityContent: "center" }}>
+              <Button size="large" type="primary" onClick={cartHandler}>
+                {cartMessage}
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
 export default ProductInfo;
+
+/**
+ *
+ */
