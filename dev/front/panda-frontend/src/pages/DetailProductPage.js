@@ -2120,55 +2120,46 @@ function DetailProductPage(props) {
       </div>
     );
   });
-  const [ScrollY, setScrollY] = useState(0); // 스크롤값을 저장하기 위한 상태
-  const handleFollow = () => {
-    setScrollY(window.pageYOffset); // window 스크롤 값을 ScrollY에 저장
-  };
 
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [confetti, setConfetti] = useState(false);
+  const [floatb, setFloatb] = useState(false);
   useEffect(() => {
-    console.log("ScrollY is ", ScrollY); // ScrollY가 변화할때마다 값을 콘솔에 출력
-    if (ScrollY >= 1200) {
-      setCartvisible("block");
-      console.log("d오프");
-    } else {
-      setCartvisible("none");
-      console.log("d온");
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    if (position > 400) {
+      setConfetti(true);
+      setFloatb(true);
+      console.log("400보다큼");
     }
-  }, [ScrollY]);
-
-  useEffect(() => {
-    const watch = () => {
-      window.addEventListener("scroll", handleFollow);
-    };
-    watch(); // addEventListener 함수를 실행
-    return () => {
-      window.removeEventListener("scroll", handleFollow); // addEventListener 함수를 삭제
-    };
-  });
-  useEffect(() => {
-    window.addEventListener("scroll", throttledScroll);
-    return () => {
-      window.removeEventListener("scroll", throttledScroll);
-    };
-  }, [throttledScroll]); // 여기에 throttledScroll 대신 isTabnavon을 넣어줘도 정상작동한다
-
-  const [cartvisible, setCartvisible] = useState("none");
-
+    if (position < 401) {
+      setFloatb(false);
+      setConfetti(false);
+      console.log("401보다작음");
+    }
+  };
+  const [displayCart, setDisplayCart] = useState("none");
+  const [cartMessage, setcartMessage] = useState("카트");
+  const cartHandler = () => {
+    console.log("클릭");
+    console.log(displayCart);
+    if (displayCart === "none") {
+      setDisplayCart("block");
+      setcartMessage("닫기");
+    }
+    if (displayCart === "block") {
+      setDisplayCart("none");
+      setcartMessage("카트");
+    }
+  };
   return (
     <>
-      <Affix offsetTop={top}>
-        <div
-          className="quickmenu"
-          style={{
-            width: "100%",
-            backgroundColor: "red",
-            display: `${cartvisible}`,
-            // position: "absolute",
-          }}
-        >
-          <ProductInfoFlot detail={Product} proId={productId} pandas={Pandas} />
-        </div>
-      </Affix>
       <BackTop />
       <div style={{ zIndex: "99" }}>
         <HeaderContainer />
@@ -2185,9 +2176,50 @@ function DetailProductPage(props) {
             </div>
           </Col>
 
-          <Col lg={8} sm={16}>
-            <ProductInfo detail={Product} proId={productId} pandas={Pandas} />
-          </Col>
+          {!floatb ? (
+            <Col lg={8} sm={16}>
+              <div>
+                <ProductInfo
+                  detail={Product}
+                  proId={productId}
+                  pandas={Pandas}
+                />
+              </div>
+            </Col>
+          ) : (
+            <Col lg={8} sm={16}>
+              <div
+                style={{
+                  position: "fixed",
+                  zIndex: "99",
+                  left: "0",
+                  right: "0",
+                  top: "0",
+                  background: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <div style={{ display: `${displayCart}` }}>
+                  <ProductInfo
+                    detail={Product}
+                    proId={productId}
+                    pandas={Pandas}
+                  />
+                </div>
+                <div style={{}}>
+                  <Button
+                    size="large"
+                    shape="round"
+                    type="danger"
+                    onClick={cartHandler}
+                  >
+                    {cartMessage}
+                  </Button>
+                </div>
+              </div>
+            </Col>
+          )}
 
           <Col lg={24} sm={24}>
             <Tabs
@@ -2220,7 +2252,6 @@ function DetailProductPage(props) {
               </TabPane>
               <TabPane tab="상품정보" key="3">
                 {sto && lowOption(`${Product.type}`)}
-                {/* {lowOption && lowOption("38")} */}
               </TabPane>
               <TabPane tab="판매자/반품/교환정보" key="4">
                 <h2>판매자정보</h2>

@@ -87,11 +87,14 @@ function ProductInfo(props) {
       title: "상품명",
       dataIndex: "optionName",
       key: "optionName",
+      width: 200,
     },
     {
       title: "수량",
       dataIndex: "optionCount",
       key: "optionCount",
+      width: 100,
+
       render: (title, key) => (
         <>
           <InputNumber
@@ -106,10 +109,11 @@ function ProductInfo(props) {
       title: "가격/원",
       dataIndex: "optionPrice",
       key: "optionPrice",
+      width: 100,
     },
 
     {
-      title: "Action",
+      title: "삭제",
       key: "action",
       render: (title, key) => (
         <Space size="middle">
@@ -258,19 +262,6 @@ function ProductInfo(props) {
 
   return (
     <div>
-      {/* <Descriptions title="Product Info">
-        <Descriptions.Item label="Price">cdo</Descriptions.Item>
-        <Descriptions.Item label="Sold">co1</Descriptions.Item>
-        <Descriptions.Item label="View">co2</Descriptions.Item>
-        <Descriptions.Item label="Description">
-          {props.detail.desc}
-        </Descriptions.Item>
-      </Descriptions> */}
-
-      <br />
-      <br />
-      <br />
-      {/* //왼오 */}
       <div style={{ justityContent: "center" }}>
         <Select
           defaultValue="도움을 준 판다를 선택해주세요"
@@ -281,33 +272,21 @@ function ProductInfo(props) {
         </Select>
 
         <Row gutter={[16, 16]}>
-          <Col lg={12} sm={12}>
-            <Table
-              columns={columns}
-              dataSource={cart.array}
-              pagination={false}
-            />
-            <Menu
-              onClick={handleClick}
-              style={{ width: "100%" }}
-              defaultSelectedKeys={["1"]}
-              mode="inline"
+          <Table columns={columns} dataSource={cart.array} pagination={false} />
+          <Menu
+            onClick={handleClick}
+            style={{ width: "100%" }}
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+          >
+            <SubMenu
+              key="sub1"
+              icon={<DatabaseOutlined />}
+              title="옵션을 선택해주세요"
             >
-              <SubMenu
-                key="sub1"
-                icon={<DatabaseOutlined />}
-                title="옵션을 선택해주세요"
-              >
-                {renderOption}
-                {/* <Menu.Item key="1">
-              <div style={{ float: "left" }}>ㅁㅁㅁ</div>
-              <div style={{ float: "right" }}>3000원</div>
-            </Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item> */}
-              </SubMenu>
-            </Menu>
-          </Col>
-          <Col lg={12} sm={12}></Col>
+              {renderOption}
+            </SubMenu>
+          </Menu>
         </Row>
       </div>
       <div
@@ -315,7 +294,6 @@ function ProductInfo(props) {
           display: "flex",
           justityContent: "center",
           minWidth: "100%",
-          background: "red",
         }}
       ></div>
       <div style={{ justityContent: "center" }}>
@@ -326,9 +304,10 @@ function ProductInfo(props) {
             type="danger"
             onClick={clickHandler}
           >
-            Add to Cart
+            상품담기
           </Button>
         </div>
+
         <div style={{ float: "right", margin: "0 40px 30px" }}>
           {approvePanda && (
             <Button

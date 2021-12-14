@@ -258,19 +258,6 @@ function ProductInfoFlot(props) {
 
   return (
     <div>
-      {/* <Descriptions title="Product Info">
-        <Descriptions.Item label="Price">cdo</Descriptions.Item>
-        <Descriptions.Item label="Sold">co1</Descriptions.Item>
-        <Descriptions.Item label="View">co2</Descriptions.Item>
-        <Descriptions.Item label="Description">
-          {props.detail.desc}
-        </Descriptions.Item>
-      </Descriptions> */}
-
-      <br />
-      <br />
-      <br />
-      {/* //왼오 */}
       <div style={{ justityContent: "center" }}>
         <Select
           defaultValue="도움을 준 판다를 선택해주세요"
@@ -317,31 +304,33 @@ function ProductInfoFlot(props) {
           minWidth: "100%",
           background: "red",
         }}
-      ></div>
-      <div style={{ justityContent: "center" }}>
-        <div style={{ float: "left" }}>
-          <Button
-            size="large"
-            shape="round"
-            type="danger"
-            onClick={clickHandler}
-          >
-            Add to Cart
-          </Button>
-        </div>
-        <div style={{ float: "right", margin: "0 40px 30px" }}>
-          {approvePanda && (
+      >
+        <div style={{ justityContent: "center", TextAline: "center" }}>
+          <div style={{ float: "left", width: "100%" }}>
             <Button
               size="large"
               shape="round"
-              type="primary"
-              onClick={pandaClick}
+              type="danger"
+              onClick={clickHandler}
             >
-              판다!
+              상점담기
             </Button>
-          )}
+          </div>
+          <div style={{ float: "right", margin: "0 40px 30px" }}>
+            {approvePanda && (
+              <Button
+                size="large"
+                shape="round"
+                type="primary"
+                onClick={pandaClick}
+              >
+                판다!
+              </Button>
+            )}
+          </div>
         </div>
       </div>
+
       <Form
         form={form}
         name="basic"
