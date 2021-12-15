@@ -101,6 +101,7 @@ function ProductInfo(props) {
             min={1}
             defaultValue={1}
             onChange={onChange(title, key)}
+            size="small"
           />
         </>
       ),
@@ -164,7 +165,18 @@ function ProductInfo(props) {
   };
 
   const handleClick = (e) => {
-    if (cart.array.find((x) => x.key == e.key)) {
+    // console.log("클릭");
+    // console.log(options[e.key]);
+    // console.log("카트");
+    // console.log(cart.array);
+    // console.log("함수");
+    // console.log(cart.array.find((x) => x.optionId == options[e.key].optionId));
+    // // console.log(cart.array.find((x) => x.key == e.key).optionId);
+
+    if (
+      cart.array.find((x) => x.optionId == options[e.key].optionId) !==
+      undefined
+    ) {
       alert("이미 존재하는 상품입니다");
       return;
     } else {
