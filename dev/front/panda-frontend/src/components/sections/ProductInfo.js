@@ -87,13 +87,13 @@ function ProductInfo(props) {
       title: "상품명",
       dataIndex: "optionName",
       key: "optionName",
-      width: 200,
+      width: "40%",
     },
     {
       title: "수량",
       dataIndex: "optionCount",
       key: "optionCount",
-      width: 100,
+      width: "5%",
 
       render: (title, key) => (
         <>
@@ -109,12 +109,14 @@ function ProductInfo(props) {
       title: "가격/원",
       dataIndex: "optionPrice",
       key: "optionPrice",
-      width: 100,
+      width: "30%",
     },
 
     {
       title: "삭제",
       key: "action",
+      width: "20%",
+
       render: (title, key) => (
         <Space size="middle">
           <Button onClick={onDelete(title, key)}>Delete</Button>
@@ -164,6 +166,7 @@ function ProductInfo(props) {
   const handleClick = (e) => {
     if (cart.array.find((x) => x.key == e.key)) {
       alert("이미 존재하는 상품입니다");
+      return;
     } else {
       const info = {
         key: nextKey,
@@ -261,7 +264,6 @@ function ProductInfo(props) {
   };
 
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [confetti, setConfetti] = useState(false);
   const [floatb, setFloatb] = useState(false);
   const [displayCart, setDisplayCart] = useState("none");
   const [cartMessage, setcartMessage] = useState("카트");
@@ -275,15 +277,12 @@ function ProductInfo(props) {
   }, [scrollPosition]);
   const handleScroll = () => {
     const position = window.pageYOffset;
-    if (position > 400) {
-      // setConfetti(true);
+    if (position > 1200) {
+      console.log(window.innerWidth);
       setFloatb(true);
-      console.log("4020보다큼");
     }
-    if (position < 401) {
+    if (position < 1201) {
       setFloatb(false);
-      // setConfetti(false);
-      console.log("4021보다작음");
     }
   };
 
@@ -313,12 +312,14 @@ function ProductInfo(props) {
               <OptGroup label="PANDAS">{renderPanda}</OptGroup>
             </Select>
 
-            <Row gutter={[16, 16]}>
-              <Table
-                columns={columns}
-                dataSource={cart.array}
-                pagination={false}
-              />
+            <Row gutter={[24, 16]}>
+              <Col lg={24} sm={16}>
+                <Table
+                  columns={columns}
+                  dataSource={cart.array}
+                  pagination={false}
+                />
+              </Col>
               <Menu
                 onClick={handleClick}
                 style={{ width: "100%" }}
@@ -412,16 +413,126 @@ function ProductInfo(props) {
         </div>
       ) : (
         <>
+          <div>
+            <div style={{ justityContent: "center" }}>
+              <Select
+                defaultValue="도움을 준 판다를 선택해주세요"
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              >
+                <OptGroup label="PANDAS">{renderPanda}</OptGroup>
+              </Select>
+
+              <Row gutter={[24, 16]}>
+                <Col lg={24} sm={16}>
+                  <Table
+                    columns={columns}
+                    dataSource={cart.array}
+                    pagination={false}
+                  />
+                </Col>
+                <Menu
+                  onClick={handleClick}
+                  style={{ width: "100%" }}
+                  defaultSelectedKeys={["1"]}
+                  mode="inline"
+                >
+                  <SubMenu
+                    key="sub1"
+                    icon={<DatabaseOutlined />}
+                    title="옵션을 선택해주세요"
+                  >
+                    {renderOption}
+                  </SubMenu>
+                </Menu>
+              </Row>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justityContent: "center",
+                minWidth: "100%",
+              }}
+            ></div>
+            <div style={{ justityContent: "center" }}>
+              <div style={{ float: "left" }}>
+                <Button
+                  size="large"
+                  shape="round"
+                  type="danger"
+                  onClick={clickHandler}
+                >
+                  상품담기
+                </Button>
+              </div>
+
+              <div style={{ float: "right", margin: "0 40px 30px" }}>
+                {approvePanda && (
+                  <Button
+                    size="large"
+                    shape="round"
+                    type="primary"
+                    onClick={pandaClick}
+                  >
+                    판다!
+                  </Button>
+                )}
+              </div>
+            </div>
+            <Form
+              form={form}
+              name="basic"
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              initialValues={{ remember: true }}
+              autoComplete="off"
+              onFinish={onSubmit}
+              style={{ display: `${PandaDisplay}` }}
+            >
+              <Form.Item
+                label="링크"
+                name="Link"
+                rules={[{ required: true, message: "Please input your Link" }]}
+              >
+                <Input onChange={LinkHandler} />
+              </Form.Item>
+
+              <Form.Item
+                name="remember"
+                valuePropName="checked"
+                wrapperCol={{ offset: 8, span: 16 }}
+              >
+                <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
+              </Form.Item>
+
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+              <ReactTinyLink
+                cardSize="large"
+                showGraphic={true}
+                maxLine={2}
+                minLine={1}
+                defaultMedia={true}
+                proxyUrl={`api/proxy?url=`}
+                description={true}
+                url={`${Link}`}
+              />
+            </Form>
+          </div>
           <div
             style={{
               position: "fixed",
               zIndex: "99",
               left: "0",
               right: "0",
-              top: "0",
+              bottom: "0",
               background: "white",
               display: `${displayCart}`,
               justifyContent: "center",
+              borderTop: "1px solid red",
             }}
           >
             <div>
@@ -545,6 +656,7 @@ function ProductInfo(props) {
               display: "flex",
               justifyContent: "center",
               display: "flex",
+              borderBottom: "1px  solid black",
             }}
           >
             <div style={{ justityContent: "center" }}>
