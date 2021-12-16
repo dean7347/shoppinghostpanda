@@ -16,71 +16,45 @@ import {
 } from "antd";
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
-import { ReactTinyLink } from "react-tiny-link";
 
 import axios from "../../../node_modules/axios/index";
+import { info } from "npmlog";
 const { SubMenu } = Menu;
 
 function ProductInfoFlot(props) {
   const { Option, OptGroup } = Select;
+  const [Product, setProduct] = useState({});
+
   const [SelectPanda, setSelectPanda] = useState("");
+  const [Pandas, SetPandas] = useState([{}]);
+  useEffect(() => {
+    axios.get(`/api/getpandas_by_id?id=${props.proId}`).then((response) => {
+      if (response.data.success) {
+        SetPandas(response.data.details);
+      } else {
+        // console.log("판다스 정보를 가져오지 못했습니다");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`/api/product/products_by_id?id=${props.proId}`)
+      .then((response) => {
+        if (response.data.success) {
+          setProduct(response.data);
+        } else {
+          alert("상세정보 가져오기를 실패했습니다");
+        }
+      });
+  }, []);
 
   function handleChange(value) {
     // console.log(`selected ${value}`);
     setSelectPanda(value);
   }
-  const [Link, SetLink] = useState("http://localhost:3000/");
 
   const [form] = Form.useForm();
-  const [PandaDisplay, SetPandaDisplay] = useState("none");
-
-  const onSubmit = (e) => {
-    if (!isValidHttpUrl(e.Link)) {
-      alert("올바른 URL가 아닙니다");
-      return;
-    }
-    if (!approvePanda) {
-      alert("판다 승인후 활동가능합니다");
-      return;
-    }
-    const body = {
-      productId: props.proId,
-      link: Link,
-    };
-    axios.post("/api/addpropanda", body).then((response) => {
-      // console.log(response.data);
-      if (response.data.success) {
-        alert("판다링크 생성 완료");
-      } else {
-        alert(
-          "판다링크생성에 실패했습니다. 해당 현상이 계속된다면 문의주시기 바랍니다"
-        );
-      }
-    });
-    SetLink("http://localhost:3000/");
-    form.resetFields();
-    SetPandaDisplay("none");
-  };
-  function isValidHttpUrl(string) {
-    let url;
-
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
-  }
-
-  const LinkHandler = (e) => {
-    e.preventDefault();
-    if (isValidHttpUrl(e.target.value)) {
-      SetLink(e.target.value);
-    } else {
-      alert("오류방지를위해 ctrl c + ctrl v를 이용해주세요");
-    }
-  };
 
   const columns = [
     {
@@ -125,15 +99,29 @@ function ProductInfoFlot(props) {
   const [cart, setCart] = useState({
     array: [],
   });
+  //옵션정보 로딩
+  const temp = [];
+  props.option.map((op, index) => {
+    const info = {
+      key: nextKey,
+      optionId: op.optionId,
+      optionCount: op.optionCount,
+      optionName: op.optionName,
+      optionPrice: op.originPrice
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      originPrice: op.optionPrice,
+    };
+    temp.push(info);
 
-  const pandaClick = () => {
-    if (PandaDisplay === "none") {
-      SetPandaDisplay("block");
-    }
-    if (PandaDisplay === "block") {
-      SetPandaDisplay("none");
-    }
-  };
+    // setCart(
+    //   produce(cart, (draft) => {
+    //     draft.array.push(info);
+    //     setKey(nextKey + 1);
+    //   })
+    // );
+  });
+
   const onChange = (title, key) => (event) => {
     setCart(
       produce(cart, (draft) => {
@@ -158,7 +146,10 @@ function ProductInfoFlot(props) {
   };
 
   const handleClick = (e) => {
-    if (cart.array.find((x) => x.key == e.key)) {
+    if (
+      cart.array.find((x) => x.optionId == options[e.key].optionId) !==
+      undefined
+    ) {
       alert("이미 존재하는 상품입니다");
     } else {
       const info = {
@@ -182,15 +173,12 @@ function ProductInfoFlot(props) {
   };
 
   useEffect(() => {
-    if (props) {
-      setOptions(props.detail.poptions);
-      // console.log("props");
-
-      // console.log(props);
+    if (Product) {
+      setOptions(Product.poptions);
     } else {
       // console.log("빈상품정보 로딩");
     }
-  }, [props]);
+  }, [Product]);
 
   const renderOption =
     options &&
@@ -206,34 +194,25 @@ function ProductInfoFlot(props) {
         </Menu.Item>
       );
     });
-  const unique_user = props.pandas.reduce((prev, now) => {
-    if (!prev.some((obj) => obj.pandaId === now.pandaId)) prev.push(now);
-    return prev;
-  }, []);
+
+  // const unique_user = props.pandas.reduce((prev, now) => {
+  //   if (!prev.some((obj) => obj.pandaId === now.pandaId)) prev.push(now);
+  //   return prev;
+  // }, []);
 
   // console.log("변경된정보");
   // console.log(unique_user);
-  const renderPanda =
-    unique_user &&
-    unique_user.map((panda, index) => {
-      return (
-        <Option value={panda.pandaId} key={index}>
-          <div style={{ float: "left" }}>{panda.panda}</div>
-        </Option>
-      );
-    });
-  const [Ispanda, setIspanda] = useState();
-  const [approvePanda, setapprovePanda] = useState();
-
-  useEffect(() => {
-    axios.get("/api/ispanda").then((response) => {
-      // console.log("판다스데이터확인");
-
-      // console.log(response.data);
-      setIspanda(response.data.ispanda);
-      setapprovePanda(response.data.approve);
-    });
-  });
+  // const renderPanda =
+  //   unique_user &&
+  //   unique_user.map((panda, index) => {
+  //     return (
+  //       <Option value={panda.pandaId} key={index}>
+  //         <div style={{ float: "left" }}>{panda.panda}</div>
+  //       </Option>
+  //     );
+  //   });
+  // const [Ispanda, setIspanda] = useState();
+  // const [approvePanda, setapprovePanda] = useState();
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
@@ -264,38 +243,29 @@ function ProductInfoFlot(props) {
           style={{ width: "100%" }}
           onChange={handleChange}
         >
-          <OptGroup label="PANDAS">{renderPanda}</OptGroup>
+          {/* <OptGroup label="PANDAS">{renderPanda}</OptGroup> */}
         </Select>
 
-        <Row gutter={[16, 16]}>
-          <Col lg={12} sm={12}>
-            <Table
-              columns={columns}
-              dataSource={cart.array}
-              pagination={false}
-            />
-            <Menu
-              onClick={handleClick}
-              style={{ width: "100%" }}
-              defaultSelectedKeys={["1"]}
-              mode="inline"
-            >
-              <SubMenu
-                key="sub1"
-                icon={<DatabaseOutlined />}
-                title="옵션을 선택해주세요"
-              >
-                {renderOption}
-                {/* <Menu.Item key="1">
+        <Table columns={columns} dataSource={cart.array} pagination={false} />
+        <Menu
+          onClick={handleClick}
+          style={{ width: "100%" }}
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+        >
+          <SubMenu
+            key="sub1"
+            icon={<DatabaseOutlined />}
+            title="옵션을 선택해주세요"
+          >
+            {renderOption}
+            {/* <Menu.Item key="1">
               <div style={{ float: "left" }}>ㅁㅁㅁ</div>
               <div style={{ float: "right" }}>3000원</div>
             </Menu.Item>
             <Menu.Item key="2">Option 2</Menu.Item> */}
-              </SubMenu>
-            </Menu>
-          </Col>
-          <Col lg={12} sm={12}></Col>
-        </Row>
+          </SubMenu>
+        </Menu>
       </div>
       <div
         style={{
@@ -306,73 +276,9 @@ function ProductInfoFlot(props) {
         }}
       >
         <div style={{ justityContent: "center", TextAline: "center" }}>
-          <div style={{ float: "left", width: "100%" }}>
-            <Button
-              size="large"
-              shape="round"
-              type="danger"
-              onClick={clickHandler}
-            >
-              상점담기
-            </Button>
-          </div>
-          <div style={{ float: "right", margin: "0 40px 30px" }}>
-            {approvePanda && (
-              <Button
-                size="large"
-                shape="round"
-                type="primary"
-                onClick={pandaClick}
-              >
-                판다!
-              </Button>
-            )}
-          </div>
+          <div style={{ float: "left", width: "100%" }}></div>
         </div>
       </div>
-
-      <Form
-        form={form}
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        onFinish={onSubmit}
-        style={{ display: `${PandaDisplay}` }}
-      >
-        <Form.Item
-          label="링크"
-          name="Link"
-          rules={[{ required: true, message: "Please input your Link" }]}
-        >
-          <Input onChange={LinkHandler} />
-        </Form.Item>
-
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>모든약관을 확인했으며 동의합니다</Checkbox>
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-        <ReactTinyLink
-          cardSize="large"
-          showGraphic={true}
-          maxLine={2}
-          minLine={1}
-          defaultMedia={true}
-          proxyUrl={`api/proxy?url=`}
-          description={true}
-          url={`${Link}`}
-        />
-      </Form>
     </div>
   );
 }

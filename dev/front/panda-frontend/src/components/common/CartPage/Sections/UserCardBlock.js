@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 
 import "./UserCardBlock.css";
-import { Button, Checkbox, Divider, Row, Col } from "antd";
+import { Button, Checkbox, Divider, Modal } from "antd";
 import axios from "../../../../../node_modules/axios/index";
-
+import ProductInfo from "../../../../components/sections/ProductInfoFloat";
 import Button2 from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import {
+  BrowserView,
+  MobileView,
+  isBrower,
+  isMobile,
+} from "react-device-detect";
+
 function UserCardBlock(props) {
   const CheckboxGroup = Checkbox.Group;
   const plainOptions = [];
@@ -13,9 +20,6 @@ function UserCardBlock(props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
-  // const [checkprice, setCheckprice] = useState([]);
-
-  // const [payment, setPayment] = useState(0);
 
   useEffect(() => {
     setCheckedList(defaultCheckedList);
@@ -54,34 +58,54 @@ function UserCardBlock(props) {
     // do someting...
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalProduct, setModalProduct] = useState("");
+  const [selectOption, setSelectOption] = useState({});
+  const showModal = (params, e) => {
+    setIsModalVisible(true);
+    setSelectOption(params.do);
+
+    setModalProduct(params.productId);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const renderbox = () => {
     return (
       <>
-        <div>
-          <Checkbox
-            indeterminate={indeterminate}
-            onChange={onCheckAllChange}
-            checked={checkAll}
-          >
-            전체선택
-          </Checkbox>
-          <Button>선택상품 삭제</Button>
-          <Divider />
-        </div>
-        {props.products.ds &&
-          props.products.ds.map((item, index) => {
-            plainOptions.push(item.shopId);
-            defaultCheckedList.push(item.shopId);
-          })}
+        <BrowserView>
+          <div>
+            <Checkbox
+              indeterminate={indeterminate}
+              onChange={onCheckAllChange}
+              checked={checkAll}
+            >
+              전체선택
+            </Checkbox>
+            <Button>선택상품 삭제</Button>
+            <Divider />
+          </div>
+          {props.products.ds &&
+            props.products.ds.map((item, index) => {
+              plainOptions.push(item.shopId);
+              defaultCheckedList.push(item.shopId);
+            })}
 
-        <CheckboxGroup
-          //   defaultValue={() => plainOptions}
-          value={checkedList}
-          onChange={onChange}
-        >
-          <Row gutter={16}>
-            <Col span={16}>
-              <table>
+          <CheckboxGroup
+            //   defaultValue={() => plainOptions}
+            value={checkedList}
+            onChange={onChange}
+          >
+            {/* <Row gutter={24}>
+            <Col span={24}> */}
+            <div style={{ width: "100%", overflow: "auto" }}>
+              <table width="100%">
                 <thead>
                   <th>상점명</th>
                   <th>상품상세</th>
@@ -118,6 +142,7 @@ function UserCardBlock(props) {
                       return (
                         <tr>
                           <td>{item.shopName}</td>
+
                           <td style={{}}>
                             {item.dp.map((product, index) => (
                               <tr key={index} style={{}}>
@@ -141,31 +166,48 @@ function UserCardBlock(props) {
                                   <div style={{ width: "200px" }}>
                                     {product.productName}
                                   </div>
+                                  <tr>
+                                    <Button
+                                      type="primary"
+                                      onClick={(e) => {
+                                        showModal(product, e);
+                                      }}
+                                    >
+                                      변경
+                                    </Button>
+                                  </tr>
                                 </td>
                                 <td style={{ width: "50%" }}>
                                   {product.do.map((option, index) => (
                                     <tr key={index}>
-                                      <td>{option.pandaName}</td>
                                       <td>
-                                        <div style={{ width: "80px" }}></div>
-                                        {option.optionName}
-                                      </td>
-                                      <td>{option.optionCount} EA</td>
-                                      <td>
-                                        {option.originPrice
-                                          .toString()
-                                          .replace(
-                                            /\B(?=(\d{3})+(?!\d))/g,
-                                            ","
-                                          )}
+                                        <div style={{ width: "80px" }}>
+                                          {option.pandaName}
+                                        </div>
                                       </td>
                                       <td>
-                                        {/* {(option.originPrice * option.optionCount)
-                                      .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    원 */}
+                                        <div style={{ width: "120px" }}>
+                                          {option.optionName}
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div style={{ width: "80px" }}>
+                                          {option.optionCount} EA
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div style={{ width: "60px" }}>
+                                          {option.originPrice
+                                            .toString()
+                                            .replace(
+                                              /\B(?=(\d{3})+(?!\d))/g,
+                                              ","
+                                            )}
+                                        </div>
+                                      </td>
+                                      <td>
                                         {option.discount ? (
-                                          <div>
+                                          <div style={{ width: "100px" }}>
                                             {Math.round(
                                               option.originPrice *
                                                 option.optionCount *
@@ -180,7 +222,7 @@ function UserCardBlock(props) {
                                             (판다 할인 : 5% )
                                           </div>
                                         ) : (
-                                          <div>
+                                          <div style={{ width: "100px" }}>
                                             {(
                                               option.originPrice *
                                               option.optionCount
@@ -250,18 +292,271 @@ function UserCardBlock(props) {
                             <Checkbox
                               onChange={(e) => onChanges(e, allPrice)}
                               value={item.shopId}
-                            >
-                              {item.shopId}
-                            </Checkbox>
+                            ></Checkbox>
                           </td>
                         </tr>
                       );
                     })}
                 </tbody>
               </table>
-            </Col>
-          </Row>
-        </CheckboxGroup>
+            </div>
+            {/* </Col>
+          </Row> */}
+          </CheckboxGroup>
+        </BrowserView>
+
+        <MobileView>
+          <div>
+            <Checkbox
+              indeterminate={indeterminate}
+              onChange={onCheckAllChange}
+              checked={checkAll}
+            >
+              전체선택
+            </Checkbox>
+            <Button>선택상품 삭제</Button>
+            <Divider />
+          </div>
+          {props.products.ds &&
+            props.products.ds.map((item, index) => {
+              plainOptions.push(item.shopId);
+              defaultCheckedList.push(item.shopId);
+            })}
+
+          <CheckboxGroup
+            //   defaultValue={() => plainOptions}
+            value={checkedList}
+            onChange={onChange}
+          >
+            {/* <Row gutter={24}>
+            <Col span={24}> */}
+            <div style={{ width: "100%", overflow: "auto" }}>
+              <table width="100%">
+                <thead>
+                  <th>상품상세</th>
+                </thead>
+                <tbody>
+                  {props.products.ds &&
+                    props.products.ds.map((item, index) => {
+                      var allPrice = 0;
+                      var purePrice = 0;
+                      function pricePlus(getprice, getpureprice) {
+                        allPrice = allPrice + getprice;
+                        purePrice = purePrice + getpureprice;
+                      }
+
+                      var freePrice = item.freePrice;
+                      var shipPrice = item.shipPrice;
+                      //   function getfreePrice(getPrice) {
+                      //     freePrice = getPrice;
+                      //   }
+
+                      //   function getShipPrice(getPrice) {
+                      //     shipPrice = getPrice;
+                      //   }
+                      function isfree(getpurePrice) {
+                        if (getpurePrice >= freePrice) {
+                          return "무료배송";
+                        } else {
+                          return shipPrice;
+                        }
+                      }
+                      return (
+                        <tr>
+                          <td style={{}}>
+                            {item.dp.map((product, index) => (
+                              <tr key={index} style={{}}>
+                                <tr
+                                  style={{
+                                    textAlign: "center",
+                                    width: "120px",
+                                    height: "120px",
+                                  }}
+                                >
+                                  <img
+                                    style={{
+                                      width: "150px",
+                                      height: "150px",
+                                    }}
+                                    alt="product"
+                                    src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                  />
+                                </tr>
+
+                                <tr>
+                                  <td>
+                                    <div style={{ width: "200px" }}>
+                                      {product.productName}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <Button
+                                      type="primary"
+                                      onClick={(e) => {
+                                        showModal("product", e);
+                                      }}
+                                    >
+                                      변경
+                                    </Button>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>{item.shopName}</td>
+                                </tr>
+
+                                <tr style={{ width: "50%" }}>
+                                  {product.do.map((option, index) => (
+                                    <tr>
+                                      <tr key={index}>
+                                        <td>
+                                          <div style={{ width: "80px" }}>
+                                            {option.pandaName}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div style={{ width: "120px" }}>
+                                            {option.optionName}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div style={{ width: "80px" }}>
+                                            {option.optionCount} EA
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div style={{ width: "60px" }}>
+                                            {option.originPrice
+                                              .toString()
+                                              .replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                              )}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          {option.discount ? (
+                                            <div style={{ width: "100px" }}>
+                                              {Math.round(
+                                                option.originPrice *
+                                                  option.optionCount *
+                                                  0.95
+                                              )
+                                                .toString()
+                                                .replace(
+                                                  /\B(?=(\d{3})+(?!\d))/g,
+                                                  ","
+                                                )}
+                                              <br />
+                                              (판다 할인 : 5% )
+                                            </div>
+                                          ) : (
+                                            <div style={{ width: "100px" }}>
+                                              {(
+                                                option.originPrice *
+                                                option.optionCount
+                                              )
+                                                .toString()
+                                                .replace(
+                                                  /\B(?=(\d{3})+(?!\d))/g,
+                                                  ","
+                                                )}
+                                              <br />
+                                              (판다 할인 미적용)
+                                            </div>
+                                          )}
+                                        </td>
+                                        {option.discount
+                                          ? pricePlus(
+                                              Math.round(
+                                                option.originPrice *
+                                                  option.optionCount *
+                                                  0.95
+                                              ),
+                                              option.originPrice *
+                                                option.optionCount
+                                            )
+                                          : pricePlus(
+                                              option.originPrice *
+                                                option.optionCount,
+                                              option.originPrice *
+                                                option.optionCount
+                                            )}
+                                        <td>
+                                          <Button
+                                            type="primary"
+                                            danger
+                                            onClick={(e) => {
+                                              onClick(option.detailedId, e);
+                                            }}
+                                          >
+                                            삭제
+                                          </Button>
+                                          <Button
+                                            type="primary"
+                                            onClick={(e) => {
+                                              showModal(item, e);
+                                            }}
+                                          >
+                                            변경
+                                          </Button>
+                                        </td>
+                                      </tr>
+                                      <br />
+                                      <hr />
+                                    </tr>
+                                  ))}
+                                </tr>
+                              </tr>
+                            ))}
+                            <td>
+                              <tr>
+                                {allPrice
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                원
+                              </tr>
+                              <br />
+                              <tr>
+                                {isfree(purePrice)
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                <br />(
+                                {freePrice
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                                이상 무료배송)
+                              </tr>
+                              <tr>
+                                <div style={{ width: "100%" }}>
+                                  <Checkbox
+                                    onChange={(e) => onChanges(e, allPrice)}
+                                    value={item.shopId}
+                                  >
+                                    {" "}
+                                  </Checkbox>
+                                </div>
+                              </tr>
+                            </td>
+
+                            <hr
+                              style={{
+                                backgroundColor: "red",
+                                width: "100%",
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+            {/* </Col>
+          </Row> */}
+          </CheckboxGroup>
+        </MobileView>
       </>
     );
   };
@@ -287,23 +582,28 @@ function UserCardBlock(props) {
                 total += Math.round(options.originPrice * options.optionCount);
               }
               shopPrice += options.originPrice * options.optionCount;
-              // console.log("------");
             });
           });
-          // console.log("검증!!!!");
-          // console.log(item.freePrice);
 
           if (item.freePrice > shopPrice) {
             ship += item.shipPrice;
           }
         }
       });
-    // console.log("총금액" + total);
-    // console.log("배송비" + ship);
+
     return { total, ship };
   };
   return (
     <div>
+      <Modal
+        title="상품변경"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnClose={"true"}
+      >
+        <ProductInfo proId={modalProduct} option={selectOption} />
+      </Modal>
       {renderbox()}
 
       <div style={{ marginTop: "3rem" }}>
@@ -326,7 +626,7 @@ function UserCardBlock(props) {
             원{" "}
           </h2>
         </div>
-
+        ;
         <div style={{ float: "right" }}>
           <Link
             to={{

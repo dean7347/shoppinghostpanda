@@ -20,6 +20,7 @@ function DetailProductPage(props) {
   const [sto, setSto] = useState();
   const [top, setTop] = useState(10);
   const [container, setContainer] = useState(null);
+
   useEffect(() => {
     axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
       if (response.data.success) {
@@ -2121,43 +2122,6 @@ function DetailProductPage(props) {
     );
   });
 
-  // const [scrollPosition, setScrollPosition] = useState(0);
-  // const [confetti, setConfetti] = useState(false);
-  // const [floatb, setFloatb] = useState(false);
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll, { passive: true });
-
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [scrollPosition]);
-  // const handleScroll = () => {
-  //   const position = window.pageYOffset;
-  //   if (position > 400) {
-  //     setConfetti(true);
-  //     setFloatb(true);
-  //     console.log("400보다큼");
-  //   }
-  //   if (position < 401) {
-  //     setFloatb(false);
-  //     setConfetti(false);
-  //     console.log("401보다작음");
-  //   }
-  // };
-  // const [displayCart, setDisplayCart] = useState("none");
-  // const [cartMessage, setcartMessage] = useState("카트");
-  // const cartHandler = () => {
-  //   console.log("클릭");
-  //   console.log(displayCart);
-  //   if (displayCart === "none") {
-  //     setDisplayCart("block");
-  //     setcartMessage("닫기");
-  //   }
-  //   if (displayCart === "block") {
-  //     setDisplayCart("none");
-  //     setcartMessage("카트");
-  //   }
-  // };
   return (
     <>
       <BackTop />
@@ -2180,50 +2144,6 @@ function DetailProductPage(props) {
               <ProductInfo detail={Product} proId={productId} pandas={Pandas} />
             </div>
           </Col>
-          {/* {!floatb ? (
-            <Col lg={8} sm={16}>
-              <div>
-                <ProductInfo
-                  detail={Product}
-                  proId={productId}
-                  pandas={Pandas}
-                />
-              </div>
-            </Col>
-          ) : (
-            <Col lg={8} sm={16}>
-              <div
-                style={{
-                  position: "fixed",
-                  zIndex: "99",
-                  left: "0",
-                  right: "0",
-                  top: "0",
-                  background: "white",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <div style={{ display: `${displayCart}` }}>
-                  <ProductInfo
-                    detail={Product}
-                    proId={productId}
-                    pandas={Pandas}
-                  />
-                </div>
-                <div style={{}}>
-                  <Button
-                    size="large"
-                    shape="round"
-                    type="danger"
-                    onClick={cartHandler}
-                  >
-                    {cartMessage}
-                  </Button>
-                </div>
-              </div>
-            </Col>
-          )} */}
 
           <Col lg={24} sm={24}>
             <Tabs
