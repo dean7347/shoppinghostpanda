@@ -58,6 +58,10 @@ public class Panda {
         this.user=user;
         user.setPanda(this);
     }
+    public void deleteOrderdetail(OrderDetail od)
+    {
+        orderDetailPandas.remove(od);
+    }
 
 }
 

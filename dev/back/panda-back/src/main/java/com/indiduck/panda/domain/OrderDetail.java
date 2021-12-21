@@ -102,8 +102,19 @@ public class OrderDetail {
         productOption.getOrderDetail().add(this);
 
     }
+
+    public void deletePanda(Panda panda)
+    {
+        panda.deleteOrderdetail(this);
+
+    }
     public void setPanda(Panda panda)
     {
+        if(panda!=null)
+        {
+            panda.deleteOrderdetail(this);
+        }
+
         this.panda=panda;
         panda.getOrderDetailPandas().add(this);
     }
@@ -123,6 +134,12 @@ public class OrderDetail {
     public void plusCount(int count)
     {
         this.productCount+=count;
+        this.totalPrice=this.getIndividualPrice()*this.productCount;
+    }
+
+    public void update(int count)
+    {
+        this.productCount=count;
         this.totalPrice=this.getIndividualPrice()*this.productCount;
     }
     public void setOrderStatus(OrderStatus status)

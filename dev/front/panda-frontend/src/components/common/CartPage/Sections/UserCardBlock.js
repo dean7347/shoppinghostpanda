@@ -12,6 +12,7 @@ import {
   isBrower,
   isMobile,
 } from "react-device-detect";
+import { set } from "date-fns";
 
 function UserCardBlock(props) {
   const CheckboxGroup = Checkbox.Group;
@@ -60,8 +61,10 @@ function UserCardBlock(props) {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalProduct, setModalProduct] = useState("");
+  const [modalOrder, setModalOrder] = useState("");
+
   const [selectOption, setSelectOption] = useState({});
-  const showModal = (params, e) => {
+  const showModal = (params, item, e) => {
     setIsModalVisible(true);
     setSelectOption(params.do);
 
@@ -74,6 +77,38 @@ function UserCardBlock(props) {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    window.location.reload();
+  };
+
+  const handleSelectDelete = () => {
+    const set = new Set(checkedList);
+    const uniqueArr = [...set];
+    // console.log(uniqueArr);
+    props.products.ds.map((de, index) => {
+      if (uniqueArr.includes(de.shopId)) {
+        console.log("포함");
+        console.log(de);
+
+        de.dp.map((deleteOption, index) => {
+          deleteOption.do.map((deleteThis, index) => {
+            const body = {
+              orderDetailId: deleteThis.detailedId,
+            };
+
+            axios.post("/api/cart/removeoption", body).then((response) => {
+              if (response.data.success) {
+                window.location.reload();
+              } else {
+                alert("옵션 삭제에 실패했습니다");
+              }
+            });
+          });
+        });
+        alert("삭제가 완료되었습니다");
+      } else {
+        console.log("불포함");
+      }
+    });
   };
 
   const renderbox = () => {
@@ -88,7 +123,7 @@ function UserCardBlock(props) {
             >
               전체선택
             </Checkbox>
-            <Button>선택상품 삭제</Button>
+            <Button onClick={handleSelectDelete}>선택상품 삭제</Button>
             <Divider />
           </div>
           {props.products.ds &&
@@ -170,7 +205,7 @@ function UserCardBlock(props) {
                                     <Button
                                       type="primary"
                                       onClick={(e) => {
-                                        showModal(product, e);
+                                        showModal(product, props, e);
                                       }}
                                     >
                                       변경
@@ -385,15 +420,15 @@ function UserCardBlock(props) {
 
                                 <tr>
                                   <td>
-                                    <div style={{ width: "200px" }}>
+                                    <div
+                                      style={{ width: "200px", float: "left" }}
+                                    >
                                       {product.productName}
                                     </div>
-                                  </td>
-                                  <td>
                                     <Button
                                       type="primary"
                                       onClick={(e) => {
-                                        showModal("product", e);
+                                        showModal(product, props, e);
                                       }}
                                     >
                                       변경
@@ -528,6 +563,7 @@ function UserCardBlock(props) {
                                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
                                 이상 무료배송)
                               </tr>
+
                               <tr>
                                 <div style={{ width: "100%" }}>
                                   <Checkbox
@@ -600,9 +636,15 @@ function UserCardBlock(props) {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
         destroyOnClose={"true"}
       >
-        <ProductInfo proId={modalProduct} option={selectOption} />
+        <ProductInfo
+          proId={modalProduct}
+          option={selectOption}
+          onCancel={handleCancel}
+        />
       </Modal>
       {renderbox()}
 

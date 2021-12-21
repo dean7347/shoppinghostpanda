@@ -90,6 +90,20 @@ public class OrderDetailService {
         }
     }
 
+
+    public OrderDetail updateOrderDetail(OrderDetail order, int optionCount) {
+            order.update(optionCount);
+            return order;
+    }
+
+    public OrderDetail updateOrderDetail(OrderDetail order, int optionCount,Long panda) {
+        Optional<Panda> getPanda = pandaRespository.findById(panda);
+
+        order.update(optionCount);
+        order.setPanda(getPanda.get());
+        return order;
+    }
+
     public void paymentOrderDetail(Payment info)
     {
 
@@ -114,6 +128,24 @@ public class OrderDetailService {
 //            byId.get().setOrderStatus(OrderStatus.결제완료);
         }
 
+    }
+
+    public boolean delete(Long odId)
+    {
+        try {
+            Optional<OrderDetail> byId = orderDetailRepository.findById(odId);
+            Panda panda = byId.get().getPanda();
+            if(panda != null)
+            {
+                byId.get().deletePanda(panda);
+            }
+            orderDetailRepository.deleteById(odId);
+            return true;
+        }catch (Exception e)
+        {
+            return false;
+
+        }
     }
 
     public boolean newUserOrder(User user,OrderDetailController.DetailedCart myCart,String mid,

@@ -16,9 +16,7 @@ import {
 } from "antd";
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
-
 import axios from "../../../node_modules/axios/index";
-import { info } from "npmlog";
 const { SubMenu } = Menu;
 
 function ProductInfoFlot(props) {
@@ -55,7 +53,6 @@ function ProductInfoFlot(props) {
   }
 
   const [form] = Form.useForm();
-
   const columns = [
     {
       title: "상품명",
@@ -70,7 +67,7 @@ function ProductInfoFlot(props) {
         <>
           <InputNumber
             min={1}
-            defaultValue={1}
+            defaultValue={title}
             onChange={onChange(title, key)}
           />
         </>
@@ -96,30 +93,27 @@ function ProductInfoFlot(props) {
   const [nextKey, setKey] = useState(0);
 
   const [options, setOptions] = useState([]);
-  const [cart, setCart] = useState({
-    array: [],
-  });
+
   //옵션정보 로딩
   const temp = [];
   props.option.map((op, index) => {
     const info = {
-      key: nextKey,
+      key: op.optionId,
+      detailedId: op.detailedId,
       optionId: op.optionId,
       optionCount: op.optionCount,
       optionName: op.optionName,
-      optionPrice: op.originPrice
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-      originPrice: op.optionPrice,
+      optionPrice:
+        op.originPrice *
+        op.optionCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      originPrice: op.originPrice,
     };
-    temp.push(info);
 
-    // setCart(
-    //   produce(cart, (draft) => {
-    //     draft.array.push(info);
-    //     setKey(nextKey + 1);
-    //   })
-    // );
+    temp.push(info);
+  });
+
+  const [cart, setCart] = useState({
+    array: temp,
   });
 
   const onChange = (title, key) => (event) => {
@@ -134,15 +128,36 @@ function ProductInfoFlot(props) {
       })
     );
   };
+
   const onDelete = (title, key) => (event) => {
-    setCart(
-      produce(cart, (draft) => {
-        draft.array.splice(
-          draft.array.find((x) => x.key == key.key),
-          1
+    if (
+      window.confirm("장바구니에서 완전 삭제됩니다 그래도 삭제하시겠습니까?")
+    ) {
+      if (title.detailedId === undefined) {
+        setCart(
+          produce(cart, (draft) => {
+            draft.array.splice(
+              draft.array.find((x) => x.key == key.key),
+              1
+            );
+          })
         );
-      })
-    );
+      } else {
+        const body = {
+          orderDetailId: title.detailedId,
+        };
+
+        axios.post("/api/cart/removeoption", body).then((response) => {
+          if (response.data.success) {
+            alert("선택된 옵션을 삭제했습니다");
+            window.location.reload();
+          } else {
+            alert("옵션 삭제에 실패했습니다");
+          }
+        });
+      }
+    } else {
+    }
   };
 
   const handleClick = (e) => {
@@ -153,7 +168,7 @@ function ProductInfoFlot(props) {
       alert("이미 존재하는 상품입니다");
     } else {
       const info = {
-        key: nextKey,
+        key: options[e.key].optionId,
         optionId: options[e.key].optionId,
         optionCount: 1,
         optionName: options[e.key].optionName,
@@ -195,24 +210,20 @@ function ProductInfoFlot(props) {
       );
     });
 
-  // const unique_user = props.pandas.reduce((prev, now) => {
-  //   if (!prev.some((obj) => obj.pandaId === now.pandaId)) prev.push(now);
-  //   return prev;
-  // }, []);
+  const unique_user = Pandas.reduce((prev, now) => {
+    if (!prev.some((obj) => obj.pandaId === now.pandaId)) prev.push(now);
+    return prev;
+  }, []);
 
-  // console.log("변경된정보");
-  // console.log(unique_user);
-  // const renderPanda =
-  //   unique_user &&
-  //   unique_user.map((panda, index) => {
-  //     return (
-  //       <Option value={panda.pandaId} key={index}>
-  //         <div style={{ float: "left" }}>{panda.panda}</div>
-  //       </Option>
-  //     );
-  //   });
-  // const [Ispanda, setIspanda] = useState();
-  // const [approvePanda, setapprovePanda] = useState();
+  const renderPanda =
+    unique_user &&
+    unique_user.map((panda, index) => {
+      return (
+        <Option value={panda.pandaId} key={index}>
+          <div style={{ float: "left" }}>{panda.panda}</div>
+        </Option>
+      );
+    });
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
@@ -223,16 +234,16 @@ function ProductInfoFlot(props) {
       cart: cart.array,
       selectpanda: SelectPanda,
     };
-    axios.post("/api/addcart", body).then((response) => {
+
+    axios.post("/api/updatecart", body).then((response) => {
       if (response.data.success) {
-        alert("상품을 장바구니에 성공적으로 담았습니다");
+        alert("장바구니를 성공적으로 수정했습니다!");
+        props.onCancel();
       } else {
-        alert("장바구니담기에 실패했습니다");
+        alert("장바구니 수정에 실패했습니다");
         // console.log(response.data);
       }
     });
-
-    // console.log(body);
   };
 
   return (
@@ -243,7 +254,7 @@ function ProductInfoFlot(props) {
           style={{ width: "100%" }}
           onChange={handleChange}
         >
-          {/* <OptGroup label="PANDAS">{renderPanda}</OptGroup> */}
+          <OptGroup label="PANDAS">{renderPanda}</OptGroup>
         </Select>
 
         <Table columns={columns} dataSource={cart.array} pagination={false} />
@@ -259,11 +270,6 @@ function ProductInfoFlot(props) {
             title="옵션을 선택해주세요"
           >
             {renderOption}
-            {/* <Menu.Item key="1">
-              <div style={{ float: "left" }}>ㅁㅁㅁ</div>
-              <div style={{ float: "right" }}>3000원</div>
-            </Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item> */}
           </SubMenu>
         </Menu>
       </div>
@@ -278,6 +284,11 @@ function ProductInfoFlot(props) {
         <div style={{ justityContent: "center", TextAline: "center" }}>
           <div style={{ float: "left", width: "100%" }}></div>
         </div>
+      </div>
+      <div style={{ float: "right" }}>
+        <Button size="large" shape="round" type="danger" onClick={clickHandler}>
+          상품담기
+        </Button>{" "}
       </div>
     </div>
   );

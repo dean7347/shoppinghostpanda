@@ -55,19 +55,16 @@ public class OrderDetailController {
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateOrderDetailDAO createProductDAO) throws Exception {
 
-        System.out.println("CreateOrderDetailDAO = " + createProductDAO);
         List<detailOptionDAO> cart = createProductDAO.cart;
         for (detailOptionDAO detailOptionDAO : cart) {
             try {
                 if(createProductDAO.selectpanda==null)
                 {
-                    System.out.println("컨트롤러");
                     orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
                             , detailOptionDAO.optionId, detailOptionDAO.optionCount);
                 }else
                 {
 
-                    System.out.println("컨트롤러");
 
                     orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
                             , detailOptionDAO.optionId, detailOptionDAO.optionCount, createProductDAO.selectpanda);
@@ -82,6 +79,99 @@ public class OrderDetailController {
                         "계속 발생할시 1:1 문의바랍니다"));
             }
         }
+
+
+        return ResponseEntity.ok(new ResultDto(true,"상품담기 성공"));
+    }
+
+
+    //카트 업데이트
+    @RequestMapping(value = "/api/updatecart", method = RequestMethod.POST)
+    public ResponseEntity<?> updatecart(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody CreateOrderDetailDAO createProductDAO) throws Exception {
+
+        System.out.println("createProductDAO = " + createProductDAO.selectpanda);
+        for (detailOptionDAO detailOptionDAO : createProductDAO.cart) {
+            System.out.println("detailOptionDAO = " + detailOptionDAO);
+
+            //새상품
+            if(detailOptionDAO.detailedId==null)
+            {
+                try {
+                if(createProductDAO.selectpanda==null)
+                {
+                    orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
+                            , detailOptionDAO.optionId, detailOptionDAO.optionCount);
+                }else
+                {
+
+
+                    orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
+                            , detailOptionDAO.optionId, detailOptionDAO.optionCount, createProductDAO.selectpanda);
+                }
+
+            }catch (Exception e)
+
+            {
+                System.out.println("오더디테일 컨트롤러 에러발생"+e);
+
+                return ResponseEntity.ok(new ResultDto(false,"상품을 담는중 오류가 발생했습니다" +
+                        "계속 발생할시 1:1 문의바랍니다"));
+            }
+
+
+
+            }else
+            {
+                Optional<OrderDetail> byId = orderDetailRepository.findById(detailOptionDAO.detailedId);
+                try {
+                    if(createProductDAO.selectpanda==null)
+                    {
+                        orderDetailService.updateOrderDetail(byId.get(),detailOptionDAO.optionCount);
+                    }else
+                    {
+
+                        orderDetailService.updateOrderDetail(byId.get(),detailOptionDAO.optionCount, createProductDAO.selectpanda);
+
+                    }
+
+                }catch (Exception e)
+
+                {
+                    System.out.println("오더디테일 컨트롤러 에러발생"+e);
+
+                    return ResponseEntity.ok(new ResultDto(false,"상품을 담는중 오류가 발생했습니다" +
+                            "계속 발생할시 1:1 문의바랍니다"));
+                }
+
+            }
+        }
+//        List<detailOptionDAO> cart = createProductDAO.cart;
+//        for (detailOptionDAO detailOptionDAO : cart) {
+//            try {
+//                if(createProductDAO.selectpanda==null)
+//                {
+//                    System.out.println("컨트롤러");
+//                    orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
+//                            , detailOptionDAO.optionId, detailOptionDAO.optionCount);
+//                }else
+//                {
+//
+//                    System.out.println("컨트롤러");
+//
+//                    orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid
+//                            , detailOptionDAO.optionId, detailOptionDAO.optionCount, createProductDAO.selectpanda);
+//                }
+//
+//            }catch (Exception e)
+//
+//            {
+//                System.out.println("오더디테일 컨트롤러 에러발생"+e);
+//
+//                return ResponseEntity.ok(new ResultDto(false,"상품을 담는중 오류가 발생했습니다" +
+//                        "계속 발생할시 1:1 문의바랍니다"));
+//            }
+//        }
 
 
         return ResponseEntity.ok(new ResultDto(true,"상품담기 성공"));
@@ -433,14 +523,35 @@ public class OrderDetailController {
                                                 Authentication authentication, @RequestBody removeDetailDAO removeDetailDAO) throws Exception {
 
         try {
-            orderDetailRepository.deleteById(removeDetailDAO.orderDetailId);
+            boolean delete = orderDetailService.delete(removeDetailDAO.orderDetailId);
+            if(delete) {
+                return ResponseEntity.ok(new ResultDto(true, "성공적으로 삭제했습니다"));
+            }else
+            {
+                return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
+
+            }
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
+        }
+        
+    }
+
+    //카트에서 삭제
+    @RequestMapping(value = "/api/cart/removecart", method = RequestMethod.POST)
+    public ResponseEntity<?> removecart(@CurrentSecurityContext(expression = "authentication")
+                                                  Authentication authentication, @RequestBody removeDetailDAO removeDetailDAO) throws Exception {
+
+
+        try {
             return ResponseEntity.ok(new ResultDto(true,"성공적으로 삭제했습니다"));
 
         }catch (Exception e)
         {
             return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
         }
-        
+
     }
 
 
@@ -449,7 +560,7 @@ public class OrderDetailController {
     public static class DetailedCart{
 
         HashSet<DetailedShop> ds = new HashSet<>();
-
+        Long orderId;
         public DetailedCart(List<OrderDetail> orderDetails){
 
             for (OrderDetail orderDetail : orderDetails) {
@@ -610,6 +721,7 @@ public class OrderDetailController {
             private int optionCount;
             private String originPrice;
             private String optionPrice;
+            private Long detailedId;
 
         }
 
