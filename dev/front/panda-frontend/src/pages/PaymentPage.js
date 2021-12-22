@@ -18,6 +18,12 @@ import {
 import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
 import { useHistory } from "react-router-dom";
+import {
+  BrowserView,
+  MobileView,
+  isBrower,
+  isMobile,
+} from "react-device-detect";
 
 function PaymentPage(gprops) {
   let history = useHistory();
@@ -773,6 +779,87 @@ function PaymentPage(gprops) {
     );
   };
 
+  const mobileBox = () => {
+    return (
+      <>
+        <table width="100%">
+          <thead>
+            <th>상품상세</th>
+          </thead>
+          <tbody>
+            {paydata.ds &&
+              paydata.ds.map((item, index) => {
+                var allPrice = 0;
+                var purePrice = 0;
+                function pricePlus(getprice, getpure) {
+                  allPrice = allPrice + getprice;
+                  purePrice = purePrice + getpure;
+                }
+                var freePrice = item.freePrice;
+                var shipPrice = item.shipPrice;
+                //   function getfreePrice(getPrice) {
+                //     freePrice = getPrice;
+                //   }
+
+                //   function getShipPrice(getPrice) {
+                //     shipPrice = getPrice;
+                //   }
+                function isfree(getallPrice) {
+                  if (getallPrice >= freePrice) {
+                    return "무료배송";
+                  } else {
+                    return shipPrice;
+                  }
+                }
+                return (
+                  <tr>
+                    <td style={{}}>
+                      <div style={{ background: "red", width: "100%" }}>1</div>
+
+                      {item.dp.map((product, index) => (
+                        <tr
+                          style={{
+                            textAlign: "center",
+                            width: "100%",
+                            height: "120px",
+                          }}
+                        >
+                          <td
+                            style={{
+                              textAlign: "center",
+                              width: "100%",
+                              height: "120px",
+                            }}
+                          >
+                            <div style={{ background: "red", width: "100%" }}>
+                              2
+                            </div>
+                            <img
+                              style={{
+                                width: "150px",
+                                height: "150px",
+                              }}
+                              alt="product"
+                              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                            />
+                            <tr>
+                              <div style={{ background: "red", width: "100%" }}>
+                                3
+                              </div>
+                            </tr>
+                          </td>
+                        </tr>
+                      ))}
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </>
+    );
+  };
+
   return (
     <>
       <div style={{ zIndex: "99" }}>
@@ -782,7 +869,11 @@ function PaymentPage(gprops) {
         <h1>Payment</h1>
         <Divider />
         <h3>상품정보</h3>
-        <div>{renderbox()}</div>
+        <BrowserView>
+          <div>{renderbox()}</div>
+        </BrowserView>
+        <MobileView>{mobileBox()}</MobileView>
+
         <Divider />
         <div style={{ border: "1px solid" }}>
           <div style={{ float: "left" }}>
@@ -841,7 +932,7 @@ function PaymentPage(gprops) {
             >
               {renderAddrList()}
             </Modal>
-            ;
+
             <Form.Item label="주소록">
               {" "}
               <Radio.Group onChange={onChange} value={value}>
