@@ -1,6 +1,7 @@
 package com.indiduck.panda.Repository;
 
 import com.indiduck.panda.domain.Product;
+import com.indiduck.panda.domain.Shop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -18,6 +19,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 //        Page<Product> findAllBy(Pageable pageable);
 
     Page<Product> findByProductNameContaining(Pageable pageable,String productName);
+    Page<Product> findByShop(Pageable pageable, Shop shop);
 
 
 

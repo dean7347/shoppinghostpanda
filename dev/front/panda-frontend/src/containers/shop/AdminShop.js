@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Paging from "../../components/common/Paging";
+import MyProductPage from "../../pages/MyProductPage";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -623,6 +624,8 @@ const AdminShop = () => {
             />
           </>
         );
+      case "5":
+        return <MyProductPage />;
       default:
         break;
     }
@@ -662,6 +665,9 @@ const AdminShop = () => {
             </Menu.Item>
             <Menu.Item key="4" icon={<UserOutlined />}>
               준비중인 상품
+            </Menu.Item>
+            <Menu.Item key="5" icon={<UserOutlined />}>
+              내 상품 보기
             </Menu.Item>
           </Menu>
         </Sider>

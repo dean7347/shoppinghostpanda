@@ -3,14 +3,12 @@ package com.indiduck.panda.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.indiduck.panda.Repository.ProductRepository;
+import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.FileService;
 import com.indiduck.panda.Service.ProductService;
 
 import com.indiduck.panda.Service.S3Uploader;
-import com.indiduck.panda.domain.File;
-import com.indiduck.panda.domain.Product;
-import com.indiduck.panda.domain.ProductOption;
-import com.indiduck.panda.domain.Shop;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.FileDao;
 
 import com.indiduck.panda.util.MD5Generator;
@@ -49,6 +47,8 @@ public class ProductController {
     @Autowired
     private final ProductRepository productRepository;
 
+    @Autowired
+    private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
 
@@ -178,6 +178,26 @@ public class ProductController {
          }
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
      }
+
+
+    @RequestMapping(value = "/api/myproduct", method = RequestMethod.GET)
+    public ResponseEntity<?> viewMyProductAll(@CurrentSecurityContext(expression = "authentication")
+                                             Authentication authentication,Pageable pageable) throws Exception {
+
+
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        Shop shop = byEmail.get().getShop();
+        Page<Product> result = productRepository.findByShop(pageable,shop);
+        Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
+
+
+        if(!tomap.isEmpty()){
+            return  ResponseEntity.ok(tomap);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+    }
+
 
 
     @RequestMapping(value = "/api/searchpreview", method = RequestMethod.GET)
