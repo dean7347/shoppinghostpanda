@@ -8,6 +8,8 @@ import WritePage from "./pages/WritePage";
 import PostPage from "./pages/PostPage";
 import regShopPage from "./pages/regShopPage";
 import newProductPage from "./pages/newProductPage";
+import EditProductPage from "./pages/EditProductPage";
+
 import LandingPage from "./pages/LandingPage";
 import ProductSearchPage from "./pages/ProductSearchPage";
 import DetailProductPage from "./pages/DetailProductPage";
@@ -45,6 +47,12 @@ const App = () => {
         <Route component={PostPage} path="/@:username/:postId" exact />
         <Route component={regShopPage} path={"/shop"} exact />
         <Route component={newProductPage} path={"/shop/newProduct"} exact />
+        <Route
+          component={EditProductPage}
+          path={"/shop/editProduct/:productId"}
+          exact
+        />
+
         <Route
           component={DetailProductPage}
           path={"/product/:productId"}

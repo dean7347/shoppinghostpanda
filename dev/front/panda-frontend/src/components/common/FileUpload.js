@@ -6,16 +6,8 @@ import axios from "axios";
 function FileUpload(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
-  console.log("파일입력1");
 
-  console.log(props.thumb === true);
   const dropHandler = (files) => {
-    console.log("파일입력2");
-    console.log(props);
-
-    console.log(props.refreshFunction == "() => updateThumb");
-    console.log(props.refreshFunction == "() => updateImages");
-
     // console.log(files);
     // console.log(files.length);
     // console.log("파일타입체크");

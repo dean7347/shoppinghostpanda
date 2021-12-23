@@ -8,11 +8,12 @@ import React, {
 import HeaderContainer from "../containers/common/HeaderContainer";
 import Footer from "../components/common/Footer";
 import axios from "axios";
-import { Col, Card, Row, Carousel } from "antd";
+import { Col, Card, Row, Button } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ImageSlider from "../components/common/ImageSlider";
 import Paging from "../components/common/Paging";
 import SearchFeature from "../components/sections/SeacrchFeature";
+import { Link } from "react-router-dom";
 
 function MyProductPage() {
   const [Products, setProducts] = useState([]);
@@ -65,7 +66,9 @@ function MyProductPage() {
   const updateSearchTerm = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
   };
-
+  const clickHandler = (e, param) => {
+    console.log(param);
+  };
   const renderCards = Products.map((product, index) => {
     return (
       <Col lg={6} md={8} xs={24} key={index}>
@@ -74,6 +77,41 @@ function MyProductPage() {
             <Meta title={product.proname} description={`${product.shopname}`} />
           </Card>
         </a>
+
+        <div style={{ border: "1px solid", justityContent: "center" }}>
+          <div>
+            <div style={{ width: "50%", float: "left" }}>
+              <Button block variant="success" size="sm">
+                판매중지
+              </Button>
+            </div>
+            <div style={{ width: "50%", float: "left" }}>
+              <Button block variant="danger" size="sm" danger>
+                상품삭제
+              </Button>
+            </div>
+          </div>
+          <Link
+            to={{
+              pathname: `/shop/editProduct/${product.proId}`,
+              state: { proid: product.proId },
+            }}
+          >
+            <Button block>상품수정</Button>
+          </Link>
+
+          {/* <Link to={`/product/edit/${product.proId}`}>
+            <div style={{}}>상품수정</div>
+          </Link> */}
+          {/* <button
+            onClick={(e) => {
+              clickHandler(e, product.proId);
+            }}
+            style={{ width: "100%" }}
+          >
+            상품수정
+          </button> */}
+        </div>
       </Col>
     );
   });

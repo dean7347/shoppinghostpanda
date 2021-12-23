@@ -571,6 +571,7 @@ const AdminShop = () => {
                 </Card>
               </Col>
             </Row>
+
             <Link to="/shop/newProduct">
               <Button type="primary">상품등록하기</Button>
             </Link>
