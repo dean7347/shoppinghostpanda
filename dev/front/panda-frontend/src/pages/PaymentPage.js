@@ -782,80 +782,221 @@ function PaymentPage(gprops) {
   const mobileBox = () => {
     return (
       <>
-        <table width="100%">
-          <thead>
-            <th>상품상세</th>
-          </thead>
-          <tbody>
-            {paydata.ds &&
-              paydata.ds.map((item, index) => {
-                var allPrice = 0;
-                var purePrice = 0;
-                function pricePlus(getprice, getpure) {
-                  allPrice = allPrice + getprice;
-                  purePrice = purePrice + getpure;
-                }
-                var freePrice = item.freePrice;
-                var shipPrice = item.shipPrice;
-                //   function getfreePrice(getPrice) {
-                //     freePrice = getPrice;
-                //   }
-
-                //   function getShipPrice(getPrice) {
-                //     shipPrice = getPrice;
-                //   }
-                function isfree(getallPrice) {
-                  if (getallPrice >= freePrice) {
-                    return "무료배송";
-                  } else {
-                    return shipPrice;
+        <div style={{ width: "100%", overflow: "auto" }}>
+          <table width="100%">
+            <thead>
+              <th>상품상세</th>
+            </thead>
+            <tbody>
+              {paydata.ds &&
+                paydata.ds.map((item, index) => {
+                  var allPrice = 0;
+                  var purePrice = 0;
+                  function pricePlus(getprice, getpureprice) {
+                    allPrice = allPrice + getprice;
+                    purePrice = purePrice + getpureprice;
                   }
-                }
-                return (
-                  <tr>
-                    <td style={{}}>
-                      <div style={{ background: "red", width: "100%" }}>1</div>
 
-                      {item.dp.map((product, index) => (
-                        <tr
+                  var freePrice = item.freePrice;
+                  var shipPrice = item.shipPrice;
+                  //   function getfreePrice(getPrice) {
+                  //     freePrice = getPrice;
+                  //   }
+
+                  //   function getShipPrice(getPrice) {
+                  //     shipPrice = getPrice;
+                  //   }
+                  function isfree(getpurePrice) {
+                    if (getpurePrice >= freePrice) {
+                      return "무료배송";
+                    } else {
+                      return shipPrice;
+                    }
+                  }
+                  return (
+                    <tr>
+                      <td>
+                        {item.dp.map((product, index) => (
+                          <div>
+                            <table>
+                              <tr
+                                key={index}
+                                style={{
+                                  display: "table",
+                                  width: "100%",
+                                }}
+                              >
+                                <tr
+                                  style={{
+                                    display: "table",
+                                    textAlign: "center",
+                                    width: "100%",
+                                    height: "120px",
+                                  }}
+                                >
+                                  <img
+                                    style={{
+                                      width: "150px",
+                                      height: "150px",
+                                    }}
+                                    alt="product"
+                                    src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                  />
+                                </tr>
+
+                                <tr>
+                                  <td>
+                                    <div
+                                      style={{ width: "200px", float: "left" }}
+                                    >
+                                      {product.productName}
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>{item.shopName}</td>
+                                </tr>
+
+                                <tr
+                                  style={{
+                                    display: "table",
+                                    textAlign: "center",
+                                    width: "100%",
+                                  }}
+                                >
+                                  {product.do.map((option, index) => (
+                                    <tr
+                                      style={{
+                                        display: "table",
+                                        textAlign: "center",
+                                        width: "100%",
+                                      }}
+                                    >
+                                      <tr key={index}>
+                                        <td>
+                                          <div style={{ width: "80px" }}>
+                                            {option.pandaName}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div style={{ width: "120px" }}>
+                                            {option.optionName}
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div style={{ width: "100%" }}>
+                                            {option.originPrice
+                                              .toString()
+                                              .replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                              )}{" "}
+                                            *{option.optionCount} EA
+                                          </div>
+                                        </td>
+                                        <td>
+                                          {option.discount ? (
+                                            <div style={{ width: "100px" }}>
+                                              {Math.round(
+                                                option.originPrice *
+                                                  option.optionCount *
+                                                  0.95
+                                              )
+                                                .toString()
+                                                .replace(
+                                                  /\B(?=(\d{3})+(?!\d))/g,
+                                                  ","
+                                                )}
+                                              <br />
+                                              (판다 할인 : 5% )
+                                            </div>
+                                          ) : (
+                                            <div style={{ width: "100px" }}>
+                                              {(
+                                                option.originPrice *
+                                                option.optionCount
+                                              )
+                                                .toString()
+                                                .replace(
+                                                  /\B(?=(\d{3})+(?!\d))/g,
+                                                  ","
+                                                )}
+                                              <br />
+                                              (판다 할인 미적용)
+                                            </div>
+                                          )}
+                                        </td>
+                                        {option.discount
+                                          ? pricePlus(
+                                              Math.round(
+                                                option.originPrice *
+                                                  option.optionCount *
+                                                  0.95
+                                              ),
+                                              option.originPrice *
+                                                option.optionCount
+                                            )
+                                          : pricePlus(
+                                              option.originPrice *
+                                                option.optionCount,
+                                              option.originPrice *
+                                                option.optionCount
+                                            )}
+                                      </tr>
+                                      <br />
+                                      <hr />
+                                    </tr>
+                                  ))}
+                                </tr>
+                              </tr>
+                            </table>
+                          </div>
+                        ))}
+                        <table>
+                          <tr>
+                            <td>
+                              <tr
+                                style={{
+                                  display: "table",
+                                  textAlign: "center",
+                                  width: "100%",
+                                }}
+                              >
+                                {allPrice
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                원
+                              </tr>
+                              <br />
+                              <tr>
+                                {isfree(purePrice)
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                <br />(
+                                {freePrice
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                                이상 무료배송)
+                              </tr>
+                            </td>
+                          </tr>
+                        </table>
+
+                        <hr
                           style={{
-                            textAlign: "center",
+                            backgroundColor: "red",
                             width: "100%",
-                            height: "120px",
                           }}
-                        >
-                          <td
-                            style={{
-                              textAlign: "center",
-                              width: "100%",
-                              height: "120px",
-                            }}
-                          >
-                            <div style={{ background: "red", width: "100%" }}>
-                              2
-                            </div>
-                            <img
-                              style={{
-                                width: "150px",
-                                height: "150px",
-                              }}
-                              alt="product"
-                              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
-                            />
-                            <tr>
-                              <div style={{ background: "red", width: "100%" }}>
-                                3
-                              </div>
-                            </tr>
-                          </td>
-                        </tr>
-                      ))}
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
       </>
     );
   };

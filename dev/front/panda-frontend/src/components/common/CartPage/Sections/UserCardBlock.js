@@ -528,14 +528,6 @@ function UserCardBlock(props) {
                                           >
                                             삭제
                                           </Button>
-                                          <Button
-                                            type="primary"
-                                            onClick={(e) => {
-                                              showModal(item, e);
-                                            }}
-                                          >
-                                            변경
-                                          </Button>
                                         </td>
                                       </tr>
                                       <br />
