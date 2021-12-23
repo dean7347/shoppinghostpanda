@@ -1,6 +1,6 @@
 import FileUpload from "../common/FileUpload";
 import { Typography, Form, Input, Button, Select } from "antd";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import axios from "../../../node_modules/axios/index";
 import OptionTemplate from "../common/List/OptionTemplate";
 import TodoInsert from "../common/List/TodoInsert";
@@ -13,6 +13,20 @@ const { TextArea } = Input;
 function EditProductForm(props) {
   console.log("숭품수정");
   console.log(props.productId);
+  useEffect(() => {
+    axios
+      .get(`/api/product/products_by_id?id=${props.productId}`)
+      .then((response) => {
+        if (response.data.success) {
+          // setProduct(response.data);
+          console.log("가져온기라");
+
+          console.log(response.data);
+        } else {
+          alert("상세정보 가져오기를 실패했습니다");
+        }
+      });
+  }, []);
 
   const history = useHistory();
 
@@ -73,15 +87,15 @@ function EditProductForm(props) {
       type: Low,
       lowform: tostringform,
     };
-    // // console.log(body);
-    axios.post("/api/regnewproduct", body).then((response) => {
-      if (response.data.success) {
-        alert("상품 업로드에 성공했습니다");
-        history.push("/shop");
-      } else {
-        alert("상품업로드에 실패 했습니다.");
-      }
-    });
+    // // // console.log(body);
+    // axios.post("/api/regnewproduct", body).then((response) => {
+    //   if (response.data.success) {
+    //     alert("상품 업로드에 성공했습니다");
+    //     history.push("/shop");
+    //   } else {
+    //     alert("상품업로드에 실패 했습니다.");
+    //   }
+    // });
   };
   const lowOption = (setOption) => {
     // console.log(setOption);
@@ -3924,7 +3938,7 @@ function EditProductForm(props) {
           <br />
           <br />
           <label>상품 이름</label>
-          <Input onChange={titleChangeHandler} value={Title} />
+          <Input onChange={titleChangeHandler} default={"zz"} value={Title} />
           <br />
           <br />
           <label>설명</label>
