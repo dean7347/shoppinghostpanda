@@ -15,16 +15,18 @@ function EditProductForm(props) {
   console.log(props.productId);
 
   const [getThumbs, setGetThumbs] = useState([]);
+  const [getDetail, setGetDetail] = useState([]);
   useEffect(() => {
     axios
       .get(`/api/product/products_by_id?id=${props.productId}`)
       .then((response) => {
         if (response.data.success) {
           // setProduct(response.data);
-          // console.log("가져온기라");
+          console.log("가져온기라");
 
-          // console.log(response.data);
+          console.log(response.data);
           setGetThumbs(response.data.thumbs);
+          setGetDetail(response.data.detailImages);
         } else {
           alert("상세정보 가져오기를 실패했습니다");
         }
@@ -3934,16 +3936,18 @@ function EditProductForm(props) {
             refreshFunction={updateThumb}
             type={"thumb"}
             proId={props.productId}
+            imgarray={getThumbs}
           />
           <label>
             상품상세사진 (가로사이즈 860 이하)
             <br />
-            jpg/png 파일만 허용됩니다
+            jpg/png 파일만 허용됩니다.
           </label>
           <FileEdit
             refreshFunction={updateImages}
             type={"detail"}
             proId={props.productId}
+            imgarray={getDetail}
           />
 
           <br />

@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import Icon from "@ant-design/icons";
 import axios from "axios";
 
-function FileEdit(props) {
+function FileEditDetail(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
   console.log(props);
@@ -36,25 +36,15 @@ function FileEdit(props) {
   // }, []);
 
   useEffect(() => {
-    console.log("프롭스");
-
-    console.log(props.imgarrayThum);
-
-    // if (props.type === "thumb") {
-    // console.log("썸");
-    // console.log(props.imgarray);
-    props.imgarray.map((i, idx) => {
-      Images.push(i.filepath);
-      props.refreshFunction([...Images, i.filePath]);
-    });
-    // }
-
-    // if (props.type === "detail") {
-    //   props.imgarrayThum.map((i, idx) => {
-    //     Images.push(i.filepath);
-    //   });
-    // }
-  }, [props.imgarray]);
+    if (props.type === "detail") {
+      console.log("디테일");
+      console.log(props.imgarrayDetail);
+      props.imgarrayDetail.map((k, idx) => {
+        console.log(k.filepath);
+        Images.push(k.filepath);
+      });
+    }
+  }, []);
 
   const dropHandler = (files) => {
     // console.log(files);
@@ -217,4 +207,4 @@ function FileEdit(props) {
   );
 }
 
-export default FileEdit;
+export default FileEditDetail;
