@@ -13,15 +13,18 @@ const { TextArea } = Input;
 function EditProductForm(props) {
   console.log("숭품수정");
   console.log(props.productId);
+
+  const [getThumbs, setGetThumbs] = useState([]);
   useEffect(() => {
     axios
       .get(`/api/product/products_by_id?id=${props.productId}`)
       .then((response) => {
         if (response.data.success) {
           // setProduct(response.data);
-          console.log("가져온기라");
+          // console.log("가져온기라");
 
-          console.log(response.data);
+          // console.log(response.data);
+          setGetThumbs(response.data.thumbs);
         } else {
           alert("상세정보 가져오기를 실패했습니다");
         }
@@ -3927,7 +3930,11 @@ function EditProductForm(props) {
             <br />
             jpg/png 파일만 허용됩니다
           </label>
-          <FileUpload refreshFunction={updateThumb} type={"thumb"} />
+          <FileUpload
+            refreshFunction={updateThumb}
+            type={"thumb"}
+            thumbs={getThumbs}
+          />
           <label>
             상품상세사진 (가로사이즈 860 이하)
             <br />

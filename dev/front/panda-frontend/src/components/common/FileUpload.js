@@ -6,20 +6,20 @@ import axios from "axios";
 function FileUpload(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
+  console.log("썸네일인기라");
+  console.log(props.thumbs);
 
   const dropHandler = (files) => {
     // console.log(files);
     // console.log(files.length);
-    // console.log("파일타입체크");
-    // console.log(files[0].type);
+    console.log("파일타입체크");
+    console.log(files[0].type);
+    const filetype = files[0].type;
 
-    // if (
-    //   files &&
-    //   !(files[0].type === "image/png" || files.type[0] === "image/jpg")
-    // ) {
-    //   alert("jpg/png만 허용됩니다");
-    //   return;
-    // }
+    if (!(filetype === "image/png" || filetype === "image/jpg")) {
+      alert("jpg/png만 허용됩니다");
+      return;
+    }
 
     const image = new Image();
     let fr = new FileReader();
@@ -75,9 +75,9 @@ function FileUpload(props) {
 
           axios.post("/api/amzonefile", formData, config).then((response) => {
             setCheck(false);
+
             if (response.data.success) {
               setImages([...Images, response.data.filePath]);
-              console.log(response.data.filePath);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
               alert("파일 저장 실패");
