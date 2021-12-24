@@ -1,4 +1,4 @@
-import FileUpload from "../common/FileUpload";
+import FileEdit from "../common/FileEdit";
 import { Typography, Form, Input, Button, Select } from "antd";
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import axios from "../../../node_modules/axios/index";
@@ -3930,17 +3930,21 @@ function EditProductForm(props) {
             <br />
             jpg/png 파일만 허용됩니다
           </label>
-          <FileUpload
+          <FileEdit
             refreshFunction={updateThumb}
             type={"thumb"}
-            thumbs={getThumbs}
+            proId={props.productId}
           />
           <label>
             상품상세사진 (가로사이즈 860 이하)
             <br />
             jpg/png 파일만 허용됩니다
           </label>
-          <FileUpload refreshFunction={updateImages} type={"detail"} />
+          <FileEdit
+            refreshFunction={updateImages}
+            type={"detail"}
+            proId={props.productId}
+          />
 
           <br />
           <br />

@@ -1,11 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dropzone from "react-dropzone";
 import Icon from "@ant-design/icons";
 import axios from "axios";
 
-function FileUpload(props) {
+function FileEdit(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
+  console.log(props);
+  useEffect(() => {
+    axios
+      .get(`/api/product/products_by_id?id=${props.proId}`)
+      .then((response) => {
+        if (response.data.success) {
+          // setProduct(response.data);
+          console.log("가져온기라");
+
+          console.log(response.data);
+          if (props.type === "thumb") {
+            response.data.thumbs.map((i, idx) => {
+              Images.push(i.filepath);
+            });
+          }
+          if (props.type === "detail") {
+            response.data.detailImages.map((i, idx) => {
+              Images.push(i.filepath);
+            });
+          }
+
+          console.log("셋팅완료");
+          console.log(Images);
+        } else {
+          alert("상세정보 가져오기를 실패했습니다");
+        }
+      });
+  }, []);
 
   const dropHandler = (files) => {
     // console.log(files);
@@ -168,4 +196,4 @@ function FileUpload(props) {
   );
 }
 
-export default FileUpload;
+export default FileEdit;
