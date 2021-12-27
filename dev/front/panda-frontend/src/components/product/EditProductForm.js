@@ -4,34 +4,15 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import axios from "../../../node_modules/axios/index";
 import OptionTemplate from "../common/List/OptionTemplate";
 import TodoInsert from "../common/List/TodoInsert";
-import TodoList from "../common/List/TodoList";
+import TodoList from "../common/List/EditTodoList";
 import { useHistory } from "react-router-dom";
 
 const { Titled } = Typography;
 const { TextArea } = Input;
 
 function EditProductForm(props) {
-  console.log("숭품수정");
-  console.log(props.productId);
-
   const [getThumbs, setGetThumbs] = useState([]);
   const [getDetail, setGetDetail] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`/api/product/products_by_id?id=${props.productId}`)
-      .then((response) => {
-        if (response.data.success) {
-          // setProduct(response.data);
-          console.log("가져온기라");
-
-          console.log(response.data);
-          setGetThumbs(response.data.thumbs);
-          setGetDetail(response.data.detailImages);
-        } else {
-          alert("상세정보 가져오기를 실패했습니다");
-        }
-      });
-  }, []);
 
   const history = useHistory();
 
@@ -43,6 +24,41 @@ function EditProductForm(props) {
   const [Images, setImages] = useState([]);
   const [Thumb, setThumb] = useState([]);
   const [Low, setLow] = useState();
+  const [Options, setOptions] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`/api/product/products_by_id?id=${props.productId}`)
+      .then((response) => {
+        if (response.data.success) {
+          // setProduct(response.data);
+          console.log("가져온기라");
+
+          console.log(response.data);
+          setTitle(response.data.productName);
+          setDescription(response.data.productDesc);
+          setLow(response.data.type);
+          // setPrice("프라이스");
+          // setContinent("컨티넌트");
+          response.data.poptions.map((op, idx) => {
+            const Option = {
+              id: nextId.current,
+              optionId: op.optionId,
+              optionName: op.optionName,
+              optionPrice: op.optionPrice,
+              optionStock: op.optionStock,
+            };
+            Options.push(Option);
+            nextId.current += 1;
+          });
+          setGetThumbs(response.data.thumbs);
+          setGetDetail(response.data.detailImages);
+        } else {
+          alert("상세정보 가져오기를 실패했습니다");
+        }
+      });
+  }, []);
+
   const [form, setForm] = useState({
     //의류
     a: "",
@@ -103,7 +119,6 @@ function EditProductForm(props) {
     // });
   };
   const lowOption = (setOption) => {
-    // console.log(setOption);
     switch (setOption) {
       //의류
       case "1":
@@ -3841,7 +3856,6 @@ function EditProductForm(props) {
     }
   };
 
-  const [Options, setOptions] = useState([]);
   //고유값으로 사용될 id ref사용하여 번수담기
   const nextId = useRef(1);
   function handleChange(value) {
@@ -3953,7 +3967,7 @@ function EditProductForm(props) {
           <br />
           <br />
           <label>상품 이름</label>
-          <Input onChange={titleChangeHandler} default={"zz"} value={Title} />
+          <Input onChange={titleChangeHandler} value={Title} />
           <br />
           <br />
           <label>설명</label>

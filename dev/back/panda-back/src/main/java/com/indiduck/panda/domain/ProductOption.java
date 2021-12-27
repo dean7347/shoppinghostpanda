@@ -35,4 +35,10 @@ public class ProductOption {
         return newOption;
     }
 
+    //비즈니스 메서드
+    public void optionDel()
+    {
+        
+    }
+
 }

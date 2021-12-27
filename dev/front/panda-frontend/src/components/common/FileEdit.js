@@ -6,7 +6,6 @@ import axios from "axios";
 function FileEdit(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
-  console.log(props);
   // useEffect(() => {
   //   axios
   //     .get(`/api/product/products_by_id?id=${props.proId}`)
@@ -36,10 +35,6 @@ function FileEdit(props) {
   // }, []);
 
   useEffect(() => {
-    console.log("프롭스");
-
-    console.log(props.imgarrayThum);
-
     // if (props.type === "thumb") {
     // console.log("썸");
     // console.log(props.imgarray);
@@ -59,8 +54,6 @@ function FileEdit(props) {
   const dropHandler = (files) => {
     // console.log(files);
     // console.log(files.length);
-    console.log("파일타입체크");
-    console.log(files[0].type);
     const filetype = files[0].type;
 
     if (
