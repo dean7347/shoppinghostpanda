@@ -19,6 +19,7 @@ public class ProductOption {
     private String optionName;
     private int optionStock;
     private int optionPrice;
+    private boolean sales;
 
     @ManyToOne
     private Product product;
@@ -32,13 +33,16 @@ public class ProductOption {
         newOption.optionName=name;
         newOption.optionStock=stock;
         newOption.optionPrice=price;
+        newOption.sales=true;
         return newOption;
     }
 
     //비즈니스 메서드
     public void optionDel()
     {
-        
+        this.sales=false;
+
+
     }
 
 }

@@ -182,7 +182,10 @@ public class OrderDetailController {
     public ResponseEntity<?> viewMyCart(@CurrentSecurityContext(expression = "authentication")
                                              Authentication authentication) throws Exception {
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
-        Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
+        //기존것
+//        Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
+                Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatusAndOptions_Sales(byEmail.get(), OrderStatus.결제대기,true);
+
         List<OrderDetail> orderDetails = byUserAndOrderStatus.get();
 
         DetailedCart myCart = new DetailedCart(orderDetails);
@@ -203,8 +206,10 @@ public class OrderDetailController {
             Optional<Shop> byId = shopRepository.findById(id);
             if(byId!=null)
             {
-//
-                Optional<List<OrderDetail>> byUserAndOrderStatusAndShop = orderDetailRepository.findByUserAndOrderStatusAndShop(byEmail.get(), OrderStatus.결제대기, byId.get());
+//                  기존에 판매중옵션보기
+//                Optional<List<OrderDetail>> byUserAndOrderStatusAndShop = orderDetailRepository.findByUserAndOrderStatusAndShop(byEmail.get(), OrderStatus.결제대기, byId.get());
+                  Optional<List<OrderDetail>> byUserAndOrderStatusAndShop = orderDetailRepository.findByUserAndOrderStatusAndShopAndOptions_Sales(byEmail.get(), OrderStatus.결제대기, byId.get(),true);
+
                 byUserAndOrderStatus.addAll(byUserAndOrderStatusAndShop.get());
 
             }
@@ -650,6 +655,10 @@ public class OrderDetailController {
         HashSet<DetailedOption> dO = new HashSet<DetailedOption>();
 
         public DetailedProduct(OrderDetail od){
+            if(od.getOptions().isSales())
+            {
+
+            }
 
 
             productId =od.getProducts().getId();

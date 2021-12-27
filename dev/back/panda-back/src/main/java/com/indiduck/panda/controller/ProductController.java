@@ -328,7 +328,9 @@ public class ProductController {
             }
             List <ProductOption> options =detail.getProductOptions();
             for (ProductOption option : options) {
-                Poptions.add(new DetailOptionDto(option));
+                if(option.isSales()) {
+                    Poptions.add(new DetailOptionDto(option));
+                }
             }
 
         }
@@ -340,10 +342,11 @@ public class ProductController {
         int optionStock;
         int optionPrice;
         public DetailOptionDto(ProductOption o){
-            optionId=o.getId();
-            optionName=o.getOptionName();
-            optionStock=o.getOptionStock();
-            optionPrice=o.getOptionPrice();
+
+                optionId = o.getId();
+                optionName = o.getOptionName();
+                optionStock = o.getOptionStock();
+                optionPrice = o.getOptionPrice();
 
         }
 
