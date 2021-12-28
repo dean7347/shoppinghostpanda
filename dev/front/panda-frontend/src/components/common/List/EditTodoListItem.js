@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MdCheckBoxOutlineBlank,
   MdCheckBox,
@@ -6,15 +6,27 @@ import {
 } from "react-icons/md";
 import "./TodoListItem.scss";
 import cn from "classnames";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import axios from "../../../../node_modules/axios/index";
-
+import TodoInsert from "./EditInsert";
 const EditTodoListItem = ({ Option, onRemove }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {};
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    window.location.reload();
+  };
   const { id, optionName, optionPrice, optionStock } = Option;
-  console.log(Option);
 
   const onClickEdit = () => {
     console.log("수정");
+    setIsModalVisible(true);
   };
 
   const onClickdel = (e) => {
@@ -55,6 +67,17 @@ const EditTodoListItem = ({ Option, onRemove }) => {
       <Button type="primary" onClick={() => onClickdel(Option.optionId)} danger>
         삭제
       </Button>
+      <Modal
+        title="상품수정"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnClose={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+      >
+        <TodoInsert editoption={Option} complete={handleCancel} />
+      </Modal>
     </div>
   );
 };

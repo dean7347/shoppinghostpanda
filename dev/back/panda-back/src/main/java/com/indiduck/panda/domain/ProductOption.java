@@ -44,5 +44,13 @@ public class ProductOption {
 
 
     }
+    public void edit(String name, int count, int price)
+    {
+        this.optionName=name;
+        this.optionStock=count;
+        this.optionPrice=price;
+    }
+
+
 
 }

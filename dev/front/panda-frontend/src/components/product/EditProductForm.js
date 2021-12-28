@@ -32,7 +32,6 @@ function EditProductForm(props) {
       .then((response) => {
         if (response.data.success) {
           // setProduct(response.data);
-          console.log("가져온기라");
 
           console.log(response.data);
           setTitle(response.data.productName);
@@ -3870,6 +3869,21 @@ function EditProductForm(props) {
         optionPrice,
         optionStock,
       };
+
+      const body = {
+        productId: props.productId,
+        optionName: optionName,
+        optionCount: optionStock,
+        optionPrice: optionPrice,
+      };
+      axios.post("/api/addoption", body).then((response) => {
+        if (response.data.success) {
+          alert("옵션수정에 성공했습니다");
+        } else {
+          alert("상품업로드에 실패 했습니다.");
+        }
+      });
+
       setOptions(Options.concat(Option));
       nextId.current += 1;
     },

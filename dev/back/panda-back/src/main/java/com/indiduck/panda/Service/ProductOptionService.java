@@ -2,12 +2,14 @@ package com.indiduck.panda.Service;
 
 import com.indiduck.panda.Repository.ProductOptionRepository;
 import com.indiduck.panda.Repository.ProductRepository;
+import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,8 @@ public class ProductOptionService {
 
     @Autowired
     ProductOptionRepository productOptionRepository;
+    @Autowired
+    private final ProductRepository productRepository;
 
     public ProductOption saveOption(ProductOption option){
         ProductOption newO=new ProductOption()
@@ -32,4 +36,24 @@ public class ProductOptionService {
         Optional<ProductOption> byId = productOptionRepository.findById(optionId);
         byId.get().optionDel();
     }
+
+    public ProductOption addOption(String opname, int stock,int price,long productId){
+        Optional<Product> byId1 = productRepository.findById(productId);
+
+        ProductOption newO=new ProductOption()
+                .newProductOption(opname, stock, price);
+        ProductOption save = productOptionRepository.save(newO);
+        byId1.get().setProductOptions(save);
+        return save;
+    }
+
+    public ProductOption editOption(String opname, int stock,int price,long OptionId){
+
+        Optional<ProductOption> byId = productOptionRepository.findById(OptionId);
+        ProductOption productOption = byId.get();
+        productOption.edit(opname,stock,price);
+        return byId.get();
+    }
+
+
 }

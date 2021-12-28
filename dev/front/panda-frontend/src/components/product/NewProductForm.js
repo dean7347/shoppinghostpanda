@@ -3932,7 +3932,7 @@ function NewProductForm() {
         {/* <label> 옵션</label> */}
         <OptionTemplate>
           <TodoInsert onInsert={onInsert} />
-          <TodoList Options={Options} onRemove={onRemove} />
+          <TodoList Options={Options} onRemove={onRemove} onInsert={onInsert} />
         </OptionTemplate>
         *https://www.law.go.kr/행정규칙/전자상거래등에서의상품등의정보제공에관한고시
         <br />를 따르며 사이트의 정책여건상 단축표기될 수 있습니다
