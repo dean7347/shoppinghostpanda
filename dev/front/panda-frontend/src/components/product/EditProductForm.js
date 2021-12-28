@@ -3948,6 +3948,23 @@ function EditProductForm(props) {
     //   }
     // });
   };
+  const onClickEdit = (param, type) => {
+    console.log(param);
+    console.log(type);
+
+    const body = {
+      param: param,
+      type: type,
+      proId: props.productId,
+    };
+    axios.post("/api/edittextproduct", body).then((response) => {
+      if (response.data.success) {
+        alert("수정되었습니다");
+      } else {
+        alert("수정에 실패했습니다.");
+      }
+    });
+  };
   return (
     <>
       <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
@@ -3983,10 +4000,20 @@ function EditProductForm(props) {
           <br />
           <label>상품 이름</label>
           <Input onChange={titleChangeHandler} value={Title} />
+          <div style={{ float: "right" }}>
+            <Button onClick={() => onClickEdit(Title, "name")}>
+              상품이름 수정
+            </Button>
+          </div>
           <br />
           <br />
           <label>설명</label>
           <TextArea onChange={descriptionChangeHandler} value={Description} />
+          <div style={{ float: "right" }}>
+            <Button onClick={() => onClickEdit(Description, "desc")}>
+              설명 수정
+            </Button>
+          </div>
           <br />
           <br />
         </Form>

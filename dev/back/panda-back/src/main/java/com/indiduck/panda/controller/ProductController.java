@@ -120,6 +120,9 @@ public class ProductController {
 
 
 
+
+
+
     //상품사진 등록
     @RequestMapping(value = "/api/createFile2", method = RequestMethod.POST)
     public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
@@ -211,9 +214,18 @@ public class ProductController {
 
 
     }
+    @RequestMapping(value = "/api/edittextproduct", method = RequestMethod.POST)
+    public ResponseEntity<?> editTextProduct(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody EditTextDao editTextDao) throws Exception {
+
+        productService.editText(editTextDao.proId, editTextDao.type, editTextDao.param);
+        return ResponseEntity.ok(new ResultDto(true));
+    }
+
+
     @RequestMapping(value = "/api/regnewproduct", method = RequestMethod.POST)
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
+                                                      Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
         System.out.println("createProductDAO = " + createProductDAO);
 
         Product product=productService.createNewProduct(
@@ -531,5 +543,11 @@ public class ProductController {
     @Data
     private static class FileDelDao {
         String filepath;
+    }
+    @Data
+    private static class EditTextDao {
+        String param;
+        String type;
+        Long proId;
     }
 }

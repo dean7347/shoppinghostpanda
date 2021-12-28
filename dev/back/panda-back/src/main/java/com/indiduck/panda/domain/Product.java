@@ -60,6 +60,13 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     private Shop shop;
     //연관관계 메서드
+    public void setName (String text){
+        this.productName=text;
+    }
+    public void setDesc(String text)
+    {
+        this.productDesc=text;
+    }
     public void setShop(Shop shop){
         this.shop = shop;
         shop.getProducts().add(this);

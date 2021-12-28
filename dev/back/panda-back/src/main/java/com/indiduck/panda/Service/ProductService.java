@@ -81,4 +81,17 @@ public class ProductService {
         }
 
     }
+
+    public void editText(Long product, String type,String text)
+    {
+        Optional<Product> byId = productRepository.findById(product);
+        if(type.equals("name"))
+        {
+            byId.get().setName(text);
+        }else
+        {
+            byId.get().setDesc(text);
+
+        }
+    }
 }
