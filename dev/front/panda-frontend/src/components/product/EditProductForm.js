@@ -23,9 +23,9 @@ function EditProductForm(props) {
   const [Continent, setContinent] = useState(1);
   const [Images, setImages] = useState([]);
   const [Thumb, setThumb] = useState([]);
-  const [Low, setLow] = useState();
+  const [Low, setLow] = useState("");
   const [Options, setOptions] = useState([]);
-
+  const [lowdata, setLowData] = useState([]);
   useEffect(() => {
     axios
       .get(`/api/product/products_by_id?id=${props.productId}`)
@@ -39,6 +39,8 @@ function EditProductForm(props) {
           setLow(response.data.type);
           // setPrice("프라이스");
           // setContinent("컨티넌트");
+          handleChange(response.data.type);
+          setLowData(JSON.parse(response.data.lowform));
           response.data.poptions.map((op, idx) => {
             const Option = {
               id: nextId.current,
@@ -60,21 +62,21 @@ function EditProductForm(props) {
 
   const [form, setForm] = useState({
     //의류
-    a: "",
-    b: "",
-    c: "",
-    d: "",
-    e: "",
-    f: "",
-    g: "",
-    h: "",
-    i: "",
-    j: "",
-    k: "",
-    l: "",
-    m: "",
-    n: "",
-    o: "",
+    a: lowdata.a,
+    b: lowdata.b,
+    c: lowdata.c,
+    d: lowdata.d,
+    e: lowdata.e,
+    f: lowdata.f,
+    g: lowdata.g,
+    h: lowdata.h,
+    i: lowdata.i,
+    j: lowdata.j,
+    k: lowdata.k,
+    l: lowdata.l,
+    m: lowdata.m,
+    n: lowdata.n,
+    o: lowdata.o,
   });
   const onChangeLow = (e) => {
     const nextForm = {
@@ -247,6 +249,7 @@ function EditProductForm(props) {
                 <Input
                   type={"text"}
                   name="a"
+                  defaultValue={lowdata.a}
                   onChange={onChangeLow}
                   placeholder="섬유의 조성 또는 혼용률을 백분율로표시,기능성인 경우 성적서 또는 허가서"
                 />
@@ -3949,9 +3952,6 @@ function EditProductForm(props) {
     // });
   };
   const onClickEdit = (param, type) => {
-    console.log(param);
-    console.log(type);
-
     const body = {
       param: param,
       type: type,
@@ -3964,6 +3964,70 @@ function EditProductForm(props) {
         alert("수정에 실패했습니다.");
       }
     });
+  };
+  const renderOption = (param) => {
+    return (
+      <>
+        <Select
+          defaultValue={"2"}
+          style={{ width: 200 }}
+          onChange={handleChange}
+        >
+          <OptGroup label="분류">
+            <Option value="1">의류</Option>
+            <Option value="2">구두 / 신발</Option>
+            <Option value="3">가방</Option>
+            <Option value="4">패션 잡화 (모자 / 벨트 / 액세서리)</Option>
+            <Option value="5">침구류 / 커튼</Option>
+            <Option value="6">가구(침대 / 소파 / 싱크대 / DIY제품)</Option>
+            <Option value="7">영상가전(TV류)</Option>
+            <Option value="8">
+              가정용 전기제품(냉장고 / 세탁기 /식기세척기 / 전자레인지)
+            </Option>
+            <Option value="9">계절가전(에어컨 /온풍기)</Option>
+            <Option value="10">사무용기기(컴퓨터 / 노트북 / 프린터)</Option>
+            <Option value="11">광학기기(디지털카메라 / 캠코더)</Option>
+            <Option value="12">소형전자(MP3 / 전자사전 등)</Option>
+            <Option value="13">휴대폰</Option>
+            <Option value="14">내비게이션</Option>
+            <Option value="15">자동차용품(자동차부품/기타 자동차용품)</Option>
+            <Option value="16">의료기기</Option>
+            <Option value="17">주방용품</Option>
+            <Option value="18">화장품</Option>
+            <Option value="19">귀금속/보석/시계류</Option>
+            <Option value="20">식품(농수축산물)</Option>
+            <Option value="21">가공식품</Option>
+            <Option value="22">건강기능식품</Option>
+            <Option value="23">영유아용품</Option>
+            <Option value="24">악기</Option>
+            <Option value="25">스포츠용품</Option>
+            <Option value="26">서적</Option>
+            <Option value="27">호텔 /펜션 예약</Option>
+            <Option value="28">여행패키지</Option>
+            <Option value="29">항공권</Option>
+            <Option value="30">자동차 대여 서비스(렌터카)</Option>
+            <Option value="31">
+              물품대여 서비스 (정수기,비데,공기청정기 등 )
+            </Option>
+            <Option value="32">
+              물품대여 서비스 (서적, 유야용품,행사용품 등)
+            </Option>
+            <Option value="33">디지털 콘텐츠(음원, 게임, 인터넷강의 등</Option>
+            <Option value="34">상품권 / 쿠폰</Option>
+            <Option value="35">모바일 쿠폰</Option>
+            <Option value="36">영화 공연</Option>
+            <Option value="37">생활화학제품</Option>
+            <Option value="38">살생물제품</Option>
+            <Option value="39">기타 용역</Option>
+            <Option value="40">기타 재화</Option>
+          </OptGroup>
+        </Select>
+        <br />
+        <br />
+        {lowOption("2")}
+        {/* <button onClick={submitHandler}>상품등록하기</button> */}
+      </>
+    );
   };
   return (
     <>
@@ -4030,64 +4094,7 @@ function EditProductForm(props) {
         <br />
         관련 필수 표기,법규를 꼭 참고해주시기 바랍니다
         <br />
-        <Select
-          defaultValue="품목선택"
-          style={{ width: 200 }}
-          onChange={handleChange}
-        >
-          <OptGroup label="분류">
-            <Option value="1">의류</Option>
-            <Option value="2">구두 / 신발</Option>
-            <Option value="3">가방</Option>
-            <Option value="4">패션 잡화 (모자 / 벨트 / 액세서리)</Option>
-            <Option value="5">침구류 / 커튼</Option>
-            <Option value="6">가구(침대 / 소파 / 싱크대 / DIY제품)</Option>
-            <Option value="7">영상가전(TV류)</Option>
-            <Option value="8">
-              가정용 전기제품(냉장고 / 세탁기 /식기세척기 / 전자레인지)
-            </Option>
-            <Option value="9">계절가전(에어컨 /온풍기)</Option>
-            <Option value="10">사무용기기(컴퓨터 / 노트북 / 프린터)</Option>
-            <Option value="11">광학기기(디지털카메라 / 캠코더)</Option>
-            <Option value="12">소형전자(MP3 / 전자사전 등)</Option>
-            <Option value="13">휴대폰</Option>
-            <Option value="14">내비게이션</Option>
-            <Option value="15">자동차용품(자동차부품/기타 자동차용품)</Option>
-            <Option value="16">의료기기</Option>
-            <Option value="17">주방용품</Option>
-            <Option value="18">화장품</Option>
-            <Option value="19">귀금속/보석/시계류</Option>
-            <Option value="20">식품(농수축산물)</Option>
-            <Option value="21">가공식품</Option>
-            <Option value="22">건강기능식품</Option>
-            <Option value="23">영유아용품</Option>
-            <Option value="24">악기</Option>
-            <Option value="25">스포츠용품</Option>
-            <Option value="26">서적</Option>
-            <Option value="27">호텔 /펜션 예약</Option>
-            <Option value="28">여행패키지</Option>
-            <Option value="29">항공권</Option>
-            <Option value="30">자동차 대여 서비스(렌터카)</Option>
-            <Option value="31">
-              물품대여 서비스 (정수기,비데,공기청정기 등 )
-            </Option>
-            <Option value="32">
-              물품대여 서비스 (서적, 유야용품,행사용품 등)
-            </Option>
-            <Option value="33">디지털 콘텐츠(음원, 게임, 인터넷강의 등</Option>
-            <Option value="34">상품권 / 쿠폰</Option>
-            <Option value="35">모바일 쿠폰</Option>
-            <Option value="36">영화 공연</Option>
-            <Option value="37">생활화학제품</Option>
-            <Option value="38">살생물제품</Option>
-            <Option value="39">기타 용역</Option>
-            <Option value="40">기타 재화</Option>
-          </OptGroup>
-        </Select>
-        <br />
-        <br />
-        {lowOption(Low)}
-        {/* <button onClick={submitHandler}>상품등록하기</button> */}
+        {renderOption(Low)}
       </div>
     </>
   );
