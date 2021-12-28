@@ -96,6 +96,30 @@ public class ProductController {
 
 
 
+    @RequestMapping(value = "/api/deletefile", method = RequestMethod.POST)
+    public ResponseEntity<?> createFileAmazon(@CurrentSecurityContext(expression = "authentication")
+                                                      Authentication authentication, @RequestBody FileDelDao fileDelDao) throws Exception{
+//
+        try{
+
+            s3Uploader.delete(fileDelDao.filepath);
+            fileService.delFile(fileDelDao.filepath);
+            return  ResponseEntity.ok(new ResultDto(true));
+
+        }
+        catch (Exception e)
+        {
+            return  ResponseEntity.ok(new ResultDto(false));
+
+        }
+
+
+
+
+    }
+
+
+
     //상품사진 등록
     @RequestMapping(value = "/api/createFile2", method = RequestMethod.POST)
     public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
@@ -138,6 +162,55 @@ public class ProductController {
 
     }
 
+
+    @RequestMapping(value = "/api/fileedit", method = RequestMethod.POST)
+    public ResponseEntity<?> editFileAmazon(@CurrentSecurityContext(expression = "authentication")
+                                                      Authentication authentication, @RequestPart("file") MultipartFile files,
+                                            @RequestPart("proId") String proId,@RequestPart("type") String type
+                                            ) throws Exception{
+        System.out.println("files = " + files);
+        System.out.println("body = " + proId);
+        System.out.println("body = " + type);
+
+        try{
+
+            String origFilename = files.getOriginalFilename();
+            String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
+            String filename = new MD5Generator(origFilename).toString()+System.currentTimeMillis();
+            String savePath = authentication.getName();
+
+
+            String aStatic = s3Uploader.upload(authentication.getName(),files);
+
+            System.out.println("aStatic = " + aStatic);
+
+
+            FileDao fileDao = new FileDao();
+            fileDao.setOrigFilename(origFilename);
+            fileDao.setFilename(filename+"."+etx);
+            fileDao.setFilePath(aStatic);
+            Long fileId = fileService.saveFile(fileDao);
+            productService.addFileProduct(fileId,Long.parseLong(proId),type);
+
+//            return  ResponseEntity.ok(new ResultDtoM(false,aStatic));
+
+            return  ResponseEntity.ok(new FileDto(true,fileDao.getFilePath(),fileDao.getFilename()));
+
+        }
+        catch (Exception e)
+        {
+            return  ResponseEntity.ok(new ResultDtoM(false,"익셉션"+e.toString()));
+
+        }
+//            return  ResponseEntity.ok(new ResultDtoM(false,files.getOriginalFilename()));
+//
+////        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품사진 업로드 실패");
+
+//            return  ResponseEntity.ok(new ResultDto(true));
+
+
+
+    }
     @RequestMapping(value = "/api/regnewproduct", method = RequestMethod.POST)
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
@@ -449,6 +522,14 @@ public class ProductController {
         }
     }
 
+    @Data
+    static private class EditDao {
+        private Long proId;
+        private String type;
+    }
 
-
+    @Data
+    private static class FileDelDao {
+        String filepath;
+    }
 }

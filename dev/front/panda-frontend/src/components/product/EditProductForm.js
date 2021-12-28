@@ -3953,6 +3953,7 @@ function EditProductForm(props) {
       <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <h2> 상품 수정</h2>
+          <h4>(*상품수정은 즉시 적용됩니다)</h4>
         </div>
         <Form onSubmit={submitHandler}>
           <label>

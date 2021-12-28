@@ -98,6 +98,10 @@ public class Product {
         return pro;
     }
     //==비즈니스==//
+    public void delFile(File file)
+    {
+        images.remove(file);
+    }
 
 
 

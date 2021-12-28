@@ -40,7 +40,11 @@ public class File {
         this.filepath = filePath;
     }
 
-    //==//
+    //=비즈니스 메서드=//
+    public  void delFile()
+    {
+
+    }
 
 
 }

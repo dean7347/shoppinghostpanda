@@ -6,6 +6,7 @@ import axios from "axios";
 function FileEdit(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
+
   // useEffect(() => {
   //   axios
   //     .get(`/api/product/products_by_id?id=${props.proId}`)
@@ -93,8 +94,9 @@ function FileEdit(props) {
           return;
         } else {
           formData.append("file", files[0]);
-
-          axios.post("/api/amzonefile", formData, config).then((response) => {
+          formData.append("proId", props.proId);
+          formData.append("type", "detail");
+          axios.post("/api/fileedit", formData, config).then((response) => {
             setCheck(false);
             if (response.data.success) {
               setImages([...Images, response.data.filePath]);
@@ -117,9 +119,15 @@ function FileEdit(props) {
         } else if (!(image.width === image.height)) {
           alert("섬네일의 가로세로크기가 같도록 등록해주세요");
         } else {
+          const body = {
+            proId: props.proId,
+            type: "thumb",
+          };
           formData.append("file", files[0]);
+          formData.append("proId", props.proId);
+          formData.append("type", "thumb");
 
-          axios.post("/api/amzonefile", formData, config).then((response) => {
+          axios.post("/api/fileedit", formData, config).then((response) => {
             setCheck(false);
 
             if (response.data.success) {
@@ -158,14 +166,25 @@ function FileEdit(props) {
   };
 
   const deleteHandler = (image) => {
-    const currentIndex = Images.indexOf(image);
-    // console.log("currentIndex" + currentIndex);
+    console.log(image);
+    const body = {
+      filepath: image,
+    };
+    axios.post("/api/deletefile ", body).then((response) => {
+      if (response.data.success) {
+        alert("파일이 삭제되었습니다");
+        const currentIndex = Images.indexOf(image);
 
-    let newImages = [...Images];
-    newImages.splice(currentIndex, 1);
+        let newImages = [...Images];
+        newImages.splice(currentIndex, 1);
 
-    setImages(newImages);
-    props.refreshFunction(newImages);
+        setImages(newImages);
+        props.refreshFunction(newImages);
+      } else {
+        alert("파일 저장 실패");
+      }
+    });
+    // // console.log("currentIndex" + currentIndex);
   };
 
   return (

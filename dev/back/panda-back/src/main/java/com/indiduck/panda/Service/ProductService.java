@@ -64,4 +64,21 @@ public class ProductService {
         return newProduct;
 
     }
+    public void addFileProduct(Long file,Long product,String type)
+    {
+        Optional<File> byId1 = fileRepository.findById(file);
+        Optional<Product> byId = productRepository.findById(product);
+        System.out.println(type);
+        if(type.equals("thumb"))
+        {
+            byId.get().setThumbImage(byId1.get());
+
+        }else
+        {
+
+            byId.get().setImage(byId1.get());
+
+        }
+
+    }
 }

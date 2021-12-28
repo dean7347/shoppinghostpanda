@@ -41,4 +41,13 @@ public class FileService {
         File myqueryfind = fileRepository.myqueryfind(path);
         return myqueryfind;
     }
+    @Transactional
+    public void delFile(String path)
+    {
+        File myqueryfind = fileRepository.myqueryfind(path);
+        myqueryfind.getProduct().delFile(myqueryfind);
+        fileRepository.delete(myqueryfind);
+    }
+
+
 }

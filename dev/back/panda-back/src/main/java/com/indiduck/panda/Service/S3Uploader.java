@@ -35,6 +35,10 @@ public class S3Uploader {
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         return path+"/"+fileName;
     }
+
+    public void delete(String path) {
+        amazonS3Client.deleteObject(bucket, path);
+    }
 }
 
 
