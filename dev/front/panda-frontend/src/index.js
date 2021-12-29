@@ -13,6 +13,11 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer, { rootSaga } from "./modules";
 import { tempSetUser, check } from "./modules/user";
 
+import 'bulma/css/bulma.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/css/theme.css'
+import './assets/css/index.css'
+
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   rootReducer,

@@ -1,0 +1,20 @@
+.order-card{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.order_calculator dl{
+    margin: auto;
+    text-align: center;
+}
+.order_calculator dt{
+    margin-top: 10px;
+}
+.order_calculator i{
+    font-size: 30px;
+    color: #c0c2c7;
+}
+.cart_buy_btn{
+    width: 250px;
+    margin: 0 auto;
+}
