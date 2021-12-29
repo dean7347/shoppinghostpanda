@@ -91,9 +91,10 @@ function EditProductForm(props) {
     setForm(nextForm);
   };
   const onClickForm = async (e) => {
-    const tostringform = JSON.stringify(form);
+    // const tostringform = JSON.stringify(form);
 
-    console.log(tostringform);
+    console.log(form);
+    console.log(Low);
     // if (
     //   !Title ||
     //   !Description ||
@@ -220,9 +221,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="i" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  submit
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -4335,7 +4338,6 @@ function EditProductForm(props) {
   const renderOption = (param, form) => {
     return (
       <>
-        <Button onClick={onclicktest}>dd</Button>;
         <Select
           defaultValue={Low.toString()}
           style={{ width: 200 }}
