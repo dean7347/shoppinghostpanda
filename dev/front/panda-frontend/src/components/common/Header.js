@@ -181,7 +181,7 @@ const Header = ({ user, onLogout }) => {
                   id="basic-nav-dropdown"
                   style={{ float: "right" }}
                 >
-                  <NavDropdown.Item href="#action/3.1">
+                  <NavDropdown.Item href="/buyer/mypage">
                     마이페이지
                   </NavDropdown.Item>
 
