@@ -26,6 +26,25 @@ function EditProductForm(props) {
   const [Low, setLow] = useState("");
   const [Options, setOptions] = useState([]);
   const [lowdata, setLowData] = useState([]);
+
+  const [form, setForm] = useState({
+    //의류
+    a: "",
+    b: "",
+    c: "",
+    d: "",
+    e: "",
+    f: "",
+    g: "",
+    h: "",
+    i: "",
+    j: "",
+    k: "",
+    l: "",
+    m: "",
+    n: "",
+    o: "",
+  });
   useEffect(() => {
     axios
       .get(`/api/product/products_by_id?id=${props.productId}`)
@@ -60,25 +79,11 @@ function EditProductForm(props) {
       });
   }, []);
 
-  const [form, setForm] = useState({
-    //의류
-    a: lowdata.a,
-    b: lowdata.b,
-    c: lowdata.c,
-    d: lowdata.d,
-    e: lowdata.e,
-    f: lowdata.f,
-    g: lowdata.g,
-    h: lowdata.h,
-    i: lowdata.i,
-    j: lowdata.j,
-    k: lowdata.k,
-    l: lowdata.l,
-    m: lowdata.m,
-    n: lowdata.n,
-    o: lowdata.o,
-  });
+  console.log("로데이터");
+  console.log(lowdata);
+
   const onChangeLow = (e) => {
+    console.log(e);
     const nextForm = {
       ...form,
       [e.target.name]: e.target.value,
@@ -87,38 +92,39 @@ function EditProductForm(props) {
   };
   const onClickForm = async (e) => {
     const tostringform = JSON.stringify(form);
-
-    if (
-      !Title ||
-      !Description ||
-      !Images.length > 0 ||
-      !Options ||
-      !Thumb.length > 0
-    ) {
-      return alert("모든 값을 넣어주셔야 합니다");
-    }
-    // // console.log(tostringform.toString());
-    //서버에 채운 값들 request로 보낸다
-    const body = {
-      //로그인 된 사람의 ID
-      title: Title,
-      description: Description,
-      images: Images,
-      options: Options,
-      thumb: Thumb,
-      type: Low,
-      lowform: tostringform,
-    };
-    // // // console.log(body);
-    // axios.post("/api/regnewproduct", body).then((response) => {
-    //   if (response.data.success) {
-    //     alert("상품 업로드에 성공했습니다");
-    //     history.push("/shop");
-    //   } else {
-    //     alert("상품업로드에 실패 했습니다.");
-    //   }
-    // });
+    console.log(form);
+    // if (
+    //   !Title ||
+    //   !Description ||
+    //   !Images.length > 0 ||
+    //   !Options ||
+    //   !Thumb.length > 0
+    // ) {
+    //   return alert("모든 값을 넣어주셔야 합니다");
+    // }
+    // // // console.log(tostringform.toString());
+    // //서버에 채운 값들 request로 보낸다
+    // const body = {
+    //   //로그인 된 사람의 ID
+    //   title: Title,
+    //   description: Description,
+    //   images: Images,
+    //   options: Options,
+    //   thumb: Thumb,
+    //   type: Low,
+    //   lowform: tostringform,
+    // };
+    // // // // console.log(body);
+    // // axios.post("/api/regnewproduct", body).then((response) => {
+    // //   if (response.data.success) {
+    // //     alert("상품 업로드에 성공했습니다");
+    // //     history.push("/shop");
+    // //   } else {
+    // //     alert("상품업로드에 실패 했습니다.");
+    // //   }
+    // // });
   };
+
   const lowOption = (setOption) => {
     switch (setOption) {
       //의류
@@ -259,7 +265,12 @@ function EditProductForm(props) {
                 name="b"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input type={"text"} name="b" onChange={onChangeLow} />
+                <Input
+                  type={"text"}
+                  name="b"
+                  defaultValue={lowdata.b}
+                  onChange={onChangeLow}
+                />
               </Form.Item>
               <Form.Item
                 label="치수"
@@ -3965,17 +3976,31 @@ function EditProductForm(props) {
       }
     });
   };
-  const renderOption = (param) => {
+
+  const conRere = () => {
+    console.log("zz");
+    setLow(Low + 1);
+    console.log(Low);
+  };
+  const onclicktest = () => {
+    console.log("zz");
+    console.log(form);
+  };
+
+  const renderOption = (param, form) => {
     return (
       <>
+        <Button onClick={onclicktest}>dd</Button>;
         <Select
-          defaultValue={"2"}
+          defaultValue={Low.toString()}
           style={{ width: 200 }}
           onChange={handleChange}
         >
           <OptGroup label="분류">
             <Option value="1">의류</Option>
-            <Option value="2">구두 / 신발</Option>
+            <Option key="2" value="2">
+              구두 / 신발
+            </Option>
             <Option value="3">가방</Option>
             <Option value="4">패션 잡화 (모자 / 벨트 / 액세서리)</Option>
             <Option value="5">침구류 / 커튼</Option>
@@ -4024,7 +4049,7 @@ function EditProductForm(props) {
         </Select>
         <br />
         <br />
-        {lowOption("2")}
+        {lowdata.b !== "undefine" ? lowOption(Low.toString()) : "로딩중"}
         {/* <button onClick={submitHandler}>상품등록하기</button> */}
       </>
     );
@@ -4094,7 +4119,7 @@ function EditProductForm(props) {
         <br />
         관련 필수 표기,법규를 꼭 참고해주시기 바랍니다
         <br />
-        {renderOption(Low)}
+        {lowdata.a && Low && renderOption(Low)}
       </div>
     </>
   );
