@@ -667,7 +667,6 @@ function ProductInfo(props) {
               background: "white",
               display: "flex",
               justifyContent: "center",
-              display: "flex",
               borderBottom: "1px  solid black",
             }}
           >
