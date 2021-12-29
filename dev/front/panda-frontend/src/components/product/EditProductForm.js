@@ -152,12 +152,7 @@ function EditProductForm(props) {
                 name="a"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="a"
-                  onChange={onChangeLow}
-                  placeholder="섬유의 조성 또는 혼용률을 백분율로표시,기능성인 경우 성적서 또는 허가서"
-                />
+                <Input type={"text"} name="a" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="색상"
@@ -178,12 +173,7 @@ function EditProductForm(props) {
                 name="d"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="d"
-                  placeholder="수입품의 경우 수입자를 함께표기"
-                  onChange={onChangeLow}
-                />
+                <Input type={"text"} name="d" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="제조국"
@@ -252,25 +242,14 @@ function EditProductForm(props) {
                 name="a"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="a"
-                  defaultValue={lowdata.a}
-                  onChange={onChangeLow}
-                  placeholder="섬유의 조성 또는 혼용률을 백분율로표시,기능성인 경우 성적서 또는 허가서"
-                />
+                <Input type={"text"} name="a" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="색상"
                 name="b"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="b"
-                  defaultValue={lowdata.b}
-                  onChange={onChangeLow}
-                />
+                <Input type={"text"} name="b" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="치수"
@@ -284,12 +263,7 @@ function EditProductForm(props) {
                 name="d"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="d"
-                  placeholder="수입품의 경우 수입자를 함께표기"
-                  onChange={onChangeLow}
-                />
+                <Input type={"text"} name="d" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="제조국"
@@ -525,12 +499,7 @@ function EditProductForm(props) {
                 name="a"
                 rules={[{ required: true, message: "입력은 필수입니다" }]}
               >
-                <Input
-                  type={"text"}
-                  name="a"
-                  onChange={onChangeLow}
-                  placeholder="충전재를 사용한 제품은 충전재 함께 표기"
-                />
+                <Input type={"text"} name="a" onChange={onChangeLow} />
               </Form.Item>
               <Form.Item
                 label="색상"
