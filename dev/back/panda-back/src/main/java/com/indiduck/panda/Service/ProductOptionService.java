@@ -1,7 +1,10 @@
 package com.indiduck.panda.Service;
 
+import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.ProductOptionRepository;
 import com.indiduck.panda.Repository.ProductRepository;
+import com.indiduck.panda.domain.OrderDetail;
+import com.indiduck.panda.domain.OrderStatus;
 import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ public class ProductOptionService {
     @Autowired
     private final ProductRepository productRepository;
 
+    @Autowired
+    private final OrderDetailRepository orderDetailRepository;
     public ProductOption saveOption(ProductOption option){
         ProductOption newO=new ProductOption()
                 .newProductOption(option.getOptionName(), option.getOptionStock(), option.getOptionPrice());
@@ -52,6 +57,10 @@ public class ProductOptionService {
         Optional<ProductOption> byId = productOptionRepository.findById(OptionId);
         ProductOption productOption = byId.get();
         productOption.edit(opname,stock,price);
+        Optional<List<OrderDetail>> orderDetailByOrderStatusAndOptions_id = orderDetailRepository.findOrderDetailByOrderStatusAndOptions_Id(OrderStatus.결제대기, OptionId);
+        for (OrderDetail orderDetail : orderDetailByOrderStatusAndOptions_id.get()) {
+            orderDetail.editOption();
+        }
         return byId.get();
     }
 

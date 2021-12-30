@@ -152,4 +152,13 @@ public class OrderDetail {
         this.orderStatus=status;
         this.checkedAt=LocalDateTime.now();
     }
+    public void editOption()
+    {
+        this.IndividualPrice=this.getOptions().getOptionPrice();
+        this.totalPrice=this.getIndividualPrice()*this.productCount;
+
+
+
+
+    }
 }

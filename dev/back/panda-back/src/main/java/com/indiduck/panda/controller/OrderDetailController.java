@@ -286,6 +286,7 @@ public class OrderDetailController {
         int allamount = 0;
         for (Verification verification : Veri) {
             allamount+=verification.amount;
+            System.out.println("verification = " + verification);
         }
 
         BigDecimal amount = tokentoInfo.getAmount();
