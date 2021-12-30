@@ -110,7 +110,35 @@ export const latestOrders = {
             date: "27 Jun 2021",
             price: "$200",
             status: "반품"
-        }
+        },
+        {
+            id: "#OD1711",
+            user: "john doe",
+            date: "17 Jun 2021",
+            price: "$900",
+            status: "완료"
+        },
+        {
+            id: "#OD1711",
+            user: "john doe",
+            date: "17 Jun 2021",
+            price: "$900",
+            status: "완료"
+        },
+        {
+            id: "#OD1711",
+            user: "john doe",
+            date: "17 Jun 2021",
+            price: "$900",
+            status: "완료"
+        },
+        {
+            id: "#OD1711",
+            user: "john doe",
+            date: "17 Jun 2021",
+            price: "$900",
+            status: "완료"
+        },
     ]
 }
 

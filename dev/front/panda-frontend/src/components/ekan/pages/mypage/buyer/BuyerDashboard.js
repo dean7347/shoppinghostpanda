@@ -4,8 +4,12 @@ import {latestOrders} from "./buyerTypes";
 import MyPageTable from "../../../UI/table/MyPageTable";
 import Badge from "../../../UI/badge/Badge";
 import StatusCard from "../../../UI/cards/StatusCard";
+import Modal from "../../../UI/modal/Modal";
+import {useState} from "react";
 
 const BuyerDashboard = () => {
+    const [showModal, setShowModal] = useState(false)
+
 
     const orderStatus = {
         "완료": "primary",
@@ -19,7 +23,9 @@ const BuyerDashboard = () => {
     )
 
     const renderBody = (item, index) => (
-        <tr key={index}>
+        <tr key={index} onClick={() => {
+            setShowModal(true)
+        }}>
             <td>{item.id}</td>
             <td>{item.user}</td>
             <td>{item.price}</td>
@@ -72,6 +78,7 @@ const BuyerDashboard = () => {
                             {/*table pc*/}
                             <div className="card__body is-hidden-mobile">
                                 <MyPageTable
+                                    limit="5"
                                     headData={latestOrders.header}
                                     renderHead={(item, index) => renderHead(item, index)}
                                     bodyData={latestOrders.body}
@@ -81,19 +88,24 @@ const BuyerDashboard = () => {
                             {/*mobile table*/}
                             <div className="card__body is-hidden-tablet">
                                 <MyPageTable
+                                    limit="5"
                                     headData={latestOrders.headerMobile}
                                     renderHead={(item, index) => renderHead(item, index)}
                                     bodyData={latestOrders.body}
                                     renderBody={(item, index) => renderBodyMobile(item, index)}
                                 />
                             </div>
-                            <div className="card__footer">
-                                <Link to='/orderList'>더보기</Link>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {
+                showModal &&
+                <Modal onClose={() => {setShowModal(false)}} title={"배송 상세보기"}>
+                    <div>this is a modal</div>
+                </Modal>
+            }
 
 
         </>

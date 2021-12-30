@@ -23,7 +23,7 @@ a {
   text-decoration: none;
 }
 
-//모든 엘리먼트의 box-sizeing 값을 border box로 설정
+/*//모든 엘리먼트의 box-sizeing 값을 border box로 설정*/
 * {
   box-sizing: inherit;
 }
