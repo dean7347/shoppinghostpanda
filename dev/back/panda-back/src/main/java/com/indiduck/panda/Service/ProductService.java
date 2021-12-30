@@ -94,4 +94,12 @@ public class ProductService {
 
         }
     }
+
+    public void editLow(Long product, int type,String law)
+    {
+        Optional<Product> byId = productRepository.findById(product);
+        byId.get().setLowvalue(law);
+        byId.get().changeType(type);
+
+    }
 }

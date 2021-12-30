@@ -246,6 +246,24 @@ public class ProductController {
         return ResponseEntity.ok(new ResultDto(true));
     }
 
+    @RequestMapping(value = "/api/editlaw", method = RequestMethod.POST)
+    public ResponseEntity<?> editProductLaw(@CurrentSecurityContext(expression = "authentication")
+                                                      Authentication authentication, @RequestBody LawDAO lawDAO) throws Exception {
+        System.out.println("createProductDAO = " + lawDAO);
+        try{
+            productService.editLow(lawDAO.productId, lawDAO.type, lawDAO.lowform);
+            return ResponseEntity.ok(new ResultDto(true));
+
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new ResultDto(false));
+
+        }
+
+
+
+    }
+
 
 
     @RequestMapping(value = "/api/editinfomation", method = RequestMethod.POST)
@@ -494,6 +512,7 @@ public class ProductController {
 
 
          //== 상품 DAO == //
+
     @Data
     static class CreateProductDAO {
         private List<String> thumb;
@@ -557,6 +576,13 @@ public class ProductController {
             this.messgae=mes;
 
         }
+    }
+    @Data
+    static class LawDAO {
+        private String lowform;
+        private int type;
+        private Long productId;
+
     }
 
     @Data

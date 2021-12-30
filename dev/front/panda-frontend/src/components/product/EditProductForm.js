@@ -79,52 +79,36 @@ function EditProductForm(props) {
       });
   }, []);
 
-  console.log("로데이z터");
-  console.log(lowdata);
-
   const onChangeLow = (e) => {
-    console.log(e);
-    const nextForm = {
-      ...form,
+    // const nextForm = {
+    //   ...form,
+    //   [e.target.name]: e.target.value,
+    // };
+    // setForm(nextForm);
+    const nextLaw = {
+      ...lowdata,
       [e.target.name]: e.target.value,
     };
-    setForm(nextForm);
+    setLowData(nextLaw);
   };
   const onClickForm = async (e) => {
-    // const tostringform = JSON.stringify(form);
+    const tostringform = JSON.stringify(lowdata);
 
-    console.log(form);
-    console.log(Low);
-    // if (
-    //   !Title ||
-    //   !Description ||
-    //   !Images.length > 0 ||
-    //   !Options ||
-    //   !Thumb.length > 0
-    // ) {
-    //   return alert("모든 값을 넣어주셔야 합니다");
-    // }
-    // // // console.log(tostringform.toString());
-    // //서버에 채운 값들 request로 보낸다
-    // const body = {
-    //   //로그인 된 사람의 ID
-    //   title: Title,
-    //   description: Description,
-    //   images: Images,
-    //   options: Options,
-    //   thumb: Thumb,
-    //   type: Low,
-    //   lowform: tostringform,
-    // };
-    // // // // console.log(body);
-    // // axios.post("/api/regnewproduct", body).then((response) => {
-    // //   if (response.data.success) {
-    // //     alert("상품 업로드에 성공했습니다");
-    // //     history.push("/shop");
-    // //   } else {
-    // //     alert("상품업로드에 실패 했습니다.");
-    // //   }
-    // // });
+    // console.log(lowdata);
+    // console.log(Low);
+    const body = {
+      lowform: tostringform,
+      type: Low,
+      productId: props.productId,
+    };
+
+    axios.post("/api/editlaw", body).then((response) => {
+      if (response.data.success) {
+        alert("상품정보 수정에 성공했습니다");
+      } else {
+        alert("상품정보 수정에 실패 했습니다.");
+      }
+    });
   };
 
   const lowOption = (setOption) => {
@@ -223,7 +207,7 @@ function EditProductForm(props) {
               </Form.Item>
               <div style={{ display: "flex", float: "right" }}>
                 <Button type="primary" htmlType="submit">
-                  submit
+                  고시수정
                 </Button>
               </div>
             </Form>
@@ -315,9 +299,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="h" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -415,9 +401,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="i" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -506,9 +494,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="h" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -605,9 +595,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="i" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -720,9 +712,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -835,9 +829,11 @@ function EditProductForm(props) {
               >
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -942,9 +938,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1065,9 +1063,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="l" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1181,9 +1181,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1281,9 +1283,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="i" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1388,9 +1392,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1519,9 +1525,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="m" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1634,9 +1642,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1750,9 +1760,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1857,9 +1869,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -1964,9 +1978,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2079,9 +2095,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2203,9 +2221,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="l" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2310,9 +2330,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="j" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2425,9 +2447,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2564,9 +2588,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="n" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2688,9 +2714,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="l" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2803,9 +2831,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -2918,9 +2948,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3001,9 +3033,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="g" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3084,9 +3118,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="g" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3207,9 +3243,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="l" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3298,9 +3336,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="h" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3381,9 +3421,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="g" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3464,9 +3506,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="g" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3531,9 +3575,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="e" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3606,9 +3652,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="f" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3674,9 +3722,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="e" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3741,9 +3791,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="e" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3832,9 +3884,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="h" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -3947,9 +4001,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -4062,9 +4118,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="k" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -4137,9 +4195,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="f" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -4204,9 +4264,11 @@ function EditProductForm(props) {
                 <Input type={"text"} name="e" onChange={onChangeLow} />
               </Form.Item>
 
-              <Button type="primary" htmlType="submit">
-                submit
-              </Button>
+              <div style={{ display: "flex", float: "right" }}>
+                <Button type="primary" htmlType="submit">
+                  고시수정
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -4401,6 +4463,9 @@ function EditProductForm(props) {
       </>
     );
   };
+  const onFinishEdit = () => {
+    window.location.replace("/shop");
+  };
   return (
     <>
       <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
@@ -4468,6 +4533,9 @@ function EditProductForm(props) {
         <br />
         {lowdata.a && Low && renderOption(Low)}
       </div>
+      <Button block onClick={onFinishEdit}>
+        변경모드 종료
+      </Button>
     </>
   );
 }

@@ -109,6 +109,15 @@ public class Product {
     {
         images.remove(file);
     }
+    public void setLowvalue(String law)
+    {
+        this.lowvalue=law;
+    }
+    public void changeType(int type)
+    {
+        this.type=type;
+    }
+
 
 
 
