@@ -74,7 +74,7 @@ const App = () => {
 
           <Route component={ServicePage} path={"/service"} exact />
 
-          <Route path="/buyer/mypage" component={BuyerMyPage} exact />
+          <Route path="/buyer" component={BuyerMyPage} />
         </Switch>
       </div>
       <Footer />
