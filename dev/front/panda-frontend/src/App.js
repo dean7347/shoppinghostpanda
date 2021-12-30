@@ -75,7 +75,8 @@ const App = () => {
           <Route component={TermPage} path={"/terms"} exact />
           <Route component={ServicePage} path={"/service"} exact />
           <Route path="/buyer" component={BuyerMyPage} />
-
+          {/* //api테스트용 짬통페이지 */}
+          <Route path="/testpage" component={TestPage} />
         </Switch>
       </div>
       <Footer />
