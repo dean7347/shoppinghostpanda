@@ -1,5 +1,10 @@
 import React from "react";
+<<<<<<< HEAD
 import { Route, Switch } from "react-router-dom";
+=======
+import {Route, Switch} from "react-router-dom";
+import './App.css'
+>>>>>>> f81997e5a42283030a08627b3393cf068ea70e7f
 import "bootstrap/dist/css/bootstrap.min.css";
 // import PostListPage from "./pages/PostListPage";
 import LoginPage from "./pages/LoginPage";
@@ -70,8 +75,7 @@ const App = () => {
           <Route component={TermPage} path={"/terms"} exact />
           <Route component={ServicePage} path={"/service"} exact />
           <Route path="/buyer" component={BuyerMyPage} />
-          {/* //api테스트용 짬통페이지 */}
-          <Route path="/testpage" component={TestPage} />
+
         </Switch>
       </div>
       <Footer />

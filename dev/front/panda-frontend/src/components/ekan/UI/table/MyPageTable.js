@@ -23,6 +23,7 @@ const MyPageTable = ({limit, bodyData, headData, renderHead, renderBody}) => {
         const end = start + Number(limit)
 
         setDataShow(bodyData.slice(start, end))
+        setCurrPage(page)
     }
 
     return (
