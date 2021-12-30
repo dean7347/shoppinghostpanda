@@ -22,6 +22,8 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
     Optional<List<OrderDetail>> findByUserAndOrderStatusAndShopAndOptions_Sales(User user, OrderStatus orderStatus, Shop shop,Boolean OptionsSales);
     Optional<List<OrderDetail>> findOrderDetailByOrderStatusAndOptions_Id(OrderStatus orderStatus,Long oid);
     Optional<List<OrderDetail>> findOrderDetailByUser(User user);
+    Optional<List<OrderDetail>> findOrderDetailByUserAndOrderStatus(User user,OrderStatus od);
+    Optional<List<OrderDetail>> findOrderDetailByUserAndOrderStatusAndOrderStatus(User user,OrderStatus od,OrderStatus od2);
 
 
 }
