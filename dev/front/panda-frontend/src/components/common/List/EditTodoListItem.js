@@ -56,10 +56,10 @@ const EditTodoListItem = ({ Option, onRemove }) => {
   };
   return (
     <div className="TodoListItem">
-      <div className="box">
-        <div className="boxName">{optionName}</div>
-        <div className="boxPrice">{optionPrice}</div>
-        <div className="boxStock">{optionStock}</div>
+      <div className="boxpro">
+        <div className="boxNamepro">{optionName}</div>
+        <div className="boxPricepro">{optionPrice}</div>
+        <div className="boxStockpro">{optionStock}</div>
       </div>
       <Button type="primary" onClick={onClickEdit}>
         수정

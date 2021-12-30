@@ -6,21 +6,21 @@
     background: #f8f9fa;
   }
 
-  .box {
+  .boxpro {
     border: 1px solid #bcbcbc;
     margin-right: 2px;
     display: flex;
     align-items: center;
     flex: 1;
 
-    .boxName {
+    .boxNamepro {
       width: 50%;
       border-right: 1px solid #bcbcbc;
       margin-right: 2px;
       align-items: center;
       flex: 2;
     }
-    .boxPrice {
+    .boxPricepro {
       width: 30%;
 
       border-right: 1px solid #bcbcbc;
@@ -28,7 +28,7 @@
       align-items: center;
       flex: 1;
     }
-    .boxStock {
+    .boxStockpro {
       width: 10%;
       margin-right: 2px;
       align-items: center;

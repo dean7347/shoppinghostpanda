@@ -245,6 +245,31 @@ public class ProductController {
         }
         return ResponseEntity.ok(new ResultDto(true));
     }
+
+
+
+    @RequestMapping(value = "/api/editinfomation", method = RequestMethod.POST)
+    public ResponseEntity<?> infomationProduct(@CurrentSecurityContext(expression = "authentication")
+                                                      Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
+        System.out.println("createProductDAO = " + createProductDAO);
+
+        Product product=productService.createNewProduct(
+                authentication.getName(),
+                createProductDAO.thumb,
+                createProductDAO.title,
+                createProductDAO.description,
+                createProductDAO.images,
+                createProductDAO.Options,
+                createProductDAO.type,
+                createProductDAO.lowform
+
+        );
+
+        if(product==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
+        }
+        return ResponseEntity.ok(new ResultDto(true));
+    }
      //상품 수정
     //상품 삭제
     //상품 조회
