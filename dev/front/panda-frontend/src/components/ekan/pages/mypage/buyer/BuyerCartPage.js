@@ -41,7 +41,7 @@ function BuyerCartPage() {
 
                 <div className="col-12">
                     <div className="card order-card">
-                        <hr/>
+                        <hr className="cart-hr"/>
                         <div className="row order_calculator">
                             <dl className="col-2">
                                 <dt>총 상품 금액</dt>
@@ -62,7 +62,7 @@ function BuyerCartPage() {
                                 <dd><span>25555원</span></dd>
                             </dl>
                         </div>
-                        <hr/>
+                        <hr className="cart-hr"/>
                         <Button text="주문하기" className="is-primary cart_buy_btn"/>
                     </div>
                 </div>
