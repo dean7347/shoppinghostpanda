@@ -36,7 +36,7 @@ const OrderListPage = () => {
                 >
                     <p className="seller-name is-hidden-mobile">{product.seller}</p>
                     <p className="seller-num is-hidden-mobile">{product.sellerNum}</p>
-                    <Button text={orderBtnText(product.status)}
+                    <Button className="product-btn" text={orderBtnText(product.status)}
                     />
                 </ProductCard>)}
         </>
