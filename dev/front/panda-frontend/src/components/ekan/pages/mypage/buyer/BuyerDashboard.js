@@ -37,7 +37,9 @@ const BuyerDashboard = () => {
     )
 
     const renderBodyMobile = (item, index) => (
-        <tr key={index}>
+        <tr key={index} onClick={() => {
+            setShowModal(true)
+        }}>
             <td>{item.user}</td>
             <td>
                 <Badge type={orderStatus[item.status]} content={item.status}/>
