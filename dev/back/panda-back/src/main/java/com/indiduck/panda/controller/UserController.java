@@ -4,10 +4,7 @@ import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.JwtUserDetailsService;
-import com.indiduck.panda.domain.OrderDetail;
-import com.indiduck.panda.domain.OrderStatus;
-import com.indiduck.panda.domain.User;
-import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.UserDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -117,13 +114,25 @@ public class UserController {
         return ResponseEntity.ok(new pageDto(true,allByUserId.getTotalPages(),allByUserId.getTotalElements(),pageList));
     }
 
-
-    @GetMapping("/api/situationdetail")
+//디테일 내려주는곳
+    @PostMapping("/api/situationdetail")
     public ResponseEntity<?> situationDetail(@CurrentSecurityContext(expression = "authentication")
                                                      Authentication authentication,  @RequestBody SituationDto situationDto) {
-        String name = authentication.getName();
+                String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
 
-        return ResponseEntity.ok(new pageDto(true,allByUserId.getTotalPages(),allByUserId.getTotalElements(),pageList));
+        Optional<UserOrder> byId = userOrderRepository.findById(situationDto.detailId);
+        UserOrder userOrder = byId.get();
+        List<OrderDetail> detail = userOrder.getDetail();
+        List<DetailOrderList> dol =new ArrayList<>();
+
+
+
+        recentSituationDto rsd = new recentSituationDto(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
+        ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail);
+
+
+        return ResponseEntity.ok(rsd);
     }
 
     @Data
@@ -204,14 +213,108 @@ public class UserController {
     }
 
     @Data
-    private class SituationDto {
+    private static class SituationDto {
         //주문번호
-        Long detailId;
+        long detailId;
     }
 
     @Data
     private class recentSituationDto {
+        boolean success;
         //주문번호
         Long detailId;
+        //결제금액
+        int price;
+        //배송비
+        int shipprice;
+        //총금액
+        int allamount;
+        //받는사람
+        String receiver;
+        //주소
+        String address;
+        //받는사람전화번호
+        String receiverPhone;
+        //상품DTO
+        HashSet<DetailOrderList> products=new HashSet<>();
+        List<DetailOrderList> orderDetails=new ArrayList<>();
+
+        public recentSituationDto(boolean su,Long detailId, int price, int shipprice, int allamount,
+                                  String receiver, String address, String receiverPhone, List<OrderDetail> dol) {
+            this.success=su;
+            this.detailId = detailId;
+            this.price = price;
+            this.shipprice = shipprice;
+            this.allamount = allamount;
+            this.receiver = receiver;
+            this.address = address;
+            this.receiverPhone = receiverPhone;
+            for (OrderDetail orderDetail : dol) {
+                String img=null;
+                List<File> images = orderDetail.getProducts().getImages();
+                for (File image : images) {
+                    if(image.isIsthumb())
+                    {
+                       img= image.getFilepath();
+                    }
+                }
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img));
+            }
+
+            for (OrderDetail orderDetail : dol) {
+                for (DetailOrderList product : products) {
+
+                    if(product.prodcutName==orderDetail.getProducts().getProductName()){
+                        if(orderDetail.getPanda()==null)
+                        {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null"));
+                        }else
+                        {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName()));
+                        }
+
+                    }
+                }
+            }
+
+
+
+        }
+    }
+
+    @Data
+    private class DetailOrderList{
+        String prodcutName;
+        String imgPath;
+        List<OptionList> options= new ArrayList<>();
+
+        public DetailOrderList(String pn,String img) {
+            prodcutName=pn;
+            imgPath=img;
+        }
+        public void setOptions(OptionList list)
+        {
+            options.add(list);
+
+        }
+    }
+
+    @Data
+    private class OptionList{
+        String optionName;
+        int optionCount;
+        int optionPrice;
+        int allAmount;
+        String pandaName;
+
+        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName) {
+            this.optionName = optionName;
+            this.optionCount = optionCount;
+            this.optionPrice = optionPrice;
+            this.allAmount = allAmount;
+            this.pandaName = pandaName;
+        }
     }
 }
