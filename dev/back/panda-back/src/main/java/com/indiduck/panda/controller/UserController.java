@@ -184,8 +184,6 @@ public class UserController {
         int cancelProduct;
         //장바구니 갯수
         int cartProduct;
-        //최근 주문현황
-        List<recentOrder> recentOrder=new ArrayList<>();
         public dashBoardDto(boolean result,int ready,int fin,int cancel, int cart)
         {
             success=result;

@@ -21,6 +21,8 @@ function UserCardBlock(props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
+  console.log("프롭스!!");
+  console.log(props);
 
   useEffect(() => {
     setCheckedList(defaultCheckedList);
@@ -33,6 +35,7 @@ function UserCardBlock(props) {
     setCheckedList(list);
     setIndeterminate(!!list.length && list.length < plainOptions.length);
     setCheckAll(list.length === plainOptions.length);
+    props.checkList(list);
   };
 
   const onCheckAllChange = (e) => {
@@ -648,7 +651,7 @@ function UserCardBlock(props) {
             {calculateTotla()
               .total.toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            (상품금액) +{" "}
+            (상품금액) +
             {calculateTotla()
               .ship.toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -659,8 +662,26 @@ function UserCardBlock(props) {
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             원{" "}
           </h2>
+          V2용
+          {props.productPrice(
+            calculateTotla()
+              .total.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.ship(
+            calculateTotla()
+              .ship.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.amount(
+            (calculateTotla().total + calculateTotla().ship)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.total(calculateTotla().total)}
+          {props.shippingPrice(calculateTotla().ship)}
         </div>
-        ;
+
         <div style={{ float: "right" }}>
           <Link
             to={{
