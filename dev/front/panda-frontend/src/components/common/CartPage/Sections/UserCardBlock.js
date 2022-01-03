@@ -179,7 +179,16 @@ function UserCardBlock(props) {
                         }
                       }
                       return (
-                        <tr>
+                        <tr
+                          style={
+                            {
+                              // borderTop: "1px solid",
+                              // borderLeft: "1px solid",
+                              // borderRight: "1px solid",
+                              // borderBottom: "1px solid",
+                            }
+                          }
+                        >
                           <td style={{}}>
                             {item.dp.map((product, index) => (
                               <tr
@@ -348,13 +357,18 @@ function UserCardBlock(props) {
                                         >
                                           삭제
                                         </Button>
+                                        <hr
+                                          style={{ backgroundColor: "red" }}
+                                        />
                                       </td>
                                     </tr>
                                   ))}
+                                  <hr style={{ backgroundColor: "blue" }} />
                                 </td>
                               </tr>
                             ))}
                           </td>
+
                           <td
                             style={{
                               verticalAlign: "middle",
