@@ -35,7 +35,6 @@ function UserCardBlock(props) {
     setCheckedList(list);
     setIndeterminate(!!list.length && list.length < plainOptions.length);
     setCheckAll(list.length === plainOptions.length);
-    props.checkList(list);
   };
 
   const onCheckAllChange = (e) => {
@@ -191,14 +190,16 @@ function UserCardBlock(props) {
                                     height: "120px",
                                   }}
                                 >
-                                  <img
-                                    style={{
-                                      width: "150px",
-                                      height: "150px",
-                                    }}
-                                    alt="product"
-                                    src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
-                                  />
+                                  <div style={{ width: "150px" }}>
+                                    <img
+                                      style={{
+                                        width: "150px",
+                                        height: "150px",
+                                      }}
+                                      alt="product"
+                                      src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                    />
+                                  </div>
                                 </td>
                                 <td>
                                   <div style={{ width: "200px" }}>
@@ -341,6 +342,51 @@ function UserCardBlock(props) {
             {/* </Col>
           </Row> */}
           </CheckboxGroup>
+
+          <div className="col-12">
+            <div className="card order-card">
+              <hr className="cart-hr" />
+              <div className="row order_calculator">
+                <dl className="col-2">
+                  <dt>총 상품 금액</dt>
+                  <dd>
+                    <span>
+                      {calculateTotla()
+                        .total.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-plus-circle"></i>
+                </dl>
+                <dl className="col-2">
+                  <dt>배송비</dt>
+                  <dd>
+                    <span>
+                      {calculateTotla()
+                        .ship.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-chevron-right"></i>
+                </dl>
+                <dl className="col-4">
+                  <dt>총 주문 금액</dt>
+                  <dd>
+                    <span>
+                      {(calculateTotla().total + calculateTotla().ship)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+              </div>
+              <hr className="cart-hr" />
+            </div>
+          </div>
         </BrowserView>
 
         <MobileView>
@@ -587,6 +633,51 @@ function UserCardBlock(props) {
             {/* </Col>
           </Row> */}
           </CheckboxGroup>
+
+          <div className="col-12">
+            <div className="card order-card">
+              <hr className="cart-hr" />
+              <div className="row order_calculator">
+                <dl className="col-2">
+                  <dt>총 상품 금액</dt>
+                  <dd>
+                    <span>
+                      {calculateTotla()
+                        .total.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-plus-circle"></i>
+                </dl>
+                <dl className="col-2">
+                  <dt>배송비</dt>
+                  <dd>
+                    <span>
+                      {calculateTotla()
+                        .ship.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-chevron-right"></i>
+                </dl>
+                <dl className="col-4">
+                  <dt>총 주문 금액</dt>
+                  <dd>
+                    <span>
+                      {(calculateTotla().total + calculateTotla().ship)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+              </div>
+              <hr className="cart-hr" />
+            </div>
+          </div>
         </MobileView>
       </>
     );
@@ -683,53 +774,6 @@ function UserCardBlock(props) {
           {props.checkList(checkedList)} 
         </div>
          */}
-
-        <div className="col-12">
-          <div className="card order-card">
-            <hr className="cart-hr" />
-            <div className="row order_calculator">
-              <dl className="col-2">
-                <dt>총 상품 금액</dt>
-                <dd>
-                  <span>{"프로덕트프라이스"}</span>
-                </dd>
-              </dl>
-              <dl className="col-1">
-                <i className="bx bx-plus-circle"></i>
-              </dl>
-              <dl className="col-2">
-                <dt>배송비</dt>
-                <dd>
-                  <span>{"쉽프라이스"}</span>
-                </dd>
-              </dl>
-              <dl className="col-1">
-                <i className="bx bx-chevron-right"></i>
-              </dl>
-              <dl className="col-4">
-                <dt>총 주문 금액</dt>
-                <dd>
-                  <span>{"올어마운트"}</span>
-                </dd>
-              </dl>
-            </div>
-            <hr className="cart-hr" />
-
-            <Button
-              text="결제하기"
-              className="is-primary cart_buy_btn"
-              onClick={() => {
-                // history.push({
-                //   pathname: "/user/payments",
-                //   state: {
-                //     amount:  calculateTotla(),
-                //     selectShopId: checkedList,
-                //   },
-                // });
-              }}
-            />
-          </div>
-        </div>
 
         <div style={{ float: "right" }}>
           <Link
