@@ -409,13 +409,21 @@ function UserCardBlock(props) {
 
           <CheckboxGroup
             //   defaultValue={() => plainOptions}
+            style={{ width: "100%" }}
             value={checkedList}
             onChange={onChange}
           >
             {/* <Row gutter={24}>
             <Col span={24}> */}
-            <div style={{ width: "90%" }}>
-              <table style={{ width: "100%", display: "block" }}>
+            <div style={{ width: "100%", display: "block" }}>
+              <table
+                style={{
+                  tableLayout: "fixed",
+                  width: "100%",
+                  display: "table",
+                  minWidth: "100px",
+                }}
+              >
                 <thead>
                   <th>상품상세</th>
                 </thead>
@@ -447,9 +455,15 @@ function UserCardBlock(props) {
                       }
                       return (
                         <tr>
-                          <td style={{}}>
+                          <td style={{ width: "100%" }}>
                             {item.dp.map((product, index) => (
-                              <tr key={index} style={{}}>
+                              <tr
+                                key={index}
+                                style={{
+                                  width: "100%",
+                                  display: "block",
+                                }}
+                              >
                                 <tr
                                   style={{
                                     textAlign: "center",
@@ -467,49 +481,143 @@ function UserCardBlock(props) {
                                   />
                                 </tr>
 
-                                <tr>
-                                  <td>
+                                <tr
+                                  style={{
+                                    width: "100%",
+                                    display: "block",
+                                  }}
+                                >
+                                  <td
+                                    style={{
+                                      display: "block",
+                                      width: "100%",
+                                    }}
+                                  >
                                     <div
-                                      style={{ width: "200px", float: "left" }}
-                                    >
-                                      {product.productName}
-                                    </div>
-                                    <Button
-                                      type="primary"
-                                      onClick={(e) => {
-                                        showModal(product, props, e);
+                                      style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        justityContent: "center",
                                       }}
                                     >
-                                      변경
-                                    </Button>
+                                      <div
+                                        style={{
+                                          width: "50%",
+                                          float: "left",
+                                        }}
+                                      >
+                                        {product.productName}
+                                      </div>
+                                      <div
+                                        style={{
+                                          float: "right",
+                                        }}
+                                      >
+                                        <Button
+                                          type="primary"
+                                          onClick={(e) => {
+                                            showModal(product, props, e);
+                                          }}
+                                        >
+                                          변경
+                                        </Button>
+                                      </div>
+                                    </div>
                                   </td>
                                 </tr>
-                                <tr>
-                                  <td>{item.shopName}</td>
+                                <tr
+                                  style={{
+                                    width: "100%",
+                                    display: "block",
+                                  }}
+                                >
+                                  <td
+                                    style={{
+                                      width: "100%",
+                                      display: "block",
+                                    }}
+                                  >
+                                    {item.shopName}
+                                  </td>
                                 </tr>
 
-                                <tr style={{ width: "50%" }}>
+                                <tr style={{ width: "100%", display: "table" }}>
                                   {product.do.map((option, index) => (
                                     <tr>
-                                      <tr key={index}>
+                                      <tr
+                                        key={index}
+                                        style={{
+                                          width: "100%",
+                                          display: "table",
+                                        }}
+                                      >
                                         <td>
-                                          <div style={{ width: "80px" }}>
+                                          <div
+                                            style={{
+                                              border: "1px solid ",
+                                            }}
+                                          >
+                                            <label
+                                              style={{ fontWeight: "bold" }}
+                                            >
+                                              판다이름
+                                            </label>
+                                          </div>
+                                          <div style={{ width: "100%" }}>
                                             {option.pandaName}
                                           </div>
                                         </td>
                                         <td>
+                                          <div
+                                            style={{
+                                              border: "1px solid ",
+                                            }}
+                                          >
+                                            <label
+                                              style={{ fontWeight: "bold" }}
+                                            >
+                                              선택옵션
+                                            </label>
+                                          </div>
                                           <div style={{ width: "120px" }}>
                                             {option.optionName}
                                           </div>
                                         </td>
                                         <td>
+                                          <div
+                                            style={{
+                                              border: "1px solid ",
+                                            }}
+                                          >
+                                            <label
+                                              style={{ fontWeight: "bold" }}
+                                            >
+                                              선택갯수
+                                            </label>
+                                          </div>
                                           <div style={{ width: "80px" }}>
                                             {option.optionCount} EA
                                           </div>
                                         </td>
                                       </tr>
-                                      <tr>
+                                      <tr
+                                        style={{
+                                          width: "100%",
+                                          display: "table",
+                                        }}
+                                      >
                                         <td>
+                                          <div
+                                            style={{
+                                              border: "1px solid ",
+                                            }}
+                                          >
+                                            <label
+                                              style={{ fontWeight: "bold" }}
+                                            >
+                                              할인전 가격
+                                            </label>
+                                          </div>
                                           <div style={{ width: "60px" }}>
                                             {option.originPrice
                                               .toString()
@@ -520,6 +628,17 @@ function UserCardBlock(props) {
                                           </div>
                                         </td>
                                         <td>
+                                          <div
+                                            style={{
+                                              border: "1px solid ",
+                                            }}
+                                          >
+                                            <label
+                                              style={{ fontWeight: "bold" }}
+                                            >
+                                              최종 가격
+                                            </label>
+                                          </div>
                                           {option.discount ? (
                                             <div style={{ width: "100px" }}>
                                               {Math.round(
@@ -586,35 +705,57 @@ function UserCardBlock(props) {
                                 </tr>
                               </tr>
                             ))}
-                            <td>
-                              <tr>
-                                {allPrice
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                원
-                              </tr>
-                              <br />
-                              <tr>
-                                {isfree(purePrice)
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                <br />(
-                                {freePrice
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                                이상 무료배송)
-                              </tr>
-
-                              <tr>
-                                <div style={{ width: "100%" }}>
+                            <td
+                              style={{
+                                width: "100%",
+                                display: "table",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    width: "100%",
+                                    float: "left",
+                                  }}
+                                >
+                                  <tr>
+                                    {allPrice
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                    원
+                                  </tr>
+                                  <br />
+                                  <tr>
+                                    {isfree(purePrice)
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                    <br />(
+                                    {freePrice
+                                      .toString()
+                                      .replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}{" "}
+                                    이상 무료배송)
+                                  </tr>
+                                </div>
+                                <div
+                                  style={{
+                                    width: "30%",
+                                    float: "right",
+                                    alignItems: "center",
+                                  }}
+                                >
                                   <Checkbox
                                     onChange={(e) => onChanges(e, allPrice)}
                                     value={item.shopId}
-                                  >
-                                    {" "}
-                                  </Checkbox>
+                                  ></Checkbox>
                                 </div>
-                              </tr>
+                              </div>
                             </td>
 
                             <hr

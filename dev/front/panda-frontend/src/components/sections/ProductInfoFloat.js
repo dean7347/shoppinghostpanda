@@ -58,6 +58,7 @@ function ProductInfoFlot(props) {
       title: "상품명",
       dataIndex: "optionName",
       key: "optionName",
+      width: "30%",
     },
     {
       title: "수량",
@@ -256,8 +257,14 @@ function ProductInfoFlot(props) {
         >
           <OptGroup label="PANDAS">{renderPanda}</OptGroup>
         </Select>
-
-        <Table columns={columns} dataSource={cart.array} pagination={false} />
+        <div style={{ background: "red" }}>
+          <Table
+            scroll={{ x: true }}
+            columns={columns}
+            dataSource={cart.array}
+            pagination={false}
+          />
+        </div>
         <Menu
           onClick={handleClick}
           style={{ width: "100%" }}
