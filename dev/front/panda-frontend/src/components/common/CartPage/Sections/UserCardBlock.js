@@ -932,7 +932,7 @@ function UserCardBlock(props) {
     return { total, ship };
   };
   return (
-    <div style={{ overflow: "auto" }}>
+    <div>
       <Modal
         title="상품변경"
         visible={isModalVisible}

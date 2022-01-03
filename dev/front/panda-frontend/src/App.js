@@ -28,9 +28,13 @@ import BuyerMyPage from "./components/ekan/pages/mypage/buyer/BuyerMyPage";
 
 const App = () => {
   return (
-    <>
+    <div style={{ overflow: "fixed" }}>
       <div
-        style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}
+        style={{
+          display: "flex",
+          minHeight: "100vh",
+          flexDirection: "column",
+        }}
       >
         <Switch>
           <Route
@@ -76,7 +80,7 @@ const App = () => {
         </Switch>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 export default App;
