@@ -144,7 +144,10 @@ function UserCardBlock(props) {
             <div style={{ width: "100%" }}>
               <table width="100%">
                 <thead>
-                  <th>상품상세</th>
+                  <th style={{ fontWeight: "bold", fontSize: "30px" }}>
+                    상품상세
+                    (썸네일-상점명/상품명-판다명/옵션명/EA/할인전/할인후)
+                  </th>
                   <th>상품금액</th>
                   <th>배송비</th>
                   <th>선택</th>
@@ -179,15 +182,27 @@ function UserCardBlock(props) {
                         <tr>
                           <td style={{}}>
                             {item.dp.map((product, index) => (
-                              <tr key={index} style={{}}>
+                              <tr
+                                key={index}
+                                style={{
+                                  borderTop: "0px",
+                                  borderLeft: "0px",
+                                  borderRight: "0px",
+                                }}
+                              >
                                 <td
                                   style={{
                                     textAlign: "center",
                                     width: "120px",
                                     height: "120px",
+                                    verticalAlign: "middle",
                                   }}
                                 >
-                                  <div style={{ width: "150px" }}>
+                                  <div
+                                    style={{
+                                      width: "150px",
+                                    }}
+                                  >
                                     <img
                                       style={{
                                         width: "150px",
@@ -198,13 +213,21 @@ function UserCardBlock(props) {
                                     />
                                   </div>
                                 </td>
-                                <td>
-                                  <div style={{ width: "200px" }}>
+                                <td
+                                  style={{
+                                    verticalAlign: "middle",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      width: "200px",
+                                    }}
+                                  >
                                     {item.shopName}
                                     <br />
                                     {product.productName}
-                                  </div>
-                                  <tr>
+                                    <br />
                                     <Button
                                       type="primary"
                                       onClick={(e) => {
@@ -213,95 +236,109 @@ function UserCardBlock(props) {
                                     >
                                       변경
                                     </Button>
-                                  </tr>
+                                  </div>
                                 </td>
                                 <td
-                                  style={{ width: "50%", background: "pink" }}
+                                  style={{
+                                    width: "50%",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                  }}
                                 >
                                   {product.do.map((option, index) => (
-                                    <tr key={index}>
-                                      <td style={{ width: "100%" }}>
-                                        <div>
-                                          <div>판다이름</div>
-                                          <div>주절주절판다</div>
-                                        </div>
-                                      </td>
-                                      {/**
-                                                            <td>
-                                        <div style={{ width: "80px" }}>
-                                          {option.pandaName}
-                                        </div>
-                                      </td>
-                                      <td>
-                                        <div style={{ width: "120px" }}>
-                                          {option.optionName}
-                                        </div>
-                                      </td>
-                                      <td>
-                                        <div style={{ width: "80px" }}>
-                                          {option.optionCount} EA
-                                        </div>
-                                      </td>
-                                      <td>
-                                        <div style={{ width: "60px" }}>
-                                          {option.originPrice
-                                            .toString()
-                                            .replace(
-                                              /\B(?=(\d{3})+(?!\d))/g,
-                                              ","
-                                            )}
-                                        </div>
-                                      </td>
-                                      <td>
-                                        {option.discount ? (
-                                          <div style={{ width: "100px" }}>
-                                            {Math.round(
-                                              option.originPrice *
-                                                option.optionCount *
-                                                0.95
-                                            )
-                                              .toString()
-                                              .replace(
-                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                ","
+                                    <tr
+                                      key={index}
+                                      style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <td
+                                        style={{
+                                          width: "100%",
+                                          borderTop: "0px",
+                                          borderLeft: "0px",
+                                          borderRight: "0px",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            width: "800px",
+                                            padding: "10px 0px 10px 10px",
+                                          }}
+                                        >
+                                          <div>
+                                            <div>
+                                              {option.pandaName}/
+                                              {option.optionName}/
+                                              {option.optionCount}개*(
+                                              {option.originPrice
+                                                .toString()
+                                                .replace(
+                                                  /\B(?=(\d{3})+(?!\d))/g,
+                                                  ","
+                                                )}
+                                              원)
+                                            </div>
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                justifyContent: "space-around",
+                                              }}
+                                            >
+                                              {option.discount ? (
+                                                <div style={{ width: "150px" }}>
+                                                  {Math.round(
+                                                    option.originPrice *
+                                                      option.optionCount *
+                                                      0.95
+                                                  )
+                                                    .toString()
+                                                    .replace(
+                                                      /\B(?=(\d{3})+(?!\d))/g,
+                                                      ","
+                                                    )}
+                                                  원
+                                                  <br />
+                                                  (판다 할인 : 5% )
+                                                </div>
+                                              ) : (
+                                                <div style={{ width: "150px" }}>
+                                                  {(
+                                                    option.originPrice *
+                                                    option.optionCount
+                                                  )
+                                                    .toString()
+                                                    .replace(
+                                                      /\B(?=(\d{3})+(?!\d))/g,
+                                                      ","
+                                                    )}
+                                                  원
+                                                  <br />
+                                                  (판다 할인 미적용)
+                                                </div>
                                               )}
-                                            <br />
-                                            (판다 할인 : 5% )
+                                            </div>
+                                            {option.discount
+                                              ? pricePlus(
+                                                  Math.round(
+                                                    option.originPrice *
+                                                      option.optionCount *
+                                                      0.95
+                                                  ),
+                                                  option.originPrice *
+                                                    option.optionCount
+                                                )
+                                              : pricePlus(
+                                                  option.originPrice *
+                                                    option.optionCount,
+                                                  option.originPrice *
+                                                    option.optionCount
+                                                )}
                                           </div>
-                                        ) : (
-                                          <div style={{ width: "100px" }}>
-                                            {(
-                                              option.originPrice *
-                                              option.optionCount
-                                            )
-                                              .toString()
-                                              .replace(
-                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                ","
-                                              )}
-                                            <br />
-                                            (판다 할인 미적용)
-                                          </div>
-                                        )}
-                                      </td>
-                                      {option.discount
-                                        ? pricePlus(
-                                            Math.round(
-                                              option.originPrice *
-                                                option.optionCount *
-                                                0.95
-                                            ),
-                                            option.originPrice *
-                                              option.optionCount
-                                          )
-                                        : pricePlus(
-                                            option.originPrice *
-                                              option.optionCount,
-                                            option.originPrice *
-                                              option.optionCount
-                                          )}
-
-                                      <td>
+                                        </div>
                                         <Button
                                           type="primary"
                                           danger
@@ -312,20 +349,29 @@ function UserCardBlock(props) {
                                           삭제
                                         </Button>
                                       </td>
-                                      **/}
                                     </tr>
                                   ))}
                                 </td>
                               </tr>
                             ))}
                           </td>
-                          <td>
+                          <td
+                            style={{
+                              verticalAlign: "middle",
+                              minWidth: "100px",
+                            }}
+                          >
                             {allPrice
                               .toString()
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                             원
                           </td>
-                          <td>
+                          <td
+                            style={{
+                              verticalAlign: "middle",
+                              minWidth: "150px",
+                            }}
+                          >
                             {isfree(purePrice)
                               .toString()
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -336,7 +382,12 @@ function UserCardBlock(props) {
                             이상 무료배송)
                           </td>
 
-                          <td>
+                          <td
+                            style={{
+                              verticalAlign: "middle",
+                              minWidth: "100px",
+                            }}
+                          >
                             <Checkbox
                               onChange={(e) => onChanges(e, allPrice)}
                               value={item.shopId}
@@ -867,7 +918,7 @@ function UserCardBlock(props) {
     return { total, ship };
   };
   return (
-    <div>
+    <div style={{ overflow: "auto" }}>
       <Modal
         title="상품변경"
         visible={isModalVisible}
