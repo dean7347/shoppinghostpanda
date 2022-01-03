@@ -141,7 +141,7 @@ function UserCardBlock(props) {
           >
             {/* <Row gutter={24}>
             <Col span={24}> */}
-            <div style={{ width: "100%", overflow: "auto" }}>
+            <div style={{ width: "100%" }}>
               <table width="100%">
                 <thead>
                   <th>상점명</th>
@@ -414,8 +414,8 @@ function UserCardBlock(props) {
           >
             {/* <Row gutter={24}>
             <Col span={24}> */}
-            <div style={{ width: "100%", overflow: "auto" }}>
-              <table width="100%">
+            <div style={{ width: "90%" }}>
+              <table style={{ width: "100%", display: "block" }}>
                 <thead>
                   <th>상품상세</th>
                 </thead>
@@ -638,7 +638,7 @@ function UserCardBlock(props) {
             <div className="card order-card">
               <hr className="cart-hr" />
               <div className="row order_calculator">
-                <dl className="col-2">
+                <dl className="col-5">
                   <dt>총 상품 금액</dt>
                   <dd>
                     <span>
@@ -651,7 +651,7 @@ function UserCardBlock(props) {
                 <dl className="col-1">
                   <i className="bx bx-plus-circle"></i>
                 </dl>
-                <dl className="col-2">
+                <dl className="col-5">
                   <dt>배송비</dt>
                   <dd>
                     <span>
@@ -661,10 +661,11 @@ function UserCardBlock(props) {
                     </span>
                   </dd>
                 </dl>
-                <dl className="col-1">
-                  <i className="bx bx-chevron-right"></i>
-                </dl>
+
                 <dl className="col-4">
+                  <i className="bx bx-chevron-right" />
+                </dl>
+                <dl className="col-8">
                   <dt>총 주문 금액</dt>
                   <dd>
                     <span>
