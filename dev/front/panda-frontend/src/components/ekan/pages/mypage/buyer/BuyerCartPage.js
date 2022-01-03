@@ -14,8 +14,8 @@ function BuyerCartPage() {
   const [calculateTotal, setCalculateTotal] = useState("");
   const [ship, setShip] = useState("");
 
-  const defaultCheckedList = [];
-  const [checkedList, setCheckedList] = useState(defaultCheckedList);
+  //   const defaultCheckedList = [];
+  const [checkedList, setCheckedList] = useState([]);
   useEffect(() => {
     //카트 정보 있는지 확인
     axios.get("/api/mycart").then((response) => {
@@ -52,53 +52,6 @@ function BuyerCartPage() {
                   shippingPrice={setShip}
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="col-12">
-            <div className="card order-card">
-              <hr className="cart-hr" />
-              <div className="row order_calculator">
-                <dl className="col-2">
-                  <dt>총 상품 금액</dt>
-                  <dd>
-                    <span>{productPrice}</span>
-                  </dd>
-                </dl>
-                <dl className="col-1">
-                  <i className="bx bx-plus-circle"></i>
-                </dl>
-                <dl className="col-2">
-                  <dt>배송비</dt>
-                  <dd>
-                    <span>{shipPrice}</span>
-                  </dd>
-                </dl>
-                <dl className="col-1">
-                  <i className="bx bx-chevron-right"></i>
-                </dl>
-                <dl className="col-4">
-                  <dt>총 주문 금액</dt>
-                  <dd>
-                    <span>{allAmount}</span>
-                  </dd>
-                </dl>
-              </div>
-              <hr className="cart-hr" />
-
-              <Button
-                text="결제하기"
-                className="is-primary cart_buy_btn"
-                onClick={() => {
-                  history.push({
-                    pathname: "/user/payments",
-                    state: {
-                      amount: { total: calculateTotal, ship: ship },
-                      selectShopId: checkedList,
-                    },
-                  });
-                }}
-              />
             </div>
           </div>
         </div>

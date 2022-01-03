@@ -644,7 +644,7 @@ function UserCardBlock(props) {
       {renderbox()}
 
       <div style={{ marginTop: "3rem" }}>
-        <div style={{ float: "left" }}>
+        {/* <div style={{ float: "left" }}>
           {" "}
           <h2>
             총 결제금액 :
@@ -680,6 +680,55 @@ function UserCardBlock(props) {
           )}
           {props.total(calculateTotla().total)}
           {props.shippingPrice(calculateTotla().ship)}
+          {props.checkList(checkedList)} 
+        </div>
+         */}
+
+        <div className="col-12">
+          <div className="card order-card">
+            <hr className="cart-hr" />
+            <div className="row order_calculator">
+              <dl className="col-2">
+                <dt>총 상품 금액</dt>
+                <dd>
+                  <span>{"프로덕트프라이스"}</span>
+                </dd>
+              </dl>
+              <dl className="col-1">
+                <i className="bx bx-plus-circle"></i>
+              </dl>
+              <dl className="col-2">
+                <dt>배송비</dt>
+                <dd>
+                  <span>{"쉽프라이스"}</span>
+                </dd>
+              </dl>
+              <dl className="col-1">
+                <i className="bx bx-chevron-right"></i>
+              </dl>
+              <dl className="col-4">
+                <dt>총 주문 금액</dt>
+                <dd>
+                  <span>{"올어마운트"}</span>
+                </dd>
+              </dl>
+            </div>
+            <hr className="cart-hr" />
+
+            <Button
+              text="결제하기"
+              className="is-primary cart_buy_btn"
+              onClick={() => {
+                // history.push({
+                //   pathname: "/user/payments",
+                //   state: {
+                //     amount:  calculateTotla(),
+                //     selectShopId: checkedList,
+                //   },
+                // });
+              }}
+            />
+          </div>
         </div>
 
         <div style={{ float: "right" }}>
