@@ -43,7 +43,7 @@ const MyPageTable = ({limit, bodyData, headData, renderHead, renderBody}) => {
                     }
                     {
                         bodyData && renderBody ? (
-                            <tbody>
+                            <tbody className="mypage-tbody">
                             {
                                 dataShow.map((item, index) => renderBody(item, index))
                             }
