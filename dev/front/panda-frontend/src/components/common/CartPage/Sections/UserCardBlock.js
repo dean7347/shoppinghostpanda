@@ -144,7 +144,6 @@ function UserCardBlock(props) {
             <div style={{ width: "100%" }}>
               <table width="100%">
                 <thead>
-                  <th>상점명</th>
                   <th>상품상세</th>
                   <th>상품금액</th>
                   <th>배송비</th>
@@ -178,8 +177,6 @@ function UserCardBlock(props) {
                       }
                       return (
                         <tr>
-                          <td>{item.shopName}</td>
-
                           <td style={{}}>
                             {item.dp.map((product, index) => (
                               <tr key={index} style={{}}>
@@ -203,6 +200,8 @@ function UserCardBlock(props) {
                                 </td>
                                 <td>
                                   <div style={{ width: "200px" }}>
+                                    {item.shopName}
+                                    <br />
                                     {product.productName}
                                   </div>
                                   <tr>
@@ -216,10 +215,19 @@ function UserCardBlock(props) {
                                     </Button>
                                   </tr>
                                 </td>
-                                <td style={{ width: "50%" }}>
+                                <td
+                                  style={{ width: "50%", background: "pink" }}
+                                >
                                   {product.do.map((option, index) => (
                                     <tr key={index}>
-                                      <td>
+                                      <td style={{ width: "100%" }}>
+                                        <div>
+                                          <div>판다이름</div>
+                                          <div>주절주절판다</div>
+                                        </div>
+                                      </td>
+                                      {/**
+                                                            <td>
                                         <div style={{ width: "80px" }}>
                                           {option.pandaName}
                                         </div>
@@ -304,6 +312,7 @@ function UserCardBlock(props) {
                                           삭제
                                         </Button>
                                       </td>
+                                      **/}
                                     </tr>
                                   ))}
                                 </td>
