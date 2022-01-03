@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UserCardBlock from "../../../../common/CartPage/Sections/UserCardBlock";
-import "./buyerCartPage.css"
+import "./buyerCartPage.css";
 import Button from "../../../UI/Button";
-
 
 function BuyerCartPage() {
   const [Cart, SetCart] = useState([]);
+  const [allAmount, setAllAmount] = useState("");
+  const [shipPrice, setShipPrice] = useState("");
+  const [productPrice, setProductPrice] = useState("");
 
   useEffect(() => {
     //카트 정보 있는지 확인
@@ -27,47 +29,58 @@ function BuyerCartPage() {
 
   return (
     <>
-        <div className="container">
-            <h3 className="page-header">장바구니</h3>
-            <div className="row">
-                <div className="col-12">
-                    <div className="card">
-                        <div style={{ width: "85%", margin: "3rem auto" }}>
-                            <h1>My Cart</h1>
-                            <UserCardBlock products={Cart} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-12">
-                    <div className="card order-card">
-                        <hr className="cart-hr"/>
-                        <div className="row order_calculator">
-                            <dl className="col-2">
-                                <dt>총 상품 금액</dt>
-                                <dd><span>25000원</span></dd>
-                            </dl>
-                            <dl className="col-1">
-                                <i className='bx bx-plus-circle'></i>
-                            </dl>
-                            <dl className="col-2">
-                                <dt>배송비</dt>
-                                <dd><span>2500원</span></dd>
-                            </dl>
-                            <dl className="col-1">
-                                <i className='bx bx-chevron-right'></i>
-                            </dl>
-                            <dl className="col-4">
-                                <dt>총 주문 금액</dt>
-                                <dd><span>25555원</span></dd>
-                            </dl>
-                        </div>
-                        <hr className="cart-hr"/>
-                        <Button text="주문하기" className="is-primary cart_buy_btn"/>
-                    </div>
-                </div>
+      <div className="container">
+        <h3 className="page-header">장바구니</h3>
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div style={{ width: "85%", margin: "3rem auto" }}>
+                <h1>My Cart</h1>
+                <UserCardBlock
+                  products={Cart}
+                  amount={setAllAmount}
+                  ship={setShipPrice}
+                  productPrice={setProductPrice}
+                />
+              </div>
             </div>
+          </div>
+
+          <div className="col-12">
+            <div className="card order-card">
+              <hr className="cart-hr" />
+              <div className="row order_calculator">
+                <dl className="col-2">
+                  <dt>총 상품 금액</dt>
+                  <dd>
+                    <span>{productPrice}</span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-plus-circle"></i>
+                </dl>
+                <dl className="col-2">
+                  <dt>배송비</dt>
+                  <dd>
+                    <span>{shipPrice}</span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-chevron-right"></i>
+                </dl>
+                <dl className="col-4">
+                  <dt>총 주문 금액</dt>
+                  <dd>
+                    <span>{allAmount}</span>
+                  </dd>
+                </dl>
+              </div>
+              <hr className="cart-hr" />
+              <Button text="주문하기" className="is-primary cart_buy_btn" />
+            </div>
+          </div>
         </div>
+      </div>
     </>
   );
 }
