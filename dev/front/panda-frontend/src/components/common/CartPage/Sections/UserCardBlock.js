@@ -780,7 +780,7 @@ function UserCardBlock(props) {
               <hr className="cart-hr" />
               <div className="row order_calculator">
                 <dl className="col-5">
-                  <dt>총 상품 금액</dt>
+                  <dt> 상품 금액</dt>
                   <dd>
                     <span>
                       {calculateTotla()

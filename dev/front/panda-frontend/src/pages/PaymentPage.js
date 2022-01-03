@@ -782,8 +782,15 @@ function PaymentPage(gprops) {
   const mobileBox = () => {
     return (
       <>
-        <div style={{ width: "100%", overflow: "auto" }}>
-          <table width="100%">
+        <div style={{ width: "100%" }}>
+          <table
+            style={{
+              tableLayout: "fixed",
+              width: "100%",
+              display: "table",
+              minWidth: "100px",
+            }}
+          >
             <thead>
               <th>상품상세</th>
             </thead>
@@ -818,7 +825,14 @@ function PaymentPage(gprops) {
                       <td>
                         {item.dp.map((product, index) => (
                           <div>
-                            <table>
+                            <table
+                              style={{
+                                tableLayout: "fixed",
+                                width: "100%",
+                                display: "table",
+                                minWidth: "100px",
+                              }}
+                            >
                               <tr
                                 key={index}
                                 style={{
@@ -954,7 +968,14 @@ function PaymentPage(gprops) {
                             </table>
                           </div>
                         ))}
-                        <table>
+                        <table
+                          style={{
+                            tableLayout: "fixed",
+                            width: "100%",
+                            display: "table",
+                            minWidth: "100px",
+                          }}
+                        >
                           <tr>
                             <td>
                               <tr
