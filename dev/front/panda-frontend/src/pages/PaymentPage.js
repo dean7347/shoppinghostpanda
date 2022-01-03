@@ -667,16 +667,17 @@ function PaymentPage(gprops) {
                   }
                 }
                 return (
-                  <tr>
-                    <td>{item.shopName}</td>
-                    <td style={{}}>
+                  <tr style={{}}>
+                    <td style={{ width: "50px" }}>{item.shopName}</td>
+                    <td style={{ width: "70%" }}>
                       {item.dp.map((product, index) => (
-                        <tr key={index} style={{}}>
+                        <tr key={index} style={{ width: "100%" }}>
                           <td
                             style={{
                               textAlign: "center",
-                              width: "120px",
-                              height: "120px",
+                              width: "200px",
+                              height: "150px",
+                              display: "block",
                             }}
                           >
                             <img
@@ -688,12 +689,22 @@ function PaymentPage(gprops) {
                               src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
                             />
                           </td>
-                          <td style={{ width: "20%" }}>
+                          <td
+                            style={{
+                              width: "20%",
+                            }}
+                          >
                             {product.productName}
                           </td>
-                          <td style={{ width: "50%" }}>
+                          <td style={{ width: "50%", background: "black" }}>
                             {product.do.map((option, index) => (
-                              <tr key={index}>
+                              <tr
+                                key={index}
+                                style={{
+                                  width: "100%",
+                                  background: "pink",
+                                }}
+                              >
                                 <td>{option.pandaName}</td>
                                 <td>{option.optionName}</td>
                                 <td>{option.optionCount} EA</td>
@@ -748,13 +759,13 @@ function PaymentPage(gprops) {
                         </tr>
                       ))}
                     </td>
-                    <td>
+                    <td style={{ width: "10%" }}>
                       {allPrice
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       원
                     </td>
-                    <td>
+                    <td style={{ width: "10%" }}>
                       {isfree(purePrice)
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
