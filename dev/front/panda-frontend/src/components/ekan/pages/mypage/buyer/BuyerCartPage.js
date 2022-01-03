@@ -4,7 +4,7 @@ import UserCardBlock from "../../../../common/CartPage/Sections/UserCardBlock";
 import "./buyerCartPage.css";
 import Button from "../../../UI/Button";
 import { Link } from "react-router-dom";
-
+import { useHistory } from "react-router";
 function BuyerCartPage() {
   const [Cart, SetCart] = useState([]);
   const [allAmount, setAllAmount] = useState("");
@@ -32,7 +32,7 @@ function BuyerCartPage() {
       }
     });
   }, []);
-
+  const history = useHistory();
   return (
     <>
       <div className="container">
@@ -85,18 +85,20 @@ function BuyerCartPage() {
                 </dl>
               </div>
               <hr className="cart-hr" />
-              <Link
-                to={{
-                  pathname: `/user/payments`,
-                  state: {
-                    amount: calculateTotal,
-                    ship: ship,
-                    selectShopId: checkedList,
-                  },
+
+              <Button
+                text="결제하기"
+                className="is-primary cart_buy_btn"
+                onClick={() => {
+                  history.push({
+                    pathname: "/user/payments",
+                    state: {
+                      amount: { total: calculateTotal, ship: ship },
+                      selectShopId: checkedList,
+                    },
+                  });
                 }}
-              >
-                <Button text="결제하기" className="is-primary cart_buy_btn" />
-              </Link>
+              />
             </div>
           </div>
         </div>
