@@ -1020,14 +1020,14 @@ function PaymentPage(gprops) {
         <div style={{ border: "1px solid" }}>
           <div style={{ float: "left" }}>
             <h2>
-              {console.log(gprops.location.state)}
-              {gprops.location.state.amount
+              {/* {console.log(gprops.location.state)} */}
+              {/* {gprops.location.state.amount
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               +
               {gprops.location.state.ship
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
             </h2>
           </div>
           <div
