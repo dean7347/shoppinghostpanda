@@ -1,25 +1,25 @@
-.table-wrapper {
+.mypage-table-wrapper {
   overflow-y: auto;
 }
 
-table {
+.mypage-table-wrapper table {
   width: 100%;
   min-width: 400px;
   border-spacing: 0;
 }
 
-thead {
+.mypage-table-wrapper thead {
   background-color: var(--second-bg);
 }
 
-tr {
+.mypage-table-wrapper tr {
   text-align: left;
 }
-.table-wrapper th {
+.mypage-table-wrapper th {
   text-transform: capitalize;
   padding: 15px 10px;
 }
-.table-wrapper td {
+.mypage-table-wrapper td {
   text-transform: capitalize;
   padding: 15px 10px;
 }
