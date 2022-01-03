@@ -6,7 +6,6 @@ import OrderListPage from "./buyer/OrderListPage";
 import CancelListPage from "./buyer/CancelListPage";
 import CartPage from "../../../../pages/CartPage";
 import BuyerCartPage from "./buyer/BuyerCartPage";
-import PaymentPage from "../../../../pages/PaymentPage";
 
 
 
@@ -17,7 +16,6 @@ const MyPageRoutes = () => {
             <Route path='/buyer/orderList' exact component={OrderListPage}/>
             <Route path='/buyer/cancelList' exact component={CancelListPage}/>
             <Route path='/buyer/cart' exact component={BuyerCartPage}/>
-            <Route component={PaymentPage} path={"/user/payments"} exact />
         </>
     )
 }
