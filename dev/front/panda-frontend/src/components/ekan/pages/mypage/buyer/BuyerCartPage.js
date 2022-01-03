@@ -3,13 +3,19 @@ import axios from "axios";
 import UserCardBlock from "../../../../common/CartPage/Sections/UserCardBlock";
 import "./buyerCartPage.css";
 import Button from "../../../UI/Button";
+import { Link } from "react-router-dom";
 
 function BuyerCartPage() {
   const [Cart, SetCart] = useState([]);
   const [allAmount, setAllAmount] = useState("");
   const [shipPrice, setShipPrice] = useState("");
   const [productPrice, setProductPrice] = useState("");
+  const [paymentState, setPaymentState] = useState("");
+  const [calculateTotal, setCalculateTotal] = useState("");
+  const [ship, setShip] = useState("");
 
+  const defaultCheckedList = [];
+  const [checkedList, setCheckedList] = useState(defaultCheckedList);
   useEffect(() => {
     //카트 정보 있는지 확인
     axios.get("/api/mycart").then((response) => {
@@ -41,6 +47,9 @@ function BuyerCartPage() {
                   amount={setAllAmount}
                   ship={setShipPrice}
                   productPrice={setProductPrice}
+                  checkList={setCheckedList}
+                  total={setCalculateTotal}
+                  shippingPrice={setShip}
                 />
               </div>
             </div>
@@ -76,7 +85,18 @@ function BuyerCartPage() {
                 </dl>
               </div>
               <hr className="cart-hr" />
-              <Button text="주문하기" className="is-primary cart_buy_btn" />
+              <Link
+                to={{
+                  pathname: `/user/payments`,
+                  state: {
+                    amount: calculateTotal,
+                    ship: ship,
+                    selectShopId: checkedList,
+                  },
+                }}
+              >
+                <Button text="결제하기" className="is-primary cart_buy_btn" />
+              </Link>
             </div>
           </div>
         </div>

@@ -35,6 +35,7 @@ function UserCardBlock(props) {
     setCheckedList(list);
     setIndeterminate(!!list.length && list.length < plainOptions.length);
     setCheckAll(list.length === plainOptions.length);
+    props.checkList(list);
   };
 
   const onCheckAllChange = (e) => {
@@ -646,36 +647,39 @@ function UserCardBlock(props) {
         <div style={{ float: "left" }}>
           {" "}
           <h2>
-            {/* 총 결제금액 :
+            총 결제금액 :
             {calculateTotla()
               .total.toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            (상품금액) +{" "} */}
-            {props.productPrice(
-              calculateTotla()
-                .total.toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            )}
-            {/* {calculateTotla()
+            (상품금액) +
+            {calculateTotla()
               .ship.toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
-            {/* (배송비) */}
-            {/* <br />= */}
-            {props.ship(
-              calculateTotla()
-                .ship.toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            )}
-            {props.amount(
-              (calculateTotla().total + calculateTotla().ship)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            )}
-            {/* {(calculateTotla().total + calculateTotla().ship)
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            (배송비)
+            <br />=
+            {(calculateTotla().total + calculateTotla().ship)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            원{" "} */}
+            원{" "}
           </h2>
+          V2용
+          {props.productPrice(
+            calculateTotla()
+              .total.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.ship(
+            calculateTotla()
+              .ship.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.amount(
+            (calculateTotla().total + calculateTotla().ship)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          )}
+          {props.total(calculateTotla().total)}
+          {props.shippingPrice(calculateTotla().ship)}
         </div>
 
         <div style={{ float: "right" }}>

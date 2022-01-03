@@ -26,6 +26,7 @@ import {
 } from "react-device-detect";
 
 function PaymentPage(gprops) {
+  console.log("페이먼트진입");
   let history = useHistory();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1019,11 +1020,12 @@ function PaymentPage(gprops) {
         <div style={{ border: "1px solid" }}>
           <div style={{ float: "left" }}>
             <h2>
-              {gprops.location.state.amount.total
+              {console.log(gprops.location.state)}
+              {gprops.location.state.amount
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               +
-              {gprops.location.state.amount.ship
+              {gprops.location.state.ship
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </h2>
