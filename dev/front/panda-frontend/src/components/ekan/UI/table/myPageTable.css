@@ -1,64 +1,70 @@
 .mypage-table-wrapper {
-  overflow-y: auto;
+    overflow-y: auto;
 }
 
 .mypage-table-wrapper table {
-  width: 100%;
-  min-width: 400px;
-  border-spacing: 0;
+    width: 100%;
+    min-width: 400px;
+    border-spacing: 0;
+}
+
+.mypage-table-wrapper table, tr, td, th {
+    border-style: none;
 }
 
 .mypage-table-wrapper thead {
-  background-color: var(--second-bg);
+    background-color: var(--second-bg);
 }
 
 .mypage-table-wrapper tr {
-  text-align: left;
+    text-align: left;
 }
+
 .mypage-table-wrapper th {
-  text-transform: capitalize;
-  padding: 15px 10px;
+    text-transform: capitalize;
+    padding: 15px 10px;
 }
+
 .mypage-table-wrapper td {
-  text-transform: capitalize;
-  padding: 15px 10px;
+    text-transform: capitalize;
+    padding: 15px 10px;
 }
 
 .mypage-tbody > tr:hover {
-  background-color: var(--main-color);
-  color: var(--txt-white);
+    background-color: var(--main-color);
+    color: var(--txt-white);
 }
 
 .table__pagination {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .table__pagination-item ~ .table__pagination-item {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .table__pagination-item {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .table__pagination-item.active,
 .table__pagination-item.active:hover {
-  background-color: var(--main-color);
-  color: var(--txt-white);
-  font-weight: 600;
+    background-color: var(--main-color);
+    color: var(--txt-white);
+    font-weight: 600;
 }
 
 .table__pagination-item:hover {
-  color: var(--txt-white);
-  background-color: var(--second-color);
+    color: var(--txt-white);
+    background-color: var(--second-color);
 }
