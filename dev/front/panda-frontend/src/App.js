@@ -30,6 +30,7 @@ import Loader from "./components/ekan/UI/Loader";
 import {useDispatch, useSelector} from "react-redux";
 import {loginCheck} from "./store/actions/authActions";
 import Header from "./components/sections/Header";
+import PrivateRoute from "./components/auth/PrivateRoute";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -92,7 +93,7 @@ const App = () => {
                     <Route component={PriPage} path={"/private"} exact/>
                     <Route component={TermPage} path={"/terms"} exact/>
                     <Route component={ServicePage} path={"/service"} exact/>
-                    <Route path="/buyer" component={BuyerMyPage}/>
+                    <PrivateRoute path="/buyer" component={BuyerMyPage}/>
                     {/* //api테스트용 짬통페이지 */}
                     <Route path="/testpage" component={TestPage}/>
                 </Switch>
