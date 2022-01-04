@@ -12,9 +12,6 @@ import {
   isBrower,
   isMobile,
 } from "react-device-detect";
-import { set } from "date-fns";
-import { float } from "webidl-conversions";
-
 function UserCardBlock(props) {
   const CheckboxGroup = Checkbox.Group;
   const plainOptions = [];
