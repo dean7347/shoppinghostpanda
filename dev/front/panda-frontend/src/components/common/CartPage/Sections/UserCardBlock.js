@@ -136,7 +136,7 @@ function UserCardBlock(props) {
             //   defaultValue={() => plainOptions}
             value={checkedList}
             onChange={onChange}
-            style={{ background: "pink", width: "100%" }}
+            style={{ width: "100%" }}
           >
             <div
               style={{
@@ -192,7 +192,7 @@ function UserCardBlock(props) {
                           textAlign: "center",
                         }}
                       >
-                        <Row>
+                        <Row align={"middle"} style={{}}>
                           <Col lg={4} md={12} sm={12} xs={12}>
                             {item.shopName}
                             {item.dp.map((product, index) => (
@@ -205,48 +205,45 @@ function UserCardBlock(props) {
                             <div style={{}}>
                               {item.dp.map((product, index) => (
                                 <>
-                                  <div style={{ border: "1px solid" }}>
-                                    <div
-                                      style={{
-                                        width: "50%",
-                                        float: "left",
-                                        boxSizing: "border-box",
-                                        background: "red",
-                                        display: "flex",
-                                      }}
-                                    >
-                                      {/* 사진 이미지 나누는 div */}
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                          flexDirection: "column",
-                                        }}
-                                      >
-                                        <div style={{ height: "50%" }}>
-                                          상품사진
-                                        </div>
-                                        <div style={{ height: "50%" }}>
+                                  {/* 상품상세박스 */}
+                                  <Row>
+                                    <Col span={6}>
+                                      <Row>
+                                        <Col span={24}>
+                                          <img
+                                            style={{
+                                              width: "150px",
+                                              height: "150px",
+                                            }}
+                                            alt="product"
+                                            src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                          />
+                                        </Col>
+                                        <Col span={24}>
                                           {product.productName}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div
-                                      style={{
-                                        width: "50%",
-                                        float: "left",
-                                        boxSizing: "border-box",
-                                      }}
-                                    >
+                                        </Col>
+                                      </Row>
+                                    </Col>
+                                    <Col span={18}>
                                       {product.do.map((option, index) => (
                                         <>
-                                          상품상세
+                                          <div>
+                                            {option.pandaName}/
+                                            {option.optionName}/
+                                            {option.optionCount}개*(
+                                            {option.originPrice
+                                              .toString()
+                                              .replace(
+                                                /\B(?=(\d{3})+(?!\d))/g,
+                                                ","
+                                              )}
+                                            원)
+                                          </div>
                                           <br />
                                         </>
                                       ))}
-                                    </div>
-                                  </div>
+                                    </Col>
+                                  </Row>
                                 </>
                               ))}
                             </div>
