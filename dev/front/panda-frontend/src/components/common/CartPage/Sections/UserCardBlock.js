@@ -206,7 +206,7 @@ function UserCardBlock(props) {
                               {item.dp.map((product, index) => (
                                 <>
                                   {/* 상품상세박스 */}
-                                  <Row>
+                                  <Row align={"middle"}>
                                     <Col span={6}>
                                       <Row>
                                         <Col span={24}>
@@ -238,6 +238,22 @@ function UserCardBlock(props) {
                                                 ","
                                               )}
                                             원)
+                                            {option.discount
+                                              ? pricePlus(
+                                                  Math.round(
+                                                    option.originPrice *
+                                                      option.optionCount *
+                                                      0.95
+                                                  ),
+                                                  option.originPrice *
+                                                    option.optionCount
+                                                )
+                                              : pricePlus(
+                                                  option.originPrice *
+                                                    option.optionCount,
+                                                  option.originPrice *
+                                                    option.optionCount
+                                                )}
                                           </div>
                                           <br />
                                         </>
@@ -249,10 +265,21 @@ function UserCardBlock(props) {
                             </div>
                           </Col>
                           <Col lg={4} md={12} sm={12} xs={12}>
-                            <div style={{}}>판다할인하면 얼마</div>
+                            최종가격 : {allPrice}
+                            <br />
+                            할인전 : ({purePrice})
                           </Col>
                           <Col lg={4} md={12} sm={12} xs={12}>
-                            <div style={{}}>구처넌</div>
+                            <div style={{}}>
+                              {isfree(purePrice)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                              <br />(
+                              {freePrice
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                              이상 무료배송)
+                            </div>
                           </Col>
                         </Row>
                       </div>
