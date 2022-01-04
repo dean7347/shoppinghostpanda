@@ -752,7 +752,7 @@ function PaymentPage(gprops) {
                                             style={{ background: "#FFEAD0" }}
                                           >
                                             <Row>
-                                              <Col span={16}>
+                                              <Col span={24}>
                                                 {option.discount ? (
                                                   <div>
                                                     {Math.round(
@@ -784,7 +784,6 @@ function PaymentPage(gprops) {
                                                   </div>
                                                 )}
                                               </Col>
-                                              <Col span={4}></Col>
                                             </Row>
                                           </div>
                                         </div>
