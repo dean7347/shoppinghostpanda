@@ -8,6 +8,7 @@ import {BrowserRouter} from "react-router-dom";
 
 // 스토어생성 프로바이더를 통해 리액트 프로젝트에 리덕스 적용
 import {Provider} from "react-redux";
+import store from "./store";
 import {createStore, applyMiddleware} from "redux";
 import {composeWithDevTools} from "redux-devtools-extension";
 import rootReducer, {rootSaga} from "./modules";
@@ -17,7 +18,7 @@ import 'bulma/css/bulma.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/theme.css'
 import './assets/css/index.css'
-import store from "./store";
+
 
 
 // const sagaMiddleware = createSagaMiddleware();

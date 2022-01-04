@@ -203,10 +203,10 @@ const Header = ({ user, onLogout }) => {
               </Nav>
             ) : (
               <Nav>
-                <Nav.Link href="#deets">
-                  <Button to="/login">로그인</Button>
-                  <Button to="/signin">로그인new</Button>
+                <Nav.Link>
+                  <Button to="/signin">로그인</Button>
                 </Nav.Link>
+
                 <Nav.Link eventKey={2} href="#memes">
                   <Button to="/register">회원가입</Button>
                 </Nav.Link>
