@@ -1,15 +1,14 @@
-// import React, { FC } from 'react';
-// import { useSelector } from 'react-redux';
-// import { Route, Redirect, RouteProps } from 'react-router-dom';
-// import { RootState } from '../../store';
-//
-// const PrivateRoute = ({ component: Component, ...rest }) => {
-//     const { authenticated } = useSelector((state: RootState) => state.auth);
-//
-//     return(
-//         <Route {...rest} render={props => authenticated ? <Component {...props} /> :
-//             <Redirect to={{pathname:"/signin", state: { next: props.location.pathname } }} />} />
-//     );
-// }
-//
-// export default PrivateRoute;
+import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Redirect } from 'react-router-dom';
+
+const PrivateRoute= ({ component: Component, ...rest }) => {
+    const { loggedIn } = useSelector((state) => state.auth);
+
+    return(
+        <Route {...rest} render={props => loggedIn ? <Component {...props} /> :
+            <Redirect to={{pathname:"/signin", state: { next: props.location.pathname } }} />} />
+    );
+}
+
+export default PrivateRoute;
