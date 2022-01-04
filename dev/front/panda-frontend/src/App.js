@@ -25,6 +25,7 @@ import TermPage from "./pages/TermPage";
 import TestPage from "./pages/TestPage";
 import Footer from "./components/common/Footer";
 import BuyerMyPage from "./components/ekan/pages/mypage/buyer/BuyerMyPage";
+import SignIn from "./pages/SignIn";
 
 const App = () => {
   return (
@@ -44,6 +45,7 @@ const App = () => {
             exact
           />
           <Route component={LoginPage} path="/login" exact />
+          <Route component={SignIn} path="/signin" exact />
           <Route component={RegisterPage} path="/register" exact />
           <Route component={WritePage} path="/write" exact />
           <Route component={PostPage} path="/@:username/:postId" exact />
