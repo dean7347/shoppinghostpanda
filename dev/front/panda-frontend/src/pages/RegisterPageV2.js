@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Switch, Collapse } from "antd";
 import styled from "styled-components";
 import axios from "../../node_modules/axios/index";
 import HeaderContainer from "../containers/common/HeaderContainer";
-
+import queryString from "query-string";
 const RegisterPageV2 = ({ history }) => {
   const ErrorMessage = styled.div`
     color: red;
@@ -245,156 +245,6 @@ const RegisterPageV2 = ({ history }) => {
 
 ① 이 개인정보처리방침은 2021년 11월 20부터 적용됩니다.
 `;
-
-  //   const [form, setForm] = useState({
-  //     id: "",
-  //     password: "",
-  //     apprpri: "",
-  //     apprterm: "",
-  //     adult: "",
-  //     phone: "",
-  //     name: "",
-  //   });
-  //   const { id, password, apprpri, apprterm, phone, name, adult } = form;
-
-  //   const onChangeF = (e) => {
-  //     const nextForm = {
-  //       ...form,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //     setForm(nextForm);
-  //   };
-
-  //   const onClick = async (e) => {
-  //     try {
-  //       const body = {
-  //         shopName: shopName,
-  //         representative: representative,
-  //         crn: crn,
-  //         telnum: telnum,
-  //         freepee: freepee,
-  //         nofree: nofree,
-  //         priPhone: priPhone,
-  //         csPhone: csPhone,
-  //         csTime: csTime,
-  //         toPanda: toPanda,
-  //         reship: reship,
-  //         returnpee: returnpee,
-  //         tradepee: tradepee,
-  //         returnaddress: returnaddress,
-  //         candate: candate,
-  //         noreturn: noreturn,
-  //         tagree: e.Termsagree,
-  //         iagree: e.Infoagree,
-  //         comaddress: comaddress,
-  //         avdtime: avdtime,
-  //       };
-  //       // console.log("체크크크크");
-  //       // console.log(body);
-
-  //       if (
-  //         !shopName ||
-  //         !representative ||
-  //         !crn ||
-  //         !telnum ||
-  //         !freepee ||
-  //         !nofree ||
-  //         !priPhone ||
-  //         !csPhone ||
-  //         !csTime ||
-  //         !toPanda ||
-  //         !reship ||
-  //         !returnpee ||
-  //         !tradepee ||
-  //         !returnaddress ||
-  //         !candate ||
-  //         !noreturn ||
-  //         !comaddress ||
-  //         !avdtime
-  //       ) {
-  //         alert("모든정보를 입력해 주세요");
-  //         return;
-  //       }
-
-  //       if (e.Termsagree === false || e.Infoagree === false) {
-  //         alert("약관,정보수신에 동의하셔야 합니다");
-  //         return;
-  //       }
-  //       await axios.post("/createShop", body).then((response) => {
-  //         if (response.data.success) {
-  //           alert("샵등록신청 성공!");
-  //         } else {
-  //           alert(
-  //             "샵등록신청에 실패했습니다, 신청중이시라면 최대한 빠르게 검토하겠습니다"
-  //           );
-  //         }
-  //       });
-  //     } catch (e) {
-  //       // console.log(e);
-  //     }
-  //   };
-
-  // async function onSubmit(e) {
-  //   // console.log("온서브밋");
-  //   // console.log(e);
-  //   if (
-  //     !shopName ||
-  //     !representative ||
-  //     !crn ||
-  //     !telnum ||
-  //     !freepee ||
-  //     !nofree ||
-  //     !priPhone ||
-  //     !csPhone ||
-  //     !csTime ||
-  //     !toPanda ||
-  //     !reship ||
-  //     !returnpee ||
-  //     !tradepee ||
-  //     !returnaddress ||
-  //     !candate ||
-  //     !noreturn
-  //   ) {
-  //     alert("모든정보를 입력해 주세요");
-  //   }
-
-  //   if (e.Termsagree === false || e.Infoagree === false) {
-  //     alert("약관,정보수신에 동의하셔야 합니다");
-  //   }
-
-  //   const body = {
-  //     shopName: shopName,
-  //     representative: representative,
-  //     crn: crn,
-  //     telnum: telnum,
-  //     freepee: freepee,
-  //     nofree: nofree,
-  //     priPhone: priPhone,
-  //     csPhone: csPhone,
-  //     csTime: csTime,
-  //     toPanda: toPanda,
-  //     reship: reship,
-  //     returnpee: returnpee,
-  //     tradepee: tradepee,
-  //     returnaddress: returnaddress,
-  //     candate: candate,
-  //     noreturn: noreturn,
-  //     Termsagree: e.Termsagree,
-  //     Infoagree: e.Termsagree,
-  //   };
-  //   // console.log("body");
-  //   const data = await body;
-  //   // console.log(data);
-  //   // console.log(e.Termsagree);
-
-  //   await axios.post("/createShop", data).then((response) => {
-  //     if (response.data.success) {
-  //       alert("샵등록신청 성공!");
-  //     } else {
-  //       alert("샵등록에 실패했습니다");
-  //     }
-  //   });
-  // }
 
   const term = `
   전자상거래(인터넷사이버몰) 표준약관
@@ -693,6 +543,44 @@ const RegisterPageV2 = ({ history }) => {
       alert("회원가입 도중 오류가 발생했습니다");
     }
   };
+
+  ///본인인증
+  const onClcikPhone = () => {
+    console.log("온크릭");
+    var IMP = window.IMP; // 생략 가능
+    IMP.init("imp16473466"); // 예: imp00000000
+    IMP.certification(
+      {
+        // param
+        // merchant_uid: "ORD20180131-0000011", // 주문 번호
+        // m_redirect_url: "{리디렉션 될 URL}", // 모바일환경에서 popup:false(기본값) 인 경우 필수, 예: https://www.myservice.com/payments/complete/mobile
+        popup: true, // PC환경에서는 popup 파라메터가 무시되고 항상 true 로 적용됨
+      },
+      function (rsp) {
+        // callback
+        if (rsp.success) {
+          // 인증 성공 시 로직,
+          console.log("인증성공");
+        } else {
+          // 인증 실패 시 로직,
+          console.log("인증실패");
+        }
+      }
+    );
+  };
+  useEffect(() => {
+    const jquery = document.createElement("script");
+    jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+    const iamport = document.createElement("script");
+    iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.7.js";
+    document.head.appendChild(jquery);
+    document.head.appendChild(iamport);
+    return () => {
+      document.head.removeChild(jquery);
+      document.head.removeChild(iamport);
+    };
+  }, []);
+  ////
   return (
     <>
       <div style={{ zIndex: "99" }}>
@@ -849,6 +737,7 @@ const RegisterPageV2 = ({ history }) => {
         >
           <Input placeholder="전화번호" />
         </Form.Item>
+        <Button onClick={onClcikPhone}>본인인증 </Button>
         <Form.Item label="제출하기">
           <Button type="primary" htmlType="submit">
             submit
