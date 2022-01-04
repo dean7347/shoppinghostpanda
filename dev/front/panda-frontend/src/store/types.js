@@ -1,7 +1,12 @@
 export const SET_USER = 'SET_USER'
 export const SIGN_OUT = 'SIGN_OUt'
+export const LOGIN_CHECK = 'LOGIN_CHECK'
 export const SET_LOADING = 'SET_LOADING'
 export const SET_ERROR = 'SET_ERROR'
 export const NEED_VERIFICATION = 'NEED_VERIFICATION'
 export const SET_SUCCESS = 'SET_SUCCESS'
 export const SET_SUBMITTED = 'SET_SUBMITTED'
+
+export const FETCH_DASHBOARD = 'FETCH_DASHBOARD'
+export const FETCH_SITUATION_LIST = 'FETCH_SITUATION_LIST'
+export const FETCH_SITUATION = 'FETCH_SITUATION'

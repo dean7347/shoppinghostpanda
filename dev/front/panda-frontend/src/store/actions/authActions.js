@@ -1,9 +1,7 @@
-import {ThunkAction} from "redux-thunk";
-import {AuthAction, LOGIN_CHECK, SET_USER, SIGN_OUT, SignInData, SignUpData, User} from "../types";
-import {RootState} from "../index";
+import {LOGIN_CHECK, SET_USER, SIGN_OUT} from "../types";
 import axios from "axios";
 import {setError, setLoading} from "./pageActions";
-import {getCookie, removeCookie, setCookie} from "./Cookie";
+import {getCookie, removeCookie, setCookie} from "../Cookie";
 
 // Create user
 export const signup = (data, onError) => {
