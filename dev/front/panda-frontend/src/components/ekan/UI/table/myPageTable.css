@@ -2,14 +2,10 @@
     overflow-y: auto;
 }
 
-.mypage-table-wrapper table {
+.mypage-table {
     width: 100%;
     min-width: 400px;
     border-spacing: 0;
-}
-
-.mypage-table-wrapper table, tr, td, th {
-    border-style: none;
 }
 
 .mypage-table-wrapper thead {
@@ -18,16 +14,19 @@
 
 .mypage-table-wrapper tr {
     text-align: left;
+    border-style: none;
 }
 
 .mypage-table-wrapper th {
     text-transform: capitalize;
     padding: 15px 10px;
+    border-style: none;
 }
 
 .mypage-table-wrapper td {
     text-transform: capitalize;
     padding: 15px 10px;
+    border-style: none;
 }
 
 .mypage-tbody > tr:hover {
