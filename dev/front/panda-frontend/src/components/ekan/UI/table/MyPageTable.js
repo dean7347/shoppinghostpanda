@@ -29,7 +29,7 @@ const MyPageTable = ({limit, bodyData, headData, renderHead, renderBody}) => {
     return (
         <>
             <div className="mypage-table-wrapper">
-                <table>
+                <table className="mypage-table">
                     {
                         headData && renderHead ? (
                             <thead>
