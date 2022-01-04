@@ -10,7 +10,7 @@ const MyPageTable = ({limit, bodyData, headData, renderHead, renderBody}) => {
     let pages = 1
     let range = []
 
-    if(limit !== undefined) {
+    if (limit !== undefined && bodyData) {
         let page = Math.floor(bodyData.length / Number(limit))
         pages = bodyData.length % Number(limit) === 0 ? page : page + 1
         range = [...Array(pages).keys()]
@@ -39,16 +39,22 @@ const MyPageTable = ({limit, bodyData, headData, renderHead, renderBody}) => {
                                 }
                             </tr>
                             </thead>
-                        ) :null
+                        ) : null
                     }
                     {
-                        bodyData && renderBody ? (
-                            <tbody className="mypage-tbody">
-                            {
-                                dataShow.map((item, index) => renderBody(item, index))
-                            }
+                        bodyData && renderBody && dataShow ? (
+                                <tbody className="mypage-tbody">
+                                {
+                                    dataShow.map((item, index) => renderBody(item, index))
+                                }
+                                </tbody>
+                            ) :
+                            <tbody>
+                            <tr>
+                                <td colSpan="4">데이터 없음</td>
+                            </tr>
                             </tbody>
-                        ) : null
+
                     }
                 </table>
             </div>
