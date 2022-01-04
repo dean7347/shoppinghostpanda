@@ -194,7 +194,11 @@ function UserCardBlock(props) {
                       >
                         <Row align={"middle"} style={{}}>
                           <Col lg={4} md={12} sm={12} xs={12}>
-                            {item.shopName}
+                            {item.shopName}{" "}
+                            <Checkbox
+                              onChange={(e) => onChanges(e, allPrice)}
+                              value={item.shopId}
+                            ></Checkbox>
                             {item.dp.map((product, index) => (
                               <>
                                 <div>{product.proId}</div>
@@ -207,7 +211,7 @@ function UserCardBlock(props) {
                                 <>
                                   {/* 상품상세박스 */}
                                   <Row align={"middle"}>
-                                    <Col span={6}>
+                                    <Col lg={6} md={6} sm={12} xs={12}>
                                       <Row>
                                         <Col span={24}>
                                           <img
@@ -222,12 +226,24 @@ function UserCardBlock(props) {
                                         <Col span={24}>
                                           {product.productName}
                                         </Col>
+                                        <Col span={24}>
+                                          <Button
+                                            type="primary"
+                                            onClick={(e) => {
+                                              showModal(product, props, e);
+                                            }}
+                                          >
+                                            변경
+                                          </Button>
+                                        </Col>
                                       </Row>
                                     </Col>
                                     <Col span={18}>
                                       {product.do.map((option, index) => (
                                         <>
-                                          <div>
+                                          <div
+                                            style={{ background: "#FFDBC1" }}
+                                          >
                                             {option.pandaName}/
                                             {option.optionName}/
                                             {option.optionCount}개*(
@@ -254,6 +270,59 @@ function UserCardBlock(props) {
                                                   option.originPrice *
                                                     option.optionCount
                                                 )}
+                                            <div
+                                              style={{ background: "#FFEAD0" }}
+                                            >
+                                              <Row>
+                                                <Col span={16}>
+                                                  {option.discount ? (
+                                                    <div>
+                                                      {Math.round(
+                                                        option.originPrice *
+                                                          option.optionCount *
+                                                          0.95
+                                                      )
+                                                        .toString()
+                                                        .replace(
+                                                          /\B(?=(\d{3})+(?!\d))/g,
+                                                          ","
+                                                        )}
+                                                      <br />
+                                                      (판다 할인 : 5% )
+                                                    </div>
+                                                  ) : (
+                                                    <div>
+                                                      {(
+                                                        option.originPrice *
+                                                        option.optionCount
+                                                      )
+                                                        .toString()
+                                                        .replace(
+                                                          /\B(?=(\d{3})+(?!\d))/g,
+                                                          ","
+                                                        )}
+                                                      <br />
+                                                      (판다 할인 미적용)
+                                                    </div>
+                                                  )}
+                                                </Col>
+                                                <Col span={4}>
+                                                  {" "}
+                                                  <Button
+                                                    type="primary"
+                                                    danger
+                                                    onClick={(e) => {
+                                                      onClick(
+                                                        option.detailedId,
+                                                        e
+                                                      );
+                                                    }}
+                                                  >
+                                                    삭제
+                                                  </Button>
+                                                </Col>
+                                              </Row>
+                                            </div>
                                           </div>
                                           <br />
                                         </>
@@ -283,6 +352,7 @@ function UserCardBlock(props) {
                           </Col>
                         </Row>
                       </div>
+                      <hr style={{ backgroundColor: "red" }} />
                     </>
                   ); //return
                 })}
