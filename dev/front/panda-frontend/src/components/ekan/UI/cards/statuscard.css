@@ -56,5 +56,5 @@
 }
 
 .status-card:hover {
-    color: var(--txt-white);
+    color: var(--txt-white) !important;
 }

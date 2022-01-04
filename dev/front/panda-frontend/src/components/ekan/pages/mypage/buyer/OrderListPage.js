@@ -1,10 +1,23 @@
-import React, {useState} from 'react';
-import item_list from "../../../../../assets/JsonData/item_list.json"
+import React, {useEffect} from 'react';
 import ProductCard from "../../../UI/cards/ProductCard";
 import Button from "../../../UI/Button";
+import {useDispatch, useSelector} from "react-redux";
+import {setError} from "../../../../../store/actions/pageActions";
+import {fetchDashBoard, fetchSituationList} from "../../../../../store/actions/mypageActions/buyerActions";
 
 const OrderListPage = () => {
-    const [items, setItems] = useState(item_list)
+    const {error} = useSelector((state) => state.page);
+    const {situationList} = useSelector((state) => state.buyer);
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+        if (error) {
+            dispatch(setError(''))
+        }
+        dispatch(fetchDashBoard())
+        dispatch(fetchSituationList())
+    }, [])
 
     function orderBtnText(status) {
         switch (status) {
@@ -24,19 +37,19 @@ const OrderListPage = () => {
     return (
         <>
             <h3 className="page-header">주문 현황</h3>
-            {items && items.map((product, index) =>
+            {situationList && situationList.pageList.map((item, index) =>
                 <ProductCard key={index}
-                             title={product.title}
-                             image={product.image}
-                             price={product.price}
-                             seller={product.seller}
-                             sellerNum={product.sellerNum}
-                             status={product.status}
-                             date={product.date}
+                             title={item.productName}
+                             image="https://semantic-ui.com/images/wireframe/image.png"
+                             price={item.price}
+                             seller="판매자는짬통"
+                             sellerNum="짬통연락처"
+                             status={item.status}
+                             date={item.orderAt}
                 >
-                    <p className="seller-name is-hidden-mobile">{product.seller}</p>
-                    <p className="seller-num is-hidden-mobile">{product.sellerNum}</p>
-                    <Button className="product-btn" text={orderBtnText(product.status)}
+                    <p className="seller-name is-hidden-mobile">판매자는짬통</p>
+                    <p className="seller-num is-hidden-mobile">짬통연락처</p>
+                    <Button text={orderBtnText(item.status)}
                     />
                 </ProductCard>)}
         </>

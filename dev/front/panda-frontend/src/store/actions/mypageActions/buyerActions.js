@@ -69,7 +69,7 @@ export const fetchSituationWithPage = (size, page) => {
 export const fetchSituationDetail = (detailId) => {
     return async dispatch => {
         try {
-            const res = await axios.post('/api/recentsituation', {
+            const res = await axios.post('/api/situationdetail', {
                 detailId: detailId
             })
 

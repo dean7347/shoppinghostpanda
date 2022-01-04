@@ -5,17 +5,22 @@ import MyPageTable from "../../../UI/table/MyPageTable";
 import Badge from "../../../UI/badge/Badge";
 import {latestOrders} from "./buyerTypes";
 import Modal from "../../../UI/modal/Modal";
-import Message from "../../../UI/Message";
 import {useDispatch, useSelector} from "react-redux";
+
+import ProductCard from "../../../UI/cards/ProductCard";
 import {setError} from "../../../../../store/actions/pageActions";
-import {fetchDashBoard, fetchSituationList} from "../../../../../store/actions/mypageActions/buyerActions";
+import {
+    fetchDashBoard,
+    fetchSituationDetail,
+    fetchSituationList
+} from "../../../../../store/actions/mypageActions/buyerActions";
+import Message from "../../../UI/Message";
 
 
 const BuyerDashboard = () => {
     const [showModal, setShowModal] = useState(false)
     const [cardItems, setCardItems] = useState(dashboardCard)
-    const {dashboard} = useSelector((state) => state.buyer)
-    const {situationList} = useSelector((state) => state.buyer);
+    const {dashboard, situationList, situationDetail} = useSelector((state) => state.buyer);
     const {error} = useSelector((state) => state.page);
     const dispatch = useDispatch()
 
@@ -26,6 +31,7 @@ const BuyerDashboard = () => {
         }
         dispatch(fetchDashBoard())
         dispatch(fetchSituationList())
+
     }, [dispatch])
 
     useEffect(() => {
@@ -47,6 +53,11 @@ const BuyerDashboard = () => {
         }
     }, []);
 
+    const handleClick = (item) => {
+        dispatch(fetchSituationDetail(+item))
+        setShowModal(true)
+    }
+
     const orderStatus = {
         "결제완료": "primary",
         "완료": "primary",
@@ -61,7 +72,7 @@ const BuyerDashboard = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} onClick={() => {
-            setShowModal(true)
+            handleClick(item.num)
         }}>
             <td>{item.num}</td>
             <td>{item.productName}</td>
@@ -115,23 +126,31 @@ const BuyerDashboard = () => {
                             </div>
                             {/*table pc*/}
                             <div className="card__body is-hidden-mobile">
-                                <MyPageTable
-                                    limit="5"
-                                    headData={latestOrders.header}
-                                    renderHead={(item, index) => renderHead(item, index)}
-                                    bodyData={situationList?.pageList}
-                                    renderBody={(item, index) => renderBody(item, index)}
-                                />
+                                {
+                                    situationList ?
+                                        <MyPageTable
+                                            limit="5"
+                                            headData={latestOrders.header}
+                                            renderHead={(item, index) => renderHead(item, index)}
+                                            bodyData={situationList.pageList}
+                                            renderBody={(item, index) => renderBody(item, index)}
+                                        /> : null
+                                }
+
                             </div>
                             {/*mobile table*/}
                             <div className="card__body is-hidden-tablet">
-                                <MyPageTable
-                                    limit="5"
-                                    headData={latestOrders.headerMobile}
-                                    renderHead={(item, index) => renderHead(item, index)}
-                                    bodyData={situationList?.pageList}
-                                    renderBody={(item, index) => renderBodyMobile(item, index)}
-                                />
+                                {
+                                    situationList ?
+                                        <MyPageTable
+                                            limit="5"
+                                            headData={latestOrders.headerMobile}
+                                            renderHead={(item, index) => renderHead(item, index)}
+                                            bodyData={situationList.pageList}
+                                            renderBody={(item, index) => renderBodyMobile(item, index)}
+                                        /> : null
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -142,8 +161,24 @@ const BuyerDashboard = () => {
                 showModal &&
                 <Modal onClose={() => {
                     setShowModal(false)
-                }} title={"배송 상세보기"}>
-                    <div>this is a modal</div>
+                }} title={"주문 상세보기"}>
+                    {
+                        situationDetail ?
+                            <>
+                                <ProductCard
+                                    title="상품제목 짬통"
+                                    date="12월 25일"
+                                    image="https://semantic-ui.com/images/wireframe/image.png"
+                                    price={situationDetail.price}
+                                    seller="판매자 이름"
+                                    sellerNum="판매자 연락처 10101010"
+                                    status="배송중짬통"
+                                />
+                            </>
+
+                            : <div>데이터 없음</div>
+                    }
+
                 </Modal>
             }
 
