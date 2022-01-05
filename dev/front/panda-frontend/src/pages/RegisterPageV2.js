@@ -545,6 +545,21 @@ const RegisterPageV2 = ({ history }) => {
   };
 
   ///본인인증
+  const [certifiNum, setCertifiNum] = useState();
+  const onTest = () => {
+    console.log("테스트를위한");
+    console.log(certifiNum);
+
+    const body = {
+      muid: certifiNum,
+    };
+
+    axios.post("/api/authentication", body).then((response) => {
+      if (response.data.success) {
+      } else {
+      }
+    });
+  };
   const onClcikPhone = () => {
     console.log("온크릭");
     var IMP = window.IMP; // 생략 가능
@@ -561,9 +576,12 @@ const RegisterPageV2 = ({ history }) => {
         if (rsp.success) {
           // 인증 성공 시 로직,
           console.log("인증성공");
+          setCertifiNum(rsp.imp_uid);
+          console.log(rsp);
         } else {
           // 인증 실패 시 로직,
           console.log("인증실패");
+          console.alert("인증에 실패했습니다 다시 시도해주세요");
         }
       }
     );
@@ -738,6 +756,7 @@ const RegisterPageV2 = ({ history }) => {
           <Input placeholder="전화번호" />
         </Form.Item>
         <Button onClick={onClcikPhone}>본인인증 </Button>
+        <Button onClick={onTest}>본인인증테스트 </Button>
         <Form.Item label="제출하기">
           <Button type="primary" htmlType="submit">
             submit
