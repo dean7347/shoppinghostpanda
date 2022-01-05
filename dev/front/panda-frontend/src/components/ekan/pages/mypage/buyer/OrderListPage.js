@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import ProductCard from "../../../UI/cards/ProductCard";
-import Button from "../../../UI/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {setError} from "../../../../../store/actions/pageActions";
 import {fetchDashBoard, fetchSituationList} from "../../../../../store/actions/mypageActions/buyerActions";
@@ -42,16 +41,10 @@ const OrderListPage = () => {
                              title={item.productName}
                              image="https://semantic-ui.com/images/wireframe/image.png"
                              price={item.price}
-                             seller="판매자는짬통"
-                             sellerNum="짬통연락처"
                              status={item.status}
-                             date={item.orderAt}
-                >
-                    <p className="seller-name is-hidden-mobile">판매자는짬통</p>
-                    <p className="seller-num is-hidden-mobile">짬통연락처</p>
-                    <Button text={orderBtnText(item.status)}
-                    />
-                </ProductCard>)}
+                             btnText={orderBtnText(item.status)}
+                />
+            )}
         </>
     );
 };
