@@ -1,0 +1,50 @@
+import { useEffect, useState, useScript } from "react";
+import HeaderContainer from "../containers/common/HeaderContainer";
+import axios from "../../node_modules/axios/index";
+import {
+  Divider,
+  Form,
+  Input,
+  Button,
+  Radio,
+  Select,
+  Card,
+  Modal,
+  Col,
+  Row,
+  Checkbox,
+  Pagination,
+} from "antd";
+import { CreditCardOutlined } from "@ant-design/icons";
+import DaumPostCode from "react-daum-postcode";
+import { useHistory } from "react-router-dom";
+import {
+  BrowserView,
+  MobileView,
+  isBrower,
+  isMobile,
+} from "react-device-detect";
+
+function CardInList() {
+  return (
+    <>
+      <div style={{ zIndex: "99" }}>
+        <HeaderContainer />
+      </div>
+      <div style={{ width: "85%", margin: "3rem auto" }}>
+        <h1>Payment</h1>
+        <Divider />
+        <h3>상품정보</h3>
+        {/* <BrowserView>
+          <div>{renderbox()}</div>
+        </BrowserView>
+        <MobileView>{mobileBox()}</MobileView> */}
+
+        <Divider />
+        <div></div>
+      </div>
+    </>
+  );
+}
+
+export default CardInList;

@@ -12,6 +12,8 @@ import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -89,7 +91,7 @@ public class UserController {
 
     @GetMapping("/api/recentsituation")
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication,  Pageable pageable) {
+                                                   Authentication authentication,@PageableDefault(sort="id",direction= Sort.Direction.DESC) Pageable pageable) {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(),pageable);
@@ -103,6 +105,8 @@ public class UserController {
 
         for (UserOrder userOrder : allByUserId) {
             List<OrderDetail> detail = userOrder.getDetail();
+
+
             for (OrderDetail orderDetail : detail) {
                 String productName = orderDetail.getProducts().getProductName();
                 proname.add(productName);
@@ -130,6 +134,39 @@ public class UserController {
 
         recentSituationDto rsd = new recentSituationDto(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
         ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail);
+
+
+        return ResponseEntity.ok(rsd);
+    }
+
+
+    @PostMapping("/api/situationdetailv2")
+    public ResponseEntity<?> situationDetailV2(@CurrentSecurityContext(expression = "authentication")
+                                                     Authentication authentication,  @RequestBody SituationDto situationDto) {
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+
+        Optional<UserOrder> byId = userOrderRepository.findById(situationDto.detailId);
+        UserOrder userOrder = byId.get();
+        List<OrderDetail> detail = userOrder.getDetail();
+        List<DetailOrderList> dol =new ArrayList<>();
+        HashSet<String> proname=new HashSet<>();
+
+        for (OrderDetail orderDetail : detail) {
+            String productName = orderDetail.getProducts().getProductName();
+            proname.add(productName);
+
+        }
+
+        for (OrderDetail orderDetail : userOrder.getDetail()) {
+            proname.add(orderDetail.getProducts().getProductName());
+        }
+
+
+
+        recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
+                ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
+                ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),userOrder.getOrderStatus());
 
 
         return ResponseEntity.ok(rsd);
@@ -217,6 +254,85 @@ public class UserController {
     }
 
     @Data
+    private class recentSituationDtoV2 {
+        boolean success;
+        //주문번호
+        Long detailId;
+        //결제금액
+        int price;
+        //배송비
+        int shipprice;
+        //총금액
+        int allamount;
+        //받는사람
+        String receiver;
+        //주소
+        String address;
+        //받는사람전화번호
+        String receiverPhone;
+        //상품DTO
+        HashSet<DetailOrderList> products=new HashSet<>();
+        List<DetailOrderList> orderDetails=new ArrayList<>();
+        //추가된것
+        String proName;
+        LocalDateTime orderAt;
+        String shopName;
+        String shopPhone;
+        OrderStatus status;
+
+
+        public recentSituationDtoV2(boolean su,Long detailId, int price, int shipprice, int allamount,
+                                  String receiver, String address, String receiverPhone, List<OrderDetail> dol,String pn,LocalDateTime oa,
+                                    String sn, String sp, OrderStatus os) {
+            this.proName=pn;
+            this.orderAt=oa;
+            this.shopName=sn;
+            this.shopPhone=sp;
+            this.status=os;
+            this.success=su;
+            this.detailId = detailId;
+            this.price = price;
+            this.shipprice = shipprice;
+            this.allamount = allamount;
+            this.receiver = receiver;
+            this.address = address;
+            this.receiverPhone = receiverPhone;
+            for (OrderDetail orderDetail : dol) {
+                String img=null;
+                List<File> images = orderDetail.getProducts().getImages();
+                for (File image : images) {
+                    if(image.isIsthumb())
+                    {
+                        img= image.getFilepath();
+                    }
+                }
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img));
+            }
+
+            for (OrderDetail orderDetail : dol) {
+                for (DetailOrderList product : products) {
+
+                    if(product.productName==orderDetail.getProducts().getProductName()){
+                        if(orderDetail.getPanda()==null)
+                        {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null"));
+                        }else
+                        {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName()));
+                        }
+
+                    }
+                }
+            }
+
+
+
+        }
+    }
+
+    @Data
     private class recentSituationDto {
         boolean success;
         //주문번호
@@ -262,7 +378,7 @@ public class UserController {
             for (OrderDetail orderDetail : dol) {
                 for (DetailOrderList product : products) {
 
-                    if(product.prodcutName==orderDetail.getProducts().getProductName()){
+                    if(product.productName==orderDetail.getProducts().getProductName()){
                         if(orderDetail.getPanda()==null)
                         {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
@@ -282,14 +398,17 @@ public class UserController {
         }
     }
 
+
+
+
     @Data
     private class DetailOrderList{
-        String prodcutName;
+        String productName;
         String imgPath;
         List<OptionList> options= new ArrayList<>();
 
         public DetailOrderList(String pn,String img) {
-            prodcutName=pn;
+            productName=pn;
             imgPath=img;
         }
         public void setOptions(OptionList list)

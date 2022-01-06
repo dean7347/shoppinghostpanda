@@ -14,6 +14,7 @@ import com.indiduck.panda.domain.dto.ResultDto;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.Certification;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.Data;
@@ -223,6 +224,55 @@ public class OrderDetailController {
 
 
         return ResponseEntity.ok(new thisResultDto(true,myCart));
+    }
+
+    //핸드폰 본인인증
+    //결제완료
+    @RequestMapping(value = "/api/authentication", method = RequestMethod.POST)
+    public ResponseEntity<?> selfAuthentication(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication,@RequestBody String muid) throws Exception {
+
+        IamportClient client;
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = "imp_830142650711";
+        client = new IamportClient(test_api_key, test_api_secret);
+
+//        System.out.println("muid는 = " + muid);
+
+
+        try {
+            IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
+            System.out.println("certification_response = " + certification_response.getResponse().getName());
+            System.out.println("certification_response = " + certification_response.getResponse().getPhone());
+            System.out.println("certification_response = " + certification_response.getResponse().getBirth());
+
+            System.out.println("certification_response = " + certification_response.getMessage());
+
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    break;
+                case 500 :
+                    //TODO
+                    break;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+
+
+        return ResponseEntity.ok(new tfResultDto(false));
+
+
+
     }
 
     //결제완료

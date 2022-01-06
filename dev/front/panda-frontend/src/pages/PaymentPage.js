@@ -634,158 +634,241 @@ function PaymentPage(gprops) {
   const renderbox = () => {
     return (
       <>
-        <table>
-          <thead>
-            <th>상점명</th>
-            <th>상품상세</th>
-            <th>상품금액</th>
-            <th>배송비</th>
-          </thead>
-          <tbody>
+        <BrowserView>
+          <div
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            {/* 헤더 영역 */}
+            <Row>
+              <Col lg={6} md={12} sm={12} xs={12}>
+                <div style={{}}>상점명</div>
+              </Col>
+              <Col lg={10} md={12} sm={12} xs={12}>
+                <div style={{}}>상품상세</div>
+              </Col>
+              <Col lg={4} md={12} sm={12} xs={12}>
+                <div style={{}}>상품금액</div>
+              </Col>
+              <Col lg={4} md={12} sm={12} xs={12}>
+                <div style={{}}>배송비</div>
+              </Col>
+            </Row>
+          </div>
+          {/* 바디영역 */}
+
+          <div>
+            {console.log("프롭스확인")}
+
             {paydata.ds &&
               paydata.ds.map((item, index) => {
                 var allPrice = 0;
                 var purePrice = 0;
-                function pricePlus(getprice, getpure) {
+                function pricePlus(getprice, getpureprice) {
                   allPrice = allPrice + getprice;
-                  purePrice = purePrice + getpure;
+                  purePrice = purePrice + getpureprice;
                 }
+
                 var freePrice = item.freePrice;
                 var shipPrice = item.shipPrice;
-                //   function getfreePrice(getPrice) {
-                //     freePrice = getPrice;
-                //   }
-
-                //   function getShipPrice(getPrice) {
-                //     shipPrice = getPrice;
-                //   }
-                function isfree(getallPrice) {
-                  if (getallPrice >= freePrice) {
+                function isfree(getpurePrice) {
+                  if (getpurePrice >= freePrice) {
                     return "무료배송";
                   } else {
                     return shipPrice;
                   }
                 }
                 return (
-                  <tr style={{}}>
-                    <td style={{ width: "50px" }}>{item.shopName}</td>
-                    <td style={{ width: "70%" }}>
-                      {item.dp.map((product, index) => (
-                        <tr key={index} style={{ width: "100%" }}>
-                          <td
-                            style={{
-                              textAlign: "center",
-                              width: "200px",
-                              height: "150px",
-                              display: "block",
-                            }}
-                          >
-                            <img
-                              style={{
-                                width: "150px",
-                                height: "150px",
-                              }}
-                              alt="product"
-                              src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
-                            />
-                          </td>
-                          <td
-                            style={{
-                              width: "20%",
-                            }}
-                          >
-                            {product.productName}
-                          </td>
-                          <td style={{ width: "50%", background: "black" }}>
-                            {product.do.map((option, index) => (
-                              <tr
-                                key={index}
-                                style={{
-                                  width: "100%",
-                                  background: "pink",
-                                }}
-                              >
-                                <td>{option.pandaName}</td>
-                                <td>{option.optionName}</td>
-                                <td>{option.optionCount} EA</td>
-                                <td>
-                                  {option.originPrice
-                                    .toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </td>
-                                <td>
-                                  {/* {(option.originPrice * option.optionCount)
-                                      .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    원 */}
-                                  {option.discount ? (
-                                    <div>
-                                      {Math.round(
-                                        option.originPrice *
-                                          option.optionCount *
-                                          0.95
-                                      )
-                                        .toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                      <br />
-                                      (판다 할인 : 5% )
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      {(option.originPrice * option.optionCount)
-                                        .toString()
-                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                      <br />
-                                      (판다 할인 미적용)
-                                    </div>
-                                  )}
-                                </td>
-                                {option.discount
-                                  ? pricePlus(
-                                      Math.round(
-                                        option.originPrice *
-                                          option.optionCount *
-                                          0.95
-                                      ),
-                                      option.originPrice * option.optionCount
-                                    )
-                                  : pricePlus(
-                                      option.originPrice * option.optionCount,
-                                      option.originPrice * option.optionCount
-                                    )}
-                              </tr>
+                  <>
+                    <div
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      <Row align={"middle"} style={{}}>
+                        <Col lg={4} md={12} sm={12} xs={4}>
+                          {item.shopName}{" "}
+                          {item.dp.map((product, index) => (
+                            <>
+                              <div>{product.proId}</div>
+                            </>
+                          ))}
+                        </Col>
+                        <Col lg={12} md={12} sm={12} xs={20}>
+                          <div style={{}}>
+                            {item.dp.map((product, index) => (
+                              <>
+                                {/* 상품상세박스 */}
+                                <Row align={"middle"}>
+                                  <Col lg={6} md={6} sm={12} xs={12}>
+                                    <Row>
+                                      <Col span={24}>
+                                        <img
+                                          style={{
+                                            width: "150px",
+                                            height: "150px",
+                                          }}
+                                          alt="product"
+                                          src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                        />
+                                      </Col>
+                                      <Col span={24}>{product.productName}</Col>
+                                      <Col span={24}></Col>
+                                    </Row>
+                                  </Col>
+                                  <Col span={18}>
+                                    {product.do.map((option, index) => (
+                                      <>
+                                        <div style={{ background: "#FFDBC1" }}>
+                                          {option.pandaName}/{option.optionName}
+                                          /{option.optionCount}개*(
+                                          {option.originPrice
+                                            .toString()
+                                            .replace(
+                                              /\B(?=(\d{3})+(?!\d))/g,
+                                              ","
+                                            )}
+                                          원)
+                                          {option.discount
+                                            ? pricePlus(
+                                                Math.round(
+                                                  option.originPrice *
+                                                    option.optionCount *
+                                                    0.95
+                                                ),
+                                                option.originPrice *
+                                                  option.optionCount
+                                              )
+                                            : pricePlus(
+                                                option.originPrice *
+                                                  option.optionCount,
+                                                option.originPrice *
+                                                  option.optionCount
+                                              )}
+                                          <div
+                                            style={{ background: "#FFEAD0" }}
+                                          >
+                                            <Row>
+                                              <Col span={24}>
+                                                {option.discount ? (
+                                                  <div>
+                                                    {Math.round(
+                                                      option.originPrice *
+                                                        option.optionCount *
+                                                        0.95
+                                                    )
+                                                      .toString()
+                                                      .replace(
+                                                        /\B(?=(\d{3})+(?!\d))/g,
+                                                        ","
+                                                      )}
+                                                    <br />
+                                                    (판다 할인 : 5% )
+                                                  </div>
+                                                ) : (
+                                                  <div>
+                                                    {(
+                                                      option.originPrice *
+                                                      option.optionCount
+                                                    )
+                                                      .toString()
+                                                      .replace(
+                                                        /\B(?=(\d{3})+(?!\d))/g,
+                                                        ","
+                                                      )}
+                                                    <br />
+                                                    (판다 할인 미적용)
+                                                  </div>
+                                                )}
+                                              </Col>
+                                            </Row>
+                                          </div>
+                                        </div>
+                                        <br />
+                                      </>
+                                    ))}
+                                  </Col>
+                                </Row>
+                              </>
                             ))}
-                          </td>
-                        </tr>
-                      ))}
-                    </td>
-                    <td style={{ width: "10%" }}>
-                      {allPrice
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      원
-                    </td>
-                    <td style={{ width: "10%" }}>
-                      {isfree(purePrice)
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      <br />
-                      (할인전 금액:
-                      {purePrice
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      )
-                      <br />(
-                      {freePrice
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                      이상 무료배송)
-                    </td>
-                  </tr>
-                );
+                          </div>
+                        </Col>
+                        <Col lg={4} md={12} sm={12} xs={12}>
+                          최종가격 : {allPrice}
+                          <br />
+                          할인전 : ({purePrice})
+                        </Col>
+                        <Col lg={4} md={12} sm={12} xs={12}>
+                          <div style={{}}>
+                            {isfree(purePrice)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            <br />(
+                            {freePrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                            이상 무료배송)
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+                    <hr style={{ backgroundColor: "red" }} />
+                  </>
+                ); //return
               })}
-          </tbody>
-        </table>
+          </div>
+
+          <div className="col-12">
+            <div className="card order-card">
+              <hr className="cart-hr" />
+              <div className="row order_calculator">
+                <dl className="col-2">
+                  <dt>총 상품 금액</dt>
+                  <dd>
+                    <span>
+                      {" "}
+                      {gprops.location.state.amount.total
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-plus-circle"></i>
+                </dl>
+                <dl className="col-2">
+                  <dt>배송비</dt>
+                  <dd>
+                    {gprops.location.state.amount.ship
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </dd>
+                </dl>
+                <dl className="col-1">
+                  <i className="bx bx-chevron-right"></i>
+                </dl>
+                <dl className="col-4">
+                  <dt>총 주문 금액</dt>
+                  <dd>
+                    <span>
+                      {" "}
+                      {(
+                        gprops.location.state.amount.total +
+                        gprops.location.state.amount.ship
+                      )
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </dd>
+                </dl>
+              </div>
+              <hr className="cart-hr" />
+            </div>
+          </div>
+        </BrowserView>
       </>
     );
   };
@@ -793,166 +876,103 @@ function PaymentPage(gprops) {
   const mobileBox = () => {
     return (
       <>
-        <div style={{ width: "100%" }}>
-          <table
-            style={{
-              tableLayout: "fixed",
-              width: "100%",
-              display: "table",
-              minWidth: "100px",
-            }}
-          >
-            <thead>
-              <th>상품상세</th>
-            </thead>
-            <tbody>
-              {paydata.ds &&
-                paydata.ds.map((item, index) => {
-                  var allPrice = 0;
-                  var purePrice = 0;
-                  function pricePlus(getprice, getpureprice) {
-                    allPrice = allPrice + getprice;
-                    purePrice = purePrice + getpureprice;
-                  }
+        <div
+          style={{
+            fontSize: "20px",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          {/* 헤더 영역 */}
+          <Row>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <div style={{}}>상점명</div>
+            </Col>
+            <Col lg={10} md={12} sm={12} xs={12}>
+              <div style={{}}>상품상세</div>
+            </Col>
+            <Col lg={4} md={12} sm={12} xs={12}>
+              <div style={{}}>상품금액</div>
+            </Col>
+            <Col lg={4} md={12} sm={12} xs={12}>
+              <div style={{}}>배송비</div>
+            </Col>
+          </Row>
+        </div>
+        {/* 바디영역 */}
 
-                  var freePrice = item.freePrice;
-                  var shipPrice = item.shipPrice;
-                  //   function getfreePrice(getPrice) {
-                  //     freePrice = getPrice;
-                  //   }
+        <div>
+          {console.log("프롭스확인")}
 
-                  //   function getShipPrice(getPrice) {
-                  //     shipPrice = getPrice;
-                  //   }
-                  function isfree(getpurePrice) {
-                    if (getpurePrice >= freePrice) {
-                      return "무료배송";
-                    } else {
-                      return shipPrice;
-                    }
-                  }
-                  return (
-                    <tr>
-                      <td>
+          {paydata.ds &&
+            paydata.ds.map((item, index) => {
+              var allPrice = 0;
+              var purePrice = 0;
+              function pricePlus(getprice, getpureprice) {
+                allPrice = allPrice + getprice;
+                purePrice = purePrice + getpureprice;
+              }
+
+              var freePrice = item.freePrice;
+              var shipPrice = item.shipPrice;
+              function isfree(getpurePrice) {
+                if (getpurePrice >= freePrice) {
+                  return "무료배송";
+                } else {
+                  return shipPrice;
+                }
+              }
+              return (
+                <>
+                  <div
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <Row align={"middle"} style={{}}>
+                      <Col lg={4} md={12} sm={12} xs={4}>
+                        {item.shopName}{" "}
                         {item.dp.map((product, index) => (
-                          <div>
-                            <table
-                              style={{
-                                tableLayout: "fixed",
-                                width: "100%",
-                                display: "table",
-                                minWidth: "100px",
-                              }}
-                            >
-                              <tr
-                                key={index}
-                                style={{
-                                  display: "table",
-                                  width: "100%",
-                                }}
-                              >
-                                <tr
-                                  style={{
-                                    display: "table",
-                                    textAlign: "center",
-                                    width: "100%",
-                                    height: "120px",
-                                  }}
-                                >
-                                  <img
-                                    style={{
-                                      width: "150px",
-                                      height: "150px",
-                                    }}
-                                    alt="product"
-                                    src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
-                                  />
-                                </tr>
-
-                                <tr>
-                                  <td>
-                                    <div
-                                      style={{ width: "200px", float: "left" }}
-                                    >
-                                      {product.productName}
-                                    </div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>{item.shopName}</td>
-                                </tr>
-
-                                <tr
-                                  style={{
-                                    display: "table",
-                                    textAlign: "center",
-                                    width: "100%",
-                                  }}
-                                >
+                          <>
+                            <div>{product.proId}</div>
+                          </>
+                        ))}
+                      </Col>
+                      <Col lg={12} md={12} sm={12} xs={20}>
+                        <div style={{}}>
+                          {item.dp.map((product, index) => (
+                            <>
+                              {/* 상품상세박스 */}
+                              <Row align={"middle"}>
+                                <Col lg={6} md={6} sm={12} xs={12}>
+                                  <Row>
+                                    <Col span={24}>
+                                      <img
+                                        style={{
+                                          width: "150px",
+                                          height: "150px",
+                                        }}
+                                        alt="product"
+                                        src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
+                                      />
+                                    </Col>
+                                    <Col span={24}>{product.productName}</Col>
+                                    <Col span={24}></Col>
+                                  </Row>
+                                </Col>
+                                <Col span={18}>
                                   {product.do.map((option, index) => (
-                                    <tr
-                                      style={{
-                                        display: "table",
-                                        textAlign: "center",
-                                        width: "100%",
-                                      }}
-                                    >
-                                      <tr key={index}>
-                                        <td>
-                                          <div style={{ width: "80px" }}>
-                                            {option.pandaName}
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div style={{ width: "120px" }}>
-                                            {option.optionName}
-                                          </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                          <div style={{ width: "100%" }}>
-                                            {option.originPrice
-                                              .toString()
-                                              .replace(
-                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                ","
-                                              )}{" "}
-                                            *{option.optionCount} EA
-                                          </div>
-                                        </td>
-                                        <td>
-                                          {option.discount ? (
-                                            <div style={{ width: "100px" }}>
-                                              {Math.round(
-                                                option.originPrice *
-                                                  option.optionCount *
-                                                  0.95
-                                              )
-                                                .toString()
-                                                .replace(
-                                                  /\B(?=(\d{3})+(?!\d))/g,
-                                                  ","
-                                                )}
-                                              <br />
-                                              (판다 할인 : 5% )
-                                            </div>
-                                          ) : (
-                                            <div style={{ width: "100px" }}>
-                                              {(
-                                                option.originPrice *
-                                                option.optionCount
-                                              )
-                                                .toString()
-                                                .replace(
-                                                  /\B(?=(\d{3})+(?!\d))/g,
-                                                  ","
-                                                )}
-                                              <br />
-                                              (판다 할인 미적용)
-                                            </div>
+                                    <>
+                                      <div style={{ background: "#FFDBC1" }}>
+                                        {option.pandaName}/{option.optionName}/
+                                        {option.optionCount}개*(
+                                        {option.originPrice
+                                          .toString()
+                                          .replace(
+                                            /\B(?=(\d{3})+(?!\d))/g,
+                                            ","
                                           )}
-                                        </td>
+                                        원)
                                         {option.discount
                                           ? pricePlus(
                                               Math.round(
@@ -969,65 +989,125 @@ function PaymentPage(gprops) {
                                               option.originPrice *
                                                 option.optionCount
                                             )}
-                                      </tr>
+                                        <div style={{ background: "#FFEAD0" }}>
+                                          <Row>
+                                            <Col span={16}>
+                                              {option.discount ? (
+                                                <div>
+                                                  {Math.round(
+                                                    option.originPrice *
+                                                      option.optionCount *
+                                                      0.95
+                                                  )
+                                                    .toString()
+                                                    .replace(
+                                                      /\B(?=(\d{3})+(?!\d))/g,
+                                                      ","
+                                                    )}
+                                                  <br />
+                                                  (판다 할인 : 5% )
+                                                </div>
+                                              ) : (
+                                                <div>
+                                                  {(
+                                                    option.originPrice *
+                                                    option.optionCount
+                                                  )
+                                                    .toString()
+                                                    .replace(
+                                                      /\B(?=(\d{3})+(?!\d))/g,
+                                                      ","
+                                                    )}
+                                                  <br />
+                                                  (판다 할인 미적용)
+                                                </div>
+                                              )}
+                                            </Col>
+                                            <Col span={4}></Col>
+                                          </Row>
+                                        </div>
+                                      </div>
                                       <br />
-                                      <hr />
-                                    </tr>
+                                    </>
                                   ))}
-                                </tr>
-                              </tr>
-                            </table>
-                          </div>
-                        ))}
-                        <table
-                          style={{
-                            tableLayout: "fixed",
-                            width: "100%",
-                            display: "table",
-                            minWidth: "100px",
-                          }}
-                        >
-                          <tr>
-                            <td>
-                              <tr
-                                style={{
-                                  display: "table",
-                                  textAlign: "center",
-                                  width: "100%",
-                                }}
-                              >
-                                {allPrice
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                원
-                              </tr>
-                              <br />
-                              <tr>
-                                {isfree(purePrice)
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                <br />(
-                                {freePrice
-                                  .toString()
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                                이상 무료배송)
-                              </tr>
-                            </td>
-                          </tr>
-                        </table>
+                                </Col>
+                              </Row>
+                            </>
+                          ))}
+                        </div>
+                      </Col>
+                      <Col lg={4} md={12} sm={12} xs={12}>
+                        최종가격 : {allPrice}
+                        <br />
+                        할인전 : ({purePrice})
+                      </Col>
+                      <Col lg={4} md={12} sm={12} xs={12}>
+                        <div style={{}}>
+                          {isfree(purePrice)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                          <br />(
+                          {freePrice
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                          이상 무료배송)
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                  <hr style={{ backgroundColor: "red" }} />
+                </>
+              ); //return
+            })}
+        </div>
 
-                        <hr
-                          style={{
-                            backgroundColor: "red",
-                            width: "100%",
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+        <div className="col-12">
+          <div className="card order-card">
+            <hr className="cart-hr" />
+            <div className="row order_calculator">
+              <dl className="col-5">
+                <dt> 상품 금액</dt>
+                <dd>
+                  <span>
+                    {gprops.location.state.amount.total
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </span>
+                </dd>
+              </dl>
+              <dl className="col-1">
+                <i className="bx bx-plus-circle"></i>
+              </dl>
+              <dl className="col-5">
+                <dt>배송비</dt>
+                <dd>
+                  <span>
+                    {gprops.location.state.amount.ship
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </span>
+                </dd>
+              </dl>
+
+              <dl className="col-4">
+                <i className="bx bx-chevron-right" />
+              </dl>
+              <dl className="col-8">
+                <dt>총 주문 금액</dt>
+                <dd>
+                  <span>
+                    {(
+                      gprops.location.state.amount.total +
+                      gprops.location.state.amount.ship
+                    )
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </span>
+                </dd>
+              </dl>
+            </div>
+            <hr className="cart-hr" />
+          </div>
         </div>
       </>
     );
@@ -1047,38 +1127,6 @@ function PaymentPage(gprops) {
         </BrowserView>
         <MobileView>{mobileBox()}</MobileView>
 
-        <Divider />
-        <div style={{ border: "1px solid" }}>
-          <div style={{ float: "left" }}>
-            <h2>
-              {gprops.location.state.amount.total
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-              +
-              {gprops.location.state.amount.ship
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </h2>
-          </div>
-          <div
-            style={{
-              float: "right",
-              borderLeft: "1px solid",
-              paddingLeft: "30px",
-            }}
-          >
-            <h2>
-              {(
-                gprops.location.state.amount.total +
-                gprops.location.state.amount.ship
-              )
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-              원
-            </h2>
-          </div>
-        </div>
-        <Divider />
         <div>
           <h2>배송지 정보</h2>
 
