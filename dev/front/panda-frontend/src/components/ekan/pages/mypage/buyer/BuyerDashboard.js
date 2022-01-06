@@ -161,10 +161,9 @@ const BuyerDashboard = () => {
           }}
           title={"주문 상세보기"}
         >
-          <>
-            <ProductCard />
-            <CardInList products={cardItems} />
-          </>
+          {
+            situationDetail && <CardInList situationDetail={situationDetail} />
+          }
         </Modal>
       )}
     </>
