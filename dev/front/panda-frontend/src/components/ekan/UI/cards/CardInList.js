@@ -1,6 +1,5 @@
 import { useEffect, useState, useScript } from "react";
-import HeaderContainer from "../containers/common/HeaderContainer";
-import axios from "../../node_modules/axios/index";
+import React from "react";
 import {
   Divider,
   Form,
@@ -24,6 +23,7 @@ import {
   isBrower,
   isMobile,
 } from "react-device-detect";
+import HeaderContainer from "../../../../containers/common/HeaderContainer";
 
 function CardInList() {
   return (
