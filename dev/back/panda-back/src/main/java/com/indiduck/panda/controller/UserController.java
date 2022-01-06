@@ -4,7 +4,10 @@ import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.JwtUserDetailsService;
+import com.indiduck.panda.Service.OrderDetailService;
+import com.indiduck.panda.Service.UserOrderService;
 import com.indiduck.panda.domain.*;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.UserDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,8 @@ public class UserController {
     private final OrderDetailRepository orderDetailRepository;
     @Autowired
     private final UserOrderRepository userOrderRepository;
+    @Autowired
+    private final UserOrderService userOrderService;
     
 
     @GetMapping("/api/dashboard")
@@ -86,6 +91,23 @@ public class UserController {
             cancel=0;
         }
         return ResponseEntity.ok(new dashBoardDto(true,ready,finish,cancel,cart));
+    }
+
+    //주문취소
+    @PostMapping("/api/userordercancel")
+    public ResponseEntity<?> cancelOrder(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication,  @RequestBody SituationDto situationDto) {
+        UserOrder userOrder = userOrderService.cancelOrder(situationDto.detailId);
+
+        if(userOrder!=null)
+        {
+            //TODO : 주문취소 환불 로직
+            return ResponseEntity.ok(new TFMessageDto(true,"변경성공"));
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
+
+
     }
 
 
@@ -319,11 +341,13 @@ public class UserController {
                         if(orderDetail.getPanda()==null)
                         {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null"));
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null",orderDetail.getId()
+                                    ,orderDetail.getOrderStatus()));
                         }else
                         {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName()));
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName(),orderDetail.getId()
+                                    ,orderDetail.getOrderStatus()));
                         }
 
                     }
@@ -385,11 +409,13 @@ public class UserController {
                         if(orderDetail.getPanda()==null)
                         {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null"));
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null",orderDetail.getId()
+                            ,orderDetail.getOrderStatus()));
                         }else
                         {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName()));
+                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName(),orderDetail.getId()
+                                    ,orderDetail.getOrderStatus()));
                         }
 
                     }
@@ -429,15 +455,17 @@ public class UserController {
         int allAmount;
         String pandaName;
         boolean discount;
+        long odid;
+        OrderStatus orderStatus;
 
-
-        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName) {
+        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName,long odid,OrderStatus odst) {
             this.optionName = optionName;
             this.optionCount = optionCount;
             this.optionPrice = optionPrice;
             this.allAmount = allAmount;
             this.pandaName = pandaName;
-
+            this.odid=odid;
+            this.orderStatus=odst;
             if(pandaName=="null")
             {
                 discount=false;

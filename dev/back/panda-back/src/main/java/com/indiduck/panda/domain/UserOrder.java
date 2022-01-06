@@ -131,6 +131,13 @@ public class UserOrder {
         }
 
     }
+    public void cancelOrder()
+    {
+        for (OrderDetail orderDetail : detail) {
+            orderDetail.setOrderStatus(OrderStatus.주문취소);
+        }
+        this.orderStatus=OrderStatus.주문취소;
+    }
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;

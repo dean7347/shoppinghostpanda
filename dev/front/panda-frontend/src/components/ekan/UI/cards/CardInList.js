@@ -24,12 +24,46 @@ import {
   isMobile,
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
+import axios from "../../../../../node_modules/axios/index";
 
 function CardInList(props) {
   console.log("카인리");
   console.log(props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
+  const onCancelOrder = (p) => {
+    console.log("취소신청");
+    console.log(p);
+    const body = {
+      detailId: p,
+    };
+    axios.post("/api/userordercancel", body).then((response) => {
+      if (response.data.success) {
+        alert("해당 옵션을 취소했습니다");
+        window.location.reload();
+      } else {
+        alert(response.data.message);
+      }
+    });
+  };
+  const onRefundOrder = (p) => {
+    if (
+      window.confirm(
+        "판매자와 사전 연락이 없었다면 진행에 어려움이 있을수 있습니다. 이에 동의하십니까?"
+      )
+    ) {
+      // axios.post("/api/cart/removeoption", body).then((response) => {
+      //   if (response.data.success) {
+      //     alert("선택된 옵션을 삭제했습니다");
+      //     window.location.reload();
+      //   } else {
+      //     alert("옵션 삭제에 실패했습니다");
+      //   }
+      // });
+    } else {
+      console.log("취소");
+    }
+  };
   function isfree(getpurePrice) {
     if (getpurePrice >= freePrice) {
       return "무료배송";
@@ -145,6 +179,31 @@ function CardInList(props) {
                                   </div>
                                 )}
                               </Col>
+                              <Col span={12}>{option.orderStatus}</Col>
+
+                              <Col span={12}>
+                                {option.orderStatus !== "결제완료" ? (
+                                  <div>
+                                    {option.orderStatus === "주문취소" ? (
+                                      <div>취소된 주문입니다</div>
+                                    ) : (
+                                      <div>
+                                        {" "}
+                                        <Button
+                                          onClick={() =>
+                                            onRefundOrder(option.odid)
+                                          }
+                                          danger
+                                        >
+                                          반품/교환
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div></div>
+                                )}
+                              </Col>
                             </Row>
                           </div>
                         </div>
@@ -197,6 +256,21 @@ function CardInList(props) {
             <hr className="cart-hr" />
           </div>
         </div>
+        {props.situationDetail.status === "결제완료" ? (
+          <Row justify={"end"}>
+            <Col span={6}>
+              {" "}
+              <Button
+                onClick={() => onCancelOrder(props.situationDetail.detailId)}
+                danger
+              >
+                전체 주문 취소
+              </Button>
+            </Col>
+          </Row>
+        ) : (
+          <div></div>
+        )}
       </>
     );
   };
@@ -206,7 +280,81 @@ function CardInList(props) {
     <>
       <div style={{ width: "85%", margin: "3rem auto" }}>
         <Divider />
-        <h3>상품정보</h3>
+        <div style={{ fontWeight: "bold", fontSize: "25px" }}>
+          <h3>상품정보</h3>
+          <hr style={{ backgroundColor: "red" }} />
+        </div>
+        <Row>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>받으시는 분</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.receiver}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>받으시는 분 전화번호</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.receiverPhone}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+          <Col span={24}>
+            주소
+            <Col span={24}>
+              {props.situationDetail.address}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+          </Col>
+
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>상점 이름</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.shopName}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>상점 번호</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.shopPhone}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>주문 일시</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.orderAt}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>상품 상태</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.status}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+        </Row>
         {renderbox()}
 
         <Divider />

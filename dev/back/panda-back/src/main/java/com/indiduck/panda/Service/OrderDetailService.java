@@ -69,6 +69,18 @@ public class OrderDetailService {
         }
 
     }
+//    public  OrderDetail cancelOrderchangeOrderStatus(OrderStatus od,long odid)
+//    {
+//        Optional<UserOrder> byId = userOrderRepository.findById(odid);
+////        Optional<OrderDetail> byId = orderDetailRepository.findById(odid);
+//        if(byId.get().getOrderStatus()==OrderStatus.결제완료)
+//        {
+//
+//            byId.get().
+//            return byId.get();
+//        }
+//        return null;
+//    }
 
     public OrderDetail newOrderDetail(String user, Long productid, Long optionId, int optionCount) {
         Optional<User> getUser = userRepository.findByEmail(user);
