@@ -162,7 +162,8 @@ public class UserController {
 
         recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
                 ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
-                ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),userOrder.getOrderStatus());
+                ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
+                userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice());
 
 
         return ResponseEntity.ok(rsd);
@@ -258,8 +259,12 @@ public class UserController {
         int price;
         //배송비
         int shipprice;
+        //순수한 가격
+        int pureamount;
         //총금액
         int allamount;
+        //무료배송금액
+        int freeprice;
         //받는사람
         String receiver;
         //주소
@@ -279,7 +284,7 @@ public class UserController {
 
         public recentSituationDtoV2(boolean su,Long detailId, int price, int shipprice, int allamount,
                                   String receiver, String address, String receiverPhone, List<OrderDetail> dol,String pn,LocalDateTime oa,
-                                    String sn, String sp, OrderStatus os) {
+                                    String sn, String sp, OrderStatus os,int pa,int fp) {
             this.proName=pn;
             this.orderAt=oa;
             this.shopName=sn;
@@ -293,6 +298,8 @@ public class UserController {
             this.receiver = receiver;
             this.address = address;
             this.receiverPhone = receiverPhone;
+            this.pureamount=pa;
+            this.freeprice=fp;
             for (OrderDetail orderDetail : dol) {
                 String img=null;
                 List<File> images = orderDetail.getProducts().getImages();
@@ -421,6 +428,8 @@ public class UserController {
         int optionPrice;
         int allAmount;
         String pandaName;
+        boolean discount;
+
 
         public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName) {
             this.optionName = optionName;
@@ -428,6 +437,14 @@ public class UserController {
             this.optionPrice = optionPrice;
             this.allAmount = allAmount;
             this.pandaName = pandaName;
+
+            if(pandaName=="null")
+            {
+                discount=false;
+            }
+            else{
+                discount=true;
+            }
         }
     }
 }
