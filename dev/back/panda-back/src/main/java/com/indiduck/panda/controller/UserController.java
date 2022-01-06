@@ -113,7 +113,7 @@ public class UserController {
 
     @GetMapping("/api/recentsituation")
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication,Pageable pageable) {
+                                                   Authentication authentication,@PageableDefault(sort="createdAt",direction = Sort.Direction.DESC ) Pageable pageable) {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(),pageable);
