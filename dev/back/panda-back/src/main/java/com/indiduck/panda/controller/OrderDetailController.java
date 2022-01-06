@@ -246,7 +246,6 @@ public class OrderDetailController {
             IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
             System.out.println("certification_response = " + certification_response.getResponse().getName());
             System.out.println("certification_response = " + certification_response.getResponse().getPhone());
-            System.out.println("certification_response = " + certification_response.getResponse().get);
             System.out.println("certification_response = " + certification_response.getResponse().getBirth());
 
             System.out.println("certification_response = " + certification_response.getMessage());
