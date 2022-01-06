@@ -25,14 +25,12 @@ import {
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
 
-function CardInList() {
+function CardInList(props) {
+  console.log("카인리");
+  console.log(props);
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
       <div style={{ width: "85%", margin: "3rem auto" }}>
-        <h1>Payment</h1>
         <Divider />
         <h3>상품정보</h3>
         {/* <BrowserView>
