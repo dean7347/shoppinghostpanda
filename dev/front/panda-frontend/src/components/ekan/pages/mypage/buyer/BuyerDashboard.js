@@ -15,6 +15,7 @@ import {
   fetchSituationList,
 } from "../../../../../store/actions/mypageActions/buyerActions";
 import Message from "../../../UI/Message";
+import CardInList from "../../../UI/cards/CardInList";
 const BuyerDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [cardItems, setCardItems] = useState(dashboardCard);
@@ -160,22 +161,9 @@ const BuyerDashboard = () => {
           }}
           title={"주문 상세보기"}
         >
-          {situationDetail ? (
             <>
-              <ProductCard
-                title={situationDetail.proName}
-                date={situationDetail.orderAt}
-                image="https://semantic-ui.com/images/wireframe/image.png"
-                price={situationDetail.allamount}
-                seller={situationDetail.shopName}
-                sellerNum={situationDetail.shopPhone}
-                status={situationDetail.status}
-              />
-              <div>여기데이터</div>
+              <CardInList/>
             </>
-          ) : (
-            <div>데이터 없음</div>
-          )}
         </Modal>
       )}
     </>
