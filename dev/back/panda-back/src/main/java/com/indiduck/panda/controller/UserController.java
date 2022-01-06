@@ -104,15 +104,13 @@ public class UserController {
         HashSet<String> proname=new HashSet<>();
 
         for (UserOrder userOrder : allByUserId) {
+            proname=new HashSet<>();
             List<OrderDetail> detail = userOrder.getDetail();
-
-
             for (OrderDetail orderDetail : detail) {
                 String productName = orderDetail.getProducts().getProductName();
                 proname.add(productName);
 
             }
-            System.out.println("내려주는데이타 = " + proname);
             pageList.add(new recentSituation(userOrder.getId(),proname.toString(),userOrder.getFullprice(),
                     userOrder.getCreatedAt(),userOrder.getOrderStatus().toString()));
         }
