@@ -50,11 +50,13 @@ export const fetchSituationWithPage = (size, page) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-        `/api/recentsituation?size=${size}&page=${page}`
+        `/api/recentsituation?size=${size}&page=${page}&sord=id,DESC`
       );
 
       if (res.data) {
         const list = res.data;
+        console.log("리스트 출력");
+
         console.log(list);
         dispatch({
           type: FETCH_SITUATION_LIST,

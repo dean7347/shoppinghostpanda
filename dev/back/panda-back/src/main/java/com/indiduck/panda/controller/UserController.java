@@ -91,7 +91,7 @@ public class UserController {
 
     @GetMapping("/api/recentsituation")
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication,@PageableDefault(sort="id",direction= Sort.Direction.DESC) Pageable pageable) {
+                                                   Authentication authentication,Pageable pageable) {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(),pageable);
@@ -112,6 +112,7 @@ public class UserController {
                 proname.add(productName);
 
             }
+            System.out.println("내려주는데이타 = " + proname);
             pageList.add(new recentSituation(userOrder.getId(),proname.toString(),userOrder.getFullprice(),
                     userOrder.getCreatedAt(),userOrder.getOrderStatus().toString()));
         }
@@ -152,15 +153,12 @@ public class UserController {
         List<DetailOrderList> dol =new ArrayList<>();
         HashSet<String> proname=new HashSet<>();
 
-        for (OrderDetail orderDetail : detail) {
-            String productName = orderDetail.getProducts().getProductName();
-            proname.add(productName);
 
-        }
 
         for (OrderDetail orderDetail : userOrder.getDetail()) {
             proname.add(orderDetail.getProducts().getProductName());
         }
+        System.out.println("내려주는데이타 = " + proname);
 
 
 
