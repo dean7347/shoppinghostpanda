@@ -1,0 +1,99 @@
+.order-container{
+    max-width: 900px !important;
+    margin: 0 auto;
+}
+
+.recent-order-card-container.row {
+    height: 140px;
+    min-width: 100%;
+    max-width: 800px;
+    position: relative;
+}
+
+.recent-order-card-content {
+    font-size: 20px;
+    height: 80%;
+    padding-top: 25px;
+}
+
+.recent-order-card-content h5 {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.recent-order-card-content p {
+    border-top: 1px solid rgba(192, 194, 199, 0.25);
+    font-size: 0.7em;
+    color: rgba(128, 128, 128, 0.87);
+    margin-top: 20px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.recent-order-price {
+    font-size: 0.75em;
+    margin-right: 10px;
+}
+
+.recent-order-date {
+    border-left: 1px solid #c0c2c7;
+    font-size: 0.7em;
+    color: rgba(128, 128, 128, 0.82);
+    padding: 0 10px;
+}
+
+
+.recent-order-right {
+    border-left: 1px solid rgba(192, 194, 199, 0.37);
+    height: 120px;
+    text-align: center;
+    font-size: 0.8em;
+    right: 0;
+    top: 20px;
+    position: absolute;
+}
+
+.recent-order-right-status{
+    margin-top: 2px;
+}
+
+.recent-order-right-seller{
+    margin-top: 8px;
+}
+
+.recent-order-right-sellerNum {
+    color: rgba(128, 128, 128, 0.74);
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width: 975px) {
+    .recent-order-card-container.row {
+        height: 260px;
+        min-width: 100%;
+        max-width: 800px;
+        text-align: center;
+        padding: 0;
+    }
+
+    .recent-order-card-content{
+        height: 140px;
+    }
+
+    .recent-order-right ul{
+        padding: 0;
+    }
+
+    .recent-order-card-content p{
+        padding-top: 5px;
+        margin: 5px 0 0;
+    }
+
+    .recent-order-right{
+        border: none;
+        position: static;
+    }
+
+
+}
+
+
