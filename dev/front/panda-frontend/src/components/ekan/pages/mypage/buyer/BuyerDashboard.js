@@ -15,7 +15,6 @@ import {
   fetchSituationList,
 } from "../../../../../store/actions/mypageActions/buyerActions";
 import Message from "../../../UI/Message";
-
 const BuyerDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [cardItems, setCardItems] = useState(dashboardCard);
@@ -172,6 +171,7 @@ const BuyerDashboard = () => {
                 sellerNum={situationDetail.shopPhone}
                 status={situationDetail.status}
               />
+              <div>여기데이터</div>
             </>
           ) : (
             <div>데이터 없음</div>

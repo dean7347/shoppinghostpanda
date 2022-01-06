@@ -45,8 +45,6 @@ const ProductCard = ({
           <p>{sellerNum}</p>
         </li>
         <li className="product-right col-3">{children}</li>
-        {/* 임시로 만들어봄 */}
-        <div></div>
       </ul>
     </div>
   );
