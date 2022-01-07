@@ -2323,6 +2323,9 @@ function DetailProductPage(props) {
                   책임을 지지 않습니다.
                 </div>
               </TabPane>
+              <TabPane tab="상품 문의" key="5">
+                <div>문의사항</div>
+              </TabPane>
             </Tabs>
           </Col>
         </Row>
