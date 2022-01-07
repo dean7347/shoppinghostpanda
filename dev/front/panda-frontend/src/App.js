@@ -80,7 +80,6 @@ const App = () => {
                     <Route
                         component={DetailProductPage}
                         path={"/product/:productId"}
-                        exact
                     />
                     <Route component={PandaPage} path={"/panda"} exact/>
                     <Route component={CartPage} path={"/user/cart"} exact/>

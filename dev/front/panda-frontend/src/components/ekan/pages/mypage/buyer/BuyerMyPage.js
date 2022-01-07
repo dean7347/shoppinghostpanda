@@ -9,7 +9,6 @@ import MyPageRoutes from "../MyPageRoutes";
 const BuyerMyPage = () => {
 
     return (
-        <BrowserRouter>
             <Route render={(props) => (
                 <div className={`layout theme-mode-light theme-color-blue`}>
                     <Sidebar sidebarItems={buyerSidebarItems} {...props}/>
@@ -20,7 +19,6 @@ const BuyerMyPage = () => {
                     </div>
                 </div>
             )}/>
-        </BrowserRouter>
     )
 }
 
