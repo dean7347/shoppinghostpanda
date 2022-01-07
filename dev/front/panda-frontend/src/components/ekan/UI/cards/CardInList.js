@@ -17,6 +17,8 @@ import {
 import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import {
   BrowserView,
   MobileView,
@@ -135,7 +137,9 @@ function CardInList(props) {
                           textAlign: "center",
                         }}
                       >
-                        {pd.productName}
+                        <Link to={`/product/${pd.proId}`}>
+                          {pd.productName}
+                        </Link>
                       </Col>
                     </Row>
                   </Col>

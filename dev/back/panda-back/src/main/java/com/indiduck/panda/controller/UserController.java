@@ -67,7 +67,7 @@ public class UserController {
             {
                 ready++;
             }
-            if((userOrder.getOrderStatus()==(OrderStatus.환불대기))||(userOrder.getOrderStatus()==(OrderStatus.환불완료)))
+            if((userOrder.getOrderStatus()==(OrderStatus.환불대기))||(userOrder.getOrderStatus()==(OrderStatus.환불완료))||(userOrder.getOrderStatus()==(OrderStatus.주문취소)))
             {
                 cancel++;
             }
@@ -219,6 +219,8 @@ public class UserController {
         LocalDateTime orderAt;
         //주문 상태
         String status;
+        //프로덕트 아이디
+
         public recentSituation(Long no,String pn,int pri,LocalDateTime dateTime,String stat )
         {
             num=no;
@@ -331,7 +333,7 @@ public class UserController {
                         img= image.getFilepath();
                     }
                 }
-                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img));
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img,orderDetail.getProducts().getId()));
             }
 
             for (OrderDetail orderDetail : dol) {
@@ -399,7 +401,7 @@ public class UserController {
                        img= image.getFilepath();
                     }
                 }
-                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img));
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img,orderDetail.getProducts().getId()));
             }
 
             for (OrderDetail orderDetail : dol) {
@@ -435,10 +437,12 @@ public class UserController {
         String productName;
         String imgPath;
         List<OptionList> options= new ArrayList<>();
+        long proId;
 
-        public DetailOrderList(String pn,String img) {
+        public DetailOrderList(String pn,String img,long pi) {
             productName=pn;
             imgPath=img;
+            proId=pi;
         }
         public void setOptions(OptionList list)
         {
