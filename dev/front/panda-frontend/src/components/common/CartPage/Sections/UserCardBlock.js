@@ -224,7 +224,11 @@ function UserCardBlock(props) {
                                           />
                                         </Col>
                                         <Col span={24}>
-                                          {product.productName}
+                                          <Link
+                                            to={`/product/${product.productId}`}
+                                          >
+                                            {product.productName}
+                                          </Link>
                                         </Col>
                                         <Col span={24}>
                                           <Button
@@ -515,7 +519,11 @@ function UserCardBlock(props) {
                                           />
                                         </Col>
                                         <Col span={24}>
-                                          {product.productName}
+                                          <Link
+                                            to={`/product/${product.productId}`}
+                                          >
+                                            {product.productName}
+                                          </Link>
                                         </Col>
                                         <Col span={24}>
                                           <Button

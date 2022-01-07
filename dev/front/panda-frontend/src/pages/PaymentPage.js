@@ -18,6 +18,8 @@ import {
 import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import {
   BrowserView,
   MobileView,
@@ -715,7 +717,13 @@ function PaymentPage(gprops) {
                                           src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
                                         />
                                       </Col>
-                                      <Col span={24}>{product.productName}</Col>
+                                      <Col span={24}>
+                                        <Link
+                                          to={`/product/${product.productId}`}
+                                        >
+                                          {product.productName}
+                                        </Link>
+                                      </Col>
                                       <Col span={24}></Col>
                                     </Row>
                                   </Col>
@@ -956,7 +964,13 @@ function PaymentPage(gprops) {
                                         src={`https://shoppinghostpandabucket.s3.ap-northeast-2.amazonaws.com/${product.thumbNail}`}
                                       />
                                     </Col>
-                                    <Col span={24}>{product.productName}</Col>
+                                    <Col span={24}>
+                                      <Link
+                                        to={`/product/${product.productId}`}
+                                      >
+                                        {product.productName}
+                                      </Link>
+                                    </Col>
                                     <Col span={24}></Col>
                                   </Row>
                                 </Col>
