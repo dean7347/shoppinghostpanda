@@ -14,6 +14,7 @@ import {
 } from "../../../../../store/actions/mypageActions/buyerActions";
 import Message from "../../../UI/Message";
 import CardInList from "../../../UI/cards/CardInList";
+import {Link} from "react-router-dom";
 
 
 const BuyerDashboard = () => {
@@ -98,7 +99,10 @@ const BuyerDashboard = () => {
       <>
 
         <div className="container">
-          <h3 className="page-header">마이페이지</h3>
+          <Link to="/testpage">
+            <h3 className="page-header">마이페이지</h3>
+          </Link>
+
           {error && <Message type="danger" msg={error}/>}
           {/*card*/}
           <div className="row">
