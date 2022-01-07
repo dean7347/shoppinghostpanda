@@ -104,6 +104,7 @@ function CardInList(props) {
 
         {props &&
           props.situationDetail.products.map((pd, idx) => {
+            console.log('pd: ',pd)
             var allPrice = 0;
             var purePrice = 0;
             function pricePlus(getprice, getpureprice) {
