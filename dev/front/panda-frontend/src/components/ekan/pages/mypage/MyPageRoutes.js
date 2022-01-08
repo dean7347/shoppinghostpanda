@@ -16,6 +16,8 @@ const MyPageRoutes = () => {
             <Route path='/buyer/orderList' exact component={OrderListPage}/>
             <Route path='/buyer/cancelList' exact component={CancelListPage}/>
             <Route path='/buyer/cart' exact component={BuyerCartPage}/>
+
+            <Route path='/panda/dashboard' exact component={PandaDashboard}/>
         </Switch>
     )
 }
