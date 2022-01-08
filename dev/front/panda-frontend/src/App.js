@@ -82,7 +82,6 @@ const App = () => {
                         path={"/product/:productId"}
                         exact
                     />
-                    <Route component={PandaPage} path={"/panda"} exact/>
                     <Route component={CartPage} path={"/user/cart"} exact/>
                     <Route component={PaymentPage} path={"/user/payments"} exact/>
                     <Route
@@ -94,6 +93,7 @@ const App = () => {
                     <Route component={TermPage} path={"/terms"} exact/>
                     <Route component={ServicePage} path={"/service"} exact/>
                     <PrivateRoute path="/buyer" component={BuyerMyPage}/>
+                    <Route component={PandaPage} path={"/panda"} />
                     {/* //api테스트용 짬통페이지 */}
                     <Route path="/testpage" component={TestPage}/>
                 </Switch>
