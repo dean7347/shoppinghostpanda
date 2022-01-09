@@ -6,11 +6,11 @@ import { Form, Input, Button } from "antd";
 import ProductImage from "../components/sections/ProductImage";
 import ProductInfo from "../components/sections/ProductInfo";
 import ProductInfoFlot from "../components/sections/ProductInfoFloat";
-
-import { Row, Col, Tabs, BackTop, Affix } from "antd";
+import { Row, Col, Tabs, BackTop, Affix, Collapse, Divider, Modal } from "antd";
 import $ from "jquery";
 import { throttledScroll } from "lodash";
 import PandaView from "../components/common/PandaView";
+import moment from "../../node_modules/moment/moment";
 function DetailProductPage(props) {
   const { TabPane } = Tabs;
   const productId = props.match.params.productId;
@@ -20,7 +20,7 @@ function DetailProductPage(props) {
   const [sto, setSto] = useState();
   const [top, setTop] = useState(10);
   const [container, setContainer] = useState(null);
-
+  const { TextArea } = Input;
   useEffect(() => {
     axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
       if (response.data.success) {
@@ -2121,9 +2121,45 @@ function DetailProductPage(props) {
       </div>
     );
   });
+  //게시판 작성
+  const baordClick = (param) => {
+    console.log("보드클릭");
+    console.log(param);
+  };
+  const [isqnaModalVisible, setIsqnaModalVisible] = useState(false);
+  const { Panel } = Collapse;
+  const showModalqna = () => {
+    setIsqnaModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsqnaModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsqnaModalVisible(false);
+  };
 
   return (
     <>
+      <Modal
+        title="Basic Modal"
+        visible={isqnaModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Row>
+          <Col span={4}>제목</Col>
+          <Col span={20}>
+            <Input />
+          </Col>
+          <Col span={24}>내용</Col>
+          <Col span={4}></Col>
+          <Col span={20}>
+            <TextArea rows={10} />
+          </Col>
+        </Row>
+      </Modal>
       <BackTop />
       <div style={{ zIndex: "99" }}>
         <HeaderContainer />
@@ -2324,7 +2360,74 @@ function DetailProductPage(props) {
                 </div>
               </TabPane>
               <TabPane tab="상품 문의" key="5">
-                <div>문의사항</div>
+                <Button onClick={showModalqna}>QnA작성하기</Button>
+                <Row justify="center">
+                  <Col span={4}>no</Col>
+                  <Col span={4}>제목</Col>
+                  <Col span={4}>날짜</Col>
+                  <Col span={4}>작성자</Col>
+                </Row>
+
+                <Collapse onChange={baordClick}>
+                  <Panel
+                    header={
+                      <Row justify="center">
+                        <Col span={4}>01</Col>
+                        <Col span={4}>구매문의합니다</Col>
+                        <Col span={4}>날짜</Col>
+                        <Col span={4}>admin@amdi.com</Col>
+                      </Row>
+                    }
+                    key="1"
+                  >
+                    이거 내용이 어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
+                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
+                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
+                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
+                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
+                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁
+                    <hr backgroundColor={"red"} />
+                    <Divider orientation="left">답글</Divider>
+                    <Col span={24}>
+                      <Row>
+                        <Col span={20}>
+                          <TextArea rows={4} />
+                        </Col>
+                        <Col>
+                          <Button>답글등록</Button>
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Divider />
+                    <Col span={1}></Col>
+                    <Col span={4}>작성자 </Col>
+                    <Col span={20}>
+                      아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                      고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게
+                    </Col>
+                    <Col>
+                      <div>
+                        <hr />
+                      </div>
+                    </Col>
+                    <Col span={4}>구매자 </Col>
+                    <Col span={20}>
+                      아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                      고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                      주문해줘소 고맙다 이렇게저렇게
+                    </Col>
+                  </Panel>
+                </Collapse>
+                <div>페이지네이션</div>
               </TabPane>
             </Tabs>
           </Col>

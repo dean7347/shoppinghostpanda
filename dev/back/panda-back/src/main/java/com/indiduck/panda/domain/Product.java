@@ -44,6 +44,10 @@ public class Product {
     @Lob
     private String lowvalue;
 
+    //엮인 게시글
+    @OneToMany(mappedBy = "product")
+    private List<Board> boards = new ArrayList<>();
+
 
    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     private List<ProductOption> productOptions=new ArrayList<>();

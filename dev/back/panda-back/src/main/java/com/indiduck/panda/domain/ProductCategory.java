@@ -23,8 +23,8 @@ public class ProductCategory {
     @ManyToOne(fetch = LAZY)
     private Product products;
 
-    @ManyToOne(fetch = LAZY)
-    private Category category;
+//    @ManyToOne(fetch = LAZY)
+//    private Category category;
 
 
 }
