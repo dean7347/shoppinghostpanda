@@ -331,6 +331,7 @@ public class UserController {
                     if(image.isIsthumb())
                     {
                         img= image.getFilepath();
+                        break;
                     }
                 }
                 products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img,orderDetail.getProducts().getId()));
