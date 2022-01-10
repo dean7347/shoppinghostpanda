@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import Footer from "../components/common/Footer";
@@ -11,6 +11,8 @@ import $ from "jquery";
 import { throttledScroll } from "lodash";
 import PandaView from "../components/common/PandaView";
 import moment from "../../node_modules/moment/moment";
+import Paging from "../components/common/Paging";
+
 function DetailProductPage(props) {
   const { TabPane } = Tabs;
   const productId = props.match.params.productId;
@@ -2122,6 +2124,54 @@ function DetailProductPage(props) {
     );
   });
   //게시판 작성
+
+  const [NowPage, setNowPage] = useState([]);
+  const [ViewCount, setViewCountPage] = useState([]);
+  const [TotalCount, setTotalCountPage] = useState([]);
+  const [Page, setPage] = useState(1);
+  const [board, setBoard] = useState();
+  const onPageChanged = useCallback(
+    (page) => {
+      setPage(page);
+      axios
+        .get(`/api/getqna?pid=${productId}&size=5&${page - 1}`)
+        .then((response) => {
+          if (response.data != null) {
+            setBoard(response.data.boardList);
+            setTotalCountPage(response.data.totalPage);
+            setViewCountPage(5);
+            console.log("리폰데");
+
+            console.log(response.data);
+          } else {
+            console.log("데이터받기실패");
+          }
+        });
+    },
+    [setPage]
+  );
+
+  useEffect(
+    (Page) => {
+      axios.get(`/api/preview?size=5&page=${Page - 1}`).then((response) => {
+        if (response.data != null) {
+          // console.log(response.data);
+          setBoard(response.data.boardList);
+
+          //page, count, setPage
+          //현재 페이지
+          // // console.log(response.data.pageable.pageNumber);
+          //한페이지당 보여줄 리스트 아이템 갯수
+          setViewCountPage(5);
+          //총 아이템의 갯수
+          setTotalCountPage(response.data.totalE);
+        } else {
+          // console.log("상품들을 가져오는데 실패했습니다.");
+        }
+      });
+    },
+    [ViewCount, TotalCount]
+  );
   const [qna, setQna] = useState({
     title: "",
     content: "",
@@ -2167,6 +2217,24 @@ function DetailProductPage(props) {
       content: "",
     });
   };
+  // useEffect((page) => {
+  //   const body = {
+  //     productId: productId,
+  //   };
+  //   axios
+  //     .get(`/api/getqna?pid=${productId}&size=5&page=${0}`)
+  //     .then((response) => {
+  //       if (response.data) {
+  //         console.log("페이징");
+
+  //         console.log(response.data);
+  //       } else {
+  //         console.log("페이징");
+
+  //         console.log(response.data);
+  //       }
+  //     });
+  // });
 
   const handleCancel = () => {
     setIsqnaModalVisible(false);
@@ -2463,7 +2531,15 @@ function DetailProductPage(props) {
                     </Col>
                   </Panel>
                 </Collapse>
-                <div>페이지네이션</div>
+                <div>
+                  <Paging
+                    //토탈레코드
+                    onPageChanged={onPageChanged}
+                    currentPage={Page}
+                    ViewCount={ViewCount}
+                    TotalCount={TotalCount}
+                  />
+                </div>
               </TabPane>
             </Tabs>
           </Col>

@@ -35,4 +35,27 @@ public class Board {
     @OneToMany(mappedBy = "board")
     List<Comment> commentList = new ArrayList<>();
 
+    //생성메서드
+    public static Board newBoard(String name,String title,String content,int caten)
+    {
+        Board bo= new Board();
+        bo.title=title;
+        bo.content=content;
+        bo.creater=name;
+        bo.isdelete=false;
+        bo.isCheck=false;
+        bo.categoryNumber=caten;
+        bo.createdAt=LocalDateTime.now();
+
+        return bo;
+    }
+
+    //비즈니스 메서드
+    public void setProduct(Product pro)
+    {
+        this.product=pro;
+        pro.getBoards().add(this);
+    }
+
+
 }
