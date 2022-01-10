@@ -2122,6 +2122,19 @@ function DetailProductPage(props) {
     );
   });
   //게시판 작성
+  const [qna, setQna] = useState({
+    title: "",
+    content: "",
+  });
+  const onChangeQnA = (e) => {
+    const nextForm = {
+      ...qna,
+      [e.target.name]: e.target.value,
+    };
+    console.log(e.target.value);
+
+    setQna(nextForm);
+  };
   const baordClick = (param) => {
     console.log("보드클릭");
     console.log(param);
@@ -2134,16 +2147,39 @@ function DetailProductPage(props) {
 
   const handleOk = () => {
     setIsqnaModalVisible(false);
+    const body = {
+      productId: props.match.params.productId,
+      title: qna.title,
+      contents: qna.content,
+    };
+    console.log(body);
+
+    ///api/createqna
+    axios.post("/api/createqna", body).then((response) => {
+      if (response.data.success) {
+        alert("문의사항 작성에 성공했습니다");
+      } else {
+        alert("문의사항 작성에 실패 했습니다.");
+      }
+    });
+    setQna({
+      title: "",
+      content: "",
+    });
   };
 
   const handleCancel = () => {
     setIsqnaModalVisible(false);
+    setQna({
+      title: "",
+      content: "",
+    });
   };
 
   return (
     <>
       <Modal
-        title="Basic Modal"
+        title="상품 문의"
         visible={isqnaModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -2151,12 +2187,12 @@ function DetailProductPage(props) {
         <Row>
           <Col span={4}>제목</Col>
           <Col span={20}>
-            <Input />
+            <Input onChange={onChangeQnA} name="title" />
           </Col>
           <Col span={24}>내용</Col>
           <Col span={4}></Col>
           <Col span={20}>
-            <TextArea rows={10} />
+            <TextArea name="content" onChange={onChangeQnA} rows={10} />
           </Col>
         </Row>
       </Modal>

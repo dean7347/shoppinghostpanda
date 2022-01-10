@@ -5,16 +5,14 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.domain.OrderDetail;
 import com.indiduck.panda.domain.OrderStatus;
 import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,21 +25,23 @@ public class BoardController {
     @Autowired
     private final UserRepository userRepository;
 
-    @RequestMapping(value = "/api/createqna", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/createqna", method = RequestMethod.POST)
     public ResponseEntity<?> viewMyCart(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication) throws Exception {
+                                                Authentication authentication,@RequestBody Qnaboard qnaboard) throws Exception {
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        System.out.println("qnaboard = " + qnaboard);
         //기존것
 
 
 
 
 
-        return ResponseEntity.ok(new OrderDetailController.thisResultDto(true,myCart));
+        return ResponseEntity.ok(new TFMessageDto(true,"success"));
     }
 
     @Data
-    private static class qnaboard{
+    private static class Qnaboard{
+        Long productId;
         String title;
         String contents;
     }
