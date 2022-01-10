@@ -2130,45 +2130,55 @@ function DetailProductPage(props) {
   const [TotalCount, setTotalCountPage] = useState([]);
   const [Page, setPage] = useState(1);
   const [board, setBoard] = useState();
+
   const onPageChanged = useCallback(
     (page) => {
       setPage(page);
+      console.log("호출");
+
       axios
-        .get(`/api/getqna?pid=${productId}&size=5&${page - 1}`)
+        .get(`/api/getqna?pid=${productId}&size=5&page=${page - 1}`)
         .then((response) => {
           if (response.data != null) {
-            setBoard(response.data.boardList);
-            setTotalCountPage(response.data.totalPage);
+            console.log("데이터가져옴");
+            setBoard(response.data.boardLists);
+            console.log(board);
+            console.log(response.data.boardLists);
             setViewCountPage(5);
-            console.log("리폰데");
-
-            console.log(response.data);
+            setTotalCountPage(response.data.totalE);
           } else {
-            console.log("데이터받기실패");
+            console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
-    [setPage]
+    [Page]
   );
 
   useEffect(
     (Page) => {
-      axios.get(`/api/preview?size=5&page=${Page - 1}`).then((response) => {
-        if (response.data != null) {
-          // console.log(response.data);
-          setBoard(response.data.boardList);
+      axios
+        .get(`/api/getqna?pid=${productId}&size=5&page=${Page - 1}`)
+        .then((response) => {
+          if (response.data != null) {
+            console.log("데이타");
 
-          //page, count, setPage
-          //현재 페이지
-          // // console.log(response.data.pageable.pageNumber);
-          //한페이지당 보여줄 리스트 아이템 갯수
-          setViewCountPage(5);
-          //총 아이템의 갯수
-          setTotalCountPage(response.data.totalE);
-        } else {
-          // console.log("상품들을 가져오는데 실패했습니다.");
-        }
-      });
+            console.log(response.data);
+            setBoard(response.data.boardLists);
+
+            //page, count, setPage
+            //현재 페이지
+            console.log("Page");
+
+            console.log(Page);
+            // // console.log(response.data.pageable.pageNumber);
+            //한페이지당 보여줄 리스트 아이템 갯수
+            setViewCountPage(5);
+            //총 아이템의 갯수
+            setTotalCountPage(response.data.totalE);
+          } else {
+            // console.log("상품들을 가져오는데 실패했습니다.");
+          }
+        });
     },
     [ViewCount, TotalCount]
   );
@@ -2217,24 +2227,6 @@ function DetailProductPage(props) {
       content: "",
     });
   };
-  // useEffect((page) => {
-  //   const body = {
-  //     productId: productId,
-  //   };
-  //   axios
-  //     .get(`/api/getqna?pid=${productId}&size=5&page=${0}`)
-  //     .then((response) => {
-  //       if (response.data) {
-  //         console.log("페이징");
-
-  //         console.log(response.data);
-  //       } else {
-  //         console.log("페이징");
-
-  //         console.log(response.data);
-  //       }
-  //     });
-  // });
 
   const handleCancel = () => {
     setIsqnaModalVisible(false);
@@ -2243,6 +2235,75 @@ function DetailProductPage(props) {
       content: "",
     });
   };
+  const onClickQnaReply = (e) => {
+    console.log(e);
+  };
+  function stringsplit(str) {
+    var strArray = str.split("-");
+    return strArray[0] + "/" + strArray[1] + "/" + strArray[2].substring(0, 2);
+  }
+  const rederqna =
+    board &&
+    board.map((item, idx) => {
+      return (
+        <>
+          <Collapse onChange={baordClick}>
+            <Panel
+              header={
+                <Row justify="center">
+                  <Col span={4}>{item.boardId}</Col>
+                  <Col span={4}>{item.title}</Col>
+                  <Col span={4}>{stringsplit(item.createdAt)}</Col>
+                  <Col span={4}>{item.user.substring(0, 7)}</Col>
+                </Row>
+              }
+              key={idx}
+            >
+              {item.content}
+              <hr backgroundColor={"red"} />
+              <Divider orientation="left">답글</Divider>
+              <Col span={24}>
+                <Row>
+                  <Col span={20}>
+                    <TextArea rows={4} />
+                  </Col>
+                  <Col>
+                    <Button onClick={() => onClickQnaReply(item.boardId)}>
+                      답글등록
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+              <Divider />
+              <Col span={1}></Col>
+              <Col span={4}>작성자 </Col>
+              <Col span={20}>
+                아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게
+              </Col>
+              <Col>
+                <div>
+                  <hr />
+                </div>
+              </Col>
+              <Col span={4}>구매자 </Col>
+              <Col span={20}>
+                아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
+                주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
+                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
+                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게
+              </Col>
+            </Panel>
+          </Collapse>
+        </>
+      );
+    });
 
   return (
     <>
@@ -2471,74 +2532,20 @@ function DetailProductPage(props) {
                   <Col span={4}>날짜</Col>
                   <Col span={4}>작성자</Col>
                 </Row>
+                {rederqna}
 
-                <Collapse onChange={baordClick}>
-                  <Panel
-                    header={
-                      <Row justify="center">
-                        <Col span={4}>01</Col>
-                        <Col span={4}>구매문의합니다</Col>
-                        <Col span={4}>날짜</Col>
-                        <Col span={4}>admin@amdi.com</Col>
-                      </Row>
-                    }
-                    key="1"
-                  >
-                    이거 내용이 어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
-                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
-                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
-                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
-                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁이거 내용이
-                    어쩌구저쩌구해서 저쩌구 이렇궇저렇궁
-                    <hr backgroundColor={"red"} />
-                    <Divider orientation="left">답글</Divider>
-                    <Col span={24}>
-                      <Row>
-                        <Col span={20}>
-                          <TextArea rows={4} />
-                        </Col>
-                        <Col>
-                          <Button>답글등록</Button>
-                        </Col>
-                      </Row>
-                    </Col>
-                    <Divider />
-                    <Col span={1}></Col>
-                    <Col span={4}>작성자 </Col>
-                    <Col span={20}>
-                      아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                      고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게
-                    </Col>
-                    <Col>
-                      <div>
-                        <hr />
-                      </div>
-                    </Col>
-                    <Col span={4}>구매자 </Col>
-                    <Col span={20}>
-                      아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                      고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                      이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                      주문해줘소 고맙다 이렇게저렇게
-                    </Col>
-                  </Panel>
-                </Collapse>
                 <div>
-                  <Paging
-                    //토탈레코드
-                    onPageChanged={onPageChanged}
-                    currentPage={Page}
-                    ViewCount={ViewCount}
-                    TotalCount={TotalCount}
-                  />
+                  <Row justify="center">
+                    <Col>
+                      <Paging
+                        //토탈레코드
+                        onPageChanged={onPageChanged}
+                        currentPage={Page}
+                        ViewCount={ViewCount}
+                        TotalCount={TotalCount}
+                      />
+                    </Col>
+                  </Row>
                 </div>
               </TabPane>
             </Tabs>

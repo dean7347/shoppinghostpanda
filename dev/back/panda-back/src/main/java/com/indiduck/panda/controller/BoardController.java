@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +86,7 @@ public class BoardController {
         boolean success;
         int totalE;
         int totalPage;
+
         List<BoardList> boardLists = new ArrayList<>();
 
         public qnaBoardDto(boolean tf, Page<Board> byProduct) {
@@ -92,7 +94,10 @@ public class BoardController {
             this.totalE = (int) byProduct.getTotalElements();
             this.totalPage = byProduct.getTotalPages();
             for (Board  co: byProduct.getContent()) {
-                boardLists.add(new BoardList(co.getId(),co.getTitle(),co.getContent()));
+                String creater = co.getCreater();
+                String username=creater.replaceAll("(?<=.{5}).","*");
+
+                boardLists.add(new BoardList(co.getId(),co.getTitle(),co.getContent(),co.getCreatedAt(),username));
             }
         }
     }
@@ -102,8 +107,11 @@ public class BoardController {
         long boardId;
         String title;
         String content;
-
-        public BoardList(long boardId, String title, String content) {
+        LocalDateTime createdAt;
+        String user;
+        public BoardList(long boardId, String title, String content,LocalDateTime ca,String user) {
+            this.createdAt=ca;
+            this.user =user;
             this.boardId = boardId;
             this.title = title;
             this.content = content;
