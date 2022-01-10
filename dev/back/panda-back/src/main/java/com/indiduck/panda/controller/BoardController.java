@@ -54,6 +54,24 @@ public class BoardController {
         return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));
     }
 
+    @RequestMapping(value = "/api/createqnareply", method = RequestMethod.POST)
+    public ResponseEntity<?> createqnaReply(@CurrentSecurityContext(expression = "authentication")
+                                               Authentication authentication,@RequestBody Qnaboard qnaboard) throws Exception {
+        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        String username = byEmail.get().getUsername();
+//        username=username.replaceAll("(?<=.{5}).","*");
+
+        Board board = boardService.qnaNewBoard(username, qnaboard.title, qnaboard.contents, 00, qnaboard.productId);
+        if(board != null)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"success"));
+
+        }
+
+
+        return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));
+    }
+
     @RequestMapping(value = "/api/getqna", method = RequestMethod.GET)
     public ResponseEntity<?> getqna(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,Pageable pageable,@RequestParam("pid") long pid) throws Exception {
@@ -97,7 +115,7 @@ public class BoardController {
                 String creater = co.getCreater();
                 String username=creater.replaceAll("(?<=.{5}).","*");
 
-                boardLists.add(new BoardList(co.getId(),co.getTitle(),co.getContent(),co.getCreatedAt(),username));
+                boardLists.add(new BoardList(co.getId(),co.getTitle(),co.getContent(),co.getCreatedAt(),username,co.getCommentList()));
             }
         }
     }
@@ -109,12 +127,34 @@ public class BoardController {
         String content;
         LocalDateTime createdAt;
         String user;
-        public BoardList(long boardId, String title, String content,LocalDateTime ca,String user) {
+        List<CommentListDto> comments=new ArrayList<CommentListDto>();
+        public BoardList(long boardId, String title, String content,LocalDateTime ca,String user,List<Comment> cl) {
             this.createdAt=ca;
             this.user =user;
             this.boardId = boardId;
             this.title = title;
             this.content = content;
+            for (Comment comment : cl) {
+                String username= comment.getCreater();
+                 username=username.replaceAll("(?<=.{5}).","*");
+
+                comments.add(new CommentListDto(comment.getId(),username,comment.getContent(),comment.getCreatedAt()));
+            }
+        }
+    }
+
+    @Data
+    private static class CommentListDto{
+        Long coId;
+        String username;
+        String contents;
+        LocalDateTime createAt;
+
+        public CommentListDto(Long coId, String username, String contents, LocalDateTime createAt) {
+            this.coId = coId;
+            this.username = username;
+            this.contents = contents;
+            this.createAt = createAt;
         }
     }
 

@@ -21,10 +21,30 @@ public class Comment {
     boolean isCheck;
     //작성자
     private String creater;
+    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime deleteAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
+
+
+    //생성메서드
+    public static Comment newComment(String cre,String content,Board bo)
+    {
+        Comment co = new Comment();
+        co.creater=cre;
+        co.content=content;
+        co.createdAt=LocalDateTime.now();
+        co.isCheck=false;
+        co.isdelete=false;
+        co.board=bo;
+        bo.setComment(co);
+
+        return co;
+
+    }
+
+    //비즈니스 메서드
 
 }

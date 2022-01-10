@@ -57,5 +57,12 @@ public class Board {
         pro.getBoards().add(this);
     }
 
+    public void setComment(Comment co)
+    {
+        this.commentList.add(co);
+    }
+
+
+
 
 }

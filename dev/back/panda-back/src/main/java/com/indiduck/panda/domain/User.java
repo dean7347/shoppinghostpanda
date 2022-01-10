@@ -52,9 +52,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "userName")
     private List<DeliverAddress> userAddress =new ArrayList<>();
-
-    @OneToMany(mappedBy = "writerName")
-    private List<ProductReply> replies =new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "writerName")
+//    private List<ProductReply> replies =new ArrayList<>();
 
     @OneToOne(optional = true)
     private Shop shop;
