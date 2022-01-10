@@ -2185,6 +2185,7 @@ function DetailProductPage(props) {
   const [qna, setQna] = useState({
     title: "",
     content: "",
+    comment: "",
   });
   const onChangeQnA = (e) => {
     const nextForm = {
@@ -2236,7 +2237,17 @@ function DetailProductPage(props) {
     });
   };
   const onClickQnaReply = (e) => {
-    console.log(e);
+    const body = {
+      boardId: e,
+      contents: qna.comment,
+    };
+    axios.post("/api/createcomment", body).then((response) => {
+      if (response.data.success) {
+        alert("답글 작성에 성공했습니다");
+      } else {
+        alert("답글 작성에 실패했습니다");
+      }
+    });
   };
   function stringsplit(str) {
     var strArray = str.split("-");
@@ -2265,7 +2276,7 @@ function DetailProductPage(props) {
               <Col span={24}>
                 <Row>
                   <Col span={20}>
-                    <TextArea rows={4} />
+                    <TextArea name="comment" onChange={onChangeQnA} rows={4} />
                   </Col>
                   <Col>
                     <Button onClick={() => onClickQnaReply(item.boardId)}>
@@ -2276,29 +2287,23 @@ function DetailProductPage(props) {
               </Col>
               <Divider />
               <Col span={1}></Col>
-              <Col span={4}>작성자 </Col>
-              <Col span={20}>
-                아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게
-              </Col>
-              <Col>
-                <div>
-                  <hr />
-                </div>
-              </Col>
-              <Col span={4}>구매자 </Col>
-              <Col span={20}>
-                아 그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건
-                주문해줘소 고맙다 이렇게저렇게그건 주문해줘소 고맙다
-                이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게그건 주문해줘소
-                고맙다 이렇게저렇게그건 주문해줘소 고맙다 이렇게저렇게
-              </Col>
+              {item.comments.map((co, i) => {
+                return (
+                  <>
+                    <Col span={4}>
+                      {co.username.substring(0, 7)} -{stringsplit(co.createAt)}
+                    </Col>
+                    <Col span={4}> </Col>
+
+                    <Col span={20}>{co.contents}</Col>
+                    <Col>
+                      <div>
+                        <hr />
+                      </div>
+                    </Col>
+                  </>
+                );
+              })}
             </Panel>
           </Collapse>
         </>
