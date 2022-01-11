@@ -2262,10 +2262,18 @@ function DetailProductPage(props) {
             <Panel
               header={
                 <Row justify="center">
-                  <Col span={4}>{item.boardId}</Col>
-                  <Col span={4}>{item.title}</Col>
-                  <Col span={4}>{stringsplit(item.createdAt)}</Col>
-                  <Col span={4}>{item.user.substring(0, 7)}</Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    {item.boardId}
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    {item.title}
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    {stringsplit(item.createdAt)}
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    {item.user.substring(0, 7)}
+                  </Col>
                 </Row>
               }
               key={idx}
@@ -2532,10 +2540,18 @@ function DetailProductPage(props) {
               <TabPane tab="상품 문의" key="5">
                 <Button onClick={showModalqna}>QnA작성하기</Button>
                 <Row justify="center">
-                  <Col span={4}>no</Col>
-                  <Col span={4}>제목</Col>
-                  <Col span={4}>날짜</Col>
-                  <Col span={4}>작성자</Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    no
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    제목
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    날짜
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    작성자
+                  </Col>
                 </Row>
                 {rederqna}
 
