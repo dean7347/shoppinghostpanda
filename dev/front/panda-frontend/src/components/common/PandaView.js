@@ -17,9 +17,9 @@ const PandaView = (props) => {
             <Card
               style={{ width: "100%" }}
               actions={[
-                <SettingOutlined key="setting" />,
-                <EditOutlined key="edit" />,
-                <EllipsisOutlined key="ellipsis" />,
+                // <div>평균평점</div>,
+                <div>좋아요 수</div>,
+                <div>내 좋아요</div>,
               ]}
             >
               <ReactTinyLink

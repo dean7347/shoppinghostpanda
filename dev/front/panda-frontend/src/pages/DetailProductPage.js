@@ -2219,8 +2219,10 @@ function DetailProductPage(props) {
     axios.post("/api/createqna", body).then((response) => {
       if (response.data.success) {
         alert("문의사항 작성에 성공했습니다");
+        window.location.reload();
       } else {
         alert("문의사항 작성에 실패 했습니다.");
+        window.location.reload();
       }
     });
     setQna({
@@ -2244,8 +2246,10 @@ function DetailProductPage(props) {
     axios.post("/api/createcomment", body).then((response) => {
       if (response.data.success) {
         alert("답글 작성에 성공했습니다");
+        window.location.reload();
       } else {
         alert("답글 작성에 실패했습니다");
+        window.location.reload();
       }
     });
   };
