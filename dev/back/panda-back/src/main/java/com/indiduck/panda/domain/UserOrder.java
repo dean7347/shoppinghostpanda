@@ -54,12 +54,27 @@ public class UserOrder {
     
     @OneToMany(mappedBy = "userOrder")
     private List<OrderDetail> detail= new ArrayList<>();
+
+
+    //택배 송장 등록시 작성되는칼럼
+    //택배사
+    private String courierCom;
+    //운송장 번호
+    private String waybillNumber;
+
+    //결제정보 저장을 위한칼람
+    //uid가 중복되서 저장될 수 있으므로 주의할것
+    //특히 전체 취소시 결제 금액만을 취소해줘야 한다
+    // mid와 겹치는 칼럼 일단 공백
+    private String uid;
+    //영수증 주소
+    private String receiptUrl;
     
 
 
     //==생성메서드==//
     public static UserOrder newUserOrder(User user,Shop shop,String mid,
-                                         String name,String phoneNumber,String zipCode,String Address)
+                                         String name,String phoneNumber,String zipCode,String Address,String receipt)
     {
         System.out.println("생성메서드 네임"+name);
         UserOrder uo = new UserOrder();
@@ -74,7 +89,7 @@ public class UserOrder {
         uo.receiverZipCode=zipCode;
         uo.receiverAddress=Address;
         uo.orderStatus=OrderStatus.결제완료;
-
+        uo.receiptUrl=receipt;
         return  uo;
     }
 
@@ -131,13 +146,63 @@ public class UserOrder {
         }
 
     }
+    //스테이터스의 변경과 작업
+    //주문취소
     public void cancelOrder()
     {
         for (OrderDetail orderDetail : detail) {
             orderDetail.setOrderStatus(OrderStatus.주문취소);
         }
         this.orderStatus=OrderStatus.주문취소;
+        //TODO: 환불로직
     }
+    //결제완료 -> 준비중
+    public void readyOrder()
+    {
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+            {
+                orderDetail.setOrderStatus(OrderStatus.준비중);
+            }
+        }
+        this.orderStatus= OrderStatus.준비중;
+    }
+    //준비중 -> 발송중
+    public void sendOutOrder()
+    {
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+            {
+                orderDetail.setOrderStatus(OrderStatus.발송중);
+            }
+        }
+        this.orderStatus= OrderStatus.발송중;
+    }
+    // xxx -> 구매확정
+    public void confirmOrder()
+    {
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+            {
+                orderDetail.setOrderStatus(OrderStatus.구매확정);
+            }
+        }
+        this.orderStatus= OrderStatus.구매확정;
+    }
+    // xxx -> 결제취소 ?
+
+//    // xxx -> 환불신청 개별환불과 전체환불 구분할것것
+//   public void refundOrder()
+//    {
+//        for (OrderDetail orderDetail : detail) {
+//            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+//            {
+//                orderDetail.setOrderStatus(OrderStatus.구매확정);
+//            }
+//        }
+//        this.orderStatus= OrderStatus.구매확정;
+//    }
+
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;

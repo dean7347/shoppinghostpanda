@@ -282,6 +282,7 @@ public class OrderDetailController {
 
         //TODO:여기 상품 검증 실패면 취소로직해줘야댐
         Payment tokentoInfo = getTokentoInfo(finishpaymentDAO.impuid);
+//        tokentoInfo.getReceiptUrl()
 //        orderDetailService.paymentOrderDetail(tokentoInfo);
         String customData = tokentoInfo.getCustomData();
         JSONObject jsonObject=new JSONObject(customData);
@@ -351,8 +352,9 @@ public class OrderDetailController {
             System.out.println("검증네임"+tokentoInfo.getName()+tokentoInfo.getBuyerName());
 
             System.out.println(myCart);
-            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
-                    tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
+            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getImpUid(),
+                    tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr(),tokentoInfo.getReceiptUrl());
+            //결제성공시
             if(b){
                 return ResponseEntity.ok(new tfResultDto(b));
 
@@ -370,110 +372,110 @@ public class OrderDetailController {
         }
 
     }
-    @RequestMapping(value = "/api/test2", method = RequestMethod.POST)
-    public ResponseEntity<?> testt(@CurrentSecurityContext(expression = "authentication")
-                                          Authentication authentication) throws Exception {
-        List<UserOrder> all = userOrderRepository.findAll();
-        for (UserOrder userOrder : all) {
-            System.out.println("userOrder = " + userOrder.getDetail());
-        }
-        return ResponseEntity.ok(new tfResultDto(false));
-    }
-
-
-    @RequestMapping(value = "/api/test", method = RequestMethod.POST)
-    public ResponseEntity<?> test(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication) throws Exception {
-//        System.out.println(apiKey.getRESTAPIKEY()+"  "+apiKey.getRESTAPISECRET());
-        //TODO:여기 상품 검증 실패면 취소로직해줘야댐
-        Payment tokentoInfo = getTokentoInfo("imp_982372597875");
-//        orderDetailService.paymentOrderDetail(tokentoInfo);
-        String customData = tokentoInfo.getCustomData();
-        JSONObject jsonObject=new JSONObject(customData);
-        //디테일배열
-        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
-        JSONArray detail =jsonObject.getJSONArray("detaildId");
-        HashSet<Shop> shopId =new HashSet<>();
-        HashSet<OrderDetail> orders= new HashSet<>();
-        HashSet<Verification> Veri=new HashSet<>();
-
-        List<OrderDetail> orderDetails =new ArrayList<>();
-        for (Object o : detail) {
-            Optional<OrderDetail> byId = orderDetailRepository.findById(Long.parseLong(o.toString()));
-            orderDetails.add(byId.get());
-            shopId.add(byId.get().getShop());
-            orders.add(byId.get());
-        }
-
-        for (Shop shop : shopId) {
-            Veri.add(new Verification(shop));
-
-        }
-
-
-        for (Verification verification : Veri) {
-            for (OrderDetail order : orders) {
-                if(order.getShop().getId()== verification.shopId)
-                {
-                    if(order.getPanda() ==null)
-                    {
-                        verification.amount+=Math.round(order.getTotalPrice());
-                        verification.pure+=Math.round(order.getTotalPrice());
-
-                    }else
-                    {
-                        verification.amount+=(Math.round(order.getTotalPrice()*0.95));
-                        verification.pure+=Math.round(order.getTotalPrice());
-
-                    }
-
-                }
-            }
-            if(verification.free > verification.pure)
-            {
-
-                verification.amount= verification.amount+ verification.shipprice;
-            }
-        }
-
-        DetailedCart myCart = new DetailedCart(orderDetails);
-
-        int allamount = 0;
-        for (Verification verification : Veri) {
-            allamount+=verification.amount;
-        }
-
-        BigDecimal amount = tokentoInfo.getAmount();
-
-        System.out.println("검증중");
-        System.out.println("allamount = " + allamount);
-        System.out.println("amount.intValue() = " + amount.intValue());
-        System.out.println(allamount+amount.intValue());
-        if(allamount==amount.intValue())
-        {
-            System.out.println("검증성공");
-            System.out.println(myCart);
-            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
-                    tokentoInfo.getName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
-            if(b){
-                return ResponseEntity.ok(new tfResultDto(b));
-
-            }else
-            {
-                return ResponseEntity.ok(new tfResultDto(false));
-            }
-
-        }else
-        {
-            return ResponseEntity.ok(new tfResultDto(false));
-
-        }
-
-
-
-
-
-    }
+//    @RequestMapping(value = "/api/test2", method = RequestMethod.POST)
+//    public ResponseEntity<?> testt(@CurrentSecurityContext(expression = "authentication")
+//                                          Authentication authentication) throws Exception {
+//        List<UserOrder> all = userOrderRepository.findAll();
+//        for (UserOrder userOrder : all) {
+//            System.out.println("userOrder = " + userOrder.getDetail());
+//        }
+//        return ResponseEntity.ok(new tfResultDto(false));
+//    }
+//
+//
+//    @RequestMapping(value = "/api/test", method = RequestMethod.POST)
+//    public ResponseEntity<?> test(@CurrentSecurityContext(expression = "authentication")
+//                                                   Authentication authentication) throws Exception {
+////        System.out.println(apiKey.getRESTAPIKEY()+"  "+apiKey.getRESTAPISECRET());
+//        //TODO:여기 상품 검증 실패면 취소로직해줘야댐
+//        Payment tokentoInfo = getTokentoInfo("imp_982372597875");
+////        orderDetailService.paymentOrderDetail(tokentoInfo);
+//        String customData = tokentoInfo.getCustomData();
+//        JSONObject jsonObject=new JSONObject(customData);
+//        //디테일배열
+//        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+//        JSONArray detail =jsonObject.getJSONArray("detaildId");
+//        HashSet<Shop> shopId =new HashSet<>();
+//        HashSet<OrderDetail> orders= new HashSet<>();
+//        HashSet<Verification> Veri=new HashSet<>();
+//
+//        List<OrderDetail> orderDetails =new ArrayList<>();
+//        for (Object o : detail) {
+//            Optional<OrderDetail> byId = orderDetailRepository.findById(Long.parseLong(o.toString()));
+//            orderDetails.add(byId.get());
+//            shopId.add(byId.get().getShop());
+//            orders.add(byId.get());
+//        }
+//
+//        for (Shop shop : shopId) {
+//            Veri.add(new Verification(shop));
+//
+//        }
+//
+//
+//        for (Verification verification : Veri) {
+//            for (OrderDetail order : orders) {
+//                if(order.getShop().getId()== verification.shopId)
+//                {
+//                    if(order.getPanda() ==null)
+//                    {
+//                        verification.amount+=Math.round(order.getTotalPrice());
+//                        verification.pure+=Math.round(order.getTotalPrice());
+//
+//                    }else
+//                    {
+//                        verification.amount+=(Math.round(order.getTotalPrice()*0.95));
+//                        verification.pure+=Math.round(order.getTotalPrice());
+//
+//                    }
+//
+//                }
+//            }
+//            if(verification.free > verification.pure)
+//            {
+//
+//                verification.amount= verification.amount+ verification.shipprice;
+//            }
+//        }
+//
+//        DetailedCart myCart = new DetailedCart(orderDetails);
+//
+//        int allamount = 0;
+//        for (Verification verification : Veri) {
+//            allamount+=verification.amount;
+//        }
+//
+//        BigDecimal amount = tokentoInfo.getAmount();
+//
+//        System.out.println("검증중");
+//        System.out.println("allamount = " + allamount);
+//        System.out.println("amount.intValue() = " + amount.intValue());
+//        System.out.println(allamount+amount.intValue());
+//        if(allamount==amount.intValue())
+//        {
+//            System.out.println("검증성공");
+//            System.out.println(myCart);
+//            boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getMerchantUid(),
+//                    tokentoInfo.getName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr());
+//            if(b){
+//                return ResponseEntity.ok(new tfResultDto(b));
+//
+//            }else
+//            {
+//                return ResponseEntity.ok(new tfResultDto(false));
+//            }
+//
+//        }else
+//        {
+//            return ResponseEntity.ok(new tfResultDto(false));
+//
+//        }
+//
+//
+//
+//
+//
+//    }
     @Data
     public class Verification {
         private Long shopId;

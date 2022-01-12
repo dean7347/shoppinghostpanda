@@ -161,12 +161,12 @@ public class OrderDetailService {
     }
 
     public boolean newUserOrder(User user,OrderDetailController.DetailedCart myCart,String mid,
-                                String name,String phoneNumber,String zipCode,String Address) {
+                                String name,String phoneNumber,String zipCode,String Address,String rec) {
 
         System.out.println("오더서비스 겟네임"+name);
         for (OrderDetailController.DetailedShop d : myCart.getDs()) {
             Optional<Shop> byId = shopRepository.findById(d.getShopId());
-            UserOrder uo= UserOrder.newUserOrder(user,byId.get(),mid,name,phoneNumber,zipCode,Address);
+            UserOrder uo= UserOrder.newUserOrder(user,byId.get(),mid,name,phoneNumber,zipCode,Address,rec);
             for (OrderDetailController.DetailedProduct detailedProduct : d.getDp()) {
                 for (OrderDetailController.DetailedOption detailedOption : detailedProduct.getDO()) {
                     Optional<OrderDetail> byId1 = orderDetailRepository.findById(detailedOption.getDetailedId());

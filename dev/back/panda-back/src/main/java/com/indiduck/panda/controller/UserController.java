@@ -191,6 +191,24 @@ public class UserController {
         return ResponseEntity.ok(rsd);
     }
 
+    //주문 상태 변경신청
+    @PostMapping("/api/changeuserorderstate")
+    public ResponseEntity<?> changeStateUserOrder(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication,  @RequestBody SituationDto situationDto) {
+
+
+        return ResponseEntity.ok(new TFMessageDto(true,"상태변경에 성공했습니다"));
+
+    }
+
+    @Data
+    private class ChageDao{
+        long userOrderId;
+        String state;
+
+    }
+
+
     @Data
     private class pageDto{
         boolean success;
