@@ -168,7 +168,7 @@ public class UserOrder {
         this.orderStatus= OrderStatus.준비중;
     }
     //준비중 -> 발송중
-    public void sendOutOrder()
+    public void sendOutOrder(String com,String num)
     {
         for (OrderDetail orderDetail : detail) {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
@@ -177,6 +177,8 @@ public class UserOrder {
             }
         }
         this.orderStatus= OrderStatus.발송중;
+        this.courierCom=com;
+        this.waybillNumber=num;
     }
     // xxx -> 구매확정
     public void confirmOrder()

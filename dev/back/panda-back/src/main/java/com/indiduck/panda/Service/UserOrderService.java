@@ -37,6 +37,27 @@ public class UserOrderService {
 
     }
 
+    public UserOrder ChangeOrder(String status, long id,String cur, String wayb)
+    {
+        Optional<UserOrder> byId = userOrderRepository.findById(id);
+        UserOrder userOrder = byId.get();
+        switch (status)
+        {
+            case "준비중":
+                userOrder.readyOrder();
+                break;
+            case "발송중":
+                userOrder.sendOutOrder(cur,wayb);
+                break;
+            case "구매확정":
+                userOrder.confirmOrder();
+                break;
+                //환불상태는 아직 남겨둔다
+        }
+        return userOrder;
+
+    }
+
 
 
 }
