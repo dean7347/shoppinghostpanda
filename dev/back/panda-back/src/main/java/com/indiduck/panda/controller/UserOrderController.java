@@ -25,12 +25,12 @@ public class UserOrderController {
 
 
 
-    @RequestMapping(value = "/api/editstatus", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/editstatus", method = RequestMethod.POST)
     public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody ChangeAction changeAction) throws Exception {
 
 
-        UserOrder userOrder = userOrderService.ChangeOrder(changeAction.state, changeAction.userOrderId, changeAction.courier, changeAction.waybill);
+        UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
         if(userOrder.getOrderStatus().toString().equals(changeAction.state))
         {
             return ResponseEntity.ok(new TFMessageDto(true,"성공적으로 변경했습니다"));

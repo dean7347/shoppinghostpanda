@@ -69,6 +69,21 @@ public class UserOrder {
     private String uid;
     //영수증 주소
     private String receiptUrl;
+
+    //샵이 가져갈 돈
+    int shopMoney=0;
+
+    //쇼핑호스트 판다가 가져갈 돈
+    int hostMoney=0;
+
+    //이 주문에서 판다에게 지급된 돈
+    int pandaMoney=0;
+
+    //버림했기때문에 남은돈이 발생한다
+    int balance=0;
+    //지급 상태
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
     
 
 
@@ -90,6 +105,7 @@ public class UserOrder {
         uo.receiverAddress=Address;
         uo.orderStatus=OrderStatus.결제완료;
         uo.receiptUrl=receipt;
+        //TODO 아래에서 디테일이 변경되어도 재계산 작업을 해주어야 한다
         return  uo;
     }
 
@@ -123,6 +139,28 @@ public class UserOrder {
     }
 
     //==비지니스 메서드 ==//
+
+    //정산메서드. 오더 디테일이 바뀌면 실행해주자
+    //구매확정시 -> 주문취소가 아닌것들 가격 계산해서
+    // 상품가격75%+택배비를 샵머니에 넣고
+    // 호스트 머니에는 상품가격의 25%에서 판다가격을 뺀 가격을 넣는다
+    public void settle()
+    {
+        int pandamoney = 0;
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+            pandamoney+=orderDetail.getPandaMoney();
+        }
+        this.hostMoney=(int) Math.floor(this.amount*0.25)-pandamoney;
+        this.shopMoney =(int) Math.floor(this.amount*0.75);
+        this.pandaMoney=(int) Math.floor(pandamoney);
+        if(this.PureAmount <this.freeprice)
+        {
+            this.shopMoney+=this.shipPrice;
+        }
+        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
+    }
     public void Calculate()
     {
         if(this.PureAmount >=this.freeprice)
@@ -163,9 +201,12 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
             {
                 orderDetail.setOrderStatus(OrderStatus.준비중);
+                orderDetail.setPaymentM(PaymentStatus.지급예정);
             }
         }
         this.orderStatus= OrderStatus.준비중;
+        this.paymentStatus=PaymentStatus.지급예정;
+        this.settle();
     }
     //준비중 -> 발송중
     public void sendOutOrder(String com,String num)
@@ -187,8 +228,13 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
             {
                 orderDetail.setOrderStatus(OrderStatus.구매확정);
+                orderDetail.setPaymentM(PaymentStatus.지급대기);
+
             }
         }
+        this.finishAt=LocalDateTime.now();
+        this.paymentStatus=PaymentStatus.지급대기;
+        this.settle();
         this.orderStatus= OrderStatus.구매확정;
     }
     // xxx -> 결제취소 ?

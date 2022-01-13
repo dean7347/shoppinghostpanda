@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
     Optional<List<OrderDetail>> findOrderDetailByUser(User user);
     Optional<List<OrderDetail>> findOrderDetailByUserAndOrderStatus(User user,OrderStatus od);
     Optional<List<OrderDetail>> findOrderDetailByUserAndOrderStatusAndOrderStatus(User user,OrderStatus od,OrderStatus od2);
-
+    Optional<List<OrderDetail>> findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(Panda panda, PaymentStatus paymentStatus,PaymentStatus paymentStatusse, LocalDateTime fromDate, LocalDateTime toDate);
+//    Optional<List<OrderDetail>> findOrderDetailsByFinishedAtBetween(LocalDateTime fromDate, LocalDateTime toDate);
 
 }

@@ -20,11 +20,11 @@ public class OrderDetail {
     private int  productCount;
     private int IndividualPrice;
     private int totalPrice;
-    private LocalDateTime createdAt;
     private LocalDateTime paymentAt;
+    private LocalDateTime createdAt;
     private LocalDateTime checkedAt;
     private LocalDateTime shippingAt;
-    private LocalDateTime FinishedAt;
+    private LocalDateTime finishedAt;
 
 
 
@@ -53,9 +53,12 @@ public class OrderDetail {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    //지급된 날자
+    private LocalDateTime paidAt;
 
-    private String paymentWay;
 
+    //12%
+    private int pandaMoney=0;
 
 
     //==생성메서드==//
@@ -71,9 +74,13 @@ public class OrderDetail {
         od.orderStatus = OrderStatus.결제대기;
         od.createdAt=LocalDateTime.now();
         od.setShop(product.getShop());
+        od.paymentStatus=PaymentStatus.지급대기;
+        int mo = (int) Math.floor(od.totalPrice*0.95);
+        od.pandaMoney= (int) Math.floor(mo*0.12);
         return od;
 
     }
+    //판다가 없을때
     public static OrderDetail newOrderDetail(User user,Product product, ProductOption productOption,int optionCount){
         OrderDetail od = new OrderDetail();
         od.setUser(user);
@@ -85,6 +92,7 @@ public class OrderDetail {
         od.orderStatus = OrderStatus.결제대기;
         od.createdAt=LocalDateTime.now();
         od.setShop(product.getShop());
+        od.pandaMoney=0;
 
         return od;
 
@@ -134,23 +142,62 @@ public class OrderDetail {
         this.orderStatus=OrderStatus.결제완료;
         this.paymentAt=LocalDateTime.now();
     }
+    public void setPaymentM(PaymentStatus paymentStatus)
+    {
+        this.paymentStatus=paymentStatus;
+    }
 
     //=비즈니스 매서드=//
+    //숫자변경
     public void plusCount(int count)
     {
         this.productCount+=count;
         this.totalPrice=this.getIndividualPrice()*this.productCount;
+        if(panda!=null)
+        {
+            int mo = (int) Math.floor(this.totalPrice*0.95);
+            this.pandaMoney= (int) Math.floor(mo*0.12);
+        }
     }
 
+    //가격이 변경될경우
     public void update(int count)
     {
         this.productCount=count;
         this.totalPrice=this.getIndividualPrice()*this.productCount;
+        if(panda!=null)
+        {
+            int mo = (int) Math.floor(this.totalPrice*0.95);
+            this.pandaMoney= (int) Math.floor(mo*0.12);
+        }
+
+
     }
     public void setOrderStatus(OrderStatus status)
     {
+        //주문취소//준비중//발송중//구매확정
         this.orderStatus=status;
-        this.paymentAt=LocalDateTime.now();
+        if(status==OrderStatus.주문취소)
+        {
+
+        }
+        if(status==OrderStatus.준비중)
+        {
+            this.checkedAt=LocalDateTime.now();
+
+        }
+        if(status==OrderStatus.발송중)
+        {
+            this.shippingAt=LocalDateTime.now();
+        }
+        if(status==OrderStatus.구매확정)
+        {
+            this.finishedAt=LocalDateTime.now();
+            if(this.orderStatus!=OrderStatus.주문취소) {
+                this.paymentStatus = PaymentStatus.지급예정;
+            }
+
+        }
     }
     public void setOrderready(OrderStatus status)
     {

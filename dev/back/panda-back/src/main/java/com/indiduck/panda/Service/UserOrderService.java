@@ -37,7 +37,7 @@ public class UserOrderService {
 
     }
 
-    public UserOrder ChangeOrder(String status, long id,String cur, String wayb)
+    public UserOrder ChangeOrder(long id,String status,String cur,String wayb)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(id);
         UserOrder userOrder = byId.get();
@@ -46,11 +46,14 @@ public class UserOrderService {
             case "준비중":
                 userOrder.readyOrder();
                 break;
+                //cur = couriercom /waybillnumber
             case "발송중":
                 userOrder.sendOutOrder(cur,wayb);
+
                 break;
             case "구매확정":
                 userOrder.confirmOrder();
+
                 break;
                 //환불상태는 아직 남겨둔다
         }

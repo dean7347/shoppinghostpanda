@@ -194,17 +194,20 @@ public class UserController {
     //주문 상태 변경신청
     @PostMapping("/api/changeuserorderstate")
     public ResponseEntity<?> changeStateUserOrder(@CurrentSecurityContext(expression = "authentication")
-                                                       Authentication authentication,  @RequestBody SituationDto situationDto) {
+                                                       Authentication authentication,  @RequestBody ChageDao chageDao) {
 
-
+        userOrderService.ChangeOrder(chageDao.userOrderId,chageDao.state,chageDao.shipCompany,chageDao.shipNumber);
         return ResponseEntity.ok(new TFMessageDto(true,"상태변경에 성공했습니다"));
 
     }
 
     @Data
-    private class ChageDao{
+    private static class ChageDao{
         long userOrderId;
         String state;
+        String shipCompany;
+        String shipNumber;
+
 
     }
 

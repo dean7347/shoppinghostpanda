@@ -48,6 +48,41 @@ function CardInList(props) {
       }
     });
   };
+
+  const onTestPandaDashboard = () => {
+    const body = {
+      startDay: new Date(),
+      endDay: new Date(),
+      status: "지급예정",
+    };
+    axios.post("/api/pandadashboard", body).then((response) => {
+      if (response.data.success) {
+        console.log("스테이터스변경성공");
+        console.log(response.data);
+      } else {
+        console.log("스테이터스실패");
+        console.log(response.data);
+      }
+    });
+  };
+
+  const onTestCheck = (p, s, c, w) => {
+    console.log(p + s);
+    const body = {
+      userOrderId: p,
+      state: s,
+      //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
+      courier: c,
+      waybill: w,
+    };
+    axios.post("/api/editstatus", body).then((response) => {
+      if (response.data.success) {
+        console.log("스테이터스변경성공");
+      } else {
+        console.log("스테이터스실패");
+      }
+    });
+  };
   const onRefundOrder = (p) => {
     if (
       window.confirm(
@@ -104,7 +139,7 @@ function CardInList(props) {
 
         {props &&
           props.situationDetail.products.map((pd, idx) => {
-            console.log('pd: ',pd)
+            console.log("pd: ", pd);
             var allPrice = 0;
             var purePrice = 0;
             function pricePlus(getprice, getpureprice) {
@@ -359,6 +394,38 @@ function CardInList(props) {
             {props.situationDetail.status}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
+          <div>
+            ***임시버튼***
+            <Button
+              onClick={() =>
+                onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)
+              }
+            >
+              스테이트 준비중으로 변경
+            </Button>
+            <Button
+              onClick={() =>
+                onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
+              }
+            >
+              스테이트 발송중으로 변경
+            </Button>
+            <Button
+              onClick={() =>
+                onTestCheck(
+                  props.situationDetail.detailId,
+                  "구매확정",
+                  "c",
+                  123
+                )
+              }
+            >
+              스테이트 구매확정 변경
+            </Button>
+            <Button onClick={() => onTestPandaDashboard()}>
+              판다대시보드테스트
+            </Button>
+          </div>
         </Row>
         {renderbox()}
 
