@@ -121,6 +121,8 @@ public class OrderDetail {
         panda.deleteOrderdetail(this);
 
     }
+    
+    //판다수정
     public void setPanda(Panda panda)
     {
         if(panda!=null)
@@ -130,6 +132,8 @@ public class OrderDetail {
 
         this.panda=panda;
         panda.getOrderDetailPandas().add(this);
+        int mo = (int) Math.floor(this.totalPrice*0.95);
+        this.pandaMoney= (int) Math.floor(mo*0.12);
     }
     public void setShop(Shop shop)
     {

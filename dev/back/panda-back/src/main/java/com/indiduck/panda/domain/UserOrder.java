@@ -126,7 +126,7 @@ public class UserOrder {
        orderDetail.setUserOrder(this);
        if(orderDetail.getPanda()!=null)
        {
-           this.amount+=orderDetail.getTotalPrice()*0.95;
+           this.amount+=Math.round(orderDetail.getTotalPrice()*0.95);
            this.PureAmount+=orderDetail.getTotalPrice();
 
        }
