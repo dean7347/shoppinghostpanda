@@ -51,6 +51,11 @@ public class OrderDetail {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
+    private String paymentWay;
+
 
 
     //==생성메서드==//
