@@ -742,7 +742,7 @@ function PaymentPage(gprops) {
                                           원)
                                           {option.discount
                                             ? pricePlus(
-                                                Math.floor(
+                                                Math.round(
                                                   option.originPrice *
                                                     option.optionCount *
                                                     0.95
@@ -763,7 +763,7 @@ function PaymentPage(gprops) {
                                               <Col span={24}>
                                                 {option.discount ? (
                                                   <div>
-                                                    {Math.floor(
+                                                    {Math.round(
                                                       option.originPrice *
                                                         option.optionCount *
                                                         0.95
@@ -989,7 +989,7 @@ function PaymentPage(gprops) {
                                         원)
                                         {option.discount
                                           ? pricePlus(
-                                              Math.floor(
+                                              Math.round(
                                                 option.originPrice *
                                                   option.optionCount *
                                                   0.95
@@ -1008,7 +1008,7 @@ function PaymentPage(gprops) {
                                             <Col span={16}>
                                               {option.discount ? (
                                                 <div>
-                                                  {Math.floor(
+                                                  {Math.round(
                                                     option.originPrice *
                                                       option.optionCount *
                                                       0.95
