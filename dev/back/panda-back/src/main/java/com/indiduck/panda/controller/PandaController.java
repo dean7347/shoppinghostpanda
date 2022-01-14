@@ -119,26 +119,18 @@ public class PandaController {
 
             }
 
-            if(pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status!=null)
+            //지급완료거나 비었을때
+            if(pandaDashBoardDto.status=="지급완료")
             {
                 orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
                         orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료,PaymentStatus.지급완료
                                 , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
 
-            }else if(pandaDashBoardDto.status=="지급예정"&&pandaDashBoardDto.status=="지급대기"&&pandaDashBoardDto.status!=null)
+            }else if((pandaDashBoardDto.status=="지급예정"||pandaDashBoardDto.status=="지급대기"))
             {
                 orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
                         orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정,PaymentStatus.지급대기
                                 , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
-
-            }else if(pandaDashBoardDto.status=="지급예정"&&pandaDashBoardDto.status=="지급대기"&&pandaDashBoardDto.status==null)
-            {
-                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween=
-                        expect;
-            }else if(pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status==null)
-            {
-                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween=
-                        finish;
 
             }else
             {
