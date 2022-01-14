@@ -157,7 +157,7 @@ public class PandaController {
 //                System.out.println("orderDetail = " + orderDetail.getPandaMoney());
 //                System.out.println("orderDetail = " + orderDetail.getFinishedAt());
 
-                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getOrderStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()) );
+                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()) );
             }
 
             return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finmoney,expectmoney));
