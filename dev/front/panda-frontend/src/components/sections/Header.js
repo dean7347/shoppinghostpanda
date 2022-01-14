@@ -20,6 +20,7 @@ const Header = () => {
                     <Link className="navbar-item" to={"/"}>name</Link>
                     <Link className="navbar-item" to={"/buyer/mypage"}>mypage</Link>
                     <Link className="navbar-item" to={"/panda/dashboard"}>pandapage</Link>
+                    <Link className="navbar-item" to={"/seller/dashboard"}>sellerpage</Link>
                 </div>
 
                 <div className="navbar-end">
