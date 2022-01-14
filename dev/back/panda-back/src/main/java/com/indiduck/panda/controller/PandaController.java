@@ -101,28 +101,55 @@ public class PandaController {
     public ResponseEntity<?> pandaDashBoard(@CurrentSecurityContext(expression = "authentication")
                                               Authentication authentication, @RequestBody PandaDashBoardDto pandaDashBoardDto) throws Exception {
 
-//        try{
+        try{
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Panda panda = byEmail.get().getPanda();
-            Optional<List<OrderDetail>> orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween;
+            Optional<List<OrderDetail>> orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween = null;
             List<PandaDashboardDtoType> pandaDashboardDtoList=new ArrayList<>();
-            if(pandaDashBoardDto.status=="지급완료")
+            int finmoney= 0;
+            int expectmoney=0;
+            Optional<List<OrderDetail>> finish = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatus(panda, PaymentStatus.지급완료, PaymentStatus.지급완료);
+            for (OrderDetail orderDetail : finish.get()) {
+                finmoney+=orderDetail.getPandaMoney();
+            }
+            Optional<List<OrderDetail>> expect = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatus(panda, PaymentStatus.지급예정, PaymentStatus.지급대기);
+            for (OrderDetail orderDetail : expect.get()) {
+                expectmoney+=orderDetail.getPandaMoney();
+
+            }
+
+            if(pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status!=null)
             {
                 orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
                         orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료,PaymentStatus.지급완료
                                 , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
 
-            }else
+            }else if(pandaDashBoardDto.status=="지급예정"&&pandaDashBoardDto.status=="지급대기"&&pandaDashBoardDto.status!=null)
             {
                 orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
                         orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정,PaymentStatus.지급대기
                                 , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
 
+            }else if(pandaDashBoardDto.status=="지급예정"&&pandaDashBoardDto.status=="지급대기"&&pandaDashBoardDto.status==null)
+            {
+                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween=
+                        expect;
+            }else if(pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status=="지급완료"&&pandaDashBoardDto.status==null)
+            {
+                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween=
+                        finish;
+
+            }else
+            {
+                return ResponseEntity.ok(new DashboardDto(false,pandaDashboardDtoList,finmoney,expectmoney));
+
             }
+
+
             if(orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween.isEmpty())
             {
-                return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList));
+                return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finmoney,expectmoney));
 
             }
             for (OrderDetail orderDetail : orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween.get()) {
@@ -133,13 +160,13 @@ public class PandaController {
                 pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getOrderStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()) );
             }
 
-            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList));
-//        }catch (Exception E)
-//        {
-//            System.out.println("E = " + E);
-//            return ResponseEntity.ok(new DashboardDto(false,null));
-//
-//        }
+            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finmoney,expectmoney));
+        }catch (Exception E)
+        {
+            System.out.println("E = " + E);
+            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+
+        }
 
     }
     @Data
@@ -147,11 +174,15 @@ public class PandaController {
     {
         boolean success;
         List<PandaDashboardDtoType> pandaDashboardDtoList=null;
+        int finMoney;
+        int expectMoney;
 
 
-        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList) {
+        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList,int f,int e) {
             this.success = success;
             this.pandaDashboardDtoList = pandaDashboardDtoList;
+            this.finMoney=f;
+            this.expectMoney=e;
         }
     }
 

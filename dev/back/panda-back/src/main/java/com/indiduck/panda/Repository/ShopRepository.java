@@ -21,4 +21,5 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
 
 
     Optional<Shop> findByUserId(Long id);
+
 }

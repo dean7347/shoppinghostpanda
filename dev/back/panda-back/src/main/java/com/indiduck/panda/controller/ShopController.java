@@ -158,6 +158,24 @@ public class ShopController {
 
     }
 
+    //샵대시보드 정산
+    @RequestMapping(value = "/api/shop/settledashboard", method = RequestMethod.POST)
+    public ResponseEntity<?> dashboardSettle(@CurrentSecurityContext(expression = "authentication")
+                                               Authentication authentication, @RequestBody ConfirmDto confirmDto) throws Exception{
+
+
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        Shop shop = byEmail.get().getShop();
+//        shopRepository
+
+
+        return ResponseEntity.ok(new shopControllerResultDto(false,"상태변경에 실패했습니다"));
+
+
+    }
+
+
     //주문확인
     @RequestMapping(value = "/api/shop/confirm", method = RequestMethod.POST)
     public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")

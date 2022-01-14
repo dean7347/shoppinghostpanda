@@ -1,14 +1,12 @@
 package com.indiduck.panda.Repository;
 
-import com.indiduck.panda.domain.OrderStatus;
-import com.indiduck.panda.domain.Shop;
-import com.indiduck.panda.domain.User;
-import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +18,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
     Page<UserOrder> findAllByUserId(User user,Pageable pageable);
     List<UserOrder> findByUserId(User user);
     Optional<UserOrder> findById(Long id);
+    Optional<List<UserOrder>> findByShopAndPaymentStatusAndFinishAtBetween(Shop shop, PaymentStatus paymentStatus, LocalDateTime start,LocalDateTime end);
 
 
 
