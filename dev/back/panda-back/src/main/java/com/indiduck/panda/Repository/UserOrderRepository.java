@@ -18,6 +18,8 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
     Page<UserOrder> findAllByUserId(User user,Pageable pageable);
     List<UserOrder> findByUserId(User user);
     Optional<UserOrder> findById(Long id);
+    Optional<List<UserOrder>> findByShopAndPaymentStatusAndPaymentStatusAndFinishAtBetween(Shop shop, PaymentStatus paymentStatus,PaymentStatus paymentStatusSec, LocalDateTime start,LocalDateTime end);
+
     Optional<List<UserOrder>> findByShopAndPaymentStatusAndFinishAtBetween(Shop shop, PaymentStatus paymentStatus, LocalDateTime start,LocalDateTime end);
 
 

@@ -7,6 +7,7 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.*;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -159,7 +161,7 @@ public class ShopController {
     }
 
     //샵대시보드 정산
-    @RequestMapping(value = "/api/shop/settledashboard", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/shop/sellerdashboard", method = RequestMethod.POST)
     public ResponseEntity<?> dashboardSettle(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication, @RequestBody ConfirmDto confirmDto) throws Exception{
 
@@ -179,14 +181,14 @@ public class ShopController {
     //주문확인
     @RequestMapping(value = "/api/shop/confirm", method = RequestMethod.POST)
     public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")
-                                               Authentication authentication, @RequestBody ConfirmDto confirmDto) throws Exception{
+                                               Authentication authentication, @RequestBody ShopDashBoardDto shopDashBoardDto) throws Exception{
+        
+        try{
+            
+        }catch(Exception E){
 
-        Optional<UserOrder> byId = userOrderRepository.findById(confirmDto.userorderId);
-        byId.get().changeStatuspaymentfinishtoready();
-        if(byId.get().getOrderStatus() == OrderStatus.준비중)
-        {
-            userOrderRepository.save(byId.get());
-            return ResponseEntity.ok(new shopControllerResultDto(true,"성공적으로 상태가 변경되었습니다"));
+            return ResponseEntity.ok(new TFMessageDto(false,"오류가 발생했습니다"));
+
         }
 
         return ResponseEntity.ok(new shopControllerResultDto(false,"상태변경에 실패했습니다"));
@@ -218,6 +220,14 @@ public class ShopController {
 
 
     //==DAO DTO ==//
+    @Data
+    private static class ShopDashBoardDto {
+        LocalDateTime startDay;
+        LocalDateTime endDay;
+        String status;
+
+
+    }
 
     @Data
     static class userOrderShopDto {
