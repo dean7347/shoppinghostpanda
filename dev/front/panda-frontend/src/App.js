@@ -31,6 +31,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {loginCheck} from "./store/actions/authActions";
 import Header from "./components/sections/Header";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
+import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -93,7 +95,8 @@ const App = () => {
                     <Route component={TermPage} path={"/terms"} exact/>
                     <Route component={ServicePage} path={"/service"} exact/>
                     <PrivateRoute path="/buyer" component={BuyerMyPage}/>
-                    <Route component={PandaPage} path={"/panda"} />
+                    <PrivateRoute path="/panda" component={PandaIndex}/>
+                    <PrivateRoute path="/seller" component={SellerIndex}/>
                     {/* //api테스트용 짬통페이지 */}
                     <Route path="/testpage" component={TestPage}/>
                 </Switch>

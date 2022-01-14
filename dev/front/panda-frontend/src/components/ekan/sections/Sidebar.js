@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import './sidebar.css'
 import logo from '../../../assets/images/logo.png'
 
-
 const Sidebar = ({location, sidebarItems}) => {
 
     const activeItem = sidebarItems.findIndex((item) => item.route === location.pathname)
@@ -11,9 +10,11 @@ const Sidebar = ({location, sidebarItems}) => {
     return (
         <>
             <div className='sidebar'>
-                <div className="sidebar__logo">
-                    <img src={logo} alt="company logo" />
-                </div>
+                <Link to="/">
+                    <div className="sidebar__logo">
+                        <img src={logo} alt="company logo" />
+                    </div>
+                </Link>
                 {
                     sidebarItems.map((item, index) => (
                         <Link to={item.route} key={index}>
@@ -29,7 +30,6 @@ const Sidebar = ({location, sidebarItems}) => {
         </>
     )
 }
-
 
 const SidebarItem = (props) => {
 

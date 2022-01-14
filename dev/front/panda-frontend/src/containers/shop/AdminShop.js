@@ -82,6 +82,7 @@ const AdminShop = () => {
       <tbody>
         {uosd &&
           uosd.map((uo, index) => {
+            console.log(uo)
             return (
               <>
                 <td>{uo.userOrderId}</td>

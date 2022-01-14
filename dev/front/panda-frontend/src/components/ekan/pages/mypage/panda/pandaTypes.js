@@ -62,3 +62,42 @@ export const chartOptions = {
         }
     }
 }
+
+export const dummyVideoData = [
+    {
+        title: "더미 짬통 비디오 제목 1 더미 짬통 비디오 제목 1",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+    {
+        title: "더미 짬통 비디오 제목 2 더미 짬통",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+    {
+        title: "더미 짬통 비디오 제목 3 더미 짬통 더미 짬통",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+    {
+        title: "더미 짬통 비디오 제목 4",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+    {
+        title: "더미 짬통 비디오 제목 5",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+    {
+        title: "더미 짬통 비디오 제목 6",
+        image: "https://bulma.io/images/placeholders/1280x960.png"
+    },
+]
+
+export const loadingVideoData = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+
+export const pandaSettlementTable = {
+    header: [
+        "정산 일자",
+        " ",
+        "금액",
+        "상태"
+    ]
+}
