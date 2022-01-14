@@ -1,7 +1,6 @@
 import {
-  FETCH_DASHBOARD,
-  FETCH_SITUATION,
-  FETCH_SITUATION_LIST,
+  FETCH_BUYER_DASHBOARD, FETCH_BUYER_SITUATION, FETCH_BUYER_SITUATION_LIST
+
 } from "../../types";
 import axios from "axios";
 import { setError } from "../pageActions";
@@ -15,7 +14,7 @@ export const fetchDashBoard = () => {
         const dashBoardData = res.data;
         console.log("대쉬보드 박스: ", dashBoardData);
         dispatch({
-          type: FETCH_DASHBOARD,
+          type: FETCH_BUYER_DASHBOARD,
           payload: dashBoardData,
         });
       }
@@ -35,7 +34,7 @@ export const fetchSituationList = () => {
         const list = res.data;
         console.log("최근주문: ", list);
         dispatch({
-          type: FETCH_SITUATION_LIST,
+          type: FETCH_BUYER_SITUATION_LIST,
           payload: list,
         });
       }
@@ -59,7 +58,7 @@ export const fetchSituationWithPage = (size, page) => {
 
         console.log(list);
         dispatch({
-          type: FETCH_SITUATION_LIST,
+          type: FETCH_BUYER_SITUATION_LIST,
           payload: list,
         });
       }
@@ -81,7 +80,7 @@ export const fetchSituationDetail = (detailId) => {
         const detail = res.data;
         console.log("주문디테일: ", detail);
         dispatch({
-          type: FETCH_SITUATION,
+          type: FETCH_BUYER_SITUATION,
           payload: detail,
         });
       }
