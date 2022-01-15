@@ -4,8 +4,7 @@ package com.indiduck.panda.controller;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.UserOrderService;
-import com.indiduck.panda.domain.User;
-import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,8 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,22 +52,117 @@ public class UserOrderController {
     public ResponseEntity<?> shopDashBoard(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody ShopDashBoard shopDashBoard) throws Exception {
 
-        LocalDateTime startDay= LocalDateTime.of(shopDashBoard.startYear,shopDashBoard.startMonth+1,shopDashBoard.startDay
-                ,0,0,0,0);
-        LocalDateTime endDay= LocalDateTime.of(shopDashBoard.endYear,shopDashBoard.endMonth+1,shopDashBoard.endDay
-                ,23,59,59,999999999);
+
         try{
+            LocalDateTime startDay= LocalDateTime.of(shopDashBoard.startYear,shopDashBoard.startMonth+1,shopDashBoard.startDay
+                    ,0,0,0,0);
+            LocalDateTime endDay= LocalDateTime.of(shopDashBoard.endYear,shopDashBoard.endMonth+1,shopDashBoard.endDay
+                    ,23,59,59,999999999);
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
-            Shop shop = byEmail.get().getShop()
-        }catch (Exception e)
+            Shop shop = byEmail.get().getShop();
+            List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
+            List<UserOrder> uoList =new ArrayList<>();
+
+            if(shopDashBoard.status.equals("all"))
+            {
+                Optional<List<UserOrder>> one = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급예정,startDay,endDay);
+                Optional<List<UserOrder>> two = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
+                Optional<List<UserOrder>> three = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급대기,startDay,endDay);
+
+                if(!one.isEmpty())
+                {
+                    uoList.addAll(one.get());
+                }
+                if(!two.isEmpty())
+                {
+                    uoList.addAll(two.get());
+                }
+                if(!three.isEmpty())
+                {
+                    uoList.addAll(three.get());
+                }
+
+            }else if(shopDashBoard.status.equals("정산완료"))
+            {
+                Optional<List<UserOrder>> one = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
+                if(!one.isEmpty())
+                {
+                    uoList.addAll(one.get());
+                }
+            }else if(shopDashBoard.status.equals("정산대기"))
+            {
+                Optional<List<UserOrder>> one =  userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
+                Optional<List<UserOrder>> two =  userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
+                if(!one.isEmpty())
+                {
+                    uoList.addAll(one.get());
+                }
+                if(!two.isEmpty())
+                {
+                    uoList.addAll(two.get());
+                }
+
+            }
+            int finish=0;
+            int yet=0;
+            for (UserOrder userOrder : uoList) {
+                if(userOrder.getPaymentStatus()==PaymentStatus.지급완료)
+                {
+                    finish+= userOrder.getShopMoney();
+                }else if(userOrder.getPaymentStatus()==PaymentStatus.지급예정||userOrder.getPaymentStatus()==PaymentStatus.지급대기)
+                {
+                    yet+=userOrder.getShopMoney();
+                }
+                shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder.getId(),userOrder.getPaymentStatus().toString(),userOrder.getShopMoney(),userOrder.getFinishAt()));
+
+            }
+            return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,finish,yet));
+
+        } catch (Exception e)
         {
+            System.out.println("E = " + e);
+
+            return ResponseEntity.ok(new DashboardDto(true,null,0,0));
+
 
         }
 
-        return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
 
     }
+
+    @Data
+    private static class DashboardDto
+    {
+        boolean success;
+        List<ShopDashboardDtoType> pandaDashboardDtoList=null;
+        int finMoney;
+        int expectMoney;
+
+
+        public DashboardDto(boolean success, List<ShopDashboardDtoType> pandaDashboardDtoList, int f, int e) {
+            this.success = success;
+            this.pandaDashboardDtoList = pandaDashboardDtoList;
+            this.finMoney=f;
+            this.expectMoney=e;
+        }
+    }
+    @Data
+    private static class ShopDashboardDtoType
+    {
+        Long id;
+        String status;
+        int money;
+        LocalDateTime localDateTime;
+
+        public ShopDashboardDtoType(Long id,String status, int money, LocalDateTime localDateTime) {
+            this.id= id;
+            this.status = status;
+            this.money = money;
+            this.localDateTime = localDateTime;
+        }
+    }
+
 
     @Data
     static class ChangeAction {
