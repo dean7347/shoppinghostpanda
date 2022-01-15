@@ -229,7 +229,8 @@ public class PandaController {
         }catch (Exception E)
         {
             System.out.println("E = " + E);
-            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+            return ResponseEntity.ok(new DashBoardMainDto(null,0,0));
+
 
         }
 
@@ -318,7 +319,7 @@ public class PandaController {
     }
 
     @Data
-    private class PandaDashBoardMain {
+    private static  class PandaDashBoardMain {
         int year;
     }
 }
