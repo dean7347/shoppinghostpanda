@@ -110,12 +110,12 @@ public class PandaController {
         System.out.println("startDay = " + startDay);
         System.out.println("endDay = " + endDay);
         System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
-        try{
+//        try{
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Panda panda = byEmail.get().getPanda();
             List<PandaDashboardDtoType> pandaDashboardDtoList=new ArrayList<>();
-            Optional<List<OrderDetail>> odList = null;
+            List<OrderDetail> odList = new ArrayList<>();
 
 
 
@@ -123,36 +123,63 @@ public class PandaController {
             if(pandaDashBoardDto.status.equals("all"))
             {
                 System.out.println("전체");
-                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, PaymentStatus.지급대기, PaymentStatus.지급완료,
-                        startDay, endDay);
+                Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
+                Optional<List<OrderDetail>> two = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료, startDay, endDay);
+                Optional<List<OrderDetail>> three = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급대기, startDay, endDay);
+                if(!one.isEmpty())
+                {
+                    odList.addAll(one.get());
+                }
+                if(!two.isEmpty())
+                {
+                    odList.addAll(two.get());
+                }
+                if(!three.isEmpty())
+                {
+                    odList.addAll(three.get());
+                }
 
             }else if(pandaDashBoardDto.status.equals("지급완료"))
             {
                 System.out.println("정산완료");
-                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료,  PaymentStatus.지급완료,
-                        startDay, endDay);
+                Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
+                if(!one.isEmpty())
+                {
+                    odList.addAll(one.get());
+                }
+
+
 
             }else if(pandaDashBoardDto.status.equals("지급예정"))
             {
-                System.out.println("대기중");
-                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정,  PaymentStatus.지급대기,
-                        startDay, endDay);
+                Optional<List<OrderDetail>> two = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료, startDay, endDay);
+                Optional<List<OrderDetail>> three = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급대기, startDay, endDay);
+
+                if(!two.isEmpty())
+                {
+                    odList.addAll(two.get());
+                }
+                if(!three.isEmpty())
+                {
+                    odList.addAll(three.get());
+                }
 
             }
-            for (OrderDetail orderDetail : odList.get()) {
-                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()));
+            
+            for (OrderDetail orderDetail : odList) {
+                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getId(),orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()));
             }
 
             return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,0,0));
 
 
 
-        }catch (Exception E)
-        {
-            System.out.println("E = " + E);
-            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
-
-        }
+//        }catch (Exception E)
+//        {
+//            System.out.println("E = " + E);
+//            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+//
+//        }
 
 
 
@@ -178,11 +205,13 @@ public class PandaController {
     @Data
     private static class PandaDashboardDtoType
     {
+        Long id;
         String status;
         int money;
         LocalDateTime localDateTime;
 
-        public PandaDashboardDtoType(String status, int money, LocalDateTime localDateTime) {
+        public PandaDashboardDtoType(Long id,String status, int money, LocalDateTime localDateTime) {
+            this.id= id;
             this.status = status;
             this.money = money;
             this.localDateTime = localDateTime;

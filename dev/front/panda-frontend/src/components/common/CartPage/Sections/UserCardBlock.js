@@ -338,9 +338,16 @@ function UserCardBlock(props) {
                             </div>
                           </Col>
                           <Col lg={4} md={12} sm={12} xs={12}>
-                            최종가격 : {allPrice}
+                            최종가격 :{" "}
+                            {allPrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                             <br />
-                            할인전 : ({purePrice})
+                            할인전 : (
+                            {purePrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            )
                           </Col>
                           <Col lg={4} md={12} sm={12} xs={12}>
                             <div style={{}}>

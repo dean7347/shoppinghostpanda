@@ -204,6 +204,7 @@ public class UserOrder {
                 orderDetail.setPaymentM(PaymentStatus.지급예정);
             }
         }
+        this.checkedAt=LocalDateTime.now();
         this.orderStatus= OrderStatus.준비중;
         this.paymentStatus=PaymentStatus.지급예정;
         this.settle();
