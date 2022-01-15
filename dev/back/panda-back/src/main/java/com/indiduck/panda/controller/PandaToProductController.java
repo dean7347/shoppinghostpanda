@@ -58,6 +58,22 @@ public class PandaToProductController {
 
     }
 
+//    @RequestMapping(value = "/api/getpandas_by_id", method = RequestMethod.GET)
+//    public ResponseEntity<?> viewDetail(@CurrentSecurityContext(expression = "authentication")
+//                                                Authentication authentication,
+//                                        @RequestParam(name = "id") Long productid) throws Exception {
+//
+//        List<PandaToProduct> byProduct = pandaToProductRepository.findByProductId(productid);
+//
+//
+//        if(!byProduct.isEmpty())
+//        {
+//            return ResponseEntity.ok(new PandasDto(true,byProduct));
+//        }
+//        return ResponseEntity.ok(new PandasDto(false,null));
+//
+//    }
+
     @Data
     static class PandasDto {
         boolean success;
