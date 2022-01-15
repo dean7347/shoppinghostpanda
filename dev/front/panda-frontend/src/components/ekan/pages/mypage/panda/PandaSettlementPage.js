@@ -24,7 +24,7 @@ const PandaSettlementPage = () => {
       <td>{item.localDateTime.slice(0, 10)}</td>
 
       <td>USOD01{item.id} </td>
-      <td>{item.money} ₩</td>
+      <td>{item.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₩</td>
       <td>
         <Badge type={orderStatus[item.status]} content={item.status} />
       </td>
