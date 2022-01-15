@@ -4,11 +4,10 @@ import StatusCard from "../../../UI/cards/StatusCard";
 import Chart from 'react-apexcharts'
 import Modal from "../../../UI/modal/Modal";
 import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
 import Message from "../../../UI/Message";
 import {chartOptions, pandaDashboardCard} from "./pandaTypes";
 import Button from "../../../UI/Button";
-import {setError} from "../../../../../store/actions/pageActions";
+import {setError, setLoading} from "../../../../../store/actions/pageActions";
 import {fetchPandaDashBoard} from "../../../../../store/actions/mypageActions/pandaActions";
 
 
