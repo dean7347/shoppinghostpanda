@@ -6,7 +6,7 @@ export const fetchPandaDashBoard = () => {
   return async (dispatch) => {};
 };
 
-export const fetchPandaSettlementList = (data) => {
+export const fetchPandaSettlementList = (data, onError) => {
   return async (dispatch) => {
     try {
       console.log("페치데이타");
@@ -31,6 +31,7 @@ export const fetchPandaSettlementList = (data) => {
       }
     } catch (error) {
       console.log(error);
+      onError()
       dispatch(setError("판다 정산 목록 이상"));
     }
   };
