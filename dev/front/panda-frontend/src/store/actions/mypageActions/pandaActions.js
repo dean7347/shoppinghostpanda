@@ -2,7 +2,7 @@ import {FETCH_PANDA_DASHBOARD, FETCH_PANDA_SETTLEMENT_LIST} from "../../types";
 import axios from "axios";
 import {setError} from "../pageActions";
 
-export const fetchPandaDashBoard = () => {
+export const fetchPandaDashBoard = (year, onError) => {
     return async dispatch => {
         try {
             let res = await axios.post('/api/pandadashboardmain', {
