@@ -1,15 +1,24 @@
-import React from "react";
+import React, {useEffect} from "react";
 import MyPageTable from "../../../UI/table/MyPageTable";
 import { useDispatch, useSelector } from "react-redux";
 import Badge from "../../../UI/badge/Badge";
 import { pandaSettlementTable } from "./pandaTypes";
 import PandaSettlementPanel from "../../../UI/panel/PandaSettlementPanel";
 import Message from "../../../UI/Message";
+import {setError} from "../../../../../store/actions/pageActions";
 
 const PandaSettlementPage = () => {
   const dispatch = useDispatch();
   const { pandaSettlementList } = useSelector((state) => state.panda);
   const { error } = useSelector((state) => state.page);
+
+  useEffect(()=>{
+      return(()=>{
+          if(error){
+              dispatch(setError(''))
+          }
+      })
+  })
 
   const orderStatus = {
     지급완료: "primary",
