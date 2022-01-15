@@ -28,6 +28,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
     Optional<List<OrderDetail>> findOrderDetailByUserAndOrderStatusAndOrderStatus(User user,OrderStatus od,OrderStatus od2);
     Optional<List<OrderDetail>> findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(Panda panda, PaymentStatus paymentStatus,PaymentStatus paymentStatusse, LocalDateTime fromDate, LocalDateTime toDate);
     Optional<List<OrderDetail>> findByPandaAndPaymentStatusOrPaymentStatus(Panda panda, PaymentStatus paymentStatus,PaymentStatus paymentStatusse);
+    Optional<List<OrderDetail>> findByPandaAndPaymentStatusOrPaymentStatusOrPaymentStatusAndFinishedAtBetween(Panda panda, PaymentStatus paymentStatus,PaymentStatus paymentStatusse,PaymentStatus paymentStatusthird, LocalDateTime fromDate, LocalDateTime toDate);
 
     //    Optional<List<OrderDetail>> findOrderDetailsByFinishedAtBetween(LocalDateTime fromDate, LocalDateTime toDate);
 

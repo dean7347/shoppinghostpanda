@@ -110,69 +110,52 @@ public class PandaController {
         System.out.println("startDay = " + startDay);
         System.out.println("endDay = " + endDay);
         System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Panda panda = byEmail.get().getPanda();
+            List<PandaDashboardDtoType> pandaDashboardDtoList=new ArrayList<>();
+            Optional<List<OrderDetail>> odList = null;
 
-                    return ResponseEntity.ok(new DashboardDto(false,null,0,0));
 
-//        try{
-//            System.out.println("pandaDashBoardDto = " + pandaDashBoardDto);
-//            System.out.println("LocalDateTime.now() = " + LocalDateTime.now());
-//            String name = authentication.getName();
-//            Optional<User> byEmail = userRepository.findByEmail(name);
-//            Panda panda = byEmail.get().getPanda();
-//            Optional<List<OrderDetail>> orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween = null;
-//            List<PandaDashboardDtoType> pandaDashboardDtoList=new ArrayList<>();
-//            int finmoney= 0;
-//            int expectmoney=0;
-//            Optional<List<OrderDetail>> finish = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatus(panda, PaymentStatus.지급완료, PaymentStatus.지급완료);
-//            for (OrderDetail orderDetail : finish.get()) {
-//                finmoney+=orderDetail.getPandaMoney();
-//            }
-//            Optional<List<OrderDetail>> expect = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatus(panda, PaymentStatus.지급예정, PaymentStatus.지급대기);
-//            for (OrderDetail orderDetail : expect.get()) {
-//                expectmoney+=orderDetail.getPandaMoney();
-//
-//            }
-//
-//            //지급완료거나 비었을때
-//            if(pandaDashBoardDto.status=="지급완료")
-//            {
-//                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
-//                        orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료,PaymentStatus.지급완료
-//                                , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
-//
-//            }else if((pandaDashBoardDto.status=="지급예정"||pandaDashBoardDto.status=="지급대기"))
-//            {
-//                orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween =
-//                        orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정,PaymentStatus.지급대기
-//                                , pandaDashBoardDto.startDay, pandaDashBoardDto.endDay);
-//
-//            }else
-//            {
-//                return ResponseEntity.ok(new DashboardDto(false,pandaDashboardDtoList,finmoney,expectmoney));
-//
-//            }
-//
-//
-//            if(orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween.isEmpty())
-//            {
-//                return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finmoney,expectmoney));
-//
-//            }
-//            for (OrderDetail orderDetail : orderDetailsByPandaAndPaymentStatusAndFinishedAtBetween.get()) {
-////                System.out.println("orderDetail = " + orderDetail.getOrderStatus().toString());
-////                System.out.println("orderDetail = " + orderDetail.getPandaMoney());
-////                System.out.println("orderDetail = " + orderDetail.getFinishedAt());
-//
-//                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()) );
-//            }
-//
-//            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finmoney,expectmoney));
-//        }catch (Exception E)
-//        {
-//            System.out.println("E = " + E);
-//            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
-//
-//        }
+
+
+            if(pandaDashBoardDto.status.equals("all"))
+            {
+                System.out.println("전체");
+                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, PaymentStatus.지급대기, PaymentStatus.지급완료,
+                        startDay, endDay);
+
+            }else if(pandaDashBoardDto.status.equals("지급완료"))
+            {
+                System.out.println("정산완료");
+                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료,  PaymentStatus.지급완료,
+                        startDay, endDay);
+
+            }else if(pandaDashBoardDto.status.equals("지급예정"))
+            {
+                System.out.println("대기중");
+                odList = orderDetailRepository.findByPandaAndPaymentStatusOrPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정,  PaymentStatus.지급대기,
+                        startDay, endDay);
+
+            }
+            for (OrderDetail orderDetail : odList.get()) {
+                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()));
+            }
+
+            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,0,0));
+
+
+
+        }catch (Exception E)
+        {
+            System.out.println("E = " + E);
+            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+
+        }
+
+
+
 
     }
     @Data

@@ -26,7 +26,7 @@ const PandaSettlementPanel = () => {
 
   //   console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
   //   console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
-  //   console.log(` 상태모드: ${searchStatus}`);
+  console.log(` 상태모드: ${searchStatus}`);
 
   useEffect(() => {
     if (pandaSettlementList) {
