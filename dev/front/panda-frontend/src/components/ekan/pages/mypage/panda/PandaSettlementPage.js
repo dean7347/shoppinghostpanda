@@ -4,10 +4,12 @@ import {useDispatch, useSelector} from "react-redux";
 import Badge from "../../../UI/badge/Badge";
 import {pandaSettlementTable} from "./pandaTypes";
 import PandaSettlementPanel from "../../../UI/panel/PandaSettlementPanel";
+import Message from "../../../UI/Message";
 
 const PandaSettlementPage = () => {
     const dispatch = useDispatch()
     const {pandaSettlementList} = useSelector((state) => state.panda)
+    const { error } = useSelector((state) => state.page);
 
     const orderStatus = {
         "지급완료": "primary",
@@ -34,6 +36,7 @@ const PandaSettlementPage = () => {
     return (
         <>
             <div className="container">
+                {error && <Message type="danger" msg={error} />}
                 <PandaSettlementPanel/>
 
                 <div className="row mt-4">
