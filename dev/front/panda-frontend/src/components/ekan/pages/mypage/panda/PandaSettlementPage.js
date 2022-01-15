@@ -49,6 +49,12 @@ const PandaSettlementPage = () => {
                 <div className="row mt-4">
                     <div className="col-12">
                         <div className="custom-card">
+                            <div className="card__header">
+                                {pandaSettlementList && <Message
+                                    msg={`예상금액 : ${pandaSettlementList.expectMoney} 원 //
+                                    정산된 금액: ${pandaSettlementList.finMoney} 원`}
+                                    type="info"/>}
+                            </div>
                             <div className="card__body">
                                 {pandaSettlementList ? (
                                     <MyPageTable
