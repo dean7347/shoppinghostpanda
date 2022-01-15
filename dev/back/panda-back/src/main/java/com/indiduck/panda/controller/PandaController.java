@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.spi.DateFormatProvider;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin
 @RequiredArgsConstructor
@@ -110,7 +107,7 @@ public class PandaController {
         System.out.println("startDay = " + startDay);
         System.out.println("endDay = " + endDay);
         System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
-//        try{
+        try{
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Panda panda = byEmail.get().getPanda();
@@ -165,26 +162,96 @@ public class PandaController {
                 }
 
             }
-            
+            int finish=0;
+            int yet=0;
+
             for (OrderDetail orderDetail : odList) {
+                if(orderDetail.getPaymentStatus()==PaymentStatus.지급완료)
+                {
+                    finish+=orderDetail.getPandaMoney();
+                }else if(orderDetail.getPaymentStatus()==PaymentStatus.지급예정||orderDetail.getPaymentStatus()==PaymentStatus.지급대기)
+                {
+                    yet+=orderDetail.getPandaMoney();
+                }
                 pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getId(),orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()));
+
             }
 
-            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,0,0));
+            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finish,yet));
 
 
 
-//        }catch (Exception E)
-//        {
-//            System.out.println("E = " + E);
-//            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
-//
-//        }
+        }catch (Exception E)
+        {
+            System.out.println("E = " + E);
+            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+
+        }
 
 
 
 
     }
+
+    @RequestMapping(value = "/api/pandadashboardmain", method = RequestMethod.GET)
+    public ResponseEntity<?> pandaDashBoardMain(@CurrentSecurityContext(expression = "authentication")
+                                                    Authentication authentication, @RequestBody PandaDashBoardMain pandaDashBoardMain) throws Exception {
+
+
+        try{
+            LocalDateTime startDay= LocalDateTime.of(pandaDashBoardMain.year,1,1
+                    ,0,0,0,0);
+            LocalDateTime endDay= LocalDateTime.of(pandaDashBoardMain.year,12,31
+                    ,23,59,59,999999999);
+
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Panda panda = byEmail.get().getPanda();
+            Optional<List<OrderDetail>> byPandaAndPaymentStatusNotNull = orderDetailRepository.findByPandaAndPaymentStatusNotNullAndFinishedAtBetween(panda,startDay,endDay);
+            int fin = 0;
+            int yet = 0;
+            int[] salse={0,0,0,0,0,0,0,0,0,0,0,0};
+            for (OrderDetail orderDetail : byPandaAndPaymentStatusNotNull.get()) {
+                if(orderDetail.getPaymentStatus()==PaymentStatus.지급완료)
+                {
+                    fin+=orderDetail.getPandaMoney();
+                }else if(orderDetail.getPaymentStatus()==PaymentStatus.지급대기||orderDetail.getPaymentStatus()==PaymentStatus.지급예정)
+                {
+                    yet+=orderDetail.getPandaMoney();
+                }
+                int monthValue = orderDetail.getFinishedAt().getMonthValue();
+                salse[monthValue-1]++;
+
+            }
+
+            return ResponseEntity.ok(new DashBoardMainDto(salse,fin,yet));
+
+        }catch (Exception E)
+        {
+            System.out.println("E = " + E);
+            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+
+        }
+
+
+
+
+    }
+    @Data
+    private static class DashBoardMainDto
+    {
+        int salse[]=null;
+        long finish;
+        long expect;
+
+        public DashBoardMainDto(int salse[], long finish, long expect) {
+            this.salse = salse;
+            this.finish = finish;
+            this.expect = expect;
+        }
+    }
+
+
     @Data
     private static class DashboardDto
     {
@@ -250,6 +317,8 @@ public class PandaController {
         boolean infoagree;
     }
 
-
-
+    @Data
+    private class PandaDashBoardMain {
+        int year;
+    }
 }
