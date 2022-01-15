@@ -2,8 +2,11 @@ package com.indiduck.panda.controller;
 
 
 import com.indiduck.panda.Repository.PandaToProductRepository;
+import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.PandaToProductService;
+import com.indiduck.panda.domain.Panda;
 import com.indiduck.panda.domain.PandaToProduct;
+import com.indiduck.panda.domain.User;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class PandaToProductController {
     PandaToProductService pandaToProductService;
     @Autowired
     PandaToProductRepository pandaToProductRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @RequestMapping(value = "/api/addpropanda", method = RequestMethod.POST)
     public ResponseEntity<?> addPandaToProduct(@CurrentSecurityContext(expression = "authentication")
@@ -54,6 +59,23 @@ public class PandaToProductController {
         {
             return ResponseEntity.ok(new PandasDto(true,byProduct));
         }
+        return ResponseEntity.ok(new PandasDto(false,null));
+
+    }
+
+    @RequestMapping(value = "/api/pandadashboardmovie", method = RequestMethod.GET)
+    public ResponseEntity<?> viewDetail(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication) throws Exception {
+
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        Panda panda = byEmail.get().getPanda();
+        Optional<List<PandaToProduct>> byPanda = pandaToProductRepository.findByPanda(panda);
+        if(!byPanda.isEmpty())
+        {
+            return ResponseEntity.ok(new PandasDto(true,byPanda.get()));
+        }
+
         return ResponseEntity.ok(new PandasDto(false,null));
 
     }

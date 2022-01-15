@@ -193,7 +193,7 @@ public class PandaController {
 
     }
 
-    @RequestMapping(value = "/api/pandadashboardmain", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/pandadashboardmain", method = RequestMethod.POST)
     public ResponseEntity<?> pandaDashBoardMain(@CurrentSecurityContext(expression = "authentication")
                                                     Authentication authentication, @RequestBody PandaDashBoardMain pandaDashBoardMain) throws Exception {
 
