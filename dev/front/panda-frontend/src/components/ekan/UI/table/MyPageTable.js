@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./myPageTable.css";
 
 const MyPageTable = ({ limit, bodyData, headData, renderHead, renderBody }) => {
@@ -25,6 +25,16 @@ const MyPageTable = ({ limit, bodyData, headData, renderHead, renderBody }) => {
     setDataShow(bodyData.slice(start, end));
     setCurrPage(page);
   };
+
+  useEffect(()=>{
+    if(bodyData){
+      const initDataShow =
+          limit && bodyData ? bodyData.slice(0, Number(limit)) : bodyData;
+
+      setDataShow(initDataShow)
+    }
+
+  },[bodyData])
 
   return (
     <>
