@@ -1,6 +1,6 @@
-import {FETCH_PANDA_DASHBOARD, FETCH_PANDA_SETTLEMENT_LIST} from "../../types";
+import {FETCH_PANDA_DASHBOARD, FETCH_PANDA_SETTLEMENT_LIST, FETCH_PANDA_VIDEO_LIST} from "../../types";
 import axios from "axios";
-import {setError} from "../pageActions";
+import {setError, setLoading} from "../pageActions";
 
 export const fetchPandaDashBoard = (year, onError) => {
     return async dispatch => {
@@ -59,3 +59,25 @@ export const fetchPandaSettlement = () => {
     return async (dispatch) => {
     };
 };
+
+export const fetchPandaVideoList = (onError) => {
+    return async dispatch => {
+        try {
+            const res = await axios.get('/api/pandadashboardmovie')
+
+            if (res.data) {
+                const videoList = res.data
+                console.log('판다 비디오 목록: ',videoList)
+                dispatch({
+                    type: FETCH_PANDA_VIDEO_LIST,
+                    payload: videoList
+                })
+            }
+        } catch (error){
+            console.error(error)
+            onError()
+            dispatch(setError('동영상 리스트 통신이상'))
+        }
+
+    }
+}
