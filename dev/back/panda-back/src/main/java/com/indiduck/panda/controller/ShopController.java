@@ -198,11 +198,106 @@ public class ShopController {
 
 
     //샵 대시보드 메인 V2
+    @RequestMapping(value = "/api/shopdashboardmainv2", method = RequestMethod.POST)
+    public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
+                                                                 Authentication authentication,@RequestBody ShopDashBoardMain shopDashBoardMain) throws Exception {
 
+
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Shop shop = byEmail.get().getShop();
+            int newOrderSize =0;
+            int readyOrder =0;
+            int cROrder =0;
+            int finOrder=0;
+            LocalDateTime startDay= LocalDateTime.of(shopDashBoardMain.year,1,1
+                    ,0,0,0,0);
+            LocalDateTime endDay= LocalDateTime.of(shopDashBoardMain.year,12,31
+                    ,23,59,59,999999999);
+
+
+            Optional<List<UserOrder>> newOrder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.결제완료);
+
+            Optional<List<UserOrder>> ready = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.준비중);
+            Optional<List<UserOrder>> ready2 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.발송중);
+            Optional<List<UserOrder>> ready3 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.배송완료);
+
+            Optional<List<UserOrder>> cancelReturn = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.교환대기);
+            Optional<List<UserOrder>> cancelReturn2 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.환불대기);
+
+            Optional<List<UserOrder>> finish1 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.구매확정,startDay,endDay);
+            Optional<List<UserOrder>> finish2 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.환불완료,startDay,endDay);
+            Optional<List<UserOrder>> finish3 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.교환완료,startDay,endDay);
+
+            newOrderSize=newOrder.get().size();
+            readyOrder=ready.get().size()+ready2.get().size()+ready3.get().size();
+            cROrder=cancelReturn.get().size()+cancelReturn2.get().size();
+            finOrder=finish1.get().size()+finish2.get().size()+finish3.get().size();
+            int[] money={0,0,0,0,0,0,0,0,0,0,0,0};
+            int[] quantity={0,0,0,0,0,0,0,0,0,0,0,0};
+
+            for (UserOrder userOrder : finish1.get()) {
+                int monthValue = userOrder.getFinishAt().getMonthValue();
+                money[monthValue-1]+=userOrder.getShopMoney();
+                quantity[monthValue-1]++;
+            }
+
+
+
+
+            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(true,newOrderSize,readyOrder,cROrder,finOrder,money,quantity));
+
+        } catch (Exception e)
+        {
+            System.out.println("E = " + e);
+
+            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(false,0,0,0,0,null,null));
+
+
+
+        }
+
+
+    }
 
 
 
     //==DAO DTO ==//
+    @Data
+    private static class ShopDashBoardMain
+    {
+        int year;
+    }
+    @Data
+    private static class ShopDashBoardMainV2Dto
+    {
+        boolean success;
+        //신규주문
+        int newOrder;
+        //배송준비
+        int readyOrder;
+        //취소 반품
+        int cancelReturn;
+        //완료주문
+        int completeBuy;
+
+        //정산금액
+        int[] money;
+        //주문건수
+        int[] quantity;
+
+        public ShopDashBoardMainV2Dto(boolean tf,int newOrder, int readyOrder, int completeBuy, int cancelReturn, int[] money, int[] quantity) {
+            this.success=tf;
+            this.newOrder = newOrder;
+            this.readyOrder = readyOrder;
+            this.completeBuy = completeBuy;
+            this.cancelReturn = cancelReturn;
+            this.money = money;
+            this.quantity = quantity;
+        }
+    }
+
     @Data
     private static class ShopDashBoardDto {
         LocalDateTime startDay;
