@@ -13,7 +13,7 @@ function deleteBtnAction(e) {
   console.log('삭제하기')
 }
 
-const VideoCard = ({link, panda}) => {
+const VideoCard = ({link, panda, footer}) => {
   const [videoInfo, setVideoInfo] = useState(null)
 
   useEffect(() => {
@@ -51,17 +51,18 @@ const VideoCard = ({link, panda}) => {
                   </div>
                 </div>
               </div>
-
-              <footer className="card-footer has-background-white">
-                <div style={{width: "100%"}}>
+                {footer&&
+                    <footer className="card-footer has-background-white">
+                        <div style={{width: "100%"}}>
                         <span className="float-start">
                             <Button onClick={modifyBtnAction} text="수정" className="is-info is-inverted"/>
                         </span>
-                  <span className="float-end">
+                            <span className="float-end">
                             <Button onClick={deleteBtnAction} text="삭제" className="is-danger is-inverted"/>
                         </span>
-                </div>
-              </footer>
+                        </div>
+                    </footer>
+                }
             </div>
         }
 
