@@ -33,7 +33,7 @@ const PandaVideoPage = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="row">
-                            {pandaVideoList &&
+                            {pandaVideoList ?
                                 pandaVideoList.details.map((item, index) =>
                                     <div className="col-sm-12 col-md-6 col-lg-3 mb-4" key={index}>
                                         <VideoCard
@@ -42,7 +42,7 @@ const PandaVideoPage = () => {
                                             footer={true}
                                         />
                                     </div>
-                                )
+                                ) : <div>판다 없음</div>
                             }
                         </div>
                     </div>
