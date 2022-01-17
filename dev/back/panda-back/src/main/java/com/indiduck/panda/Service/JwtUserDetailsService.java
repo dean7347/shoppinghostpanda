@@ -12,16 +12,28 @@ package com.indiduck.panda.Service;
 //- https://www.javainuse.com/onlineBcrypt 에서 user_pw를 Bcrypt화할 수 있습니다.
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Optional;
 
 import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.domain.UserType;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.Certification;
+import com.siot.IamportRestClient.response.IamportResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -46,6 +58,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 //	}
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private ApiKey apiKey;
 
     /**
      * Spring Security 필수 메소드 구현
@@ -86,27 +100,90 @@ public class JwtUserDetailsService implements UserDetailsService {
      * @return 저장되는 회원의 PK
      */
     @Transactional
-    public Long save(UserDto infoDto) {
-        if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
-        {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            infoDto.setPassword(encoder.encode(infoDto.getPassword()));
+    public String save(UserDto infoDto) {
+
+        IamportClient client;
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = infoDto.getPhone();
+        client = new IamportClient(test_api_key, test_api_secret);
+
+        try {
+            IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
+//            System.out.println("certification_response = " + certification_response.getResponse().getName());
+//            System.out.println("certification_response = " + certification_response.getResponse().getPhone());
+//            System.out.println("certification_response = " + certification_response.getResponse().getBirth());
+//            System.out.println("certification_response = " + certification_response.getResponse().getBirth().getYear());
+//            System.out.println("certification_response = " + certification_response.getResponse().isCertified());
+//            System.out.println("certification_response = " + certification_response.getResponse().getUniqueKey());
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            LocalDate now = LocalDate.now();
+            Date birth = certification_response.getResponse().getBirth();
+
+            String format1 = format.format(birth);
+            LocalDate parsedBirthDate = LocalDate.parse(format1, DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+            int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear(); // (1)
+            if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
+                americanAge = americanAge -1;
+            }
+            //19세이하 가입불가
+            if(americanAge <19 )
+            {
+                return "만 19세 이하는 가입할 수 없습니다";
+            }
+            //인증실패
+            if(!certification_response.getResponse().isCertified() )
+            {
+                return "인증실패";
+            }
+
+            if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
+            {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                infoDto.setPassword(encoder.encode(infoDto.getPassword()));
+                //만나이 계산
+
+                userRepository.save(User.builder()
+                        .email(infoDto.getEmail())
+                        .auth(infoDto.getAuth())
+                        .adult(infoDto.isAdult())
+                        .apprterm(infoDto.isApprterm())
+                        .userRName(certification_response.getResponse().getName())
+                        .priagree(infoDto.isPriagree())
+                        .userPhoneNumber(certification_response.getResponse().getPhone())
+                        .ci(certification_response.getResponse().getUniqueKey())
+                        .regAt(LocalDateTime.now())
+                        .password(infoDto.getPassword())
+                        .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
+                return "회원가입성공";
+
+            }
+            return "중복된 아이디가 존재합니다";
+
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    return "ERR 401이 발생했습니다 해당 사항이 계속된다면 쇼핑호스트 판다로 문의부탁드립니다";
 
 
-            return userRepository.save(User.builder()
-                    .email(infoDto.getEmail())
-                    .auth(infoDto.getAuth())
-                    .adult(infoDto.isAdult())
-                    .apprterm(infoDto.isApprterm())
-                    .userRName(infoDto.getName())
-                    .priagree(infoDto.isPriagree())
-                    .userPhoneNumber(infoDto.getPhone())
-                    .regAt(LocalDateTime.now())
-                    .password(infoDto.getPassword())
-                    .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
+                case 500 :
+                    return "ERR 500이 발생했습니다 해당 사항이 계속된다면 쇼핑호스트 판다로 문의부탁드립니다";
+
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+            return "ERR E이 발생했습니다 해당 사항이 계속된다면 쇼핑호스트 판다로 문의부탁드립니다";
 
         }
-        return null;
+
+    return  null;
 
     }
 

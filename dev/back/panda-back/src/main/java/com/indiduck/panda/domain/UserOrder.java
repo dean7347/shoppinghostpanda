@@ -35,13 +35,19 @@ public class UserOrder {
     //택배비
     int shipPrice=0;
 
-
+    //판매일자
     private LocalDateTime createdAt;
     private LocalDateTime checkedAt;
+    //배송일자 + 10일뒤에 구매확정
     private LocalDateTime shippedAt;
     private LocalDateTime refundAt;
     private LocalDateTime arriveAt;
+    //구매확정일자
     private LocalDateTime finishAt;
+    //입금예정일
+    private LocalDateTime expectCalculate;
+    //입금 완료일
+    private LocalDateTime depositCompleted;
 
     private String mid;
 

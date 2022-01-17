@@ -510,6 +510,7 @@ const RegisterPageV2 = ({ history }) => {
 
     return emailRegex.test(email);
   };
+  const [certifiNum, setCertifiNum] = useState("");
 
   const onClick = async (e) => {
     try {
@@ -521,15 +522,18 @@ const RegisterPageV2 = ({ history }) => {
         alert("패스워드가 일치하지 않습니다!");
         return;
       }
+      if (certifiNum === "") {
+        alert("본인인증이 필요합니다!");
+        return;
+      }
 
       const body = {
         adult: e.adult,
         apprterm: e.apprterm,
         priagree: e.priagree,
         email: e.id,
-        name: e.name,
         password: e.password,
-        phone: e.phone,
+        phone: certifiNum,
       };
       axios.post("/api/signup", body).then((response) => {
         if (response.data.success) {
@@ -545,7 +549,6 @@ const RegisterPageV2 = ({ history }) => {
   };
 
   ///본인인증
-  const [certifiNum, setCertifiNum] = useState();
   const onTest = () => {
     console.log("테스트를위한");
     console.log(certifiNum);
@@ -731,32 +734,16 @@ const RegisterPageV2 = ({ history }) => {
         </Form.Item>
 
         <Form.Item
-          label="이름"
-          name="name"
+          label="본인인증"
+          name="certifiNum"
           rules={[
             {
-              required: true,
-              message: "이름",
+              message: "본인인증을 완료해야합니다",
             },
           ]}
         >
-          <Input placeholder="이름" />
+          <Button onClick={onClcikPhone}>본인인증 </Button>
         </Form.Item>
-
-        <Form.Item
-          label="전화번호"
-          name="phone"
-          rules={[
-            {
-              required: true,
-              message: "전화번호",
-            },
-          ]}
-        >
-          <Input placeholder="전화번호" />
-        </Form.Item>
-        <Button onClick={onClcikPhone}>본인인증 </Button>
-        <Button onClick={onTest}>본인인증테스트 </Button>
         <Form.Item label="제출하기">
           <Button type="primary" htmlType="submit">
             submit

@@ -44,6 +44,10 @@ public class User implements UserDetails {
     private boolean apprterm;
     private boolean priagree;
 
+    //CI정보
+    private String ci;
+    //인증성공여부
+
 
 
 

@@ -130,10 +130,10 @@ public class JwtAuthenticationController {
 
 
         try {
-            Long save = userDetailsService.save(infoDto);
-            if(save==null)
+            String save = userDetailsService.save(infoDto);
+            if(!save.equals("회원가입성공"))
             {
-                return ResponseEntity.ok(new signupDto(false,"중복된 아이디가 존재합니다"));
+                return ResponseEntity.ok(new signupDto(false,save));
 
             }
 

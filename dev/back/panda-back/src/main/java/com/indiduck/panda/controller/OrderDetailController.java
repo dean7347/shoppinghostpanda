@@ -32,6 +32,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 @CrossOrigin
 @RestController
@@ -226,7 +230,7 @@ public class OrderDetailController {
         return ResponseEntity.ok(new thisResultDto(true,myCart));
     }
 
-    //핸드폰 본인인증
+    //핸드폰 본인인증 왜 여기있지?????
     //결제완료
     @RequestMapping(value = "/api/authentication", method = RequestMethod.POST)
     public ResponseEntity<?> selfAuthentication(@CurrentSecurityContext(expression = "authentication")
@@ -236,7 +240,7 @@ public class OrderDetailController {
         String test_api_key = apiKey.getRESTAPIKEY();
         String test_api_secret = apiKey.getRESTAPISECRET();
         //결제내역에서
-        String test_imp_uid = "imp_830142650711";
+        String test_imp_uid = "imp_974774403374";
         client = new IamportClient(test_api_key, test_api_secret);
 
 //        System.out.println("muid는 = " + muid);
@@ -247,8 +251,22 @@ public class OrderDetailController {
             System.out.println("certification_response = " + certification_response.getResponse().getName());
             System.out.println("certification_response = " + certification_response.getResponse().getPhone());
             System.out.println("certification_response = " + certification_response.getResponse().getBirth());
+            System.out.println("certification_response = " + certification_response.getResponse().getBirth().getMonth());
+            System.out.println("certification_response = " + certification_response.getResponse().getBirth().getYear());
+            System.out.println("certification_response = " + certification_response.getResponse().isCertified());
+            System.out.println("certification_response = " + certification_response.getResponse().getUniqueKey());
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            LocalDate now = LocalDate.now();
+            Date birth = certification_response.getResponse().getBirth();
 
-            System.out.println("certification_response = " + certification_response.getMessage());
+            String format1 = format.format(birth);
+            LocalDate parsedBirthDate = LocalDate.parse(format1, DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+            int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear(); // (1)
+            if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
+                americanAge = americanAge -1;
+            }
+            System.out.println("americanAge = " + americanAge);
 
         } catch (IamportResponseException e) {
             System.out.println(e.getMessage());
