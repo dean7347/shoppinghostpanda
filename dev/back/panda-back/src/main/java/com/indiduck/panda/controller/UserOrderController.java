@@ -63,61 +63,71 @@ public class UserOrderController {
             Shop shop = byEmail.get().getShop();
             List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
             List<UserOrder> uoList =new ArrayList<>();
-
-            if(shopDashBoard.status.equals("all"))
+            int finish=0;
+            int yet =0;
+           //상태정의
+            if(shopDashBoard.status.equals("정산일자"))
             {
-                Optional<List<UserOrder>> one = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급예정,startDay,endDay);
-                Optional<List<UserOrder>> two = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
-                Optional<List<UserOrder>> three = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급대기,startDay,endDay);
+                Optional<List<UserOrder>> data = userOrderRepository.findByShopAndDepositCompletedNotNullAndDepositCompletedBetween(shop, startDay, endDay);
+                uoList.addAll(data.get());
+            }else if(shopDashBoard.status.equals("정산예정일")){
+                Optional<List<UserOrder>> data = userOrderRepository.findByShopAndExpectCalculateNotNullAndExpectCalculateBetween(shop, startDay, endDay);
+                uoList.addAll(data.get());
 
-                if(!one.isEmpty())
-                {
-                    uoList.addAll(one.get());
-                }
-                if(!two.isEmpty())
-                {
-                    uoList.addAll(two.get());
-                }
-                if(!three.isEmpty())
-                {
-                    uoList.addAll(three.get());
-                }
+            }else if(shopDashBoard.status.equals("판매일자"))
+            {
+                Optional<List<UserOrder>> data = userOrderRepository.findByShopAndCreatedAtNotNullAndCreatedAtBetween(shop, startDay, endDay);
+                uoList.addAll(data.get());
 
-            }else if(shopDashBoard.status.equals("정산완료"))
+            }else if(shopDashBoard.status.equals("구매확정일자"))
             {
-                Optional<List<UserOrder>> one = userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
-                if(!one.isEmpty())
-                {
-                    uoList.addAll(one.get());
-                }
-            }else if(shopDashBoard.status.equals("정산대기"))
+                Optional<List<UserOrder>> data = userOrderRepository.findByShopAndFinishAtNotNullAndFinishAtBetween(shop, startDay, endDay);
+                uoList.addAll(data.get());
+
+            }else
             {
-                Optional<List<UserOrder>> one =  userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
-                Optional<List<UserOrder>> two =  userOrderRepository.findByShopAndPaymentStatusAndFinishAtBetween(shop, PaymentStatus.지급완료,startDay,endDay);
-                if(!one.isEmpty())
-                {
-                    uoList.addAll(one.get());
-                }
-                if(!two.isEmpty())
-                {
-                    uoList.addAll(two.get());
-                }
+                return ResponseEntity.ok(new DashboardDto(true,null,0,0));
 
             }
-            int finish=0;
-            int yet=0;
+
             for (UserOrder userOrder : uoList) {
-                if(userOrder.getPaymentStatus()==PaymentStatus.지급완료)
-                {
-                    finish+= userOrder.getShopMoney();
-                }else if(userOrder.getPaymentStatus()==PaymentStatus.지급예정||userOrder.getPaymentStatus()==PaymentStatus.지급대기)
+                if(userOrder.getPaymentStatus()==PaymentStatus.지급대기 || userOrder.getPaymentStatus()==PaymentStatus.지급예정)
                 {
                     yet+=userOrder.getShopMoney();
+                }else if(userOrder.getPaymentStatus()==PaymentStatus.지급완료)
+                {
+                    finish+=userOrder.getShopMoney();
                 }
-                shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder.getId(),userOrder.getPaymentStatus().toString(),userOrder.getShopMoney(),userOrder.getFinishAt()));
 
+                shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder));
             }
             return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,finish,yet));
+
+        } catch (Exception e)
+        {
+            System.out.println("E = " + e);
+
+            return ResponseEntity.ok(new DashboardDto(true,null,0,0));
+
+
+        }
+
+
+    }
+
+    @RequestMapping(value = "/api/shopdashboardforordernumber", method = RequestMethod.POST)
+    public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication, @RequestBody ShopDashBoardForUserOrderId shopDashBoardForUserOrderId) throws Exception {
+
+
+        try{
+            Optional<UserOrder> byId = userOrderRepository.findById(shopDashBoardForUserOrderId.orderId);
+            List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
+
+            shopDashboardDtoTypeList.add(new ShopDashboardDtoType(byId.get()));
+
+
+            return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,0,0));
 
         } catch (Exception e)
         {
@@ -150,16 +160,47 @@ public class UserOrderController {
     @Data
     private static class ShopDashboardDtoType
     {
+        //주문번호
         Long id;
-        String status;
-        int money;
-        LocalDateTime localDateTime;
+        //온전한 입금가격
+        int beforeSalePrice;
 
-        public ShopDashboardDtoType(Long id,String status, int money, LocalDateTime localDateTime) {
-            this.id= id;
-            this.status = status;
-            this.money = money;
-            this.localDateTime = localDateTime;
+
+        //정산금액
+        int settlePrice;
+        //수수료
+        int fees;
+        //판매일자
+        LocalDateTime salesDate;
+        //구매확정일자
+        LocalDateTime confirmDate;
+        //정산예정일
+        LocalDateTime expectDate;
+        //정산일자
+        LocalDateTime depositCompleted;
+        //정산상태
+        PaymentStatus paymentStatus;
+
+
+        public ShopDashboardDtoType(UserOrder uo) {
+            this.id = uo.getId();
+            //무료배송이 아닐경우
+            if(uo.getFreeprice()>uo.getPureAmount())
+            {
+                this.beforeSalePrice = uo.getPureAmount()+uo.getShipPrice();
+            }else
+            {
+                this.beforeSalePrice =uo.getPureAmount();
+            }
+            this.settlePrice = uo.getShopMoney();
+            this.fees = uo.getPandaMoney()+uo.getHostMoney()+uo.getBalance();
+            this.salesDate = uo.getCreatedAt();
+            this.confirmDate = uo.getFinishAt();
+            //정산예정일
+            this.expectDate = uo.getExpectCalculate();
+            //정산일
+            this.depositCompleted = uo.getDepositCompleted();
+            this.paymentStatus = uo.getPaymentStatus();
         }
     }
 
@@ -174,7 +215,8 @@ public class UserOrderController {
         String waybill;
     }
 
-    private class ShopDashBoard {
+    @Data
+    private static class ShopDashBoard {
         int startYear;
         int startMonth;
         int startDay;
@@ -184,5 +226,10 @@ public class UserOrderController {
         int endDay;
 
         String status;
+    }
+    @Data
+    private static class ShopDashBoardForUserOrderId
+    {
+        long orderId;
     }
 }

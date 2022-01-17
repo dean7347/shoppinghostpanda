@@ -18,8 +18,17 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
     Page<UserOrder> findAllByUserId(User user,Pageable pageable);
     List<UserOrder> findByUserId(User user);
     Optional<UserOrder> findById(Long id);
-    Optional<List<UserOrder>> findByShopAndPaymentStatusAndFinishAtBetween(Shop shop, PaymentStatus paymentStatus, LocalDateTime start,LocalDateTime end);
+    //정산일자 기준
+    Optional<List<UserOrder>>findByShopAndDepositCompletedNotNullAndDepositCompletedBetween(Shop shop,LocalDateTime start,LocalDateTime end);
 
+    // 정산예정일기준
+    Optional<List<UserOrder>>findByShopAndExpectCalculateNotNullAndExpectCalculateBetween(Shop shop,LocalDateTime start,LocalDateTime end);
+
+    //판매일자 기준
+    Optional<List<UserOrder>>findByShopAndCreatedAtNotNullAndCreatedAtBetween(Shop shop,LocalDateTime start,LocalDateTime end);
+
+    //구매확정일자 기준
+    Optional<List<UserOrder>>findByShopAndFinishAtNotNullAndFinishAtBetween(Shop shop,LocalDateTime start,LocalDateTime end);
 
 
 }

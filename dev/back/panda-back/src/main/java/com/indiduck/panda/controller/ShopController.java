@@ -196,25 +196,8 @@ public class ShopController {
 
     }
 
-//    @RequestMapping(value = "/api/shop/nochecked", method = RequestMethod.GET)
-//    public ResponseEntity<?> nochecked(@CurrentSecurityContext(expression = "authentication")
-//                                               Authentication authentication) throws Exception{
-//
-//        try{
-//            String name = authentication.getName();
-//            Optional<User> byEmail = userRepository.findByEmail(name);
-//            Optional<List<UserOrder>> allByUserId = userOrderRepository.findAllByShopAndOrderStatus(byEmail.get().getShop(),OrderStatus.결제완료);
-//
-//        int size = allByUserId.get().size();
-//        return ResponseEntity.ok(new uorsCheck(true,size));
-//
-//        }catch (Exception e)
-//        {
-//            return ResponseEntity.ok(new uorsCheck(false,0));
-//
-//        }
-//
-//    }
+
+    //샵 대시보드 메인 V2
 
 
 
