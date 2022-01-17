@@ -39,6 +39,7 @@ const PandaVideoPage = () => {
                                         <VideoCard
                                             panda={item.panda}
                                             link={item.link}
+                                            footer={true}
                                         />
                                     </div>
                                 )
