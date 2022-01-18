@@ -52,7 +52,7 @@ public class UserOrderController {
     public ResponseEntity<?> shopDashBoard(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody ShopDashBoard shopDashBoard) throws Exception {
 
-
+        System.out.println("shopDashBoard = " + shopDashBoard);
         try{
             LocalDateTime startDay= LocalDateTime.of(shopDashBoard.startYear,shopDashBoard.startMonth+1,shopDashBoard.startDay
                     ,0,0,0,0);
@@ -66,20 +66,20 @@ public class UserOrderController {
             int finish=0;
             int yet =0;
            //상태정의
-            if(shopDashBoard.status.equals("정산일자"))
+            if(shopDashBoard.searchDateMode.equals("정산일자"))
             {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndDepositCompletedNotNullAndDepositCompletedBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
-            }else if(shopDashBoard.status.equals("정산예정일")){
+            }else if(shopDashBoard.searchDateMode.equals("정산예정일")){
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndExpectCalculateNotNullAndExpectCalculateBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
 
-            }else if(shopDashBoard.status.equals("판매일자"))
+            }else if(shopDashBoard.searchDateMode.equals("판매일자"))
             {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndCreatedAtNotNullAndCreatedAtBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
 
-            }else if(shopDashBoard.status.equals("구매확정일자"))
+            }else if(shopDashBoard.searchDateMode.equals("구매확정일자"))
             {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndFinishAtNotNullAndFinishAtBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
@@ -136,7 +136,7 @@ public class UserOrderController {
         {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new DashboardDto(true,null,0,0));
+            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
 
 
         }
@@ -229,6 +229,7 @@ public class UserOrderController {
         int endDay;
 
         String status;
+        String searchDateMode;
     }
     @Data
     private static class ShopDashBoardForUserOrderId
