@@ -18,7 +18,7 @@ const SellerSettlementPanel = () => {
     const [searchMode, setSearchMode] = useState('date')
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
-    const [searchDateMode, setSearchDateMode] = useState('planned')
+    const [searchDateMode, setSearchDateMode] = useState('정산일자')
     const [searchStatus, setSearchStatus] = useState('all')
     const [orderId, setOrderId] = useState('')
 
