@@ -37,7 +37,7 @@ const SellerSettlementPanel = () => {
         }
         setLoading(true);
         if(searchMode === 'date') {
-            dispatch(fetchSellerSettlementList({startDate, endDate, searchStatus}, () => setLoading(false)))
+            dispatch(fetchSellerSettlementList({searchDateMode, startDate, endDate, searchStatus}, () => setLoading(false)))
         } else {
             dispatch(fetchSellerSettlementListWithOrderNum({orderId}, () => setLoading(false)))
         }
