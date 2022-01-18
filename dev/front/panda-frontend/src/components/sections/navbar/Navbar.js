@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import './navbar.css'
 import {Link, useHistory} from "react-router-dom";
-import {notification_dummy, user_menu} from "./navbarTypes";
+import {notification_dummy, user_menu, panda_menu, seller_menu} from "./navbarTypes";
 import {useDispatch, useSelector} from "react-redux";
 import {signout} from "../../../store/actions/authActions";
-import {getCookie} from "../../../store/Cookie";
 import Dropdown from "../../ekan/UI/dropdown/Dropdown";
+import {getCookie} from "../../../store/Cookie";
 import Button from "../../ekan/UI/Button";
 
 const renderNotificationItem = (item, index) => (
@@ -15,13 +15,13 @@ const renderNotificationItem = (item, index) => (
     </div>
 )
 
-const Navbar = () => {
+const Navbar= () => {
     const history = useHistory();
     const dispatch = useDispatch()
     const {loggedIn} = useSelector((state) => state.auth);
     const [userId] = useState(getCookie('userId'))
-
-    console.log(userId)
+    const [panda] = useState(getCookie('panda'))
+    const [seller] = useState(getCookie('seller'))
 
     const renderUserToggle = () => (
         <div className="topnav__right-user">
@@ -35,7 +35,7 @@ const Navbar = () => {
     )
 
     const renderUserMenu = (item, index) => (
-        <>
+        <div key={index}>
             {
                 item.link === "/logout" ?
                     <a onClick={() => {
@@ -53,8 +53,21 @@ const Navbar = () => {
                         </div>
                     </Link>
             }
-        </>
+        </div>
     )
+
+    const renderAuthMenu = (panda, seller) => {
+        if(panda === "true" && seller === "true") {
+            return user_menu
+        }
+        if(panda === "true"){
+            return panda_menu
+        }
+        if(seller === "true"){
+            return seller_menu
+        }
+        return user_menu
+    }
 
     return (
         <nav className="navbar is-spaced has-shadow">
@@ -67,7 +80,7 @@ const Navbar = () => {
                         <span className="mr-3">
                             <Dropdown
                                 customToggle={() => renderUserToggle()}
-                                contentData={user_menu}
+                                contentData={renderAuthMenu(panda, seller)}
                                 renderItems={(item, index) => renderUserMenu(item, index)}
                             />
                         </span>
