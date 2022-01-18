@@ -145,14 +145,14 @@ public class UserOrderController {
     private static class DashboardDto
     {
         boolean success;
-        List<ShopDashboardDtoType> pandaDashboardDtoList=null;
+        List<ShopDashboardDtoType> shopDashboardDtoTypeList=null;
         int finMoney;
         int expectMoney;
 
 
-        public DashboardDto(boolean success, List<ShopDashboardDtoType> pandaDashboardDtoList, int f, int e) {
+        public DashboardDto(boolean success, List<ShopDashboardDtoType> spdl, int f, int e) {
             this.success = success;
-            this.pandaDashboardDtoList = pandaDashboardDtoList;
+            this.shopDashboardDtoTypeList = spdl;
             this.finMoney=f;
             this.expectMoney=e;
         }
