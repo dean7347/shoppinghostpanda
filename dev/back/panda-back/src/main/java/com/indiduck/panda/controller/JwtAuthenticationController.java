@@ -11,7 +11,10 @@ import com.indiduck.panda.Service.CookieUtil;
 import com.indiduck.panda.Service.RedisUtil;
 import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
+import com.indiduck.panda.domain.Panda;
+import com.indiduck.panda.domain.Shop;
 import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.UserOrder;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.ResultDto;
@@ -28,6 +31,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -38,6 +42,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -56,6 +63,8 @@ public class JwtAuthenticationController {
 
     @Autowired
     private JwtUserDetailsService userDetailsService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Autowired
@@ -175,6 +184,34 @@ public class JwtAuthenticationController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
     }
 
+    @RequestMapping(value = "/api/userrole", method = RequestMethod.POST)
+    public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
+                                                                 Authentication authentication) throws Exception {
+
+
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Shop shop = byEmail.get().getShop();
+            Panda panda = byEmail.get().getPanda();
+            boolean isShop= false;
+            boolean isPanda= false;
+            if(shop!=null) isShop=true;
+            if(panda!=null) isPanda=true;
+
+
+            return ResponseEntity.ok(new RoleCheckDto(isShop,isPanda,false));
+
+        } catch (Exception e)
+        {
+            System.out.println("E = " + e);
+
+            return ResponseEntity.ok(new RoleCheckDto(false,false,false));
+
+
+        }
+    }
+
     /*
     펑션
      */
@@ -211,6 +248,20 @@ public class JwtAuthenticationController {
         return null;
     }
     //////////////dto///////////
+    @Data
+    static class RoleCheckDto {
+
+        boolean isShop;
+        boolean isPanda;
+        boolean isAdmin;
+
+        public RoleCheckDto(boolean isShop, boolean isPanda, boolean isAdmin) {
+            this.isShop = isShop;
+            this.isPanda = isPanda;
+            this.isAdmin = isAdmin;
+        }
+    }
+
     @Data
     static class SimpleCheckDto {
 
