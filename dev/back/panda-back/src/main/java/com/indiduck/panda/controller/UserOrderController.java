@@ -101,6 +101,7 @@ public class UserOrderController {
 
                 shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder));
             }
+            System.out.println(" 나가는데이터= " + shopDashboardDtoTypeList);
             return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,finish,yet));
 
         } catch (Exception e)
@@ -165,11 +166,16 @@ public class UserOrderController {
     {
         //주문번호
         Long id;
-        //온전한 입금가격
+        //정가
+
+        //온전한 입금가격(정가)
         int beforeSalePrice;
 
+        //실제 판매가
+        int realPrice;
 
-        //정산금액
+
+       //정산금액
         int settlePrice;
         //수수료
         int fees;
@@ -187,6 +193,7 @@ public class UserOrderController {
 
         public ShopDashboardDtoType(UserOrder uo) {
             this.id = uo.getId();
+            this.realPrice=uo.getFullprice();
             //무료배송이 아닐경우
             if(uo.getFreeprice()>uo.getPureAmount())
             {
