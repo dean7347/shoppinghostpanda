@@ -9,6 +9,7 @@ import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.*;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin
 @RequiredArgsConstructor
@@ -230,29 +228,46 @@ public class ShopController {
             Optional<List<UserOrder>> finish2 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.환불완료,startDay,endDay);
             Optional<List<UserOrder>> finish3 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.교환완료,startDay,endDay);
 
+            LocalDateTime tnow =  LocalDateTime.now();
+            LocalDateTime chartEnd= LocalDateTime.of(tnow.getYear(),tnow.getMonth(),tnow.getDayOfMonth()
+                    ,23,59,59,999999999);
+
+            LocalDateTime told= tnow.minusDays(11);
+            LocalDateTime chartstart= LocalDateTime.of(told.getYear(),told.getMonth(),told.getDayOfMonth()
+                    ,0,0,0,0);
+
+            Optional<List<UserOrder>> chartData = userOrderRepository.findByShopAndCreatedAtBetween(shop, chartEnd, tnow);
+
             newOrderSize=newOrder.get().size();
             readyOrder=ready.get().size()+ready2.get().size()+ready3.get().size();
             cROrder=cancelReturn.get().size()+cancelReturn2.get().size();
             finOrder=finish1.get().size()+finish2.get().size()+finish3.get().size();
+            //<-오래된 데이터   --------- 최근데이터 ->
             int[] money={0,0,0,0,0,0,0,0,0,0,0,0};
             int[] quantity={0,0,0,0,0,0,0,0,0,0,0,0};
+            String[] day={tnow.minusDays(11).toString(),
+                    tnow.minusDays(10).toString(),tnow.minusDays(9).toString(),tnow.minusDays(8).toString()
+                    ,tnow.minusDays(7).toString(),tnow.minusDays(6).toString(),tnow.minusDays(5).toString()
+                    ,tnow.minusDays(4).toString(),tnow.minusDays(3).toString(),tnow.minusDays(2).toString()
+                    ,tnow.minusDays(1).toString(),tnow.toString()};
 
-            for (UserOrder userOrder : finish1.get()) {
-                int monthValue = userOrder.getFinishAt().getMonthValue();
-                money[monthValue-1]+=userOrder.getShopMoney();
-                quantity[monthValue-1]++;
+            for (UserOrder userOrder : chartData.get()) {
+                int i = chartEnd.getDayOfMonth() - userOrder.getCreatedAt().getDayOfMonth();
+                int num= 11-i;
+                money[num]+=userOrder.getShopMoney();
+                quantity[num]++;
             }
 
 
 
 
-            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(true,newOrderSize,readyOrder,cROrder,finOrder,money,quantity));
+            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(true,newOrderSize,readyOrder,cROrder,finOrder,money,quantity,day));
 
         } catch (Exception e)
         {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(false,0,0,0,0,null,null));
+            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(false,0,0,0,0,null,null,null));
 
 
 
@@ -286,8 +301,10 @@ public class ShopController {
         int[] money;
         //주문건수
         int[] quantity;
+        //기준일자
+        String[] day;
 
-        public ShopDashBoardMainV2Dto(boolean tf,int newOrder, int readyOrder, int completeBuy, int cancelReturn, int[] money, int[] quantity) {
+        public ShopDashBoardMainV2Dto(boolean tf,int newOrder, int readyOrder, int completeBuy, int cancelReturn, int[] money, int[] quantity, String[] d) {
             this.success=tf;
             this.newOrder = newOrder;
             this.readyOrder = readyOrder;
@@ -295,6 +312,7 @@ public class ShopController {
             this.cancelReturn = cancelReturn;
             this.money = money;
             this.quantity = quantity;
+            this.day=d;
         }
     }
 
