@@ -32,7 +32,9 @@ export const signin = (data, onError) => {
                     type: SET_USER,
                     payload: userData
                 })
+                let userId = data.account.split('@')
                 setCookie('loggedIn', 'yes', {path: '/'})
+                setCookie('userId', userId[0], {path: '/'})
                 dispatch(setLoading(false))
             }
         } catch (err) {
@@ -52,6 +54,7 @@ export const signout = () => {
             dispatch(setLoading(true))
             await axios.get('http://localhost:8080/api/user/logout')
             removeCookie('loggedIn')
+            removeCookie('userId')
             dispatch({
                 type: SIGN_OUT
             })

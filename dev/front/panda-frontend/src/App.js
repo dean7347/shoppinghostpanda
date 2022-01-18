@@ -33,6 +33,7 @@ import Header from "./components/sections/Header";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
 import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
+import Navbar from "./components/sections/navbar/Navbar";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const App = () => {
 
   return (
     <div style={{ overflow: "fixed" }}>
-      <Header />
+      <Navbar/>
       <div
         style={{
           display: "flex",
