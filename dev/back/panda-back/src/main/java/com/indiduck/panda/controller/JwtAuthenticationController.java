@@ -184,7 +184,7 @@ public class JwtAuthenticationController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
     }
 
-    @RequestMapping(value = "/api/userrole", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/userauth", method = RequestMethod.POST)
     public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
                                                                  Authentication authentication) throws Exception {
 
