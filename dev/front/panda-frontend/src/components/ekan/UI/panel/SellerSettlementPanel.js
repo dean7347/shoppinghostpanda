@@ -1,25 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Panel from "./Panel";
 import {settlementSearchByDate, settlementSearchByStatus} from "../../pages/mypage/seller/sellerTypes";
-import {setError, setLoading} from '../../../../store/actions/pageActions'
 import Button from "../Button";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
+import {
+    fetchSellerSettlementList,
+    fetchSellerSettlementListWithOrderNum
+} from "../../../../store/actions/mypageActions/sellerActions";
+import {setError, setLoading} from "../../../../store/actions/pageActions";
 
 
 const SellerSettlementPanel = () => {
     const dispatch = useDispatch();
     const {error} = useSelector((state) => state.page);
-
+    const {sellerSettlementList} = useSelector((state) => state.seller)
     const [searchMode, setSearchMode] = useState('date')
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
     const [searchDateMode, setSearchDateMode] = useState('planned')
     const [searchStatus, setSearchStatus] = useState('all')
-    const [searchOrderNum, setSearchOrderNum] = useState('')
-    console.log(`날짜모드: ${searchDateMode}, 상태모드: ${searchStatus}`)
-    console.log('주문번호 : ', searchOrderNum)
+    const [orderId, setOrderId] = useState('')
 
+    useEffect(() => {
+        if (sellerSettlementList) {
+            setLoading(false)
+        }
+    }, [sellerSettlementList])
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -27,13 +34,17 @@ const SellerSettlementPanel = () => {
             dispatch(setError(''));
         }
         setLoading(true);
-        console.log('hi')
+        if(searchMode === 'date') {
+            dispatch(fetchSellerSettlementList({startDate, endDate, searchStatus}, () => setLoading(false)))
+        } else {
+            dispatch(fetchSellerSettlementListWithOrderNum({orderId}, () => setLoading(false)))
+        }
     }
 
     const clickHandler = (e) => {
         e.preventDefault()
         setSearchDateMode('planned')
-        setSearchOrderNum('')
+        setOrderId('')
         setSearchStatus('all')
     }
 
@@ -44,7 +55,7 @@ const SellerSettlementPanel = () => {
                     <p className="panel-tabs" style={{marginBottom: 0}}>
                         <a onClick={() => {
                             setSearchMode('date')
-                            setSearchOrderNum('')
+                            setOrderId('')
                         }}
                            className={searchMode === 'date' ? 'is-active' : ''}>날짜</a>
                         <a onClick={() => {
@@ -105,8 +116,8 @@ const SellerSettlementPanel = () => {
                                             type="text"
                                             className="input"
                                             placeholder="주문번호 입력"
-                                            value={searchOrderNum}
-                                            onChange={(e) => setSearchOrderNum(e.target.value)}
+                                            value={orderId}
+                                            onChange={(e) => setOrderId(e.target.value)}
                                         />
                                     </div>
                                 </div>
