@@ -121,7 +121,10 @@ public class UserOrderController {
 
 
         try{
-            Optional<UserOrder> byId = userOrderRepository.findById(shopDashBoardForUserOrderId.orderId);
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Shop shop = byEmail.get().getShop();
+            Optional<UserOrder> byId = userOrderRepository.findByShopAndId(shop,shopDashBoardForUserOrderId.orderId);
             List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
 
             shopDashboardDtoTypeList.add(new ShopDashboardDtoType(byId.get()));
