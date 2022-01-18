@@ -22,6 +22,8 @@ const SellerSettlementPanel = () => {
     const [searchStatus, setSearchStatus] = useState('all')
     const [orderId, setOrderId] = useState('')
 
+    console.log('검색기준: ', searchDateMode, '검색상태 :',searchStatus)
+
     useEffect(() => {
         if (sellerSettlementList) {
             setLoading(false)
