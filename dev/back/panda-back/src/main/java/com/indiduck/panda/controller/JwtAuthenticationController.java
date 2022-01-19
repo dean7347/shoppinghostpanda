@@ -100,7 +100,7 @@ public class JwtAuthenticationController {
                 } catch (Exception e) {
 //            return new Response("authError", "로그인에 실패했습니다.", e.getMessage());
                     ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
-
+                    System.out.println("message = " + message);
                     return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
 
                 }
