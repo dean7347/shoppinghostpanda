@@ -187,5 +187,19 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     }
 
+    public User findId(String code) throws IamportResponseException, IOException {
+        IamportClient client;
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = code;
+        client = new IamportClient(test_api_key, test_api_secret);
+        IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
+        String uniqueKey = certification_response.getResponse().getUniqueKey();
+        Optional<User> byCi = userRepository.findByCi(uniqueKey);
+        return  byCi.get();
+
+    }
+
 
 }

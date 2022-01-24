@@ -20,6 +20,7 @@ import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.util.ApiResponseMessage;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.Data;
@@ -42,6 +43,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -152,6 +154,16 @@ public class JwtAuthenticationController {
         }
         return ResponseEntity.ok(new signupDto(true,"회원가입에성공했습니다"));
     }
+
+
+    //아이디/비밀번호찾기
+    @PostMapping("/api/findid")
+    public ResponseEntity<?> findId(@RequestBody findId findId) throws IamportResponseException, IOException { // 회원 추가
+        String code = findId.code;
+        User id = userDetailsService.findId(code);
+
+        return ResponseEntity.ok(new findIdDto(id.getId(),id.getEmail()));
+    }
     //체크
     @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
     private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
@@ -248,6 +260,23 @@ public class JwtAuthenticationController {
         return null;
     }
     //////////////dto///////////
+    @Data
+    static class findId{
+
+        String code;
+
+
+    }
+    @Data
+    static class findIdDto{
+        long id;
+        String email;
+
+        public findIdDto(long id, String email) {
+            this.id = id;
+            this.email = email;
+        }
+    }
     @Data
     static class RoleCheckDto {
 

@@ -34,7 +34,7 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
 import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
 import Navbar from "./components/sections/navbar/Navbar";
-
+import FindIdPage from "./pages/FindIdPage";
 const App = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.page);
@@ -49,7 +49,7 @@ const App = () => {
 
   return (
     <div style={{ overflow: "fixed" }}>
-      <Navbar/>
+      <Navbar />
       <div
         style={{
           display: "flex",
@@ -92,6 +92,8 @@ const App = () => {
             path={"/user/payments/complete"}
             exact
           />
+          <Route component={FindIdPage} path={"/find_id_pw"} exact />
+
           <Route component={PriPage} path={"/private"} exact />
           <Route component={PandaPage} path={"/pandareg"} exact />
           <Route component={TermPage} path={"/terms"} exact />
