@@ -4,6 +4,8 @@ import styled from "styled-components";
 import axios from "../../node_modules/axios/index";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import queryString from "query-string";
+import IButton from "../components/ekan/UI/Button";
+
 const FindIdPage = ({ history }) => {
   const ErrorMessage = styled.div`
     color: red;
@@ -13,9 +15,8 @@ const FindIdPage = ({ history }) => {
   `;
 
   const { Panel } = Collapse;
-  const [visibleId, setVisibleId] = useState("none");
+  const [visibleId, setVisibleId] = useState("visible");
   const [findId, setFindId] = useState("none");
-
   const isEmail = (email) => {
     const emailRegex =
       /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
@@ -26,35 +27,35 @@ const FindIdPage = ({ history }) => {
 
   const onClick = async (e) => {
     try {
-      if (!isEmail(e.id)) {
-        alert("email 형식이 올바르지 않습니다");
-        return;
-      }
-      if (e.password !== e.passwordconfirm) {
-        alert("패스워드가 일치하지 않습니다!");
-        return;
-      }
-      if (certifiNum === "") {
-        alert("본인인증이 필요합니다!");
-        return;
-      }
-
-      const body = {
-        adult: e.adult,
-        apprterm: e.apprterm,
-        priagree: e.priagree,
-        email: e.id,
-        password: e.password,
-        phone: certifiNum,
-      };
-      axios.post("/api/signup", body).then((response) => {
-        if (response.data.success) {
-          alert("회원가입에 성공했습니다 ");
-          window.location.replace("/");
-        } else {
-          alert(response.data.message);
-        }
-      });
+      console.log(e.Password);
+      // if (!isEmail(e.id)) {
+      //   alert("email 형식이 올바르지 않습니다");
+      //   return;
+      // }
+      // if (e.password !== e.passwordconfirm) {
+      //   alert("패스워드가 일치하지 않습니다!");
+      //   return;
+      // }
+      // if (certifiNum === "") {
+      //   alert("본인인증이 필요합니다!");
+      //   return;
+      // }
+      // const body = {
+      //   adult: e.adult,
+      //   apprterm: e.apprterm,
+      //   priagree: e.priagree,
+      //   email: e.id,
+      //   password: e.password,
+      //   phone: certifiNum,
+      // };
+      // axios.post("/api/signup", body).then((response) => {
+      //   if (response.data.success) {
+      //     alert("회원가입에 성공했습니다 ");
+      //     window.location.replace("/");
+      //   } else {
+      //     alert(response.data.message);
+      //   }
+      // });
     } catch (e) {
       alert("회원가입 도중 오류가 발생했습니다");
     }
@@ -97,7 +98,7 @@ const FindIdPage = ({ history }) => {
           };
           axios.post("/api/findid", body).then((response) => {
             if (response.data.success) {
-              setVisibleId("flex");
+              setVisibleId("visible");
               setFindId(response.data.success.email);
             } else {
               alert("해당 핸드폰 번호로 가입된 아이디가 없습니다");
@@ -148,19 +149,127 @@ const FindIdPage = ({ history }) => {
           <div
             style={{
               textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "20px",
               borderRadius: "15px ",
               border: "1px solid",
             }}
           >
-            <Col span={24}>본인인증</Col>
-            <Col span={24}>아이디는 : 입니다</Col>
-            <Col span={24}>비밀번호 변경폼</Col>
-            <Col span={24}>비밀번호 확인폼</Col>
-            <Col span={24}>제출버튼</Col>
-            <Col span={24}>로그인버튼</Col>
-            <Col span={24}>회원가입 버튼</Col>
+            <br />
+            <br />
+
+            <Col span={24}>
+              <Button onClick={onClcikPhone}>본인인증 </Button>
+            </Col>
+            <br />
+            <br />
+            <div style={{ visibility: `${visibleId}` }}>
+              <Col span={24}>
+                <Row>
+                  <Col span={12} push="4">
+                    ID :
+                  </Col>
+                  <Col span={12} pull="5">
+                    {findId}
+                  </Col>
+                </Row>
+              </Col>
+
+              <br />
+              <Col span={24}>
+                <Form
+                  labelCol={{
+                    span: 7,
+                  }}
+                  wrapperCol={{
+                    span: 14,
+                  }}
+                  layout="horizontal"
+                  onFinish={onClick}
+                >
+                  <Form.Item
+                    name="password"
+                    label="비밀번호"
+                    rules={[
+                      {
+                        required: true,
+                        message: "비밀번호를 입력해주세요",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="비밀번호" />
+                  </Form.Item>
+                  <Form.Item
+                    label="비밀번호 확인    "
+                    name="passwordconfirm"
+                    rules={[
+                      {
+                        required: true,
+                        message: "비밀번호 확인",
+                      },
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                  {/* <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      비밀번호 변경
+                    </Button>
+                  </Form.Item> */}
+                </Form>
+              </Col>
+              <br />
+            </div>
+            <Col span={24}>
+              <div
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                }}
+              >
+                <div style={{ width: "50%" }}>
+                  <IButton text="비밀번호 변경" onClick={onClick} />
+                </div>
+              </div>
+            </Col>
+            <br />
+
+            <Col span={24}>
+              <div
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                }}
+              >
+                <div style={{ width: "50%" }}>
+                  <IButton
+                    text="로그인"
+                    onClick={() => history.push("/signin")}
+                  />
+                </div>
+              </div>
+            </Col>
+            <br />
+
+            <Col span={24}>
+              <div
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                }}
+              >
+                <div style={{ width: "50%" }}>
+                  <IButton
+                    text="회원가입"
+                    onClick={() => history.push("/signup")}
+                    className="is-primary"
+                  />
+                </div>
+              </div>
+            </Col>
+            <Col span={24}></Col>
+            <br />
           </div>
         </Col>
       </Row>
