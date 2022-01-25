@@ -73,9 +73,7 @@ const SignIn = (props) => {
           <p>
             <Link to="/find_id_pw">ID/PW찾기</Link>
           </p>
-          <p>
-            <Link to="/forgot-password">PW찾기</Link>
-          </p>
+          <p></p>
           <Button
             text={loading ? "Loading..." : "Sign In"}
             className="is-primary is-fullwidth mt-5"
