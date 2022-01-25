@@ -201,5 +201,22 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     }
 
+    @Transactional
+    public User changePw(String code,String pw) throws IamportResponseException, IOException {
+        IamportClient client;
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        //결제내역에서
+        String test_imp_uid = code;
+        client = new IamportClient(test_api_key, test_api_secret);
+        IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
+        String uniqueKey = certification_response.getResponse().getUniqueKey();
+        Optional<User> byCi = userRepository.findByCi(uniqueKey);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        byCi.get().setPassword(encoder.encode(pw));
+        return  byCi.get();
+
+    }
+
 
 }

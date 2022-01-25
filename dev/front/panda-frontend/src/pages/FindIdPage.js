@@ -5,6 +5,7 @@ import axios from "../../node_modules/axios/index";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import queryString from "query-string";
 import IButton from "../components/ekan/UI/Button";
+import InputSample from "../test";
 
 const FindIdPage = ({ history }) => {
   const ErrorMessage = styled.div`
@@ -15,7 +16,7 @@ const FindIdPage = ({ history }) => {
   `;
 
   const { Panel } = Collapse;
-  const [visibleId, setVisibleId] = useState("visible");
+  const [visibleId, setVisibleId] = useState("hidden");
   const [findId, setFindId] = useState("none");
   const isEmail = (email) => {
     const emailRegex =
@@ -27,35 +28,31 @@ const FindIdPage = ({ history }) => {
 
   const onClick = async (e) => {
     try {
-      console.log(e.Password);
-      // if (!isEmail(e.id)) {
-      //   alert("email 형식이 올바르지 않습니다");
-      //   return;
-      // }
-      // if (e.password !== e.passwordconfirm) {
-      //   alert("패스워드가 일치하지 않습니다!");
-      //   return;
-      // }
-      // if (certifiNum === "") {
-      //   alert("본인인증이 필요합니다!");
-      //   return;
-      // }
-      // const body = {
-      //   adult: e.adult,
-      //   apprterm: e.apprterm,
-      //   priagree: e.priagree,
-      //   email: e.id,
-      //   password: e.password,
-      //   phone: certifiNum,
-      // };
-      // axios.post("/api/signup", body).then((response) => {
-      //   if (response.data.success) {
-      //     alert("회원가입에 성공했습니다 ");
-      //     window.location.replace("/");
-      //   } else {
-      //     alert(response.data.message);
-      //   }
-      // });
+      console.log(inputs);
+      if (inputs.pass === "") {
+        alert("비밀번호 항목은 공백일 수 없습니다");
+        return;
+      }
+      if (inputs.passConfirm === "") {
+        alert("비밀번호확인 항목은 공백일 수 없습니다");
+        return;
+      }
+      if (inputs.pass !== inputs.passConfirm) {
+        alert("비밀번호가 서로 일치하지 않습니다");
+        return;
+      }
+      const body = {
+        code: certifiNum,
+        pw: inputs.pass,
+      };
+      axios.post("/api/changepw", body).then((response) => {
+        if (response.data.success) {
+          alert("비밀번호 변경 성공");
+          window.location.replace("/");
+        } else {
+          alert(response.data.message);
+        }
+      });
     } catch (e) {
       alert("회원가입 도중 오류가 발생했습니다");
     }
@@ -99,7 +96,7 @@ const FindIdPage = ({ history }) => {
           axios.post("/api/findid", body).then((response) => {
             if (response.data.success) {
               setVisibleId("visible");
-              setFindId(response.data.success.email);
+              setFindId(response.data.email);
             } else {
               alert("해당 핸드폰 번호로 가입된 아이디가 없습니다");
             }
@@ -124,6 +121,21 @@ const FindIdPage = ({ history }) => {
       document.head.removeChild(iamport);
     };
   }, []);
+  const [inputs, setInputs] = useState({
+    pass: "",
+    passConfirm: "",
+  });
+
+  const { pass, passConfirm } = inputs; // 비구조화 할당을 통해 값 추출
+
+  const onChange = (e) => {
+    const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
+    setInputs({
+      ...inputs, // 기존의 input 객체를 복사한 뒤
+      [name]: value, // name 키를 가진 값을 value 로 설정
+    });
+    console.log(inputs);
+  };
   ////
   return (
     <>
@@ -172,15 +184,15 @@ const FindIdPage = ({ history }) => {
                   </Col>
                 </Row>
               </Col>
-
               <br />
-              <Col span={24}>
+
+              <Col span={24} push="4">
                 <Form
                   labelCol={{
                     span: 7,
                   }}
                   wrapperCol={{
-                    span: 14,
+                    span: 4,
                   }}
                   layout="horizontal"
                   onFinish={onClick}
@@ -195,7 +207,11 @@ const FindIdPage = ({ history }) => {
                       },
                     ]}
                   >
-                    <Input.Password placeholder="비밀번호" />
+                    <Input.Password
+                      style={{ width: "100%" }}
+                      name="pass"
+                      onChange={onChange}
+                    />
                   </Form.Item>
                   <Form.Item
                     label="비밀번호 확인    "
@@ -207,7 +223,11 @@ const FindIdPage = ({ history }) => {
                       },
                     ]}
                   >
-                    <Input.Password />
+                    <Input.Password
+                      style={{ width: "100%" }}
+                      name="passConfirm"
+                      onChange={onChange}
+                    />
                   </Form.Item>
                   {/* <Form.Item>
                     <Button type="primary" htmlType="submit">
@@ -216,21 +236,21 @@ const FindIdPage = ({ history }) => {
                   </Form.Item> */}
                 </Form>
               </Col>
-              <br />
-            </div>
-            <Col span={24}>
-              <div
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  display: "flex",
-                }}
-              >
-                <div style={{ width: "50%" }}>
-                  <IButton text="비밀번호 변경" onClick={onClick} />
+              <Col span={24}>
+                <div
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
+                  <div style={{ width: "50%" }}>
+                    <IButton text="비밀번호 변경" onClick={onClick} />
+                  </div>
                 </div>
-              </div>
-            </Col>
+              </Col>
+            </div>
+
             <br />
 
             <Col span={24}>

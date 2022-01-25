@@ -16,6 +16,7 @@ import com.indiduck.panda.domain.Shop;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserOrder;
 import com.indiduck.panda.domain.dao.JwtRequest;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.domain.dto.UserDto;
@@ -162,7 +163,15 @@ public class JwtAuthenticationController {
         String code = findId.code;
         User id = userDetailsService.findId(code);
 
-        return ResponseEntity.ok(new findIdDto(id.getId(),id.getEmail()));
+        return ResponseEntity.ok(new findIdDto(true,id.getId(),id.getEmail()));
+    }
+
+    //비밀번호 변경
+    @PostMapping("/api/changepw")
+    public ResponseEntity<?> changepw(@RequestBody  ChangePw changePw) throws IamportResponseException, IOException { // 회원 추가
+
+        userDetailsService.changePw(changePw.code, changePw.pw);
+        return ResponseEntity.ok(new TFMessageDto(true,"비밀번호 변경 성공"));
     }
     //체크
     @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
@@ -267,12 +276,23 @@ public class JwtAuthenticationController {
 
 
     }
+
+    @Data
+    static class ChangePw{
+
+        String code;
+        String pw;
+
+
+    }
     @Data
     static class findIdDto{
+        boolean success;
         long id;
         String email;
 
-        public findIdDto(long id, String email) {
+        public findIdDto(boolean success,long id, String email) {
+            this.success=success;
             this.id = id;
             this.email = email;
         }
