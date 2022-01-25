@@ -126,27 +126,80 @@ const FindIdPage = ({ history }) => {
   ////
   return (
     <>
-      {/* <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div> */}
       <br />
       <br />
       <br />
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <h1>ID/PW찾기</h1>
+      <br />
+      <br />
+      <br />
+      <Row gutter={[0, 20]} justify="center">
+        <Col span={20}>
+          <div
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "20px",
+            }}
+          >
+            ID/PW찾기
+          </div>
+        </Col>
+        <Col span={15}>
+          <div
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "20px",
+              borderRadius: "15px ",
+              border: "1px solid",
+            }}
+          >
+            <Col span={24}>본인인증</Col>
+            <Col span={24}>아이디는 : 입니다</Col>
+            <Col span={24}>비밀번호 변경폼</Col>
+            <Col span={24}>비밀번호 확인폼</Col>
+            <Col span={24}>제출버튼</Col>
+            <Col span={24}>로그인버튼</Col>
+            <Col span={24}>회원가입 버튼</Col>
+          </div>
+        </Col>
+      </Row>
+
+      {/* <div style={{ display: "flex", justifyContent: "center" }}>
+        <br />
+        <Row>
+          <Col span={24}>
+            <h1>ID/PW찾기</h1>
+          </Col>
+          <div
+            style={{
+              borderRadius: "15px solid",
+              background: "red",
+              width: "100%",
+            }}
+          >
+            zz
+            <Col>
+              <div style={{ borderRadius: "3px solid", background: "blue" }}>
+              </div>
+            </Col>
+          </div>
+
+          <Col></Col>
+          <Col></Col>
+
+          <Col></Col>
+        </Row>
       </div>
 
       <br />
-      <br />
-      <Row align={"center"}>
-        <Button onClick={onClcikPhone}>본인인증 </Button>
-      </Row>
+
+      <Row align={"center"}></Row>
       <div
         style={{
           display: { visibleId },
           justifyContent: "center",
           alignItems: "center",
-          visibility: "",
         }}
       >
         <Form
@@ -194,13 +247,13 @@ const FindIdPage = ({ history }) => {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item label="제출하기">
+          <Form.Item label="비밀번호변경">
             <Button type="primary" htmlType="submit">
               submit
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </div> */}
     </>
   );
 };
