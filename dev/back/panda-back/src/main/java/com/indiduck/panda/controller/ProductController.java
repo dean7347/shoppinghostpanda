@@ -502,13 +502,14 @@ public class ProductController {
         Long proId;
         String proname;
         String shopname;
+        boolean isSalse;
         List<FileDtopro> images=new ArrayList<>();
 
         public ProductDto(Product pro) {
             proId = pro.getId();
             proname=pro.getProductName();
             shopname=pro.getShop().getShopName();
-
+            isSalse=pro.isSales();
 
             List<File> getImages = pro.getImages();
             for (File getImage : getImages) {

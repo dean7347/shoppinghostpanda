@@ -47,7 +47,7 @@ function MyProductPage() {
       type: st,
     };
     axios.post("/api/product/changeprostatus", body).then((response) => {
-      if (response.success) {
+      if (response.data) {
         alert("상태변경에 성공했습니다");
         window.location.reload();
       } else {
@@ -98,14 +98,25 @@ function MyProductPage() {
         <div style={{ border: "1px solid", justityContent: "center" }}>
           <div>
             <div style={{ width: "50%", float: "left" }}>
-              <Button
-                block
-                variant="success"
-                size="sm"
-                onClick={() => onClickStatusChange(product.proId, "판매중지")}
-              >
-                판매중지
-              </Button>
+              {product.salse ? (
+                <Button
+                  block
+                  variant="success"
+                  size="sm"
+                  onClick={() => onClickStatusChange(product.proId, "판매중지")}
+                >
+                  판매중지
+                </Button>
+              ) : (
+                <Button
+                  block
+                  variant="success"
+                  size="sm"
+                  onClick={() => onClickStatusChange(product.proId, "판매재개")}
+                >
+                  판매재개
+                </Button>
+              )}
             </div>
             <div style={{ width: "50%", float: "left" }}>
               <Button

@@ -90,7 +90,7 @@ public class ProductService {
 
         }else if(type.equals("상품삭제"))
         {
-            byId.get().stopSale();
+            byId.get().delProduct();
 
         }else if(type.equals("판매재개"))
         {
