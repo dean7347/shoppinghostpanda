@@ -81,6 +81,23 @@ public class ProductService {
         }
 
     }
+    public void editStatus(long productId,String type)
+    {
+        Optional<Product> byId = productRepository.findById(productId);
+        if(type.equals("판매중지"))
+        {
+            byId.get().stopSale();
+
+        }else if(type.equals("상품삭제"))
+        {
+            byId.get().stopSale();
+
+        }else if(type.equals("판매재개"))
+        {
+            byId.get().restartSale();
+        }
+
+    }
 
     public void editText(Long product, String type,String text)
     {

@@ -125,6 +125,10 @@ public class Product {
     {
         this.type=type;
     }
+    public void stopSale(){this.sales=false;}
+    public void delProduct(){this.deleted=true;}
+    public void restartSale(){this.sales=true;}
+
 
 
 
