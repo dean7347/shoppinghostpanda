@@ -389,6 +389,11 @@ public class ProductController {
         int type;
         String lowform;
 
+        //판매중지
+        boolean salse;
+        //삭제된상품?
+        boolean isdel;
+
         //상점정보
         private String shopName;
         //representative
@@ -436,7 +441,8 @@ public class ProductController {
         List<FileDtopro> thumbs=new ArrayList<>();
         public ProductDetailDto(boolean t,Product detail) {
             success=t;
-
+            salse=detail.isSales();
+            isdel=detail.isDeleted();
             productName=detail.getProductName();
             productDesc=detail.getProductDesc();
             type = detail.getType();

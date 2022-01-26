@@ -91,6 +91,8 @@ public class ProductService {
         }else if(type.equals("상품삭제"))
         {
             byId.get().delProduct();
+            byId.get().stopSale();
+
 
         }else if(type.equals("판매재개"))
         {

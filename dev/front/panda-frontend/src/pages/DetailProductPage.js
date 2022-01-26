@@ -2343,9 +2343,7 @@ function DetailProductPage(props) {
         </Row>
       </Modal>
       <BackTop />
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
+
       <div style={{ width: "100%", padding: "3rem 4rem" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <h1>{Product.productName}</h1>
@@ -2359,7 +2357,15 @@ function DetailProductPage(props) {
           </Col>
           <Col lg={8} sm={16}>
             <div>
-              <ProductInfo detail={Product} proId={productId} pandas={Pandas} />
+              {Product.salse ? (
+                <ProductInfo
+                  detail={Product}
+                  proId={productId}
+                  pandas={Pandas}
+                />
+              ) : (
+                <div>판매 중지된 상품입니다</div>
+              )}
             </div>
           </Col>
 
