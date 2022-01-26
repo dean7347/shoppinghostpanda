@@ -34,8 +34,10 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
 import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
 import Navbar from "./components/sections/navbar/Navbar";
+import TableTestPage from "./components/ekan/pages/TableTestPage";
 import FindIdPage from "./pages/FindIdPage";
 import MyProductPage from "./pages/MyProductPage";
+
 const App = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.page);
@@ -105,6 +107,7 @@ const App = () => {
           <PrivateRoute path="/seller" component={SellerIndex} />
           {/* //api테스트용 짬통페이지 */}
           <Route path="/testpage" component={TestPage} />
+          <Route path="/tableTest" component={TableTestPage}/>
         </Switch>
       </div>
       <Footer />
