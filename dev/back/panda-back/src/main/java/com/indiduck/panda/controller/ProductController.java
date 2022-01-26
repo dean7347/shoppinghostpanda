@@ -350,7 +350,7 @@ public class ProductController {
                                              Authentication authentication,Pageable pageable,
                                         @RequestParam(name = "productname") String productName) throws Exception {
 
-        Page<Product> result = productRepository.findByProductAndDeletedAndSalesAndNameContaining(pageable,false,true, productName);
+        Page<Product> result = productRepository.findByDeletedAndSalesAndNameContaining(pageable,false,true, productName);
 
         Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
