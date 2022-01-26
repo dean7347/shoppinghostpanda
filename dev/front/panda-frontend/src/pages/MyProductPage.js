@@ -39,6 +39,23 @@ function MyProductPage() {
     [setPage]
   );
 
+  const onClickStatusChange = (id, st) => {
+    console.log(id);
+    console.log(st);
+    const body = {
+      proId: id,
+      type: st,
+    };
+    axios.post("/api/product/changeprostatus", body).then((response) => {
+      if (response.success) {
+        alert("상태변경에 성공했습니다");
+        window.location.reload();
+      } else {
+        alert("상태변경에 실패했습니다");
+      }
+    });
+  };
+
   ///검색
   const [SearchTerm, setSearchTerm] = useState("");
 
@@ -81,12 +98,23 @@ function MyProductPage() {
         <div style={{ border: "1px solid", justityContent: "center" }}>
           <div>
             <div style={{ width: "50%", float: "left" }}>
-              <Button block variant="success" size="sm">
+              <Button
+                block
+                variant="success"
+                size="sm"
+                onClick={() => onClickStatusChange(product.proId, "판매중지")}
+              >
                 판매중지
               </Button>
             </div>
             <div style={{ width: "50%", float: "left" }}>
-              <Button block variant="danger" size="sm" danger>
+              <Button
+                block
+                variant="danger"
+                size="sm"
+                danger
+                onClick={() => onClickStatusChange(product.proId, "상품삭제")}
+              >
                 상품삭제
               </Button>
             </div>

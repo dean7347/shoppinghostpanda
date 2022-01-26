@@ -16,10 +16,12 @@ import com.indiduck.panda.domain.Shop;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserOrder;
 import com.indiduck.panda.domain.dao.JwtRequest;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.util.ApiResponseMessage;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.Data;
@@ -42,6 +44,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +103,7 @@ public class JwtAuthenticationController {
                 } catch (Exception e) {
 //            return new Response("authError", "로그인에 실패했습니다.", e.getMessage());
                     ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
-
+                    System.out.println("message = " + message);
                     return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
 
                 }
@@ -151,6 +154,24 @@ public class JwtAuthenticationController {
 
         }
         return ResponseEntity.ok(new signupDto(true,"회원가입에성공했습니다"));
+    }
+
+
+    //아이디/비밀번호찾기
+    @PostMapping("/api/findid")
+    public ResponseEntity<?> findId(@RequestBody findId findId) throws IamportResponseException, IOException { // 회원 추가
+        String code = findId.code;
+        User id = userDetailsService.findId(code);
+
+        return ResponseEntity.ok(new findIdDto(true,id.getId(),id.getEmail()));
+    }
+
+    //비밀번호 변경
+    @PostMapping("/api/changepw")
+    public ResponseEntity<?> changepw(@RequestBody  ChangePw changePw) throws IamportResponseException, IOException { // 회원 추가
+
+        userDetailsService.changePw(changePw.code, changePw.pw);
+        return ResponseEntity.ok(new TFMessageDto(true,"비밀번호 변경 성공"));
     }
     //체크
     @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
@@ -248,6 +269,34 @@ public class JwtAuthenticationController {
         return null;
     }
     //////////////dto///////////
+    @Data
+    static class findId{
+
+        String code;
+
+
+    }
+
+    @Data
+    static class ChangePw{
+
+        String code;
+        String pw;
+
+
+    }
+    @Data
+    static class findIdDto{
+        boolean success;
+        long id;
+        String email;
+
+        public findIdDto(boolean success,long id, String email) {
+            this.success=success;
+            this.id = id;
+            this.email = email;
+        }
+    }
     @Data
     static class RoleCheckDto {
 

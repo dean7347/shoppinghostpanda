@@ -10,6 +10,26 @@ export const sellerSidebarItems = [
     icon: "bx bxs-videos",
   },
   {
+    display_name: "신규주문",
+    route: "/seller/newOrder",
+    icon: "bx bxs-videos",
+  },
+  {
+    display_name: "배송중인 주문",
+    route: "/seller/shippingOrder",
+    icon: "bx bxs-videos",
+  },
+  {
+    display_name: "취소/반품주문",
+    route: "/seller/cancelReturnOrder",
+    icon: "bx bxs-videos",
+  },
+  {
+    display_name: "완료된 주문",
+    route: "/seller/finishOrder",
+    icon: "bx bxs-videos",
+  },
+  {
     display_name: "판매 관리",
     route: "/seller/",
     icon: "bx bx bx-purchase-tag",
@@ -32,7 +52,7 @@ export const sellerDashboardCard = [
     link: "/seller/settlement",
     icon: "bx bx-package",
     count: 0,
-    title: "배송준비",
+    title: "배송중",
   },
   {
     link: "/seller/settlement",

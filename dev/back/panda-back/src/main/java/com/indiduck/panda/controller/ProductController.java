@@ -264,6 +264,23 @@ public class ProductController {
 
     }
 
+    @RequestMapping(value = "/api/product/changeprostatus", method = RequestMethod.POST)
+    public ResponseEntity<?> delProdcut(@CurrentSecurityContext(expression = "authentication")
+                                                    Authentication authentication, @RequestBody EditDao psc) throws Exception {
+        try{
+            productService.editStatus(psc.proId,psc.type);
+            return ResponseEntity.ok(new ResultDto(true));
+
+        }catch (Exception e)
+        {
+            return ResponseEntity.ok(new ResultDto(false));
+
+        }
+
+
+
+    }
+
 
 
     @RequestMapping(value = "/api/editinfomation", method = RequestMethod.POST)
@@ -297,7 +314,7 @@ public class ProductController {
 
 
 //         System.out.println("limit+offset = " + limit + offset);
-         Page<Product> result = productRepository.findAll(pageable);
+         Page<Product> result = productRepository.findAllByDeletedAndSales(pageable,false,true);
          Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
 
@@ -316,7 +333,7 @@ public class ProductController {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Shop shop = byEmail.get().getShop();
-        Page<Product> result = productRepository.findByShop(pageable,shop);
+        Page<Product> result = productRepository.findByShopAndDeleted(pageable,shop,false);
         Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
 
@@ -333,7 +350,7 @@ public class ProductController {
                                              Authentication authentication,Pageable pageable,
                                         @RequestParam(name = "productname") String productName) throws Exception {
 
-        Page<Product> result = productRepository.findByProductNameContaining(pageable, productName);
+        Page<Product> result = productRepository.findByProductAndDeletedAndSalesAndNameContaining(pageable,false,true, productName);
 
         Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
@@ -601,4 +618,6 @@ public class ProductController {
         String type;
         Long proId;
     }
+
+
 }
