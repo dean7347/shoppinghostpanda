@@ -20,6 +20,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     Page<Product> findByProductNameContaining(Pageable pageable,String productName);
     Page<Product> findByShop(Pageable pageable, Shop shop);
+    Page<Product> findByShopAndDeleted(Pageable pageable, Shop shop,boolean tf);
+    Page<Product> findAllByDeletedAndSales(Pageable pageable,boolean tf,boolean tf2);
+
 
 
 

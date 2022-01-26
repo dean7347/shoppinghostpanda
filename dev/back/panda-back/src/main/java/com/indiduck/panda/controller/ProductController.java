@@ -297,7 +297,7 @@ public class ProductController {
 
 
 //         System.out.println("limit+offset = " + limit + offset);
-         Page<Product> result = productRepository.findAll(pageable);
+         Page<Product> result = productRepository.findAllByDeletedAndSales(pageable,false,true);
          Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
 
@@ -316,7 +316,7 @@ public class ProductController {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Shop shop = byEmail.get().getShop();
-        Page<Product> result = productRepository.findByShop(pageable,shop);
+        Page<Product> result = productRepository.findByShopAndDeleted(pageable,shop,false);
         Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
 
 

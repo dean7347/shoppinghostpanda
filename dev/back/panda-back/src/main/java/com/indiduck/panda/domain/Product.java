@@ -36,6 +36,10 @@ public class Product {
     private LocalDateTime productEditAt;
     private LocalDateTime productDeleteAt;
 
+    //판매중지인지
+    private boolean sales=true;
+    //삭제인지
+    private boolean deleted=false;
 
     private int productHits;
 

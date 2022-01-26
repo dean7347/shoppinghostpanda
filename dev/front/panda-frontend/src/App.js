@@ -35,6 +35,7 @@ import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
 import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
 import Navbar from "./components/sections/navbar/Navbar";
 import FindIdPage from "./pages/FindIdPage";
+import MyProductPage from "./pages/MyProductPage";
 const App = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.page);
@@ -93,6 +94,7 @@ const App = () => {
             exact
           />
           <Route component={FindIdPage} path={"/find_id_pw"} exact />
+          <Route component={MyProductPage} path={"/seller/product"} exact />
 
           <Route component={PriPage} path={"/private"} exact />
           <Route component={PandaPage} path={"/pandareg"} exact />
