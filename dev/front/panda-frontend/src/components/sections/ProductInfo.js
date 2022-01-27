@@ -267,8 +267,8 @@ function ProductInfo(props) {
       if (response.data.success) {
         alert("상품을 장바구니에 성공적으로 담았습니다");
       } else {
-        alert("장바구니담기에 실패했습니다");
-        // console.log(response.data);
+        alert(response.data.message);
+        console.log(response.data);
       }
     });
 

@@ -46,6 +46,7 @@ public class OrderDetailService {
         Optional<ProductOption> getPO = productOptionRepository.findById(optionId);
         Optional<Panda> getPanda = pandaRespository.findById(selectpanda);
 
+
         //기존에 결제대기로 찾지않으면
         // 옵션을 리턴할때 유저랑 옵션으로 찾음
         // 결제대기랑 결제완료가 같이 찾아짐
@@ -89,6 +90,12 @@ public class OrderDetailService {
 
 
         Optional<OrderDetail> byUserAAndOptions = orderDetailRepository.findByUserAndOptionsAndOrderStatus(getUser.get(), getPO.get(),OrderStatus.결제대기);
+//        int i = getPO.get().getOptionStock() - optionCount;
+//        if(i <=0)
+//        {
+//            return  null;
+//        }
+        //이미 상품이 있을때
         if(!byUserAAndOptions.isEmpty() && (byUserAAndOptions.get().getOrderStatus()==OrderStatus.결제대기)) {
 
 

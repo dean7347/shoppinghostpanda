@@ -3,10 +3,7 @@ package com.indiduck.panda.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.indiduck.panda.Repository.OrderDetailRepository;
-import com.indiduck.panda.Repository.ShopRepository;
-import com.indiduck.panda.Repository.UserOrderRepository;
-import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Repository.*;
 import com.indiduck.panda.Service.OrderDetailService;
 import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.domain.*;
@@ -50,6 +47,8 @@ public class OrderDetailController {
     @Autowired
     ShopRepository shopRepository;
     @Autowired
+    ProductOptionRepository productOptionRepository;
+    @Autowired
     private ApiKey apiKey;
 
     @Autowired
@@ -60,9 +59,22 @@ public class OrderDetailController {
     public ResponseEntity<?> createShop(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateOrderDetailDAO createProductDAO) throws Exception {
 
+        //장바구니에 담을때 재고 수량 체크
+
         List<detailOptionDAO> cart = createProductDAO.cart;
         for (detailOptionDAO detailOptionDAO : cart) {
             try {
+                Optional<ProductOption> byId = productOptionRepository.findById(detailOptionDAO.optionId);
+                int i = byId.get().getOptionStock();
+                int k = detailOptionDAO.optionCount;
+                int j= i-k;
+                String message= byId.get().getOptionName()+"의 수량을 "+ byId.get().getOptionStock()+"개 보다 적게 선택해주세요";
+                if(j<=0)
+                {
+                    System.out.println(" --재고부족진입"+message);
+                    return ResponseEntity.ok(new ResultDto(false,message));
+                }
+
                 if(createProductDAO.selectpanda==null)
                 {
                     orderDetailService.newOrderDetail(authentication.getName(), createProductDAO.productid

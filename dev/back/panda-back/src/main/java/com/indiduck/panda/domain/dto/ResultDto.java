@@ -8,6 +8,6 @@ public class ResultDto {
     String message;
     public ResultDto(boolean b, String message) {
         success=b;
-        message=message;
+        this.message=message;
     }
 }
