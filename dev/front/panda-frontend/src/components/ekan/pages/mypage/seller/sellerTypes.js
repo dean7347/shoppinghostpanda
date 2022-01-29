@@ -5,29 +5,29 @@ export const sellerSidebarItems = [
     icon: "bx bx-category-alt",
   },
   {
-    display_name: "상품 관리",
-    route: "/seller/product",
-    icon: "bx bxs-videos",
-  },
-  {
     display_name: "신규주문",
     route: "/seller/newOrder",
-    icon: "bx bxs-videos",
+    icon: "bx bx-task",
   },
   {
     display_name: "배송중인 주문",
     route: "/seller/shippingOrder",
-    icon: "bx bxs-videos",
+    icon: "bx bx-package",
   },
   {
     display_name: "취소/반품주문",
     route: "/seller/cancelReturnOrder",
-    icon: "bx bxs-videos",
+    icon: "bx bx-task-x",
   },
   {
     display_name: "완료된 주문",
     route: "/seller/finishOrder",
-    icon: "bx bxs-videos",
+    icon: "bx bx-package",
+  },
+  {
+    display_name: "상품 관리",
+    route: "/seller/product",
+    icon: "bx bx-store",
   },
   {
     display_name: "판매 관리",
