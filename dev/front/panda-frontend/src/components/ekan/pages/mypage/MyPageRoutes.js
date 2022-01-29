@@ -15,7 +15,7 @@ import MyProductPage from "../../../../pages/MyProductPage";
 const MyPageRoutes = () => {
   return (
     <Switch>
-      <Route path="/buyer/mypage" exact component={BuyerDashboard} />
+      <Route path="/buyer/dashboard" exact component={BuyerDashboard} />
       <Route path="/buyer/orderList" exact component={OrderListPage} />
       <Route path="/buyer/cancelList" exact component={CancelListPage} />
       <Route path="/buyer/cart" exact component={BuyerCartPage} />
