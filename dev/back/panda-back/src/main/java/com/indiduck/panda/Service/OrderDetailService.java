@@ -167,6 +167,7 @@ public class OrderDetailService {
         }
     }
 
+
     public boolean newUserOrder(User user,OrderDetailController.DetailedCart myCart,String mid,
                                 String name,String phoneNumber,String zipCode,String Address,String rec) {
 
@@ -185,6 +186,15 @@ public class OrderDetailService {
         }
 
         return true;
+
+    }
+
+    public int minusOption(OrderDetail od)
+    {
+        int productCount = od.getProductCount();
+        ProductOption options = od.getOptions();
+        int i = options.minusOption(productCount);
+        return i;
 
     }
 
