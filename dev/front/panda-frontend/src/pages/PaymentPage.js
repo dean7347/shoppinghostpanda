@@ -134,6 +134,8 @@ function PaymentPage(gprops) {
             pathname: "/user/payments/complete",
             state: { prevPath: history.location.pathname, re: "ok" },
           });
+        } else if (response.data.message) {
+          alert(response.data.message);
         } else {
           alert("서버검증에 실패했습니다 결제가 취소됩니다");
         }

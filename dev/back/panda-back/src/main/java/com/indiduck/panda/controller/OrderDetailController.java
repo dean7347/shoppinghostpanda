@@ -310,7 +310,13 @@ public class OrderDetailController {
     public ResponseEntity<?> finishpayment(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication,@RequestBody finishPaymentDAO finishpaymentDAO) throws Exception {
 
-        //TODO:여기 상품 검증 실패면 취소로직해줘야댐
+        //endTODO:여기 상품 검증 실패면 취소로직해줘야댐
+//                Optional<ProductOption> byId = productOptionRepository.findById(detailOptionDAO.optionId);
+//                int i = byId.get().getOptionStock();
+//                int k = detailOptionDAO.optionCount;
+//                int j= i-k;
+//                String message= byId.get().getOptionName()+"의 수량을 "+ byId.get().getOptionStock()+"개 보다 적게 선택해주세요";
+
         Payment tokentoInfo = getTokentoInfo(finishpaymentDAO.impuid);
 //        tokentoInfo.getReceiptUrl()
 //        orderDetailService.paymentOrderDetail(tokentoInfo);
@@ -325,7 +331,20 @@ public class OrderDetailController {
 
         List<OrderDetail> orderDetails =new ArrayList<>();
         for (Object o : detail) {
+
             Optional<OrderDetail> byId = orderDetailRepository.findById(Long.parseLong(o.toString()));
+            Long id = byId.get().getOptions().getId();
+            Optional<ProductOption> opId = productOptionRepository.findById(id);
+            int i = opId.get().getOptionStock();
+            int k = byId.get().getProductCount();
+            int j =i-k;
+
+            if(j<=0)
+            {
+                String message= opId.get().getOptionName()+"의 수량을 "+ opId.get().getOptionStock()+"개 보다 적게 선택해주세요";
+                System.out.println(" --재고부족진입"+message);
+                return ResponseEntity.ok(new ResultDto(false,message));
+            }
             orderDetails.add(byId.get());
             shopId.add(byId.get().getShop());
             orders.add(byId.get());
@@ -386,6 +405,19 @@ public class OrderDetailController {
                     tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr(),tokentoInfo.getReceiptUrl());
             //결제성공시
             if(b){
+                for (OrderDetail orderDetail : orderDetails) {
+                    int productCount = orderDetail.getProductCount();
+                    ProductOption options = orderDetail.getOptions();
+                    int i = options.minusOption(productCount);
+                    String message= options.getOptionName()+"의 수량을 "+ options+"개 보다 적게 선택해주세요";
+
+                    if( i<=0)
+                    {
+                        return ResponseEntity.ok(new ResultDto(false,message));
+
+                    }
+                }
+
                 return ResponseEntity.ok(new tfResultDto(b));
 
             }else

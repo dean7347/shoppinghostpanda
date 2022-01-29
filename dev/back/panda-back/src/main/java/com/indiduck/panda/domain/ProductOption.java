@@ -51,6 +51,13 @@ public class ProductOption {
         this.optionPrice=price;
     }
 
+    //구매 완료된것을 빼준다
+    public int minusOption(int count)
+    {
+        this.optionStock=optionStock-count;
+        return optionStock;
+    }
+
 
 
 }
