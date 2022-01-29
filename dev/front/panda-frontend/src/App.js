@@ -96,7 +96,6 @@ const App = () => {
             exact
           />
           <Route component={FindIdPage} path={"/find_id_pw"} exact />
-          <Route component={MyProductPage} path={"/seller/product"} exact />
 
           <Route component={PriPage} path={"/private"} exact />
           <Route component={PandaPage} path={"/pandareg"} exact />
