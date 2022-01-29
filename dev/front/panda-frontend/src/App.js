@@ -24,7 +24,7 @@ import ServicePage from "./pages/ServicePage";
 import TermPage from "./pages/TermPage";
 import TestPage from "./pages/TestPage";
 import Footer from "./components/common/Footer";
-import BuyerMyPage from "./components/ekan/pages/mypage/buyer/BuyerMyPage";
+import BuyerIndex from "./components/ekan/pages/mypage/buyer/BuyerIndex";
 import SignIn from "./pages/SignIn";
 import Loader from "./components/ekan/UI/Loader";
 import { useDispatch, useSelector } from "react-redux";
@@ -96,13 +96,12 @@ const App = () => {
             exact
           />
           <Route component={FindIdPage} path={"/find_id_pw"} exact />
-          <Route component={MyProductPage} path={"/seller/product"} exact />
 
           <Route component={PriPage} path={"/private"} exact />
           <Route component={PandaPage} path={"/pandareg"} exact />
           <Route component={TermPage} path={"/terms"} exact />
           <Route component={ServicePage} path={"/service"} exact />
-          <PrivateRoute path="/buyer" component={BuyerMyPage} />
+          <PrivateRoute path="/buyer" component={BuyerIndex} />
           <PrivateRoute path="/panda" component={PandaIndex} />
           <PrivateRoute path="/seller" component={SellerIndex} />
           {/* //api테스트용 짬통페이지 */}
