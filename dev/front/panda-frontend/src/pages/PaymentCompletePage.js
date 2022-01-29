@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import { useHistory } from "react-router-dom";
+import { Row, Col, Button } from "antd";
+
 function PagementCompletePage(props) {
   let history = useHistory();
 
@@ -14,11 +16,28 @@ function PagementCompletePage(props) {
   // }
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
+      <div style={{ justifyContent: "center", textAlign: "center" }}>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <Row>
+          <Col span={24}>
+            <div>주문이 완료되었습니다</div>
+          </Col>
+          <Col span={24}>
+            <Button
+              onClick={() => {
+                window.location.replace("/");
+              }}
+            >
+              {" "}
+              홈화면으로 돌아가기
+            </Button>
+          </Col>
+        </Row>
       </div>
-      <div>주문이 완료되었습니다</div>
-      <button> 돌아갑니다</button>
     </>
   );
 }
