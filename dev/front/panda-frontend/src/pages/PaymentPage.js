@@ -64,7 +64,7 @@ function PaymentPage(gprops) {
   }, []);
   const [Pbutton, setPbutton] = useState(false);
 
-  const onClickPayment = () => {
+  const onClickPayment = (tf) => {
     var date = new Date();
     var uid = new Date().getTime();
     var year = date.getFullYear();
@@ -74,7 +74,6 @@ function PaymentPage(gprops) {
     // console.log("결제하기!!!!!");
     // console.log(defaultInfo);
     // console.log(paymentForm);
-
     if (value === 1) {
       SetPayMentForm({
         merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
@@ -536,20 +535,15 @@ function PaymentPage(gprops) {
     };
     axios.post("/api/payment/after", body).then((response) => {
       if (response.data.success) {
-        setReadyPay(true);
-        onClickPayment();
-
         console.log(response.data.success);
+        onClickPayment(response.data.success);
+        setReadyPay(true);
       } else {
         alert(response.data.message);
         history.goBack();
         return;
       }
     });
-
-    if (!readyPay) {
-      return;
-    }
   };
 
   const onFormLayoutChange = ({ size }) => {
@@ -608,14 +602,14 @@ function PaymentPage(gprops) {
 
   useEffect(() => {
     // console.log(paymentForm);
-    if (Pbutton === true) {
+    if (Pbutton === true && readyPay === true) {
       const { IMP } = window;
       // TODO : 식별코드 숨기기
-      IMP.init("imp16473466"); // TODO: 식별코드 숨기기
+      IMP.init("imp16473466"); // TODOS: 식별코드 숨기기
       IMP.request_pay(paymentForm, callback);
       setPbutton(false);
     }
-  }, [paymentForm]);
+  }, [paymentForm, readyPay]);
 
   const resultDetail = [];
   const [customData, setCustomData] = useState({
