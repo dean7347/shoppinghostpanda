@@ -304,8 +304,45 @@ public class OrderDetailController {
 
 
     }
+    //결제 이전 ㅅ ㅏ전검증
+    @RequestMapping(value = "/api/payment/after", method = RequestMethod.POST)
+    public ResponseEntity<?> afterConfirm(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication,@RequestBody AfterConfirm afterConfirm) throws Exception {
+        System.out.println("afterConfirm = " + afterConfirm);
+        for (long l : afterConfirm.dataList) {
+            Optional<OrderDetail> byId = orderDetailRepository.findById(l);
+            int optionStock = byId.get().getOptions().getOptionStock();
+            int productCount = byId.get().getProductCount();
+            int res= optionStock-productCount;
+            boolean salesOp = byId.get().getOptions().isSales();
+            //판매중지/삭제상품인경우
+            if(!byId.get().getProducts().isSales()||byId.get().getProducts().isDeleted())
+            {
+                String message= byId.get().getProducts().getProductName()+"은/는 구매 불가능한 상품입니다.";
+                return ResponseEntity.ok(new ResultDto(false,message));
 
-    //결제완료
+            }
+            //삭제된 옵션인경우
+            if(!salesOp)
+            {
+                String message= byId.get().getOptions().getOptionName()+"은/는 구매 불가능한 옵션입니다.";
+                return ResponseEntity.ok(new ResultDto(false,message));
+            }
+            //수량이 부족한경우
+
+            if((res<0))
+            {
+                String message= byId.get().getOptions().getOptionName()+"은/는"+byId.get().getOptions().getOptionStock()+"개 이하로 선택해주세요.";
+                return ResponseEntity.ok(new ResultDto(false,message));
+            }
+        }
+
+
+
+        return ResponseEntity.ok(new tf(true,"검증성공"));
+
+    }
+        //결제완료
     @RequestMapping(value = "/api/payment/complete", method = RequestMethod.POST)
     public ResponseEntity<?> finishpayment(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication,@RequestBody finishPaymentDAO finishpaymentDAO) throws Exception {
@@ -787,5 +824,10 @@ public class OrderDetailController {
         String paymethod;
         String paid_amount;
         String stat;
+    }
+
+    @Data
+    static class  AfterConfirm {
+        long[] dataList;
     }
 }

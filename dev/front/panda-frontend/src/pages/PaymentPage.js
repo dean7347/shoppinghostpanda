@@ -127,6 +127,7 @@ function PaymentPage(gprops) {
         paid_amount: paid_amount,
         stat: status,
       };
+
       axios.post("/api/payment/complete", body).then((response) => {
         if (response.data.success) {
           alert("결제성공");
@@ -456,7 +457,7 @@ function PaymentPage(gprops) {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
+  const [readyPay, setReadyPay] = useState(false);
   const paymentClick = () => {
     if (value === 2) {
       if (addaddress === true) {
@@ -529,8 +530,26 @@ function PaymentPage(gprops) {
     }
 
     //결제창 오픈
+    //사전검증
+    const body = {
+      dataList: customData.detaildId,
+    };
+    axios.post("/api/payment/after", body).then((response) => {
+      if (response.data.success) {
+        setReadyPay(true);
+        onClickPayment();
 
-    onClickPayment();
+        console.log(response.data.success);
+      } else {
+        alert(response.data.message);
+        history.goBack();
+        return;
+      }
+    });
+
+    if (!readyPay) {
+      return;
+    }
   };
 
   const onFormLayoutChange = ({ size }) => {
@@ -665,8 +684,6 @@ function PaymentPage(gprops) {
           {/* 바디영역 */}
 
           <div>
-            {console.log("프롭스확인")}
-
             {paydata.ds &&
               paydata.ds.map((item, index) => {
                 var allPrice = 0;
@@ -919,8 +936,6 @@ function PaymentPage(gprops) {
         {/* 바디영역 */}
 
         <div>
-          {console.log("프롭스확인")}
-
           {paydata.ds &&
             paydata.ds.map((item, index) => {
               var allPrice = 0;
@@ -1138,9 +1153,6 @@ function PaymentPage(gprops) {
 
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
       <div style={{ width: "85%", margin: "3rem auto" }}>
         <h1>Payment</h1>
         <Divider />
