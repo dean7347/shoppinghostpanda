@@ -10,6 +10,7 @@ import PandaVideoPage from "./panda/PandaVideoPage";
 import PandaSettlementPage from "./panda/PandaSettlementPage";
 import SellerDashboard from "./seller/SellerDashboard";
 import SellerSettlementPage from "./seller/SellerSettlementPage";
+import SellerNewOrderPage from "./seller/SellerNewOrderPage";
 import MyProductPage from "../../../../pages/MyProductPage";
 
 const MyPageRoutes = () => {
@@ -27,6 +28,8 @@ const MyPageRoutes = () => {
         <Route path='/seller/dashboard' exact component={SellerDashboard}/>
         <Route path="/seller/product" component={MyProductPage} exact />
         <Route path='/seller/settlement' exact component={SellerSettlementPage}/>
+        <Route path='/seller/newOrder' exact component={SellerNewOrderPage}/>
+
     </Switch>
   );
 };
