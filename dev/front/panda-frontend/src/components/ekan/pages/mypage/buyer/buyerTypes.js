@@ -1,7 +1,7 @@
 export const buyerSidebarItems = [
     {
         "display_name": "Dashboard",
-        "route": "/buyer/mypage",
+        "route": "/buyer/dashboard",
         "icon": "bx bx-category-alt"
     },
     {

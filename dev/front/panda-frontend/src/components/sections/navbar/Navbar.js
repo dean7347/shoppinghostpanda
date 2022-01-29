@@ -88,7 +88,7 @@ const Navbar = () => {
       {loggedIn ? (
         <div className="navbar-end">
           <div className="navbar-menu">
-            <span className="mr-3">
+            <span className="mr-5">
               <Dropdown
                 customToggle={() => renderUserToggle()}
                 contentData={renderAuthMenu(panda, seller)}
