@@ -339,7 +339,7 @@ public class OrderDetailController {
 
 
 
-        return ResponseEntity.ok(new tf(true,"검증성공"));
+        return ResponseEntity.ok(new ResultDto(true,"검증성공"));
 
     }
         //결제완료
