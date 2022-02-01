@@ -50,20 +50,27 @@ public class UserOrderController {
     }
 
 
-    @RequestMapping(value = "/api/shop/shoporderlist", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/shop/shoporderlist", method = RequestMethod.GET)
     public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, Pageable pageable, @RequestBody PaymentStatusType type) throws Exception {
+                                                Authentication authentication, Pageable pageable, @RequestParam("type")String type) throws Exception {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         List<UserOrder> byUserId = new ArrayList<>();
         Page<UserOrder> byShopAndOrderStatus = null;
 
-        switch (type.type)
+        switch (type)
         {
+            //신규주문
             case "recent":byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.결제완료);
+            //준비중인주문
             case "ready" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.준비중);
+            //배송중인주문
+            case "shipping" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.발송중);
+            //교환/반품요청
             case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.교환대기);
+            //완료된 주문
             case "finish" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.구매확정);
+            //교환/반품확인
             case "check" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.환불대기);
 
         }
