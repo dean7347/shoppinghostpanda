@@ -98,6 +98,7 @@ public class UserOrderController {
                 for (OrderDetail orderDetail : detail) {
                     productName.add(orderDetail.getProducts().getProductName());
                 }
+                int price =0;
 
                 dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()
                         ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus(),
