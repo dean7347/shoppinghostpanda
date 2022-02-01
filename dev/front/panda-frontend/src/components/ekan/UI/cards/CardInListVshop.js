@@ -65,7 +65,10 @@ function CardInListVshop(props) {
       }
     });
   };
-
+  const onPrint = () => {
+    console.log("주문서출력");
+    window.print();
+  };
   const onTestCheck = (p, s, c, w) => {
     console.log(p + s);
     const body = {
@@ -318,7 +321,8 @@ function CardInListVshop(props) {
 
   return (
     <>
-      <div style={{ width: "85%", margin: "3rem auto" }}>
+      <div id="print" style={{ width: "85%", margin: "3rem auto" }}>
+        <Button onClick={onPrint}>인쇄하기</Button>
         <Divider />
         <div style={{ fontWeight: "bold", fontSize: "25px" }}>
           <h3>상품정보</h3>
