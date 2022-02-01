@@ -51,7 +51,32 @@ public class UserOrderController {
 
         }
 
-        return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
+        return ResponseEntity.ok(new TFMessageDto(false,"상태변경에 실패했습니다"));
+
+    }
+
+    @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
+    public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
+
+        System.out.println("changeAction = " + changeAction.userOrderId);
+        long num=0;
+        for (long l : changeAction.userOrderId) {
+            UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
+            if(userOrder!=null)
+            {
+                return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
+
+            }else
+            {
+                num=l;
+            }
+
+
+        }
+
+
+        return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문 확인에 실패했습니다"));
 
     }
 
@@ -342,6 +367,15 @@ public class UserOrderController {
     static class ChangeAction {
         //필수항목
         long userOrderId;
+        String state;
+        //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
+        String courier;
+        String waybill;
+    }
+    @Data
+    static class ChangeActions {
+        //필수항목
+        long[] userOrderId;
         String state;
         //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
         String courier;
