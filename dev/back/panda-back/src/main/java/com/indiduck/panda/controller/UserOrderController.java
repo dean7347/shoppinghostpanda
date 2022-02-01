@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,30 +63,53 @@ public class UserOrderController {
         {
             //신규주문
             case "recent":byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.결제완료);
+                System.out.println("최근주문조회");
+            break;
             //준비중인주문
             case "ready" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.준비중);
+                break;
+
             //배송중인주문
             case "shipping" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.발송중);
+                break;
+
             //교환/반품요청
             case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.교환대기);
+                break;
+
             //완료된 주문
             case "finish" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.구매확정);
+                break;
+
             //교환/반품확인
             case "check" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.환불대기);
+                break;
+            default:
+                System.out.println("없는 주문요청입니다");
+                break;
 
         }
         List<ShopDashBoardDTO> dashs= new ArrayList<>();
-        for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
-            List<OrderDetail> detail = shopAndOrderStatus.getDetail();
-            ArrayList<String> productName=new ArrayList<>();
-            for (OrderDetail orderDetail : detail) {
-                productName.add(orderDetail.getProducts().getProductName());
-            }
+        if(!byShopAndOrderStatus.isEmpty())
+        {
+            for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
+                List<OrderDetail> detail = shopAndOrderStatus.getDetail();
+                HashSet<String> productName=new HashSet<>();
+                for (OrderDetail orderDetail : detail) {
+                    productName.add(orderDetail.getProducts().getProductName());
+                }
 
-            dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getFullprice()
-            ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus().toString(),
-                    shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
+                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()
+                        ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus(),
+                        shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
+            }
         }
+
+        System.out.println("dashs = " + byShopAndOrderStatus);
+        System.out.println("dashs = " + type);
+
+
+        System.out.println("dashs = " + dashs);
 
 
         return ResponseEntity.ok(new pageDto(true,byShopAndOrderStatus.getTotalPages(),byShopAndOrderStatus.getTotalElements(),dashs));
@@ -213,12 +237,20 @@ public class UserOrderController {
         String comp;
         String number;
 
-        public ShopDashBoardDTO(long id, String name, int price, LocalDateTime orderAt, String paymentStatus, String comp, String number) {
+        public ShopDashBoardDTO(long id, String name, int price, LocalDateTime orderAt, PaymentStatus paymentStatus, String comp, String number) {
             this.id = id;
             this.name = name;
             this.price = price;
             this.orderAt = orderAt;
-            this.paymentStatus = paymentStatus;
+            if(paymentStatus==null)
+            {
+                this.paymentStatus = null;
+
+            }else
+            {
+                this.paymentStatus = paymentStatus.toString();
+
+            }
             this.comp = comp;
             this.number = number;
         }
