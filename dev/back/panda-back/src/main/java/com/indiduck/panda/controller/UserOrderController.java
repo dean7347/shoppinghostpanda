@@ -50,7 +50,7 @@ public class UserOrderController {
     }
 
 
-    @RequestMapping(value = "/api/shop/neworderlist", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/shop/shoporderlist", method = RequestMethod.POST)
     public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, Pageable pageable, @RequestBody PaymentStatusType type) throws Exception {
         String name = authentication.getName();
