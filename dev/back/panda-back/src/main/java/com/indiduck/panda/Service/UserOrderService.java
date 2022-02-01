@@ -53,8 +53,9 @@ public class UserOrderService {
                 break;
             case "구매확정":
                 userOrder.confirmOrder();
-
                 break;
+            case "주문취소":
+                userOrder.cancelOrder();
                 //환불상태는 아직 남겨둔다
         }
         return userOrder;

@@ -45,6 +45,11 @@ public class UserOrderController {
 
 
         UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
+        if(userOrder !=null)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
+
+        }
 
         return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
 
