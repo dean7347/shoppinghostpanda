@@ -6,7 +6,7 @@ import Modal from "../../../UI/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";
 import { fetchSituationDetail } from "../../../../../store/actions/mypageActions/buyerActions";
-
+import CardInListVshop from "../../../UI/cards/CardInListVshop";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
@@ -53,7 +53,7 @@ const SellerNewOrderPage = () => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const { buyerSituationDetail } = useSelector((state) => state.buyer);
+  const { situationDetail } = useSelector((state) => state.buyer);
   const dispatch = useDispatch();
 
   const columns = [
@@ -112,6 +112,7 @@ const SellerNewOrderPage = () => {
     event.stopPropagation();
     dispatch(fetchSituationDetail(cellValues.id));
     setShowModal(true);
+    console.log(situationDetail);
   };
 
   const confirmSelected = (event) => {
@@ -169,6 +170,7 @@ const SellerNewOrderPage = () => {
   const printList = (event) => {
     event.preventDefault();
     console.log("인쇄하기");
+    console.log(situationDetail);
   };
 
   const fetchTableData = useCallback(async () => {
@@ -245,8 +247,10 @@ const SellerNewOrderPage = () => {
           }}
           title={"주문 상세보기"}
         >
-          {buyerSituationDetail ? (
-            <>여기 안에 모달 내용</>
+          {situationDetail ? (
+            <>
+              <CardInListVshop situationDetail={situationDetail} />
+            </>
           ) : (
             <div>데이터 없음</div>
           )}
