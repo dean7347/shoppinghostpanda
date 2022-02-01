@@ -1,6 +1,7 @@
 package com.indiduck.panda.controller;
 
 
+import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.UserOrderService;
@@ -9,6 +10,8 @@ import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -30,6 +33,8 @@ public class UserOrderController {
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final ShopRepository shopRepository;
 
 
 
@@ -39,12 +44,44 @@ public class UserOrderController {
 
 
         UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
-        if(userOrder.getOrderStatus().toString().equals(changeAction.state))
-        {
-            return ResponseEntity.ok(new TFMessageDto(true,"성공적으로 변경했습니다"));
-            
-        }
+
         return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
+
+    }
+
+
+    @RequestMapping(value = "/api/shop/neworderlist", method = RequestMethod.POST)
+    public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, Pageable pageable, @RequestBody PaymentStatusType type) throws Exception {
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        List<UserOrder> byUserId = new ArrayList<>();
+        Page<UserOrder> byShopAndOrderStatus = null;
+
+        switch (type.type)
+        {
+            case "recent":byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.결제완료);
+            case "ready" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.준비중);
+            case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.교환대기);
+            case "finish" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.구매확정);
+            case "check" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.환불대기);
+
+        }
+        List<ShopDashBoardDTO> dashs= new ArrayList<>();
+        for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
+            List<OrderDetail> detail = shopAndOrderStatus.getDetail();
+            ArrayList<String> productName=new ArrayList<>();
+            for (OrderDetail orderDetail : detail) {
+                productName.add(orderDetail.getProducts().getProductName());
+            }
+
+            dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getFullprice()
+            ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus().toString(),
+                    shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
+        }
+
+
+        return ResponseEntity.ok(new pageDto(true,byShopAndOrderStatus.getTotalPages(),byShopAndOrderStatus.getTotalElements(),dashs));
 
     }
 
@@ -144,7 +181,42 @@ public class UserOrderController {
 
 
     }
+    @Data
+    private class pageDto{
+        boolean success;
+        int totalpage;
+        Long totalElement;
+        List<ShopDashBoardDTO> pageList=new ArrayList<>();
+        public pageDto(boolean su, int totalP, Long totalE, List<ShopDashBoardDTO> pl)
+        {
+            success=su;
+            totalpage=totalP;
+            totalElement=totalE;
+            pageList=pl;
+        }
+    }
 
+    @Data
+    private static class ShopDashBoardDTO{
+        long id;
+        String name;
+        int price;
+        LocalDateTime orderAt;
+        String paymentStatus;
+        String comp;
+        String number;
+
+        public ShopDashBoardDTO(long id, String name, int price, LocalDateTime orderAt, String paymentStatus, String comp, String number) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+            this.orderAt = orderAt;
+            this.paymentStatus = paymentStatus;
+            this.comp = comp;
+            this.number = number;
+        }
+
+    }
     @Data
     private static class DashboardDto
     {
@@ -242,5 +314,9 @@ public class UserOrderController {
     private static class ShopDashBoardForUserOrderId
     {
         long orderId;
+    }
+
+    private class PaymentStatusType {
+        String type;
     }
 }

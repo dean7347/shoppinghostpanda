@@ -40,4 +40,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
     Optional<List<UserOrder>>findByShopAndCreatedAtBetween(Shop shop,LocalDateTime st,LocalDateTime end);
 
 
+    //페이징
+    Page<UserOrder> findByShopAndOrderStatus(Pageable page,Shop shop,OrderStatus od);
+
 }
