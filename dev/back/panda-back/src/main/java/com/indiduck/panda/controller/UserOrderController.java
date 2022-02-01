@@ -98,9 +98,13 @@ public class UserOrderController {
                 for (OrderDetail orderDetail : detail) {
                     productName.add(orderDetail.getProducts().getProductName());
                 }
-                int price =0;
+                int redundancy =0;
+                if(shopAndOrderStatus.getPureAmount()<shopAndOrderStatus.getFreeprice())
+                {
+                    redundancy+=shopAndOrderStatus.getShipPrice();
+                }
 
-                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()
+                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()+redundancy
                         ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus(),
                         shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
             }
