@@ -1,4 +1,5 @@
-import { useEffect, useState, useScript } from "react";
+import { useEffect, useState, useScript, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import React from "react";
 import {
   Divider,
@@ -318,123 +319,139 @@ function CardInListVshop(props) {
     );
   };
   //렌더박스
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   return (
     <>
-      <div id="print" style={{ width: "85%", margin: "3rem auto" }}>
-        <Button onClick={onPrint}>인쇄하기</Button>
+      <div ref={componentRef} style={{ width: "85%", margin: "3rem auto" }}>
+        <Button onClick={handlePrint}>인쇄하기</Button>
         <Divider />
-        <div style={{ fontWeight: "bold", fontSize: "25px" }}>
-          <h3>상품정보</h3>
-          <hr style={{ backgroundColor: "red" }} />
-        </div>
-        <Row>
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>받으시는 분</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.receiver}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>받으시는 분 전화번호</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.receiverPhone}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-          <Col span={24}>
-            주소
-            <Col span={24}>
-              {props.situationDetail.address}
+        <div ref={componentRef}>
+          <div style={{ fontWeight: "bold", fontSize: "25px" }}>
+            <h3>상품정보</h3>
+            <hr style={{ backgroundColor: "red" }} />
+          </div>
+          <Row>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>받으시는 분</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.receiver}
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
-          </Col>
 
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>상점 이름</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.shopName}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>상점 번호</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.shopPhone}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>주문 일시</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.orderAt}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-          <Col span={12}>
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              <h3>상품 상태</h3>
-            </div>
-            <hr style={{ backgroundColor: "black" }} />
-          </Col>
-          <Col span={12}>
-            {props.situationDetail.status}
-            <hr style={{ backgroundColor: "blue" }} />
-          </Col>
-          <div>
-            ***임시버튼***
-            <Button
-              onClick={() =>
-                onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)
-              }
-            >
-              스테이트 준비중으로 변경
-            </Button>
-            <Button
-              onClick={() =>
-                onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
-              }
-            >
-              스테이트 발송중으로 변경
-            </Button>
-            <Button
-              onClick={() =>
-                onTestCheck(
-                  props.situationDetail.detailId,
-                  "구매확정",
-                  "c",
-                  123
-                )
-              }
-            >
-              스테이트 구매확정 변경
-            </Button>
-            <Button onClick={() => onTestPandaDashboard()}>
-              판다대시보드테스트
-            </Button>
-          </div>
-        </Row>
-        {renderbox()}
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>받으시는 분 전화번호</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.receiverPhone}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={24}>
+              주소
+              <Col span={24}>
+                {props.situationDetail.address}
+                <hr style={{ backgroundColor: "blue" }} />
+              </Col>
+            </Col>
 
-        <Divider />
-        <div></div>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>상점 이름</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.shopName}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>상점 번호</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.shopPhone}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>주문 일시</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.orderAt}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>상품 상태</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.status}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <div>
+              ***임시버튼***
+              <Button
+                onClick={() =>
+                  onTestCheck(
+                    props.situationDetail.detailId,
+                    "준비중",
+                    "c",
+                    123
+                  )
+                }
+              >
+                스테이트 준비중으로 변경
+              </Button>
+              <Button
+                onClick={() =>
+                  onTestCheck(
+                    props.situationDetail.detailId,
+                    "발송중",
+                    "c",
+                    123
+                  )
+                }
+              >
+                스테이트 발송중으로 변경
+              </Button>
+              <Button
+                onClick={() =>
+                  onTestCheck(
+                    props.situationDetail.detailId,
+                    "구매확정",
+                    "c",
+                    123
+                  )
+                }
+              >
+                스테이트 구매확정 변경
+              </Button>
+              <Button onClick={() => onTestPandaDashboard()}>
+                판다대시보드테스트
+              </Button>
+            </div>
+          </Row>
+          {renderbox()}
+
+          <Divider />
+          <div></div>
+        </div>
       </div>
     </>
   );
