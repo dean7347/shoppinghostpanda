@@ -323,10 +323,20 @@ function CardInListVshop(props) {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  // useEffect(() => {
+  //   // document.getElementById("print-button").click();
 
+  //   console.log("클릭댔음");
+  //   console.log(componentRef);
+  //   handlePrint();
+  // });
   return (
     <>
-      <div ref={componentRef} style={{ width: "85%", margin: "3rem auto" }}>
+      <div
+        id="print-button"
+        ref={componentRef}
+        style={{ width: "85%", margin: "3rem auto" }}
+      >
         <Button onClick={handlePrint}>인쇄하기</Button>
         <Divider />
         <div ref={componentRef}>

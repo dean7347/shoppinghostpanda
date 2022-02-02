@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "../../../UI/Button";
 import axios from "axios";
@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";
 import { fetchSituationDetail } from "../../../../../store/actions/mypageActions/buyerActions";
 import CardInListVshop from "../../../UI/cards/CardInListVshop";
+import { useReactToPrint } from "react-to-print";
+import ReactToPrint from "react-to-print";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
@@ -55,7 +57,10 @@ const SellerNewOrderPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const { situationDetail } = useSelector((state) => state.buyer);
   const dispatch = useDispatch();
-
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   const columns = [
     { field: "id", headerName: "주문번호", flex: 0.5 },
     { field: "name", headerName: "상품명", flex: 2 },
@@ -166,11 +171,35 @@ const SellerNewOrderPage = () => {
       }
     });
   };
+  const [PLD, setPLD] = useState();
 
-  const printList = (event) => {
+  const PrintList = (event) => {
     event.preventDefault();
-    console.log("인쇄하기");
-    console.log(situationDetail);
+    console.log("선택된 주문 확인", selectedRows);
+    var ids = [];
+    for (var i = 0; i < selectedRows.length; i++) {
+      ids.push(selectedRows[i].id);
+    }
+    //진동API작업
+    const body = {
+      detailId: ids,
+    };
+
+    axios.post("/api/situationListdetail", body).then((response) => {
+      if (response.data.success) {
+        setPLD(response.data.sld);
+        // response.data.sld.map((data, idx) => {
+        //   console.log(data);
+        //   // setPLD(data)
+        //   <CardInListVshop situationDetail={data} />;
+        // });
+        console.log("피엘디");
+
+        console.log(PLD);
+      } else {
+        alert(response.data.message);
+      }
+    });
   };
 
   const fetchTableData = useCallback(async () => {
@@ -194,6 +223,52 @@ const SellerNewOrderPage = () => {
     fetchTableData();
   }, [page]);
 
+  function printPage(e) {
+    // console.log(e);
+    const a = <div id="k">"zz"</div>;
+    const ta = <CardInListVshop situationDetail={situationDetail} />;
+    console.log(ta);
+
+    // var initBody;
+    // window.onbeforeprint = function () {
+    //   initBody = document.body.innerHTML;
+    //   document.body.innerHTML = document.getElementById("0").innerHTML;
+    //   initBody = a.body.innerHTML;
+    //   document.body.innerHTML = a.getElementbyId("k").innerHTML;
+    // };
+    // window.onafterprint = function () {
+    //   document.body.innerHTML = initBody;
+    // };
+    // window.print();
+  }
+
+  const renderPLD = () => {
+    return (
+      <>
+        <Button onClick={() => printPage("0")}>특정영역</Button>
+        <div>zz{PLD && PLD.length}</div>
+        <ReactToPrint
+          trigger={() => <button>Print this out!</button>}
+          content={() => componentRef.current}
+        />
+
+        <div id={0} ref={componentRef}>
+          {PLD && console.log(PLD + "zzz")}
+          {PLD &&
+            PLD.map((data, idx) => {
+              return (
+                <div>
+                  {"idx아이디는"}
+                  {idx}
+                  <CardInListVshop id={idx} situationDetail={data} />
+                </div>
+              );
+            })}
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <div className="container">
@@ -214,7 +289,7 @@ const SellerNewOrderPage = () => {
             <Button
               className="is-info float-end"
               text="주문서 인쇄"
-              onClick={printList}
+              onClick={PrintList}
             />
           </div>
           <div style={{ width: "100%", height: "600px" }}>
@@ -256,6 +331,7 @@ const SellerNewOrderPage = () => {
           )}
         </Modal>
       )}
+      {renderPLD()}
     </>
   );
 };

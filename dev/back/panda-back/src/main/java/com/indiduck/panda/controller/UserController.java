@@ -191,6 +191,40 @@ public class UserController {
         return ResponseEntity.ok(rsd);
     }
 
+
+
+    @PostMapping("/api/situationListdetail")
+    public ResponseEntity<?> situationListDetailV1(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication,  @RequestBody SituationListDto situationDto) {
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        List<recentSituationDtoV2> printdatas = new ArrayList<>();
+        for (long l : situationDto.detailId) {
+            Optional<UserOrder> byId = userOrderRepository.findById(l);
+            UserOrder userOrder = byId.get();
+            List<OrderDetail> detail = userOrder.getDetail();
+            List<DetailOrderList> dol =new ArrayList<>();
+            HashSet<String> proname=new HashSet<>();
+            for (OrderDetail orderDetail : userOrder.getDetail()) {
+                proname.add(orderDetail.getProducts().getProductName());
+            }
+            System.out.println("내려주는데이타 = " + proname);
+
+
+
+            recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
+                    ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
+                    ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
+                    userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice());
+            printdatas.add(rsd);
+
+
+        }
+
+        return ResponseEntity.ok(new DetailListDTO(true,printdatas));
+    }
+
+
     //주문 상태 변경신청
     @PostMapping("/api/changeuserorderstate")
     public ResponseEntity<?> changeStateUserOrder(@CurrentSecurityContext(expression = "authentication")
@@ -199,6 +233,17 @@ public class UserController {
         userOrderService.ChangeOrder(chageDao.userOrderId,chageDao.state,chageDao.shipCompany,chageDao.shipNumber);
         return ResponseEntity.ok(new TFMessageDto(true,"상태변경에 성공했습니다"));
 
+    }
+
+    @Data
+    private static class DetailListDTO{
+        boolean success;
+        List<recentSituationDtoV2> sld;
+
+        public DetailListDTO(boolean success, List<recentSituationDtoV2> sld) {
+            this.success = success;
+            this.sld = sld;
+        }
     }
 
     @Data
@@ -287,6 +332,11 @@ public class UserController {
         LocalDateTime orderAt;
         //상태태
         OrderStatus status;
+    }
+    @Data
+    private static class SituationListDto {
+        //주문번호
+        long[] detailId;
     }
 
     @Data
