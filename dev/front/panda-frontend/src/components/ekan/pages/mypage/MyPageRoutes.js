@@ -11,6 +11,7 @@ import PandaSettlementPage from "./panda/PandaSettlementPage";
 import SellerDashboard from "./seller/SellerDashboard";
 import SellerSettlementPage from "./seller/SellerSettlementPage";
 import SellerNewOrderPage from "./seller/SellerNewOrderPage";
+import SellerReadyOrderPage from "./seller/SellerReadyOrderPage";
 import MyProductPage from "../../../../pages/MyProductPage";
 
 const MyPageRoutes = () => {
@@ -21,15 +22,15 @@ const MyPageRoutes = () => {
       <Route path="/buyer/cancelList" exact component={CancelListPage} />
       <Route path="/buyer/cart" exact component={BuyerCartPage} />
 
-        <Route path='/panda/dashboard' exact component={PandaDashboard}/>
-        <Route path='/panda/video' exact component={PandaVideoPage}/>
-        <Route path='/panda/settlement' exact component={PandaSettlementPage}/>
+      <Route path="/panda/dashboard" exact component={PandaDashboard} />
+      <Route path="/panda/video" exact component={PandaVideoPage} />
+      <Route path="/panda/settlement" exact component={PandaSettlementPage} />
 
-        <Route path='/seller/dashboard' exact component={SellerDashboard}/>
-        <Route path="/seller/product" component={MyProductPage} exact />
-        <Route path='/seller/settlement' exact component={SellerSettlementPage}/>
-        <Route path='/seller/newOrder' exact component={SellerNewOrderPage}/>
-
+      <Route path="/seller/dashboard" exact component={SellerDashboard} />
+      <Route path="/seller/product" component={MyProductPage} exact />
+      <Route path="/seller/settlement" exact component={SellerSettlementPage} />
+      <Route path="/seller/newOrder" exact component={SellerNewOrderPage} />
+      <Route path="/seller/readyOrder" exact component={SellerReadyOrderPage} />
     </Switch>
   );
 };

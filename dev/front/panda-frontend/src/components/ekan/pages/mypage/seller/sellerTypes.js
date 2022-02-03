@@ -11,7 +11,7 @@ export const sellerSidebarItems = [
   },
   {
     display_name: "준비중인 주문",
-    route: "/seller/newOrder",
+    route: "/seller/ReadyOrder",
     icon: "bx bx-package",
   },
   {
@@ -49,115 +49,131 @@ export const sellerSidebarItems = [
     route: "/seller/settlement",
     icon: "bx bx bx-won",
   },
-]
+];
 
 export const sellerDashboardCard = [
   {
-    "link": "/seller/video",
-    "icon": "bx bx-shopping-bag",
-    "count": 0,
-    "title": "신규주문"
+    link: "/seller/video",
+    icon: "bx bx-shopping-bag",
+    count: 0,
+    title: "신규주문",
   },
   {
-    "link": "/seller/settlement",
-    "icon": "bx bx-package",
-    "count": 0,
-    "title": "배송준비"
+    link: "/seller/settlement",
+    icon: "bx bx-package",
+    count: 0,
+    title: "배송준비",
   },
   {
-    "link": "/seller/settlement",
-    "icon": "bx bx-error-alt",
-    "count": 0,
-    "title": "취소 / 반품"
+    link: "/seller/settlement",
+    icon: "bx bx-error-alt",
+    count: 0,
+    title: "취소 / 반품",
   },
   {
-    "link": "/seller/settlement",
-    "icon": "bx bxs-package",
-    "count": 0,
-    "title": "완료주문"
-  }
-]
+    link: "/seller/settlement",
+    icon: "bx bxs-package",
+    count: 0,
+    title: "완료주문",
+  },
+];
 
 export const sellerChartOptions = {
-  series: [{
-    name: '결제금액',
-    type: 'column',
-    data: [55000, 62000, 24000, 12000, 66000, 86000, 124000, 89000, 23000, 55000, 45000, 95000]
-  }, {
-    name: '결제건수',
-    type: 'line',
-    data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
-  }],
+  series: [
+    {
+      name: "결제금액",
+      type: "column",
+      data: [
+        55000, 62000, 24000, 12000, 66000, 86000, 124000, 89000, 23000, 55000,
+        45000, 95000,
+      ],
+    },
+    {
+      name: "결제건수",
+      type: "line",
+      data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16],
+    },
+  ],
   options: {
-    color: ['#6ab04c', '#2980b9'],
+    color: ["#6ab04c", "#2980b9"],
     chart: {
-      background: 'transparent',
-      height: '800px'
+      background: "transparent",
+      height: "800px",
     },
     dataLabels: {
       enabled: true,
-      enabledOnSeries: [1]
+      enabledOnSeries: [1],
     },
-    labels: [1,2,3,4,5,6,7,8,9,10,11],
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     stroke: {
-      width: [0, 4]
+      width: [0, 4],
     },
     xaxis: {
-      type: 'datetime'
+      type: "datetime",
     },
-    yaxis: [{}, {
-      opposite: true,
-    }],
+    yaxis: [
+      {},
+      {
+        opposite: true,
+      },
+    ],
     legend: {
-      position: 'top'
+      position: "top",
     },
     grid: {
-      show: false
-    }
-  }
-}
+      show: false,
+    },
+  },
+};
 
 export const dummyVideoData = [
   {
     title: "더미 짬통 비디오 제목 1 더미 짬통 비디오 제목 1",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
   {
     title: "더미 짬통 비디오 제목 2 더미 짬통",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
   {
     title: "더미 짬통 비디오 제목 3 더미 짬통 더미 짬통",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
   {
     title: "더미 짬통 비디오 제목 4",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
   {
     title: "더미 짬통 비디오 제목 5",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
   {
     title: "더미 짬통 비디오 제목 6",
-    image: "https://bulma.io/images/placeholders/1280x960.png"
+    image: "https://bulma.io/images/placeholders/1280x960.png",
   },
-]
+];
 
 export const settlementSearchByDate = [
-  {label: '정산일자', value: '정산일자'},
-  {label: '정산예정일', value: '정산예정일'},
-  {label: '판매일자', value: '판매일자'},
-  {label: '구매확정일자', value: '구매확정일자'},
-]
+  { label: "정산일자", value: "정산일자" },
+  { label: "정산예정일", value: "정산예정일" },
+  { label: "판매일자", value: "판매일자" },
+  { label: "구매확정일자", value: "구매확정일자" },
+];
 
-export const settlementSearchByStatus = [
-  {label: '전체', value: 'all'}
-]
+export const settlementSearchByStatus = [{ label: "전체", value: "all" }];
 
 export const sellerSettlementTable = {
-  header: ["입금액", "정산금액", "수수료", "판매일", "구매확정일", "정산예상일", "정산상태"],
-}
+  header: [
+    "입금액",
+    "정산금액",
+    "수수료",
+    "판매일",
+    "구매확정일",
+    "정산예상일",
+    "정산상태",
+  ],
+};
 
-
-export const loadingVideoData = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+export const loadingVideoData = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+];

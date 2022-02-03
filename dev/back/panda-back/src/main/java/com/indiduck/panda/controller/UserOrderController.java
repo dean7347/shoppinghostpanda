@@ -76,7 +76,7 @@ public class UserOrderController {
         }
 
 
-        return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문 확인에 실패했습니다"));
+        return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
     }
 

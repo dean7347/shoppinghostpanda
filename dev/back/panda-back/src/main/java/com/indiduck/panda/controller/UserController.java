@@ -205,7 +205,13 @@ public class UserController {
             List<OrderDetail> detail = userOrder.getDetail();
             List<DetailOrderList> dol =new ArrayList<>();
             HashSet<String> proname=new HashSet<>();
-            userOrderService.ChangeOrder(l,"준비중","","");
+
+            UserOrder sta = userOrderService.ChangeOrder(l, "준비중", "", "");
+            if(sta ==null)
+            {
+                return ResponseEntity.ok(new TFMessageDto(false,userOrder.getId()+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+
+            }
 
             for (OrderDetail orderDetail : userOrder.getDetail()) {
                 proname.add(orderDetail.getProducts().getProductName());

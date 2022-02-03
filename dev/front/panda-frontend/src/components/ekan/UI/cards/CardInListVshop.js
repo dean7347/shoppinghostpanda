@@ -342,7 +342,33 @@ function CardInListVshop(props) {
         ref={componentRef}
         style={{ width: "85%", margin: "3rem auto" }}
       >
-        <Button onClick={handlePrint}>인쇄하기</Button>
+        <div>
+          <Button onClick={handlePrint}>인쇄하기</Button>
+          <Button
+            onClick={() =>
+              onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)
+            }
+          >
+            준비중으로 변경
+          </Button>
+          <Button
+            onClick={() =>
+              onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
+            }
+          >
+            스테이트 발송중으로 변경
+          </Button>
+          <Button
+            onClick={() =>
+              onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
+            }
+          >
+            스테이트 구매확정 변경
+          </Button>
+          <Button onClick={() => onTestPandaDashboard()}>
+            판다대시보드테스트
+          </Button>
+        </div>
         <Divider />
         <div ref={componentRef}>
           <div style={{ fontWeight: "bold", fontSize: "25px" }}>
@@ -432,48 +458,6 @@ function CardInListVshop(props) {
               {props.situationDetail.status}
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
-            <div>
-              ***임시버튼***
-              <Button
-                onClick={() =>
-                  onTestCheck(
-                    props.situationDetail.detailId,
-                    "준비중",
-                    "c",
-                    123
-                  )
-                }
-              >
-                스테이트 준비중으로 변경
-              </Button>
-              <Button
-                onClick={() =>
-                  onTestCheck(
-                    props.situationDetail.detailId,
-                    "발송중",
-                    "c",
-                    123
-                  )
-                }
-              >
-                스테이트 발송중으로 변경
-              </Button>
-              <Button
-                onClick={() =>
-                  onTestCheck(
-                    props.situationDetail.detailId,
-                    "구매확정",
-                    "c",
-                    123
-                  )
-                }
-              >
-                스테이트 구매확정 변경
-              </Button>
-              <Button onClick={() => onTestPandaDashboard()}>
-                판다대시보드테스트
-              </Button>
-            </div>
           </Row>
           {renderbox()}
 

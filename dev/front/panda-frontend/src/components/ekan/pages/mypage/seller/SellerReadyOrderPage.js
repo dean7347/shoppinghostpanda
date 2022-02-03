@@ -50,7 +50,7 @@ function cancelOrder(event, cellValues) {
   });
 }
 
-const SellerNewOrderPage = () => {
+const SellerReadyOrderPage = () => {
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -402,4 +402,4 @@ const SellerNewOrderPage = () => {
   );
 };
 
-export default SellerNewOrderPage;
+export default SellerReadyOrderPage;

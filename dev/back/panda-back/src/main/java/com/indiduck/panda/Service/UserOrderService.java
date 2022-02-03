@@ -44,6 +44,10 @@ public class UserOrderService {
         switch (status)
         {
             case "준비중":
+                if(userOrder.getOrderStatus()==OrderStatus.주문취소)
+                {
+                    return null;
+                }
                 userOrder.readyOrder();
                 break;
                 //cur = couriercom /waybillnumber
