@@ -9,25 +9,40 @@ import { fetchSituationDetail } from "../../../../../store/actions/mypageActions
 import CardInListVshop from "../../../UI/cards/CardInListVshop";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
-function confirmOrder(event, cellValues) {
+import {
+  Descriptions,
+  Menu,
+  InputNumber,
+  Table,
+  Tag,
+  Space,
+  Form,
+  Input,
+  Row,
+  Col,
+  Checkbox,
+  Select,
+} from "antd";
+function ShipOrder(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
-  //진동API작업
-  const body = {
-    userOrderId: cellValues.id,
-    state: "준비중",
-    courier: "",
-    waybill: "",
-  };
-  axios.post("/api/editstatus", body).then((response) => {
-    if (response.data.success) {
-      alert("주문을 확인했습니다");
-      window.location.reload();
-    } else {
-      alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
-      window.location.reload();
-    }
-  });
+  console.log("십오더");
+  // console.log(cellValues);
+  // //진동API작업
+  // const body = {
+  //   userOrderId: cellValues.id,
+  //   state: "준비중",
+  //   courier: "",
+  //   waybill: "",
+  // };
+  // axios.post("/api/editstatus", body).then((response) => {
+  //   if (response.data.success) {
+  //     alert("주문을 확인했습니다");
+  //     window.location.reload();
+  //   } else {
+  //     alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+  //     window.location.reload();
+  //   }
+  // });
 }
 
 function cancelOrder(event, cellValues) {
@@ -68,27 +83,44 @@ const SellerReadyOrderPage = () => {
     { field: "price", headerName: "가격", flex: 0.7 },
     { field: "orderAt", headerName: "주문일자", flex: 1.1 },
     {
-      field: "주문확인",
-      flex: 0.6,
+      field: "택배사 등록",
+      flex: 2.0,
       renderCell: (cellValues) => {
         return (
-          <Button
-            text="주문확인"
-            className="is-primary"
-            onClick={(event) => {
-              confirmOrder(event, cellValues);
-            }}
-          ></Button>
+          <>
+            <Row gutter={(24, 24)}>
+              <Col span={12}>택배사</Col>
+              <Col span={12}>한진택배</Col>
+              <Col span={12}>운송장</Col>
+              <Col span={12}>1233</Col>
+              <Button
+                text="주문확인"
+                className="is-primary"
+                onClick={(event) => {
+                  ShipOrder(event, cellValues);
+                }}
+              ></Button>
+            </Row>
+            {/* <lable>zz</lable>
+            <input></input>
+            <Button
+              text="주문확인"
+              className="is-primary"
+              onClick={(event) => {
+                confirmOrder(event, cellValues);
+              }}
+            ></Button> */}
+          </>
         );
       },
     },
     {
-      field: "주문취소",
+      field: "송장등록",
       flex: 0.6,
       renderCell: (cellValues) => {
         return (
           <Button
-            text="주문취소"
+            text="송장등록"
             className="is-danger"
             onClick={(event) => {
               cancelOrder(event, cellValues);
