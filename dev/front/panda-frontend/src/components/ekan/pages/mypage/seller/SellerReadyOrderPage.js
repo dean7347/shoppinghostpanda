@@ -86,13 +86,87 @@ const SellerReadyOrderPage = () => {
       field: "택배사 등록",
       flex: 2.0,
       renderCell: (cellValues) => {
+        const onFinish = (values) => {
+          console.log("Success:", values);
+        };
+
+        const onFinishFailed = (errorInfo) => {
+          console.log("Failed:", errorInfo);
+        };
         return (
           <>
-            <Row gutter={(24, 24)}>
+            <Form
+              name="basic"
+              labelCol={{
+                span: 10,
+              }}
+              wrapperCol={{
+                span: 8,
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Row gutter={24}>
+                <Col span={24}>
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="택배사"
+                        name="comp"
+                        rules={[
+                          {
+                            required: true,
+                            message: "택배사를 등록해주세요",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="운송장"
+                        name="wayBill"
+                        rules={[
+                          {
+                            required: true,
+                            message: "운송장을 입력해주세요",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    wrapperCol={{
+                      offset: 8,
+                      span: 16,
+                    }}
+                  >
+                    <Button
+                      className="is-info float-end"
+                      type="primary"
+                      text="배송정보등록"
+                      htmlType="submit"
+                    ></Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            {/* <Row gutter={(24, 24)}>
               <Col span={12}>택배사</Col>
-              <Col span={12}>한진택배</Col>
+              <Col span={12}>
+                <Input id="com" value="comp" />
+              </Col>
               <Col span={12}>운송장</Col>
-              <Col span={12}>1233</Col>
+              <Col span={12}>
+                <Input />
+              </Col>
+
               <Button
                 text="주문확인"
                 className="is-primary"
@@ -100,7 +174,7 @@ const SellerReadyOrderPage = () => {
                   ShipOrder(event, cellValues);
                 }}
               ></Button>
-            </Row>
+            </Row> */}
             {/* <lable>zz</lable>
             <input></input>
             <Button
@@ -382,6 +456,7 @@ const SellerReadyOrderPage = () => {
               rowCount={rows.length}
               columns={columns}
               loading={loading}
+              rowHeight={200}
               checkboxSelection
               rowsPerPageOptions={[10]}
               onPageChange={(page) => {
