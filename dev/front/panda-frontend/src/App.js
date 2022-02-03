@@ -1,42 +1,40 @@
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import PostListPage from "./pages/PostListPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPageV2";
-import WritePage from "./pages/WritePage";
-import PostPage from "./pages/PostPage";
-import regShopPage from "./pages/regShopPage";
-import newProductPage from "./pages/newProductPage";
-import EditProductPage from "./pages/EditProductPage";
-
-import LandingPage from "./pages/LandingPage";
-import ProductSearchPage from "./pages/ProductSearchPage";
-import DetailProductPage from "./pages/DetailProductPage";
-import PaymentCompletePage from "./pages/PaymentCompletePage";
-import PandaPage from "./pages/PandaPage";
-import CartPage from "./pages/CartPage";
 import "antd/dist/antd.css";
-import PaymentPage from "./pages/PaymentPage";
-import PriPage from "./pages/PriPage";
-import ServicePage from "./pages/ServicePage";
-import TermPage from "./pages/TermPage";
-import TestPage from "./pages/TestPage";
+
+import Navbar from "./components/sections/navbar/Navbar";
 import Footer from "./components/common/Footer";
-import BuyerIndex from "./components/ekan/pages/mypage/buyer/BuyerIndex";
-import SignIn from "./pages/SignIn";
 import Loader from "./components/ekan/UI/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { loginCheck } from "./store/actions/authActions";
-import Header from "./components/sections/Header";
-import PrivateRoute from "./components/auth/PrivateRoute";
-import PandaIndex from "./components/ekan/pages/mypage/panda/PandaIndex";
-import SellerIndex from "./components/ekan/pages/mypage/seller/SellerIndex";
-import Navbar from "./components/sections/navbar/Navbar";
-import TableTestPage from "./components/ekan/pages/TableTestPage";
-import FindIdPage from "./pages/FindIdPage";
-import MyProductPage from "./pages/MyProductPage";
+
+const LandingPage = React.lazy(() => import('./pages/LandingPage'));
+const WritePage = React.lazy(() => import('./pages/WritePage'));
+const SignIn = React.lazy(() => import('./pages/SignIn'));
+const RegisterPage = React.lazy(() => import('./pages/RegisterPageV2'));
+const BuyerIndex = React.lazy(() => import('./components/ekan/pages/mypage/buyer/BuyerIndex'));
+const PandaIndex = React.lazy(() => import('./components/ekan/pages/mypage/panda/PandaIndex'));
+const PrivateRoute = React.lazy(() => import('./components/auth/PrivateRoute'));
+const SellerIndex = React.lazy(() => import('./components/ekan/pages/mypage/seller/SellerIndex'));
+
+const PostPage = React.lazy(() => import('./pages/PostPage'));
+const regShopPage = React.lazy(() => import('./pages/regShopPage'));
+const newProductPage = React.lazy(() => import('./pages/newProductPage'));
+const EditProductPage = React.lazy(() => import('./pages/EditProductPage'));
+const ProductSearchPage = React.lazy(() => import('./pages/ProductSearchPage'));
+const DetailProductPage = React.lazy(() => import('./pages/DetailProductPage'));
+const PaymentCompletePage = React.lazy(() => import('./components/ekan/pages/TableTestPage'));
+const PandaPage = React.lazy(() => import('./pages/PandaPage'));
+const CartPage = React.lazy(() => import('./pages/CartPage'));
+const PaymentPage = React.lazy(() => import('./pages/PaymentPage'));
+const PriPage = React.lazy(() => import('./pages/PriPage'));
+const ServicePage = React.lazy(() => import('./pages/ServicePage'));
+const TermPage = React.lazy(() => import('./pages/TermPage'));
+const TestPage = React.lazy(() => import('./pages/TestPage'));
+const FindIdPage = React.lazy(() => import('./pages/FindIdPage'));
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -60,6 +58,7 @@ const App = () => {
           flexDirection: "column",
         }}
       >
+        <Suspense fallback={<Loader/>}>
         <Switch>
           <Route
             component={LandingPage}
@@ -71,7 +70,6 @@ const App = () => {
             path={["/product/search/:productname"]}
             exact
           />
-          <Route component={LoginPage} path="/login" exact />
           <Route component={SignIn} path="/signin" exact />
           <Route component={RegisterPage} path="/register" exact />
           <Route component={WritePage} path="/write" exact />
@@ -106,8 +104,8 @@ const App = () => {
           <PrivateRoute path="/seller" component={SellerIndex} />
           {/* //api테스트용 짬통페이지 */}
           <Route path="/testpage" component={TestPage} />
-          <Route path="/tableTest" component={TableTestPage}/>
         </Switch>
+        </Suspense>
       </div>
       <Footer />
     </div>
