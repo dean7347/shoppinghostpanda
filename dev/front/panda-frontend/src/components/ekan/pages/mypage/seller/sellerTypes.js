@@ -16,7 +16,7 @@ export const sellerSidebarItems = [
   },
   {
     display_name: "배송중인 주문",
-    route: "/seller/shippingOrder",
+    route: "/seller/shipOrder",
     icon: "bx bx-paper-plane",
   },
   {

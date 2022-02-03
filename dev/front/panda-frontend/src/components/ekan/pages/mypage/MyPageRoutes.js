@@ -12,6 +12,7 @@ import SellerDashboard from "./seller/SellerDashboard";
 import SellerSettlementPage from "./seller/SellerSettlementPage";
 import SellerNewOrderPage from "./seller/SellerNewOrderPage";
 import SellerReadyOrderPage from "./seller/SellerReadyOrderPage";
+import SellerShipOrderPage from "./seller/SellerShipOrderPage";
 import MyProductPage from "../../../../pages/MyProductPage";
 
 const MyPageRoutes = () => {
@@ -31,6 +32,7 @@ const MyPageRoutes = () => {
       <Route path="/seller/settlement" exact component={SellerSettlementPage} />
       <Route path="/seller/newOrder" exact component={SellerNewOrderPage} />
       <Route path="/seller/readyOrder" exact component={SellerReadyOrderPage} />
+      <Route path="/seller/shipOrder" exact component={SellerShipOrderPage} />
     </Switch>
   );
 };

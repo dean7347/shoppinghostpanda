@@ -50,7 +50,7 @@ function cancelOrder(event, cellValues) {
   });
 }
 
-const SellerReadyOrderPage = () => {
+const SellerShipOrderPage = () => {
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -200,7 +200,7 @@ const SellerReadyOrderPage = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `/api/shop/shoporderlist?type=ready&size=10&page=${page}`
+        `/api/shop/shoporderlist?type=shipping&size=10&page=${page}`
       );
       const data = response.data;
       setLoading(false);
@@ -333,6 +333,12 @@ const SellerReadyOrderPage = () => {
         <div className="custom-card">
           <div className="card__header">
             <Button
+              className="is-primary mr-3"
+              disabled={selectedRows.length === 0}
+              text="선택 주문 확인"
+              onClick={confirmSelected}
+            />
+            <Button
               className="is-danger"
               disabled={selectedRows.length === 0}
               text="선택 주문 취소"
@@ -396,4 +402,4 @@ const SellerReadyOrderPage = () => {
   );
 };
 
-export default SellerReadyOrderPage;
+export default SellerShipOrderPage;
