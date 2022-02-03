@@ -55,6 +55,7 @@ const SellerNewOrderPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
+  const [totalElement, setTotalElement] = useState(0)
   const [selectedRows, setSelectedRows] = useState([]);
   const { situationDetail } = useSelector((state) => state.buyer);
   const dispatch = useDispatch();
@@ -208,6 +209,7 @@ const SellerNewOrderPage = () => {
         data.orderAt = dateFormatter(data.orderAt);
       });
       setRows(data.pageList);
+      setTotalElement(data.totalElement)
     } catch (err) {
       console.log("테이블 요청 오류");
     }
@@ -352,12 +354,16 @@ const SellerNewOrderPage = () => {
           </div>
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid
-              rows={rows}
-              rowCount={rows.length}
-              columns={columns}
-              loading={loading}
-              checkboxSelection
-              rowsPerPageOptions={[10]}
+                rows={rows}
+                rowCount={totalElement}
+                columns={columns}
+                page={page}
+                pageSize={10}
+                loading={loading}
+                checkboxSelection
+                pagination
+                paginationMode="server"
+                rowsPerPageOptions={[10]}
               onPageChange={(page) => {
                 setPage(page);
               }}
