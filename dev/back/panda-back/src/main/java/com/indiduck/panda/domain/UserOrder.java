@@ -67,7 +67,8 @@ public class UserOrder {
     private String courierCom;
     //운송장 번호
     private String waybillNumber;
-
+    //배송메모
+    private String memo;
     //결제정보 저장을 위한칼람
     //uid가 중복되서 저장될 수 있으므로 주의할것
     //특히 전체 취소시 결제 금액만을 취소해줘야 한다
@@ -95,7 +96,7 @@ public class UserOrder {
 
     //==생성메서드==//
     public static UserOrder newUserOrder(User user,Shop shop,String mid,
-                                         String name,String phoneNumber,String zipCode,String Address,String receipt)
+                                         String name,String phoneNumber,String zipCode,String Address,String receipt,String memo)
     {
         System.out.println("생성메서드 네임"+name);
         UserOrder uo = new UserOrder();
@@ -111,6 +112,7 @@ public class UserOrder {
         uo.receiverAddress=Address;
         uo.orderStatus=OrderStatus.결제완료;
         uo.receiptUrl=receipt;
+        uo.memo=memo;
         //TODO 아래에서 디테일이 변경되어도 재계산 작업을 해주어야 한다
         return  uo;
     }

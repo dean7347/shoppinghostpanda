@@ -188,14 +188,6 @@ const SellerNewOrderPage = () => {
     axios.post("/api/situationListdetail", body).then((response) => {
       if (response.data.success) {
         setPLD(response.data.sld);
-        // response.data.sld.map((data, idx) => {
-        //   console.log(data);
-        //   // setPLD(data)
-        //   <CardInListVshop situationDetail={data} />;
-        // });
-        console.log("피엘디");
-
-        console.log(PLD);
       } else {
         alert(response.data.message);
       }
@@ -223,51 +215,115 @@ const SellerNewOrderPage = () => {
     fetchTableData();
   }, [page]);
 
-  function printPage(e) {
-    // console.log(e);
-    const a = <div id="k">"zz"</div>;
-    const ta = <CardInListVshop situationDetail={situationDetail} />;
-    console.log(ta);
+  // function printPage(e) {
+  //   // console.log(e);
+  //   const s = <div dangerouslySetInnerHTML={t}>zz</div>;
 
-    // var initBody;
-    // window.onbeforeprint = function () {
-    //   initBody = document.body.innerHTML;
-    //   document.body.innerHTML = document.getElementById("0").innerHTML;
-    //   initBody = a.body.innerHTML;
-    //   document.body.innerHTML = a.getElementbyId("k").innerHTML;
-    // };
-    // window.onafterprint = function () {
-    //   document.body.innerHTML = initBody;
-    // };
-    // window.print();
+  //   console.log(t);
+  //   <div id="tt">아이디</div>;
+  //   console.log("프린트페이지 실행");
+  //   var initBody;
+  //   window.onbeforeprint = function () {
+  //     initBody = document.body.innerHTML;
+  //     // document.body.innerHTML = document.getElementById("0").innerHTML;
+  //     // initBody = s;
+  //     document.body.innerHTML = testRef.current;
+  //   };
+  //   window.onafterprint = function () {
+  //     document.body.innerHTML = initBody;
+  //   };
+  //   window.print();
+
+  //   <>
+  //     <div id="tt">ttt</div>
+  //   </>;
+  // }
+  function printPage() {
+    const a = <div id="print">인쇄할 영역</div>;
+
+    var initBody;
+    window.onbeforeprint = function () {
+      initBody = document.body.innerHTML; //기존내용 저장
+      document.body.innerHTML = document.getElementById("testdiv").innerHTML;
+    };
+    window.onafterprint = function () {
+      document.body.innerHTML = initBody;
+    };
+    window.print();
+    return false;
   }
 
-  const renderPLD = () => {
-    return (
-      <>
-        <Button onClick={() => printPage("0")}>특정영역</Button>
-        <div>zz{PLD && PLD.length}</div>
-        <ReactToPrint
-          trigger={() => <button>Print this out!</button>}
-          content={() => componentRef.current}
-        />
+  useEffect(() => {
+    console.log("유즈이펙트");
+    console.log("유즈이펙트PLD");
+    console.log(PLD);
+    function createMarkup() {
+      return { __html: "First &middot; Second" };
+    }
 
-        <div id={0} ref={componentRef}>
-          {PLD && console.log(PLD + "zzz")}
-          {PLD &&
-            PLD.map((data, idx) => {
-              return (
-                <div>
-                  {"idx아이디는"}
-                  {idx}
-                  <CardInListVshop id={idx} situationDetail={data} />
-                </div>
-              );
-            })}
-        </div>
-      </>
-    );
-  };
+    if (PLD && PLD.length > 0) {
+      console.log("인쇄실행");
+      PLD.map((data, idx) => {
+        var pro = `<hr/> `;
+        var option;
+        var count;
+        data.products.map((pr, id) => {
+          pro += `<div>${pr.productName}</div>`;
+          pr.options.map((op, i) => {
+            pro += `<div>옵션명 : ${op.optionName}/ 주문수량 : ${op.optionCount}개</div>
+        <div>-------<div>
+            <br/>`;
+          });
+        });
+        const element = document.getElementById("testdiv");
+        element.innerHTML = `<CardInListVshop situationDetail=${data} />`;
+        element.innerHTML = `
+        <div>받으시는분 : ${data.receiver}</div>
+        <div>받으시는분 전화번호 : ${data.orderAt}</div>
+        <div>우편번호 : ${data.addressNum}</div>
+        <div>주소 : ${data.address}</div>
+        <div>-------<div>
+        <div>구매자 전화번호 : ${data.buyerPhone}</div>
+        <div>-------<div>
+        <div>주문일시 : ${data.orderAt}</div>
+        <div>-------<div>
+        <div>주문내역 : 
+        <div>-------<div>
+        ${pro}</div>
+        <div>배송메모 : ${data.shipmemo}</div>
+        <div>-------<div>
+ `;
+
+        // element.innerHTML = a.;
+        // element.innerHTML = createMarkup.innerHTML;
+        printPage();
+      });
+      window.location.reload();
+    }
+  }, [PLD]);
+
+  // const renderPLD = () => {
+  //   return (
+  //     <>
+  //       <Button onClick={() => printPage(PLD)}>특정영역</Button>
+  //       <button onClick={handlePrintt}>Print this out!</button>;
+  //       <div>zz{PLD && PLD.length}</div>
+  //       <div ref={componentRef}>
+  //         {PLD && console.log(PLD + "zzz")}
+  //         {PLD &&
+  //           PLD.map((data, idx) => {
+  //             return (
+  //               <div>
+  //                 <div id="test">Test{idx}</div>
+  //                 <CardInListVshop id={idx} situationDetail={data} />
+  //                 {/* {printPage()} */}
+  //               </div>
+  //             );
+  //           })}
+  //       </div>
+  //     </>
+  //   );
+  // };
 
   return (
     <>
@@ -288,7 +344,7 @@ const SellerNewOrderPage = () => {
             />
             <Button
               className="is-info float-end"
-              text="주문서 인쇄"
+              text="주문서 인쇄(인쇄시 주문확인)"
               onClick={PrintList}
             />
           </div>
@@ -331,7 +387,15 @@ const SellerNewOrderPage = () => {
           )}
         </Modal>
       )}
-      {renderPLD()}
+      {/* {renderPLD()} */}
+      <div
+        id="testdiv"
+        style={{
+          display: "none",
+        }}
+      >
+        주문서출력
+      </div>
     </>
   );
 };

@@ -185,7 +185,7 @@ public class UserController {
         recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
                 ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
                 ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
-                userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice());
+                userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
 
 
         return ResponseEntity.ok(rsd);
@@ -205,6 +205,8 @@ public class UserController {
             List<OrderDetail> detail = userOrder.getDetail();
             List<DetailOrderList> dol =new ArrayList<>();
             HashSet<String> proname=new HashSet<>();
+            userOrderService.ChangeOrder(l,"준비중","","");
+
             for (OrderDetail orderDetail : userOrder.getDetail()) {
                 proname.add(orderDetail.getProducts().getProductName());
             }
@@ -215,7 +217,7 @@ public class UserController {
             recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
                     ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
                     ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
-                    userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice());
+                    userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
             printdatas.add(rsd);
 
 
@@ -364,6 +366,8 @@ public class UserController {
         String receiver;
         //주소
         String address;
+        //우편번호
+        String addressNum;
         //받는사람전화번호
         String receiverPhone;
         //상품DTO
@@ -375,11 +379,15 @@ public class UserController {
         String shopName;
         String shopPhone;
         OrderStatus status;
+        //구매자 전화번호
+        String buyerPhone;
+        //배송메모
+        String shipmemo;
 
 
         public recentSituationDtoV2(boolean su,Long detailId, int price, int shipprice, int allamount,
                                   String receiver, String address, String receiverPhone, List<OrderDetail> dol,String pn,LocalDateTime oa,
-                                    String sn, String sp, OrderStatus os,int pa,int fp) {
+                                    String sn, String sp, OrderStatus os,int pa,int fp,String addressNum,String shipmemo,String bp) {
             this.proName=pn;
             this.orderAt=oa;
             this.shopName=sn;
@@ -388,10 +396,13 @@ public class UserController {
             this.success=su;
             this.detailId = detailId;
             this.price = price;
+            this.buyerPhone=bp;
             this.shipprice = shipprice;
             this.allamount = allamount;
             this.receiver = receiver;
             this.address = address;
+            this.addressNum=addressNum;
+            this.shipmemo=shipmemo;
             this.receiverPhone = receiverPhone;
             this.pureamount=pa;
             this.freeprice=fp;

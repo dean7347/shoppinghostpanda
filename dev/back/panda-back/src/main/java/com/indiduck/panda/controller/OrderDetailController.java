@@ -362,6 +362,9 @@ public class OrderDetailController {
         //디테일배열
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
         JSONArray detail =jsonObject.getJSONArray("detaildId");
+//        TODO:오류일으키기
+//        JSONObject memo = jsonObject.getJSONObject("memo");
+        Object memo = jsonObject.get("memo");
         HashSet<Shop> shopId =new HashSet<>();
         HashSet<OrderDetail> orders= new HashSet<>();
         HashSet<Verification> Veri=new HashSet<>();
@@ -439,7 +442,7 @@ public class OrderDetailController {
 
             System.out.println(myCart);
             boolean b = orderDetailService.newUserOrder(byEmail.get(), myCart, tokentoInfo.getImpUid(),
-                    tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr(),tokentoInfo.getReceiptUrl());
+                    tokentoInfo.getBuyerName(),tokentoInfo.getBuyerTel(),tokentoInfo.getBuyerPostcode(),tokentoInfo.getBuyerAddr(),tokentoInfo.getReceiptUrl(),memo.toString());
             //결제성공시
             if(b){
                 for (OrderDetail orderDetail : orderDetails) {

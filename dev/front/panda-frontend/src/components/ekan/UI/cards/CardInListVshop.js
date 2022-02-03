@@ -323,6 +323,9 @@ function CardInListVshop(props) {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  function test() {
+    handlePrint();
+  }
   // useEffect(() => {
   //   // document.getElementById("print-button").click();
 
@@ -330,8 +333,10 @@ function CardInListVshop(props) {
   //   console.log(componentRef);
   //   handlePrint();
   // });
+
   return (
     <>
+      {console.log("떳다")}
       <div
         id="print-button"
         ref={componentRef}
@@ -362,8 +367,21 @@ function CardInListVshop(props) {
               </div>
               <hr style={{ backgroundColor: "black" }} />
             </Col>
+
             <Col span={12}>
               {props.situationDetail.receiverPhone}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>받으시는 분 우편번호</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+
+            <Col span={12}>
+              {props.situationDetail.addressNum}
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
             <Col span={24}>

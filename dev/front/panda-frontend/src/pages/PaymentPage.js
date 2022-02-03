@@ -74,6 +74,8 @@ function PaymentPage(gprops) {
     // console.log("결제하기!!!!!");
     // console.log(defaultInfo);
     // console.log(paymentForm);
+    console.log("결제전 커스텀");
+    console.log(customData);
     if (value === 1) {
       SetPayMentForm({
         merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
@@ -180,6 +182,7 @@ function PaymentPage(gprops) {
     recentzone: "",
     recentfulladdr: "",
     recentmemo: "",
+    memo: "",
   });
   const {
     recentreceiver,
@@ -195,6 +198,7 @@ function PaymentPage(gprops) {
     recentfulladdr,
     recentmemo,
   } = recentShip;
+
   const [form, setForm] = useState({
     receiver: "",
     addressName: "",
@@ -226,6 +230,14 @@ function PaymentPage(gprops) {
       [e.target.name]: e.target.value,
     };
     setForm(nextForm);
+    if (e.target.name === "memo") {
+      setCustomData({
+        allPrice: customData.allPrice,
+        shipPrice: customData.shipPrice,
+        detaildId: customData.detaildId,
+        memo: e.target.value,
+      });
+    }
   };
 
   const onChangeP = (e) => {
@@ -286,47 +298,47 @@ function PaymentPage(gprops) {
     fetchList();
   }, [rerender]);
   const { Option } = Select;
-  const phonenum = (
-    <Select defaultValue="010" className="select-after">
-      <Option value="010">010</Option>
-      <Option value="011">011</Option>
-      <Option value="016">016</Option>
-      <Option value="017">017</Option>
-      <Option value="018">018</Option>
-      <Option value="019">019</Option>
-      <Option value="02">02</Option>
-      <Option value="031">031</Option>
-      <Option value="032">032</Option>
-      <Option value="033">033</Option>
-      <Option value="041">041</Option>
-      <Option value="042">042</Option>
-      <Option value="043">043</Option>
-      <Option value="044">044</Option>
-      <Option value="051">051</Option>
-      <Option value="052">052</Option>
-      <Option value="053">053</Option>
-      <Option value="054">054</Option>
-      <Option value="055">055</Option>
-      <Option value="061">061</Option>
-      <Option value="062">062</Option>
-      <Option value="063">063</Option>
-      <Option value="064">064</Option>
-      <Option value="070">070</Option>
-      <Option value="080">080</Option>
-      <Option value="0130">0130</Option>
-      <Option value="0303">0303</Option>
-      <Option value="0502">0502</Option>
-      <Option value="0503">0503</Option>
-      <Option value="0504">0504</Option>
-      <Option value="0505">0505</Option>
-      <Option value="0506">0506</Option>
-      <Option value="0507">0507</Option>
-      <Option value="0508">0508</Option>
-      <Option value="050">050</Option>
-      <Option value="012">012</Option>
-      <Option value="059">059</Option>
-    </Select>
-  );
+  // const phonenum = (
+  //   <Select defaultValue="010" className="select-after">
+  //     <Option value="010">010</Option>
+  //     <Option value="011">011</Option>
+  //     <Option value="016">016</Option>
+  //     <Option value="017">017</Option>
+  //     <Option value="018">018</Option>
+  //     <Option value="019">019</Option>
+  //     <Option value="02">02</Option>
+  //     <Option value="031">031</Option>
+  //     <Option value="032">032</Option>
+  //     <Option value="033">033</Option>
+  //     <Option value="041">041</Option>
+  //     <Option value="042">042</Option>
+  //     <Option value="043">043</Option>
+  //     <Option value="044">044</Option>
+  //     <Option value="051">051</Option>
+  //     <Option value="052">052</Option>
+  //     <Option value="053">053</Option>
+  //     <Option value="054">054</Option>
+  //     <Option value="055">055</Option>
+  //     <Option value="061">061</Option>
+  //     <Option value="062">062</Option>
+  //     <Option value="063">063</Option>
+  //     <Option value="064">064</Option>
+  //     <Option value="070">070</Option>
+  //     <Option value="080">080</Option>
+  //     <Option value="0130">0130</Option>
+  //     <Option value="0303">0303</Option>
+  //     <Option value="0502">0502</Option>
+  //     <Option value="0503">0503</Option>
+  //     <Option value="0504">0504</Option>
+  //     <Option value="0505">0505</Option>
+  //     <Option value="0506">0506</Option>
+  //     <Option value="0507">0507</Option>
+  //     <Option value="0508">0508</Option>
+  //     <Option value="050">050</Option>
+  //     <Option value="012">012</Option>
+  //     <Option value="059">059</Option>
+  //   </Select>
+  // );
   //   const [postcode, setPostCode] = useState([]);
   //   useEffect(() => {
   //     setPostCode(window.daum.Postcode);
@@ -530,6 +542,8 @@ function PaymentPage(gprops) {
 
     //결제창 오픈
     //사전검증
+    console.log("메모검증");
+    console.log(memo);
     const body = {
       dataList: customData.detaildId,
     };
@@ -616,8 +630,10 @@ function PaymentPage(gprops) {
     allPrice: "",
     shipPrice: "",
     detaildId: [],
+    memo: "",
   });
 
+  //결제페이지 데이터띄우는곳
   useState(() => {
     const body = {
       //   amount: props.location.state.amount,
@@ -637,11 +653,14 @@ function PaymentPage(gprops) {
             })
           );
         });
+
         setCustomData({
           allPrice: gprops.location.state.amount.total,
           shipPrice: gprops.location.state.amount.ship,
           detaildId: resultDetail,
         });
+        console.log("커스템데이터");
+        console.log(customData);
       } else {
         alert("다시 시도해주세요");
       }
@@ -1206,6 +1225,14 @@ function PaymentPage(gprops) {
                     <div> 우편번호: {recentzone}</div>
                     <div> 주소: {recentfulladdr}</div>
                     <div> 상세주소: {recentaddressdetail}</div>
+                    <div>
+                      배송메모:
+                      <Input
+                        name="memo"
+                        value={memo}
+                        onChange={onChangeF}
+                      />{" "}
+                    </div>
                   </Card>
                 </Col>
               </Row>
