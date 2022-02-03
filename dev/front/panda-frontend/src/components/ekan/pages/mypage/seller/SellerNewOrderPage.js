@@ -9,57 +9,56 @@ import { fetchSituationDetail } from "../../../../../store/actions/mypageActions
 import CardInListVshop from "../../../UI/cards/CardInListVshop";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
-function confirmOrder(event, cellValues) {
-  event.stopPropagation();
-  console.log(cellValues);
-  //진동API작업
-  const body = {
-    userOrderId: cellValues.id,
-    state: "준비중",
-    courier: "",
-    waybill: "",
-  };
-  axios.post("/api/editstatus", body).then((response) => {
-    if (response.data.success) {
-      alert("주문을 확인했습니다");
-      window.location.reload();
-    } else {
-      alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
-      window.location.reload();
-    }
-  });
-}
-
-function cancelOrder(event, cellValues) {
-  event.stopPropagation();
-  console.log(cellValues);
-  //진동API작업
-  const body = {
-    userOrderId: cellValues.id,
-    state: "주문취소",
-    courier: "",
-    waybill: "",
-  };
-  axios.post("/api/editstatus", body).then((response) => {
-    if (response.data.success) {
-      alert("주문을 취소했습니다");
-      window.location.reload();
-    } else {
-      alert("주문확인에 실패했습니다");
-    }
-  });
-}
 
 const SellerNewOrderPage = () => {
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
-  const [totalElement, setTotalElement] = useState(0)
+  const [totalElement, setTotalElement] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
   const { situationDetail } = useSelector((state) => state.buyer);
   const dispatch = useDispatch();
   const componentRef = useRef();
+  function confirmOrder(event, cellValues) {
+    event.stopPropagation();
+    console.log(cellValues);
+    //진동API작업
+    const body = {
+      userOrderId: cellValues.id,
+      state: "준비중",
+      courier: "",
+      waybill: "",
+    };
+    axios.post("/api/editstatus", body).then((response) => {
+      if (response.data.success) {
+        alert("주문을 확인했습니다");
+        fetchTableData();
+      } else {
+        alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+        fetchTableData();
+      }
+    });
+  }
+  function cancelOrder(event, cellValues) {
+    event.stopPropagation();
+    console.log(cellValues);
+    //진동API작업
+    const body = {
+      userOrderId: cellValues.id,
+      state: "주문취소",
+      courier: "",
+      waybill: "",
+    };
+    axios.post("/api/editstatus", body).then((response) => {
+      if (response.data.success) {
+        alert("주문을 취소했습니다");
+        fetchTableData();
+      } else {
+        alert("주문확인에 실패했습니다");
+      }
+    });
+  }
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -141,7 +140,7 @@ const SellerNewOrderPage = () => {
     axios.post("/api/selecteditstatus", body).then((response) => {
       if (response.data.success) {
         alert("주문을 확인했습니다");
-        window.location.reload();
+        fetchTableData();
       } else {
         alert(response.data.message);
       }
@@ -209,7 +208,7 @@ const SellerNewOrderPage = () => {
         data.orderAt = dateFormatter(data.orderAt);
       });
       setRows(data.pageList);
-      setTotalElement(data.totalElement)
+      setTotalElement(data.totalElement);
     } catch (err) {
       console.log("테이블 요청 오류");
     }
@@ -302,7 +301,7 @@ const SellerNewOrderPage = () => {
         // element.innerHTML = createMarkup.innerHTML;
         printPage();
       });
-      window.location.reload();
+      fetchTableData();
     }
   }, [PLD]);
 
@@ -354,16 +353,16 @@ const SellerNewOrderPage = () => {
           </div>
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid
-                rows={rows}
-                rowCount={totalElement}
-                columns={columns}
-                page={page}
-                pageSize={10}
-                loading={loading}
-                checkboxSelection
-                pagination
-                paginationMode="server"
-                rowsPerPageOptions={[10]}
+              rows={rows}
+              rowCount={totalElement}
+              columns={columns}
+              page={page}
+              pageSize={10}
+              loading={loading}
+              checkboxSelection
+              pagination
+              paginationMode="server"
+              rowsPerPageOptions={[10]}
               onPageChange={(page) => {
                 setPage(page);
               }}

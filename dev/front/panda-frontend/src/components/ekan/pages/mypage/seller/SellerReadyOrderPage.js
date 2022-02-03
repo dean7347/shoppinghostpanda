@@ -69,6 +69,8 @@ const SellerReadyOrderPage = () => {
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [totalElement, setTotalElement] = useState(0);
+
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const { situationDetail } = useSelector((state) => state.buyer);
@@ -88,6 +90,21 @@ const SellerReadyOrderPage = () => {
       renderCell: (cellValues) => {
         const onFinish = (values) => {
           console.log("Success:", values);
+          const body = {
+            userOrderId: values.id,
+            state: "발송중",
+            courier: values.comp,
+            waybill: values.wayBill,
+          };
+          axios.post("/api/editstatus", body).then((response) => {
+            if (response.data.success) {
+              alert("주문을 확인했습니다");
+              fetchTableData();
+            } else {
+              alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+              fetchTableData();
+            }
+          });
         };
 
         const onFinishFailed = (errorInfo) => {
@@ -99,9 +116,10 @@ const SellerReadyOrderPage = () => {
               name="basic"
               labelCol={{
                 span: 10,
+                offset: 0,
               }}
               wrapperCol={{
-                span: 8,
+                span: 14,
               }}
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
@@ -114,6 +132,7 @@ const SellerReadyOrderPage = () => {
                       <Form.Item
                         label="택배사"
                         name="comp"
+                        autoComplete="true"
                         rules={[
                           {
                             required: true,
@@ -138,6 +157,14 @@ const SellerReadyOrderPage = () => {
                         <Input />
                       </Form.Item>
                     </Col>
+                    <Form.Item
+                      label="운송장"
+                      name="id"
+                      hidden="true"
+                      initialValue={cellValues.id}
+                    >
+                      {/* <Input /> */}
+                    </Form.Item>
                   </Row>
                 </Col>
                 <Col span={24}>
@@ -189,12 +216,12 @@ const SellerReadyOrderPage = () => {
       },
     },
     {
-      field: "송장등록",
+      field: "주문취소",
       flex: 0.6,
       renderCell: (cellValues) => {
         return (
           <Button
-            text="송장등록"
+            text="주문취소"
             className="is-danger"
             onClick={(event) => {
               cancelOrder(event, cellValues);
@@ -310,6 +337,8 @@ const SellerReadyOrderPage = () => {
       );
       const data = response.data;
       setLoading(false);
+      setTotalElement(data.totalElement);
+
       data.pageList.forEach((data) => {
         data.orderAt = dateFormatter(data.orderAt);
       });
@@ -453,11 +482,14 @@ const SellerReadyOrderPage = () => {
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid
               rows={rows}
-              rowCount={rows.length}
+              rowCount={totalElement}
               columns={columns}
+              page={page}
+              pageSize={10}
               loading={loading}
-              rowHeight={200}
               checkboxSelection
+              pagination
+              paginationMode="server"
               rowsPerPageOptions={[10]}
               onPageChange={(page) => {
                 setPage(page);

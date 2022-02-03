@@ -63,20 +63,19 @@ public class UserOrderController {
         long num=0;
         for (long l : changeAction.userOrderId) {
             UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
-            if(userOrder!=null)
-            {
-                return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
-
-            }else
+            if(userOrder==null)
             {
                 num=l;
+
+                return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+
+
             }
 
 
         }
+        return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
 
-
-        return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
     }
 
