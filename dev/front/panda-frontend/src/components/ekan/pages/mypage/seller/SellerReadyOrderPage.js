@@ -415,6 +415,8 @@ const SellerReadyOrderPage = () => {
         const element = document.getElementById("testdiv");
         element.innerHTML = `<CardInListVshop situationDetail=${data} />`;
         element.innerHTML = `
+        <div>주문번호 : ${data.detailId}</div>
+
         <div>받으시는분 : ${data.receiver}</div>
         <div>받으시는분 전화번호 : ${data.orderAt}</div>
         <div>우편번호 : ${data.addressNum}</div>
@@ -484,6 +486,7 @@ const SellerReadyOrderPage = () => {
               rows={rows}
               rowCount={totalElement}
               columns={columns}
+              rowHeight={200}
               page={page}
               pageSize={10}
               loading={loading}

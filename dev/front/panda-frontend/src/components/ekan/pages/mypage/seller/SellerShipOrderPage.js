@@ -9,25 +9,40 @@ import { fetchSituationDetail } from "../../../../../store/actions/mypageActions
 import CardInListVshop from "../../../UI/cards/CardInListVshop";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
-function confirmOrder(event, cellValues) {
+import {
+  Descriptions,
+  Menu,
+  InputNumber,
+  Table,
+  Tag,
+  Space,
+  Form,
+  Input,
+  Row,
+  Col,
+  Checkbox,
+  Select,
+} from "antd";
+function ShipOrder(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
-  //진동API작업
-  const body = {
-    userOrderId: cellValues.id,
-    state: "준비중",
-    courier: "",
-    waybill: "",
-  };
-  axios.post("/api/editstatus", body).then((response) => {
-    if (response.data.success) {
-      alert("주문을 확인했습니다");
-      window.location.reload();
-    } else {
-      alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
-      window.location.reload();
-    }
-  });
+  console.log("십오더");
+  // console.log(cellValues);
+  // //진동API작업
+  // const body = {
+  //   userOrderId: cellValues.id,
+  //   state: "준비중",
+  //   courier: "",
+  //   waybill: "",
+  // };
+  // axios.post("/api/editstatus", body).then((response) => {
+  //   if (response.data.success) {
+  //     alert("주문을 확인했습니다");
+  //     window.location.reload();
+  //   } else {
+  //     alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+  //     window.location.reload();
+  //   }
+  // });
 }
 
 function cancelOrder(event, cellValues) {
@@ -54,6 +69,8 @@ const SellerShipOrderPage = () => {
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [totalElement, setTotalElement] = useState(0);
+
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const { situationDetail } = useSelector((state) => state.buyer);
@@ -68,17 +85,140 @@ const SellerShipOrderPage = () => {
     { field: "price", headerName: "가격", flex: 0.7 },
     { field: "orderAt", headerName: "주문일자", flex: 1.1 },
     {
-      field: "주문확인",
-      flex: 0.6,
+      field: "택배사 등록",
+      flex: 2.0,
       renderCell: (cellValues) => {
+        const onFinish = (values) => {
+          console.log("Success:", values);
+          const body = {
+            userOrderId: values.id,
+            state: "발송중",
+            courier: values.comp,
+            waybill: values.wayBill,
+          };
+          axios.post("/api/editstatus", body).then((response) => {
+            if (response.data.success) {
+              alert("주문을 확인했습니다");
+              fetchTableData();
+            } else {
+              alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+              fetchTableData();
+            }
+          });
+        };
+
+        const onFinishFailed = (errorInfo) => {
+          console.log("Failed:", errorInfo);
+        };
         return (
-          <Button
-            text="주문확인"
-            className="is-primary"
-            onClick={(event) => {
-              confirmOrder(event, cellValues);
-            }}
-          ></Button>
+          <>
+            {console.log(cellValues)}
+            <Form
+              name="basic"
+              labelCol={{
+                span: 10,
+                offset: 0,
+              }}
+              wrapperCol={{
+                span: 14,
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Row gutter={24}>
+                <Col span={24}>
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="택배사"
+                        name="comp"
+                        autoComplete="true"
+                        initialValue={cellValues.comp}
+                        defaultValue={"z"}
+                        rules={[
+                          {
+                            required: true,
+                            message: "택배사를 등록해주세요",
+                          },
+                        ]}
+                      >
+                        <Input defaultValue={cellValues.row.comp} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="운송장"
+                        name="wayBill"
+                        initialValue={cellValues.number}
+                        rules={[
+                          {
+                            required: true,
+                            message: "운송장을 입력해주세요",
+                          },
+                        ]}
+                      >
+                        {console.log("cellValues")}
+
+                        {console.log(cellValues)}
+                        <Input defaultValue={cellValues.row.number} />
+                      </Form.Item>
+                    </Col>
+                    <Form.Item
+                      label="운송장"
+                      name="id"
+                      hidden="true"
+                      initialValue={cellValues.id}
+                    >
+                      {/* <Input /> */}
+                    </Form.Item>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    wrapperCol={{
+                      offset: 8,
+                      span: 16,
+                    }}
+                  >
+                    <Button
+                      className="is-info float-end"
+                      type="primary"
+                      text="배송정보변경"
+                      htmlType="submit"
+                    ></Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            {/* <Row gutter={(24, 24)}>
+              <Col span={12}>택배사</Col>
+              <Col span={12}>
+                <Input id="com" value="comp" />
+              </Col>
+              <Col span={12}>운송장</Col>
+              <Col span={12}>
+                <Input />
+              </Col>
+
+              <Button
+                text="주문확인"
+                className="is-primary"
+                onClick={(event) => {
+                  ShipOrder(event, cellValues);
+                }}
+              ></Button>
+            </Row> */}
+            {/* <lable>zz</lable>
+            <input></input>
+            <Button
+              text="주문확인"
+              className="is-primary"
+              onClick={(event) => {
+                confirmOrder(event, cellValues);
+              }}
+            ></Button> */}
+          </>
         );
       },
     },
@@ -204,6 +344,8 @@ const SellerShipOrderPage = () => {
       );
       const data = response.data;
       setLoading(false);
+      setTotalElement(data.totalElement);
+
       data.pageList.forEach((data) => {
         data.orderAt = dateFormatter(data.orderAt);
       });
@@ -280,6 +422,8 @@ const SellerShipOrderPage = () => {
         const element = document.getElementById("testdiv");
         element.innerHTML = `<CardInListVshop situationDetail=${data} />`;
         element.innerHTML = `
+        <div>주문번호 : ${data.detailId}</div>
+
         <div>받으시는분 : ${data.receiver}</div>
         <div>받으시는분 전화번호 : ${data.orderAt}</div>
         <div>우편번호 : ${data.addressNum}</div>
@@ -333,12 +477,6 @@ const SellerShipOrderPage = () => {
         <div className="custom-card">
           <div className="card__header">
             <Button
-              className="is-primary mr-3"
-              disabled={selectedRows.length === 0}
-              text="선택 주문 확인"
-              onClick={confirmSelected}
-            />
-            <Button
               className="is-danger"
               disabled={selectedRows.length === 0}
               text="선택 주문 취소"
@@ -353,10 +491,15 @@ const SellerShipOrderPage = () => {
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid
               rows={rows}
-              rowCount={rows.length}
+              rowCount={totalElement}
               columns={columns}
+              rowHeight={200}
+              page={page}
+              pageSize={10}
               loading={loading}
               checkboxSelection
+              pagination
+              paginationMode="server"
               rowsPerPageOptions={[10]}
               onPageChange={(page) => {
                 setPage(page);

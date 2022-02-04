@@ -62,7 +62,7 @@ export const sellerDashboardCard = [
     link: "/seller/settlement",
     icon: "bx bx-package",
     count: 0,
-    title: "배송준비",
+    title: "배송/준비",
   },
   {
     link: "/seller/settlement",
