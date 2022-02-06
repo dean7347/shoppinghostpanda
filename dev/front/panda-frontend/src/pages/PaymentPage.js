@@ -658,6 +658,7 @@ function PaymentPage(gprops) {
           allPrice: gprops.location.state.amount.total,
           shipPrice: gprops.location.state.amount.ship,
           detaildId: resultDetail,
+          memo: "배송메모없음",
         });
         console.log("커스템데이터");
         console.log(customData);
