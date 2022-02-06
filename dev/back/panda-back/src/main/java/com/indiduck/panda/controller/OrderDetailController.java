@@ -362,7 +362,7 @@ public class OrderDetailController {
         //디테일배열
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
         JSONArray detail =jsonObject.getJSONArray("detaildId");
-//        TODO:오류일으키기
+//        TODO:오류일으키기 메모없어도 오류가 뜬다
 //        JSONObject memo = jsonObject.getJSONObject("memo");
         Object memo = jsonObject.get("memo");
         HashSet<Shop> shopId =new HashSet<>();

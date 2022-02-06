@@ -630,7 +630,7 @@ function PaymentPage(gprops) {
     allPrice: "",
     shipPrice: "",
     detaildId: [],
-    memo: "",
+    memo: "배송메모가 없습니다",
   });
 
   //결제페이지 데이터띄우는곳
