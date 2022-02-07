@@ -152,6 +152,7 @@ public class UserOrder {
     //구매확정시 -> 주문취소가 아닌것들 가격 계산해서
     // 상품가격75%+택배비를 샵머니에 넣고
     // 호스트 머니에는 상품가격의 25%에서 판다가격을 뺀 가격을 넣는다
+
     public void settle()
     {
         int pandamoney = 0;
@@ -169,6 +170,21 @@ public class UserOrder {
         this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
 
     }
+
+    //택배비를 포함한 최종금액을 리턴한다
+    public long finalPrice()
+    {
+        long fp=0;
+        if(this.freeprice>=this.PureAmount)
+        {
+            fp=this.PureAmount;
+        }else
+        {
+            fp=this.PureAmount+this.shipPrice;
+        }
+        return fp;
+    }
+
     public void Calculate()
     {
         if(this.PureAmount >=this.freeprice)

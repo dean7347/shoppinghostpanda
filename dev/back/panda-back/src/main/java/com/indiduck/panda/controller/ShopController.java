@@ -259,14 +259,24 @@ public class ShopController {
 //                int i = chartEnd.getDayOfMonth() - userOrder.getCreatedAt().getDayOfMonth();
 //                int num= 11-i;
                 long between = ChronoUnit.DAYS.between(userOrder.getCreatedAt(),tnow);
-                money[(int)between]+=userOrder.getShopMoney();
-
-                quantity[(int)between]++;
-                System.out.println(chartEnd.getDayOfMonth() + "빼기 " +userOrder.getCreatedAt().getDayOfMonth());
-                System.out.println("i는 = " + between);
+                int num = 11-(int)between;
+                money[num]+=userOrder.getPureAmount();
+                quantity[num]++;
+//                System.out.println("칼람 " + between+"주문번호"+userOrder.getId());
 
             }
-
+//            System.out.println("날짜  = " + day[0]+"//돈 : "+money[0]+"//수량 : "+quantity[0]);
+//            System.out.println("날짜   = " + day[1]+"//돈 : "+money[1]+"//수량 : "+quantity[1]);
+//            System.out.println("날짜   = " + day[2]+"//돈 : "+money[2]+"//수량 : "+quantity[2]);
+//            System.out.println("날짜   = " + day[3]+"//돈 : "+money[3]+"//수량 : "+quantity[3]);
+//            System.out.println("날짜   = " + day[4]+"//돈 : "+money[4]+"//수량 : "+quantity[4]);
+//            System.out.println("날짜   = " + day[5]+"//돈 : "+money[5]+"//수량 : "+quantity[5]);
+//            System.out.println("날짜   = " + day[6]+"//돈 : "+money[6]+"//수량 : "+quantity[6]);
+//            System.out.println("날짜   = " + day[7]+"//돈 : "+money[7]+"//수량 : "+quantity[7]);
+//            System.out.println("날짜   = " + day[8]+"//돈 : "+money[8]+"//수량 : "+quantity[8]);
+//            System.out.println("날짜   = " + day[9]+"//돈 : "+money[9]+"//수량 : "+quantity[9]);
+//            System.out.println("날짜   = " + day[10]+"//돈 : "+money[10]+"//수량 : "+quantity[10]);
+//            System.out.println("날짜   = " + day[11]+"//돈 : "+money[11]+"//수량 : "+quantity[11]);
 
 
 
