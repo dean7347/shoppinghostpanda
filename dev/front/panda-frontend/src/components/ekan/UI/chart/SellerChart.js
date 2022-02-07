@@ -3,7 +3,7 @@ import Chart from "react-apexcharts";
 import {sellerChartOptions} from "../../pages/mypage/seller/sellerTypes";
 
 
-const SellerChart = ({money, quantity}) => {
+const SellerChart = ({money, quantity, date}) => {
 
     const data = {
         name: '결제금액',
@@ -23,7 +23,8 @@ const SellerChart = ({money, quantity}) => {
                 <Chart
                     options={{
                         ...sellerChartOptions.options,
-                        theme: {mode: 'light'}
+                        theme: {mode: 'light'},
+                        labels: date
                     }}
                     series={[data, data2]}
                     type='line'
