@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 
 
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @CrossOrigin
@@ -252,11 +254,17 @@ public class ShopController {
                     ,tnow.minusDays(1).toString(),tnow.toString()};
             System.out.println("chartData.get() = " + chartData.get());
             for (UserOrder userOrder : chartData.get()) {
-                System.out.println("userOrder = " + userOrder);
-                int i = chartEnd.getDayOfMonth() - userOrder.getCreatedAt().getDayOfMonth();
-                int num= 11-i;
-                money[num]+=userOrder.getShopMoney();
-                quantity[num]++;
+//                tnow.getD
+
+//                int i = chartEnd.getDayOfMonth() - userOrder.getCreatedAt().getDayOfMonth();
+//                int num= 11-i;
+                long between = ChronoUnit.DAYS.between(userOrder.getCreatedAt(),tnow);
+                money[(int)between]+=userOrder.getShopMoney();
+
+                quantity[(int)between]++;
+                System.out.println(chartEnd.getDayOfMonth() + "빼기 " +userOrder.getCreatedAt().getDayOfMonth());
+                System.out.println("i는 = " + between);
+
             }
 
 
