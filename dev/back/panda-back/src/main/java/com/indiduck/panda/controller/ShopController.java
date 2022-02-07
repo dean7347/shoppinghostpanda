@@ -236,7 +236,7 @@ public class ShopController {
             LocalDateTime chartstart= LocalDateTime.of(told.getYear(),told.getMonth(),told.getDayOfMonth()
                     ,0,0,0,0);
 
-            Optional<List<UserOrder>> chartData = userOrderRepository.findByShopAndCreatedAtBetween(shop, chartEnd, tnow);
+            Optional<List<UserOrder>> chartData = userOrderRepository.findByShopAndCreatedAtBetween(shop, chartstart, tnow);
 
             newOrderSize=newOrder.get().size();
             readyOrder=ready.get().size()+ready2.get().size()+ready3.get().size();
@@ -250,8 +250,9 @@ public class ShopController {
                     ,tnow.minusDays(7).toString(),tnow.minusDays(6).toString(),tnow.minusDays(5).toString()
                     ,tnow.minusDays(4).toString(),tnow.minusDays(3).toString(),tnow.minusDays(2).toString()
                     ,tnow.minusDays(1).toString(),tnow.toString()};
-
+            System.out.println("chartData.get() = " + chartData.get());
             for (UserOrder userOrder : chartData.get()) {
+                System.out.println("userOrder = " + userOrder);
                 int i = chartEnd.getDayOfMonth() - userOrder.getCreatedAt().getDayOfMonth();
                 int num= 11-i;
                 money[num]+=userOrder.getShopMoney();
