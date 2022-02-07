@@ -14,6 +14,7 @@ public class PandaApplication extends SpringBootServletInitializer {
     @Override protected SpringApplicationBuilder configure(SpringApplicationBuilder builder)
     { return builder.sources(PandaApplication.class); }
 
+    @SuppressWarnings("unused")
     @Autowired
     private aCmaQuartzScheduler scheduler;
 
