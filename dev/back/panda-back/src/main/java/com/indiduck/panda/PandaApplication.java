@@ -1,5 +1,7 @@
 package com.indiduck.panda;
 
+import com.indiduck.panda.batch.aCmaQuartzScheduler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,6 +14,8 @@ public class PandaApplication extends SpringBootServletInitializer {
     @Override protected SpringApplicationBuilder configure(SpringApplicationBuilder builder)
     { return builder.sources(PandaApplication.class); }
 
+    @Autowired
+    private aCmaQuartzScheduler scheduler;
 
 
     public static void main(String[] args) {
