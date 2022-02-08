@@ -8,13 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 //배치프로그래밍 활성화
 @EnableBatchProcessing
 @SpringBootApplication
 @ComponentScan({"com.indiduck.panda.*"})
+@EnableScheduling
 public class PandaApplication extends SpringBootServletInitializer {
     @Override protected SpringApplicationBuilder configure(SpringApplicationBuilder builder)
     { return builder.sources(PandaApplication.class); }
