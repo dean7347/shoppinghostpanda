@@ -184,6 +184,10 @@ public class UserOrder {
         }
         return fp;
     }
+    public void batchTest(LocalDateTime ldt)
+    {
+        this.arriveAt=ldt;
+    }
 
     public void Calculate()
     {
