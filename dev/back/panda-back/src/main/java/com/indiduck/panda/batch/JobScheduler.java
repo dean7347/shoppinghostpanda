@@ -34,12 +34,14 @@ public class JobScheduler {
         System.out.println("스케쥴링시작");
         try {
 
-            jobLauncher.run(jobConfiguration.job(), jobParameters);
+            jobLauncher.run(jobConfiguration.ConfirmJob(), jobParameters);
 
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
 
             log.error(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

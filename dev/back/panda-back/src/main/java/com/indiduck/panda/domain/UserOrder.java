@@ -184,6 +184,11 @@ public class UserOrder {
         }
         return fp;
     }
+    public void batchConfirm(LocalDateTime ldt)
+    {
+        this.finishAt=ldt;
+    }
+
     public void batchTest(LocalDateTime ldt)
     {
         this.arriveAt=ldt;
@@ -249,6 +254,7 @@ public class UserOrder {
         this.orderStatus= OrderStatus.발송중;
         this.courierCom=com;
         this.waybillNumber=num;
+        this.shippedAt=LocalDateTime.now();
     }
     // xxx -> 구매확정
     public void confirmOrder()
