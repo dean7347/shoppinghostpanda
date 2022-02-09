@@ -65,7 +65,7 @@ public class JobConfiguration {
         return new JpaPagingItemReaderBuilder<UserOrder>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
-                .queryString("SELECT uo FROM UserOrder uo where uo.shippedAt >: beforeDay And uo.orderStatus =: od ORDER BY id ASC")
+                .queryString("SELECT uo FROM UserOrder uo where uo.shippedAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC")
                 .entityManagerFactory(entityManagerFactory)
                 .name("JpaPagingItemReader")
                 .build();

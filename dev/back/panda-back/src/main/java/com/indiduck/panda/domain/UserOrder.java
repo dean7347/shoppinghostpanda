@@ -186,7 +186,9 @@ public class UserOrder {
     }
     public void batchConfirm(LocalDateTime ldt)
     {
+        this.orderStatus=OrderStatus.구매확정;
         this.finishAt=ldt;
+        System.out.println(" = 스테이터스 변경시도" );
     }
 
     public void batchTest(LocalDateTime ldt)
