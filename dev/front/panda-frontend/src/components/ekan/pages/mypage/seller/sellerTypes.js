@@ -31,7 +31,7 @@ export const sellerSidebarItems = [
   },
   {
     display_name: "완료된 주문",
-    route: "/seller/finishOrder",
+    route: "/seller/CompleteOrder",
     icon: "bx bx-package",
   },
   {
