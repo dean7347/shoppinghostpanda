@@ -27,7 +27,6 @@ import {
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
 import axios from "../../../../../node_modules/axios/index";
-
 function CardInList(props) {
   console.log("카인리");
   console.log(props);
@@ -48,7 +47,8 @@ function CardInList(props) {
       }
     });
   };
-
+  const { TextArea } = Input;
+  const [refundText, setRefundText] = useState("환불요청메시지");
   const onTestPandaDashboard = () => {
     const body = {
       startDay: new Date(),
@@ -65,7 +65,24 @@ function CardInList(props) {
       }
     });
   };
-
+  const onRefund = (id) => {
+    console.log(id + "환불요청");
+    // console.log("환불쓰")
+    console.log(refundText);
+    const body = {
+      userOrderId: id,
+      state: "환불신청",
+      courier: refundText,
+      waybill: "",
+    };
+    axios.post("/api/editstatus", body).then((response) => {
+      if (response.data.success) {
+        alert("환불요청을 완료했습니다");
+      } else {
+        alert(response.data.message);
+      }
+    });
+  };
   const onTestCheck = (p, s, c, w) => {
     console.log(p + s);
     const body = {
@@ -394,7 +411,7 @@ function CardInList(props) {
             {props.situationDetail.status}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
-          <div>
+          {/* <div>
             ***임시버튼***
             <Button
               onClick={() =>
@@ -425,9 +442,28 @@ function CardInList(props) {
             <Button onClick={() => onTestPandaDashboard()}>
               판다대시보드테스트
             </Button>
-          </div>
+          </div> */}
         </Row>
         {renderbox()}
+        <div>
+          <hr />
+          <Row gutter={24}>
+            <Col span={12}>환불/교환</Col>
+            <Col span={24}>
+              <TextArea
+                placeholder="사유와 품목을 입력해주세요"
+                onChange={(e) => setRefundText(e.target.value)}
+                rows={4}
+              />
+            </Col>
+            <Col span={17}></Col>
+            <Col span={4} justify={"end"}>
+              <Button onClick={() => onRefund(props.situationDetail.detailId)}>
+                환불/교환 요청
+              </Button>
+            </Col>
+          </Row>
+        </div>
 
         <Divider />
         <div></div>

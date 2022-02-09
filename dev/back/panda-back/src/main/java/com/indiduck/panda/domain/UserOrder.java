@@ -76,6 +76,8 @@ public class UserOrder {
     private String uid;
     //영수증 주소
     private String receiptUrl;
+    //환불 사유
+    private String refundMessage;
 
     //샵이 가져갈 돈
     int shopMoney=0;
@@ -276,16 +278,18 @@ public class UserOrder {
     // xxx -> 결제취소 ?
 
 //    // xxx -> 환불신청 개별환불과 전체환불 구분할것것
-//   public void refundOrder()
-//    {
-//        for (OrderDetail orderDetail : detail) {
-//            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
-//            {
-//                orderDetail.setOrderStatus(OrderStatus.구매확정);
-//            }
-//        }
-//        this.orderStatus= OrderStatus.구매확정;
-//    }
+   public void refundOrder(String message)
+    {
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소&&orderDetail.getOrderStatus()!=OrderStatus.구매확정)
+            {
+                orderDetail.setOrderStatus(OrderStatus.환불대기);
+            }
+        }
+        this.refundMessage=message;
+        this.orderStatus=orderStatus.환불대기;
+        this.refundAt=LocalDateTime.now();
+    }
 
 
 //    @ManyToOne(fetch = FetchType.LAZY)

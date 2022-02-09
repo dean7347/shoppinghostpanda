@@ -61,6 +61,9 @@ public class UserOrderService {
             case "주문취소":
                 userOrder.cancelOrder();
                 //환불상태는 아직 남겨둔다
+                break;
+            case "환불신청":
+                userOrder.refundOrder(cur);
         }
         return userOrder;
 
