@@ -57,7 +57,7 @@ public class JobConfiguration {
     public JpaPagingItemReader<UserOrder> reader() throws Exception {
 
         Map<String,Object> parameterValues = new HashMap<>();
-        parameterValues.put("beforeDay", LocalDateTime.now());
+        parameterValues.put("beforeDay", LocalDateTime.now().minusDays(14));
         parameterValues.put("od", OrderStatus.발송중);
 
         log.info("구매확정 쿼리 시작");
