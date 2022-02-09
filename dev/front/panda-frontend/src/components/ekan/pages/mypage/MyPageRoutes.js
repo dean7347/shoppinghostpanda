@@ -15,7 +15,8 @@ import SellerReadyOrderPage from "./seller/SellerReadyOrderPage";
 import SellerShipOrderPage from "./seller/SellerShipOrderPage";
 import SellerCompleteOrderPage from "./seller/SellerCompleteOrderPage";
 import MyProductPage from "../../../../pages/MyProductPage";
-
+import SellerCancelReturnOrderConfirmPage from "./seller/SellerCancelReturnOrderConfirmPage";
+import SellerCancelReturnOrderPage from "./seller/SellerCancelReturnOrderPage";
 const MyPageRoutes = () => {
   return (
     <Switch>
@@ -23,11 +24,9 @@ const MyPageRoutes = () => {
       <Route path="/buyer/orderList" exact component={OrderListPage} />
       <Route path="/buyer/cancelList" exact component={CancelListPage} />
       <Route path="/buyer/cart" exact component={BuyerCartPage} />
-
       <Route path="/panda/dashboard" exact component={PandaDashboard} />
       <Route path="/panda/video" exact component={PandaVideoPage} />
       <Route path="/panda/settlement" exact component={PandaSettlementPage} />
-
       <Route path="/seller/dashboard" exact component={SellerDashboard} />
       <Route path="/seller/product" component={MyProductPage} exact />
       <Route path="/seller/settlement" exact component={SellerSettlementPage} />
@@ -38,6 +37,16 @@ const MyPageRoutes = () => {
         path="/seller/CompleteOrder"
         exact
         component={SellerCompleteOrderPage}
+      />
+      <Route
+        path="/seller/CancelReturnOrderPage"
+        exact
+        component={SellerCancelReturnOrderConfirmPage}
+      />{" "}
+      <Route
+        path="/seller/CancelReturnOrderConfirmPage"
+        exact
+        component={SellerCancelReturnOrderPage}
       />
     </Switch>
   );

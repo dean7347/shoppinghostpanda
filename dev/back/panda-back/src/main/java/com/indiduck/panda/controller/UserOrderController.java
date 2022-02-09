@@ -55,6 +55,22 @@ public class UserOrderController {
 
     }
 
+    @RequestMapping(value = "/api/extendconfirm", method = RequestMethod.POST)
+    public ResponseEntity<?> extendConfirm(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody ShopDashBoardForUserOrderId sdbf) throws Exception {
+
+
+        boolean b = userOrderService.extendConfirm(sdbf.orderId);
+        if(b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"구매기간 연장 성공"));
+            
+        }
+
+        return ResponseEntity.ok(new TFMessageDto(false,"3번이상 연장을 했거나 연장할 수 있는 상태가 아닙니다"));
+
+    }
+
     @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
     public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {

@@ -37,6 +37,13 @@ public class UserOrderService {
 
     }
 
+    public boolean extendConfirm(long ui)
+    {
+        Optional<UserOrder> byId = userOrderRepository.findById(ui);
+        return byId.get().extendConfirm();
+
+    }
+
     public UserOrder ChangeOrder(long id,String status,String cur,String wayb)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(id);

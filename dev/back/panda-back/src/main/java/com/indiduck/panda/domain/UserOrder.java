@@ -35,6 +35,9 @@ public class UserOrder {
     //택배비
     int shipPrice=0;
 
+    //연장가능 횟수 1회연장당 7일
+    int canExtend=3;
+
     //판매일자
     private LocalDateTime createdAt;
     private LocalDateTime checkedAt;
@@ -48,6 +51,8 @@ public class UserOrder {
     private LocalDateTime expectCalculate;
     //입금 완료일
     private LocalDateTime depositCompleted;
+    //구매확정 기준일
+    private LocalDateTime standardfinishAt;
 
     private String mid;
 
@@ -115,6 +120,7 @@ public class UserOrder {
         uo.orderStatus=OrderStatus.결제완료;
         uo.receiptUrl=receipt;
         uo.memo=memo;
+        uo.canExtend=3;
         //TODO 아래에서 디테일이 변경되어도 재계산 작업을 해주어야 한다
         return  uo;
     }
@@ -170,6 +176,19 @@ public class UserOrder {
             this.shopMoney+=this.shipPrice;
         }
         this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
+    }
+    public boolean extendConfirm()
+    {
+        if(this.canExtend<=0 && this.orderStatus!=OrderStatus.발송중)
+        {
+            return false;
+        }else
+        {
+            this.standardfinishAt=standardfinishAt.plusDays(7);
+            this.canExtend-=1;
+            return  true;
+        }
 
     }
 
@@ -258,6 +277,8 @@ public class UserOrder {
         this.courierCom=com;
         this.waybillNumber=num;
         this.shippedAt=LocalDateTime.now();
+        this.standardfinishAt=LocalDateTime.now();
+
     }
     // xxx -> 구매확정
     public void confirmOrder()

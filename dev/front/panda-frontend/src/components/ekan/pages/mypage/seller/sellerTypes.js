@@ -21,12 +21,12 @@ export const sellerSidebarItems = [
   },
   {
     display_name: "교환 / 반품주문 요청",
-    route: "/seller/cancelReturnOrder",
+    route: "/seller/CancelReturnOrderPage",
     icon: "bx bx-task-x",
   },
   {
     display_name: "교환 / 반품주문 확인",
-    route: "/seller/cancelReturnOrder",
+    route: "/seller/CancelReturnOrderConfirmPage",
     icon: "bx bx-task-x",
   },
   {
