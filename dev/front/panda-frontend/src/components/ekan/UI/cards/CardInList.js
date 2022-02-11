@@ -11,6 +11,8 @@ import {
   Modal,
   Col,
   Row,
+  Table,
+  Menu,
   Checkbox,
   Pagination,
 } from "antd";
@@ -47,6 +49,8 @@ function CardInList(props) {
       }
     });
   };
+  const { SubMenu } = Menu;
+
   const { TextArea } = Input;
   const [refundText, setRefundText] = useState("환불요청메시지");
   const onTestPandaDashboard = () => {
@@ -457,6 +461,27 @@ function CardInList(props) {
               />
             </Col>
             <Col span={17}></Col>
+            <Row gutter={[16, 16]}>
+              <Table
+                // columns={columns}
+                // dataSource={cart.array}
+                pagination={false}
+              />
+              <Menu
+                // onClick={handleClick}
+                style={{ width: "100%" }}
+                defaultSelectedKeys={["1"]}
+                mode="inline"
+              >
+                <SubMenu
+                  key="sub1"
+                  // icon={<DatabaseOutlined />}
+                  title="옵션을 선택해주세요"
+                >
+                  {/* {renderOption} */}
+                </SubMenu>
+              </Menu>
+            </Row>
             <Col span={4} justify={"end"}>
               <Button onClick={() => onRefund(props.situationDetail.detailId)}>
                 환불/교환 요청

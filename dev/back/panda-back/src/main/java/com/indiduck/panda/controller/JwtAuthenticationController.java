@@ -97,7 +97,8 @@ public class JwtAuthenticationController {
                     redisUtil.setDataExpire(refreshJwt, user.getUsername(), jwtTokenUtil.REFRESH_TOKEN_VALIDATION_SECOND);
                     res.addCookie(accessToken);
                     res.addCookie(refreshToken);
-                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", "", "");
+//                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", "", "");
+                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", token, refreshJwt);
 
                     return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.OK);
 
