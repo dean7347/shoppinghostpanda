@@ -54,7 +54,7 @@ export const signout = () => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
-      await axios.get("http://localhost:8080/api/user/logout");
+      await axios.get("api/user/logout");
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");

@@ -24,7 +24,7 @@
     color: rgba(128, 128, 128, 0.91);
 }
 
-.video-card .video-sold::after{
+.video-card .video-sold::before{
     content: "•";
     margin: 0 7px;
 }
