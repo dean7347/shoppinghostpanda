@@ -119,7 +119,7 @@ public class JwtAuthenticationController {
 //
 //
 //    }
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(@Validated UserRequestDto.Login login, Errors errors) {
         // validation check
         if (errors.hasErrors()) {
@@ -244,7 +244,7 @@ public class JwtAuthenticationController {
     }
 
 
-    @PostMapping("/reissue")
+    @PostMapping("/api/reissue")
     public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
         // validation check
         if (errors.hasErrors()) {
@@ -253,7 +253,7 @@ public class JwtAuthenticationController {
         return userDetailsService.reissue(reissue);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<?> logoutv3(@Validated UserRequestDto.Logout logout, Errors errors) {
         // validation check
         if (errors.hasErrors()) {
@@ -268,13 +268,13 @@ public class JwtAuthenticationController {
 //        return userDetailsService.authority();
 //    }
 
-    @GetMapping("/userTest")
+    @GetMapping("/api/userTest")
     public ResponseEntity<?> userTest() {
         log.info("ROLE_USER TEST");
         return response.success();
     }
 
-    @GetMapping("/adminTest")
+    @GetMapping("/api/adminTest")
     public ResponseEntity<?> adminTest() {
         log.info("ROLE_ADMIN TEST");
         return response.success();
