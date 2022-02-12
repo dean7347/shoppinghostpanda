@@ -226,7 +226,7 @@ public class JwtAuthenticationController {
                 return ResponseEntity.ok(new RoleCheckDto(authentication.getName(),isShop,isPanda,false));
 
             }
-            return ResponseEntity.ok(new RoleCheckDto("사용자정보없음",false,false,false));
+            return ResponseEntity.ok(new RoleCheckDto(null,false,false,false));
 
 
 
