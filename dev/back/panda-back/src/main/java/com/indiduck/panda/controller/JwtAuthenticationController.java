@@ -223,13 +223,13 @@ public class JwtAuthenticationController {
             if(panda!=null) isPanda=true;
 
 
-            return ResponseEntity.ok(new RoleCheckDto(isShop,isPanda,false));
+            return ResponseEntity.ok(new RoleCheckDto(authentication.getName(),isShop,isPanda,false));
 
         } catch (Exception e)
         {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new RoleCheckDto(false,false,false));
+            return ResponseEntity.ok(new RoleCheckDto("사용자정보없음",false,false,false));
 
 
         }
@@ -305,8 +305,10 @@ public class JwtAuthenticationController {
         boolean isShop;
         boolean isPanda;
         boolean isAdmin;
+        String userName;
 
-        public RoleCheckDto(boolean isShop, boolean isPanda, boolean isAdmin) {
+        public RoleCheckDto(String un,boolean isShop, boolean isPanda, boolean isAdmin) {
+            this.userName=un;
             this.isShop = isShop;
             this.isPanda = isPanda;
             this.isAdmin = isAdmin;
