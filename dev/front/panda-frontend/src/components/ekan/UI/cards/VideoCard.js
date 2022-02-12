@@ -14,7 +14,7 @@ function completeEditAction(e) {
 }
 
 function sliceTitle(title) {
-    let slicedTitle = title.slice(0, 27)
+    let slicedTitle = title.slice(0, 24)
     if (title.length > 27) {
         return slicedTitle + '...'
     }
