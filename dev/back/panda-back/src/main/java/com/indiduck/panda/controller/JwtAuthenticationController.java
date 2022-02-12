@@ -221,9 +221,14 @@ public class JwtAuthenticationController {
             boolean isPanda= false;
             if(shop!=null) isShop=true;
             if(panda!=null) isPanda=true;
+            if(authentication.isAuthenticated())
+            {
+                return ResponseEntity.ok(new RoleCheckDto(authentication.getName(),isShop,isPanda,false));
+
+            }
+            return ResponseEntity.ok(new RoleCheckDto("사용자정보없음",false,false,false));
 
 
-            return ResponseEntity.ok(new RoleCheckDto(authentication.getName(),isShop,isPanda,false));
 
         } catch (Exception e)
         {
