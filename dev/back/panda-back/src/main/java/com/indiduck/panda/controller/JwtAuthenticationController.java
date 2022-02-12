@@ -38,6 +38,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -188,6 +190,19 @@ public class JwtAuthenticationController {
         }
 
 
+    }
+
+    @PostMapping("/logoutv2")
+    public ResponseEntity<?> logout(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Errors errors) {
+        // validation check
+        boolean logout = userDetailsService.logout(httpServletRequest, httpServletResponse, authentication);
+        if(logout)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"로그아웃성공"));
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(false,"로그아웃실패"));
     }
 
     @GetMapping("/api/auth/check")

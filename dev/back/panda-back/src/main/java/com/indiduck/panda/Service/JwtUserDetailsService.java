@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.ApiKey;
@@ -32,15 +33,29 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.Certification;
 import com.siot.IamportRestClient.response.IamportResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Service
@@ -57,9 +72,22 @@ public class JwtUserDetailsService implements UserDetailsService {
 //		}
 //	}
     private final UserRepository userRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private JwtTokenUtil jwtUtil;
+
+    @Autowired
+    private CookieUtil cookieUtil;
+    @Autowired
+    private JwtUserDetailsService userDetailsService;
+    @Autowired
+    private RedisUtil redisUtil;
     @Autowired
     private ApiKey apiKey;
+    private final RedisTemplate redisTemplate;
+
+
+    @Value("${spring.jwt.secret}")
+    private String SECRET_KEY;
 
     /**
      * Spring Security 필수 메소드 구현
@@ -216,6 +244,83 @@ public class JwtUserDetailsService implements UserDetailsService {
         byCi.get().setPassword(encoder.encode(pw));
         return  byCi.get();
 
+    }
+
+    public boolean logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication auth) {
+        final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtTokenUtil.ACCESS_TOKEN_NAME);
+
+        String username = null;
+        String jwt = null;
+        String refreshJwt = null;
+        String refreshUname = null;
+
+        try{
+            if(jwtToken != null){
+                jwt = jwtToken.getValue();
+                username = jwtUtil.getUsername(jwt);
+            }
+            if(username!=null){
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                if(jwtUtil.validateToken(jwt,userDetails)){
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                }
+            }
+        }catch (ExpiredJwtException e){
+            Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtTokenUtil.REFRESH_TOKEN_NAME);
+            if(refreshToken!=null){
+                refreshJwt = refreshToken.getValue();
+            }
+        }catch(Exception e){
+
+        }
+
+        try{
+            if(refreshJwt != null){
+                refreshUname = redisUtil.getData(refreshJwt);
+
+                if(refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshUname);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+                    User member = new User();
+                    member.setUsername(refreshUname);
+                    String newToken =jwtUtil.generateToken(member);
+
+                    Cookie newAccessToken = cookieUtil.createCookie(JwtTokenUtil.ACCESS_TOKEN_NAME,newToken);
+                    httpServletResponse.addCookie(newAccessToken);
+                }
+            }
+        }catch(ExpiredJwtException e){
+
+        }
+        // 1. Access Token 검증
+        if (!auth.isAuthenticated()) {
+            return false;
+        }
+
+        // 2. Access Token 에서 User email 을 가져옵니다.
+        Authentication authentication = auth;
+
+        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+        if (redisUtil.getData(refreshJwt) != null) {
+            // Refresh Token 삭제
+            redisUtil.deleteData(refreshJwt);
+        }
+
+        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+        Date jwtTime = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(jwt)
+                .getBody().getExpiration();
+        Long now =new Date().getTime();
+        Long expiration = jwtTime.getTime()-now;
+
+        redisTemplate.opsForValue().set(jwt, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        return true;
     }
 
 
