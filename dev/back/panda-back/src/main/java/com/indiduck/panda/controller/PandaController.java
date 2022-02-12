@@ -4,9 +4,10 @@ import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.PandaRespository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.PandaService;
-import com.indiduck.panda.config.JwtTokenUtil;
+
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dto.ResultDto;
+import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ import java.util.*;
 public class PandaController {
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenProvider jwtTokenUtil;
+
     @Autowired
     PandaRespository pandaRespository;
     @Autowired
@@ -43,8 +45,8 @@ public class PandaController {
     @ResponseBody
     public ResponseEntity<?> ispanda(@CookieValue(name = "accessToken") String usernameCookie)
     {
-
-        String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
+        Authentication authentication = jwtTokenUtil.getAuthentication(usernameCookie);
+        String usernameFromToken = authentication.getName();
         System.out.println("usernameFromToken = " + usernameFromToken);
         if(usernameFromToken !=null)
         {

@@ -5,9 +5,9 @@ import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
-import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
+import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.*;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenProvider jwtTokenUtil;
     @Autowired
     ShopRepository shopRepository;
     @Autowired
@@ -71,15 +71,13 @@ public class ShopController {
 
     }
 
-    //TODO:샵 수정 메소드
-    //TODO:샵 삭제 메소드
-    //TODO:샵 조회 메소드
+
     @GetMapping("/api/haveshop")
     @ResponseBody
     public ResponseEntity<?> haveShop(@CookieValue(name = "accessToken") String usernameCookie)
     {
-
-        String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
+        Authentication authentication = jwtTokenUtil.getAuthentication(usernameCookie);
+        String usernameFromToken = authentication.getName();
         if(usernameFromToken !=null)
         {
             Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);

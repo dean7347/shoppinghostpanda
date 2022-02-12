@@ -7,9 +7,7 @@ package com.indiduck.panda.controller;
 //
 //- JwtRequest를 Json 형식으로 받았다면, 인증을 통해 토큰을 발급해주는 기능을 작성하였습니다.
 import com.indiduck.panda.Repository.UserRepository;
-import com.indiduck.panda.Service.CookieUtil;
 import com.indiduck.panda.Service.RedisUtil;
-import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.domain.Panda;
 import com.indiduck.panda.domain.Shop;
@@ -20,12 +18,15 @@ import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.domain.dto.UserDto;
+import com.indiduck.panda.domain.dto.UserRequestDto;
+import com.indiduck.panda.lib.Helper;
 import com.indiduck.panda.util.ApiResponseMessage;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,14 +58,13 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+
+    private final Response response;
 
 
     @Autowired
@@ -73,70 +73,61 @@ public class JwtAuthenticationController {
     private UserRepository userRepository;
 
 
-    @Autowired
-    private CookieUtil cookieUtil;
+//    @Autowired
+//    private CookieUtil cookieUtil;
 
     @Autowired
     private RedisUtil redisUtil;
 
-    //로그인
-    @RequestMapping(value = "/api/authenticate", method = RequestMethod.POST)
-    public  ResponseEntity<ApiResponseMessage> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest req,
-                                                                         HttpServletResponse res) throws Exception {
-
-        User user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        if(user!=null){
-            System.out.println("비밀번호 검증");
-            User verfiyed = userDetailsService.loginUser(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-            if(verfiyed!=null)
-            {
-                try {
-
-                    final String token = jwtTokenUtil.generateToken(user);
-                    final String refreshJwt = jwtTokenUtil.generateRefreshToken(user);
-                    Cookie accessToken = cookieUtil.createCookie(jwtTokenUtil.ACCESS_TOKEN_NAME, token);
-                    Cookie refreshToken = cookieUtil.createCookie(jwtTokenUtil.REFRESH_TOKEN_NAME, refreshJwt);
-                    redisUtil.setDataExpire(refreshJwt, user.getUsername(), jwtTokenUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-                    res.addCookie(accessToken);
-                    res.addCookie(refreshToken);
-//                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", "", "");
-                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", token, refreshJwt);
-
-                    return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.OK);
-
-                } catch (Exception e) {
-//            return new Response("authError", "로그인에 실패했습니다.", e.getMessage());
-                    ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
-                    System.out.println("message = " + message);
-                    return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
-
-                }
-            }
-        }
-        ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
-
-        return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
-
-        //성공했던것
-//        try {
-//            final User user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-//            final String token = jwtTokenUtil.generateToken(user);
-//            final String refreshJwt = jwtTokenUtil.generateRefreshToken(user);
-//            Cookie accessToken = cookieUtil.createCookie(jwtTokenUtil.ACCESS_TOKEN_NAME, token);
-//            Cookie refreshToken = cookieUtil.createCookie(jwtTokenUtil.REFRESH_TOKEN_NAME, refreshJwt);
-//            redisUtil.setDataExpire(refreshJwt, user.getUsername(), jwtTokenUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-//            res.addCookie(accessToken);
-//            res.addCookie(refreshToken);
-////            return new Response("success", "로그인에 성공했습니다.", token);
-//            return  ResponseEntity.ok(new loginResultDto(true,false));
+//    //로그인
+//    @RequestMapping(value = "/api/authenticate", method = RequestMethod.POST)
+//    public  ResponseEntity<ApiResponseMessage> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest req,
+//                                                                         HttpServletResponse res) throws Exception {
 //
-//        } catch (Exception e) {
+//        User user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+//        if(user!=null){
+//            System.out.println("비밀번호 검증");
+//            User verfiyed = userDetailsService.loginUser(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+//            if(verfiyed!=null)
+//            {
+//                try {
+//
+//                    final String token = jwtTokenUtil.generateToken(user);
+//                    final String refreshJwt = jwtTokenUtil.generateRefreshToken(user);
+//                    Cookie accessToken = cookieUtil.createCookie(jwtTokenUtil.ACCESS_TOKEN_NAME, token);
+//                    Cookie refreshToken = cookieUtil.createCookie(jwtTokenUtil.REFRESH_TOKEN_NAME, refreshJwt);
+//                    redisUtil.setDataExpire(refreshJwt, user.getUsername(), jwtTokenUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+//                    res.addCookie(accessToken);
+//                    res.addCookie(refreshToken);
+////                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", "", "");
+//                    ApiResponseMessage message = new ApiResponseMessage("Success", "로그인성공", token, refreshJwt);
+//
+//                    return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.OK);
+//
+//                } catch (Exception e) {
 ////            return new Response("authError", "로그인에 실패했습니다.", e.getMessage());
-//            System.out.println("로그인 실패");
-//            return  ResponseEntity.ok(new loginResultDto(false,true));
+//                    ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
+//                    System.out.println("message = " + message);
+//                    return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
 //
+//                }
+//            }
 //        }
+//        ApiResponseMessage message = new ApiResponseMessage("Authentification Error", "로그인실패", "", "");
+//
+//        return new ResponseEntity<ApiResponseMessage>(message,HttpStatus.UNAUTHORIZED);
+//
+//
+//    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Validated UserRequestDto.Login login, Errors errors) {
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return userDetailsService.login(login);
     }
+
 
     //회원가입
     @PostMapping("/api/signup")
@@ -193,34 +184,31 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/api/logoutv2")
-    public ResponseEntity<?> logout(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Errors errors) {
+    public ResponseEntity<?> logout(@Validated UserRequestDto.Logout logout, Errors errors) {
         // validation check
-        boolean logout = userDetailsService.logout(httpServletRequest, httpServletResponse, authentication);
-        if(logout)
-        {
-            return ResponseEntity.ok(new TFMessageDto(true,"로그아웃성공"));
-
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
         }
-        return ResponseEntity.ok(new TFMessageDto(false,"로그아웃실패"));
+        return userDetailsService.logout(logout);
     }
 
-    @GetMapping("/api/auth/check")
-    @ResponseBody
-    public ResponseEntity<?> check(HttpServletRequest request,
-                                   @CookieValue(name = "accessToken") String usernameCookie){
-
-        String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
-        if(usernameFromToken !=null)
-        {
-            System.out.println("usernameFromToken = " + usernameFromToken);
-            return ResponseEntity.status(HttpStatus.OK).body(new SimpleCheckDto(usernameFromToken));
-        }
+//    @GetMapping("/api/auth/check")
+//    @ResponseBody
+//    public ResponseEntity<?> check(HttpServletRequest request,
+//                                   @CookieValue(name = "accessToken") String usernameCookie){
 //
-//
-//
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
-    }
+//        String usernameFromToken = jwtTokenUtil.getUsername(usernameCookie);
+//        if(usernameFromToken !=null)
+//        {
+//            System.out.println("usernameFromToken = " + usernameFromToken);
+//            return ResponseEntity.status(HttpStatus.OK).body(new SimpleCheckDto(usernameFromToken));
+//        }
+////
+////
+////
+//        return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
+//    }
 
     @RequestMapping(value = "/api/userauth", method = RequestMethod.POST)
     public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
@@ -255,41 +243,78 @@ public class JwtAuthenticationController {
         }
     }
 
+
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return userDetailsService.reissue(reissue);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutv3(@Validated UserRequestDto.Logout logout, Errors errors) {
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return userDetailsService.logout(logout);
+    }
+
+//    @GetMapping("/authority")
+//    public ResponseEntity<?> authority() {
+//        log.info("ADD ROLE_ADMIN");
+//        return userDetailsService.authority();
+//    }
+
+    @GetMapping("/userTest")
+    public ResponseEntity<?> userTest() {
+        log.info("ROLE_USER TEST");
+        return response.success();
+    }
+
+    @GetMapping("/adminTest")
+    public ResponseEntity<?> adminTest() {
+        log.info("ROLE_ADMIN TEST");
+        return response.success();
+    }
+
     /*
     펑션
      */
 
 
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            System.out.println("user_disabled");
-            throw new Exception("USER_DISABLED", e);
-
-
-        } catch (BadCredentialsException e) {
-            System.out.println("invalid_credentials");
-
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
-    }
-
-    private ResponseEntity<String> authenticateV2(JwtRequest authenticationRequest) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername()
-                    , authenticationRequest.getPassword()));
-        } catch (DisabledException e) {
-             System.out.println("user_disabled");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
-//            return ResponseEntity("no user",HttpStatus.CONFLICT)
-
-        } catch (BadCredentialsException e) {
-            System.out.println("invalid_credentials");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
-        }
-        return null;
-    }
+//    private void authenticate(String username, String password) throws Exception {
+//        try {
+//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+//        } catch (DisabledException e) {
+//            System.out.println("user_disabled");
+//            throw new Exception("USER_DISABLED", e);
+//
+//
+//        } catch (BadCredentialsException e) {
+//            System.out.println("invalid_credentials");
+//
+//            throw new Exception("INVALID_CREDENTIALS", e);
+//        }
+//    }
+//
+//    private ResponseEntity<String> authenticateV2(JwtRequest authenticationRequest) {
+//        try {
+//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername()
+//                    , authenticationRequest.getPassword()));
+//        } catch (DisabledException e) {
+//             System.out.println("user_disabled");
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원가입 실패");
+////            return ResponseEntity("no user",HttpStatus.CONFLICT)
+//
+//        } catch (BadCredentialsException e) {
+//            System.out.println("invalid_credentials");
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("신뢰할수 없는 정보입니다 ");
+//        }
+//        return null;
+//    }
     //////////////dto///////////
     @Data
     static class findId{

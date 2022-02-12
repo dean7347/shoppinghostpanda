@@ -25,10 +25,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.ApiKey;
-import com.indiduck.panda.config.JwtTokenUtil;
 import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.UserDto;
 import com.indiduck.panda.domain.UserType;
+import com.indiduck.panda.domain.dto.UserRequestDto;
+import com.indiduck.panda.domain.dto.UserResponseDto;
+import com.indiduck.panda.jwt.JwtTokenProvider;
+import com.indiduck.panda.util.SecurityUtil;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.Certification;
@@ -42,6 +46,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,6 +57,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -72,18 +78,21 @@ public class JwtUserDetailsService implements UserDetailsService {
 //		}
 //	}
     private final UserRepository userRepository;
-    @Autowired
-    private JwtTokenUtil jwtUtil;
 
-    @Autowired
-    private CookieUtil cookieUtil;
+//    @Autowired
+//    private CookieUtil cookieUtil;
     @Autowired
     private JwtUserDetailsService userDetailsService;
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
     private ApiKey apiKey;
+
+    //새로운버전
+    private final Response response;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 
     @Value("${spring.jwt.secret}")
@@ -119,6 +128,8 @@ public class JwtUserDetailsService implements UserDetailsService {
         }
         return null;
     }
+
+
 
 
     /**
@@ -246,82 +257,99 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     }
 
-    public boolean logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication auth) {
-        final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtTokenUtil.ACCESS_TOKEN_NAME);
+    //새로운버전의 로그인
+    public ResponseEntity<?> login(UserRequestDto.Login login) {
 
-        String username = null;
-        String jwt = null;
-        String refreshJwt = null;
-        String refreshUname = null;
-
-        try{
-            if(jwtToken != null){
-                jwt = jwtToken.getValue();
-                username = jwtUtil.getUsername(jwt);
-            }
-            if(username!=null){
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                if(jwtUtil.validateToken(jwt,userDetails)){
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                }
-            }
-        }catch (ExpiredJwtException e){
-            Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtTokenUtil.REFRESH_TOKEN_NAME);
-            if(refreshToken!=null){
-                refreshJwt = refreshToken.getValue();
-            }
-        }catch(Exception e){
-
+        if (userRepository.findByEmail(login.getEmail()).orElse(null) == null) {
+            return response.fail("해당하는 유저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
-        try{
-            if(refreshJwt != null){
-                refreshUname = redisUtil.getData(refreshJwt);
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
 
-                if(refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshUname);
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-                    User member = new User();
-                    member.setUsername(refreshUname);
-                    String newToken =jwtUtil.generateToken(member);
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
-                    Cookie newAccessToken = cookieUtil.createCookie(JwtTokenUtil.ACCESS_TOKEN_NAME,newToken);
-                    httpServletResponse.addCookie(newAccessToken);
-                }
-            }
-        }catch(ExpiredJwtException e){
+        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-        }
+        return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<?> logout(UserRequestDto.Logout logout) {
         // 1. Access Token 검증
-        if (!auth.isAuthenticated()) {
-            return false;
+        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
+            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
 
         // 2. Access Token 에서 User email 을 가져옵니다.
-        Authentication authentication = auth;
+        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
 
         // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
-        if (redisUtil.getData(refreshJwt) != null) {
+        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
             // Refresh Token 삭제
-            redisUtil.deleteData(refreshJwt);
+            redisTemplate.delete("RT:" + authentication.getName());
         }
 
         // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
-        Date jwtTime = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(jwt)
-                .getBody().getExpiration();
-        Long now =new Date().getTime();
-        Long expiration = jwtTime.getTime()-now;
+        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
+        redisTemplate.opsForValue()
+                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
 
-        redisTemplate.opsForValue().set(jwt, "logout", expiration, TimeUnit.MILLISECONDS);
-
-        return true;
+        return response.success("로그아웃 되었습니다.");
     }
+
+    public ResponseEntity<?> reissue(UserRequestDto.Reissue reissue) {
+        // 1. Refresh Token 검증
+        if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {
+            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Access Token 에서 User email 을 가져옵니다.
+        Authentication authentication = jwtTokenProvider.getAuthentication(reissue.getAccessToken());
+
+        // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
+        String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
+        if(ObjectUtils.isEmpty(refreshToken)) {
+            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
+        if(!refreshToken.equals(reissue.getRefreshToken())) {
+            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 4. 새로운 토큰 생성
+        UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        // 5. RefreshToken Redis 업데이트
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+
+        return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
+    }
+
+
+
+//    public ResponseEntity<?> authority() {
+//        // SecurityContext에 담겨 있는 authentication userEamil 정보
+//        String userEmail = SecurityUtil.getCurrentUserEmail();
+//
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new UsernameNotFoundException("No authentication information."));
+//
+//        // add ROLE_ADMIN
+//        user.getRoles().add(Authority.ROLE_ADMIN.name());
+//        userRepository.save(user);
+//
+//        return response.success();
+//    }
 
 
 }
