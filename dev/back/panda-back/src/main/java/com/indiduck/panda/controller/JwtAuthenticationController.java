@@ -255,6 +255,7 @@ public class JwtAuthenticationController {
 
     @PostMapping("/api/logout")
     public ResponseEntity<?> logoutv3(@Validated UserRequestDto.Logout logout, Errors errors) {
+        System.out.println("logout = " + logout.getAccessToken());
         // validation check
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
