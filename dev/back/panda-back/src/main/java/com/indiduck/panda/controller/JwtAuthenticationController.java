@@ -192,7 +192,7 @@ public class JwtAuthenticationController {
 
     }
 
-    @PostMapping("/logoutv2")
+    @PostMapping("/api/logoutv2")
     public ResponseEntity<?> logout(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Errors errors) {
         // validation check
