@@ -20,7 +20,7 @@ public class RedisUtil {
 
     public void setData(String key, String value){
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key,value);
+        valueOperations.set(key,value);//삭제옵션 추가
     }
 
     public void setDataExpire(String key,String value,long duration){

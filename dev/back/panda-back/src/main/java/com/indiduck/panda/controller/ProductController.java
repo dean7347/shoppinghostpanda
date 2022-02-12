@@ -312,7 +312,12 @@ public class ProductController {
      public ResponseEntity<?> viewAll(@CurrentSecurityContext(expression = "authentication")
                                                              Authentication authentication,Pageable pageable) throws Exception {
 
+        if(!authentication.isAuthenticated())
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
 
+        }
+         System.out.println("authentication = " + authentication);
 //         System.out.println("limit+offset = " + limit + offset);
          Page<Product> result = productRepository.findAllByDeletedAndSales(pageable,false,true);
          Page<ProductDto> tomap = result.map(e -> new ProductDto(e));
