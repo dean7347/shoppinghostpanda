@@ -72,12 +72,12 @@ const VideoCard = ({link, panda, footer}) => {
 
                         <div className="video-content">
                             <div>
-                                <span>Panda </span>
+                                <i className='bx bx-leaf'></i>
                                 <span className="video-sold">{panda}</span>
                             </div>
                             <div>
-                                <span>YouTube</span>
-                                <span className="video-sold">{videoInfo.author_name}</span>
+                                <i className='bx bxl-youtube'/>
+                                <span className="video-sold">{videoInfo.author_name.slice(0,6)}</span>
                             </div>
                         </div>
                     </div>
