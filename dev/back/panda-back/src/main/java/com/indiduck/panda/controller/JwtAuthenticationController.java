@@ -15,10 +15,7 @@ import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserOrder;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import com.indiduck.panda.domain.dao.TFMessageDto;
-import com.indiduck.panda.domain.dto.Response;
-import com.indiduck.panda.domain.dto.ResultDto;
-import com.indiduck.panda.domain.dto.UserDto;
-import com.indiduck.panda.domain.dto.UserRequestDto;
+import com.indiduck.panda.domain.dto.*;
 import com.indiduck.panda.lib.Helper;
 import com.indiduck.panda.util.ApiResponseMessage;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -125,8 +122,29 @@ public class JwtAuthenticationController {
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
+
+
         return userDetailsService.login(login);
     }
+
+    @PostMapping("/api/loginv2")
+    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletResponse res, Errors errors) {
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
+        String refreshToken = tokenInfo.getRefreshToken();
+        String aToken = tokenInfo.getAccessToken();
+        Cookie accessToken = new Cookie("accessToken",aToken);
+        res.addCookie(accessToken);
+
+
+
+        return ResponseEntity.ok(new TFMessageDto(true,"로그인 성공"));
+
+    }
+
 
 
     //회원가입
@@ -174,6 +192,12 @@ public class JwtAuthenticationController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        SecurityContextHolder 클리어시켜볼까?
         System.out.println(" 로그아웃 ");
+        Cookie[] cookies = request.getCookies();
+
+        for(Cookie c : cookies) {
+            System.out.println("쿠키네임"+(c.getName()));  // 쿠키 이름 가져오기
+            System.out.println("쿠키밸류"+(c.getValue()));  // 쿠키 값 가져오기
+        }
 
         if(authentication !=null)
         {
@@ -185,12 +209,17 @@ public class JwtAuthenticationController {
 
     @GetMapping("/api/logoutv2")
     @ResponseBody
-    public ResponseEntity<?> logout(@CookieValue(name = "accessToken") String at,
-                                    @CookieValue(name = "refreshToken") String rt,Errors errors) {
+    public ResponseEntity<?> logout(HttpServletRequest req,Errors errors) {
+        Cookie[] cookies = req.getCookies();
+
+        for(Cookie c : cookies) {
+            System.out.println("쿠키네임"+(c.getName()));  // 쿠키 이름 가져오기
+            System.out.println("쿠키밸류"+(c.getValue()));  // 쿠키 값 가져오기
+        }
         // validation check
         // validation check
-        System.out.println("at = " + at);
-        System.out.println("rt = " + rt);
+//        System.out.println("at = " + at);
+//        System.out.println("rt = " + rt);
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }

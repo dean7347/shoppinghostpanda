@@ -24,7 +24,7 @@ export const signin = (data, onError) => {
       form.append("email", data.account);
       form.append("password", data.password);
 
-      const res = await axios.post("/api/login", form);
+      const res = await axios.post("/api/loginv2", form);
       const auth = await axios.post("/api/userauth");
       if (res.data) {
         const userData = res.data;
@@ -55,7 +55,7 @@ export const signout = () => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
-      await axios.get("/api/logoutv2");
+      await axios.get("/api/user/logout");
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");
