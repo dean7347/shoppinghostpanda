@@ -183,14 +183,20 @@ public class JwtAuthenticationController {
 
     }
 
-    @PostMapping("/api/logoutv2")
-    public ResponseEntity<?> logout(@Validated UserRequestDto.Logout logout, Errors errors) {
+    @GetMapping("/api/logoutv2")
+    @ResponseBody
+    public ResponseEntity<?> logout(@CookieValue(name = "accessToken") String at,
+                                    @CookieValue(name = "refreshToken") String rt,Errors errors) {
         // validation check
         // validation check
+        System.out.println("at = " + at);
+        System.out.println("rt = " + rt);
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
-        return userDetailsService.logout(logout);
+//        return userDetailsService.logout(logout);
+        return response.invalidFields(Helper.refineErrors(errors));
+
     }
 
 //    @GetMapping("/api/auth/check")
