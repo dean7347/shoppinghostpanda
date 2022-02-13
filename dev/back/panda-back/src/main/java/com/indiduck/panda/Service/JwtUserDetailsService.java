@@ -330,6 +330,30 @@ public class JwtUserDetailsService implements UserDetailsService {
         return response.success("로그아웃 되었습니다.");
     }
 
+    public boolean logoutV2(String atToken) {
+        // 1. Access Token 검증
+        if (!jwtTokenProvider.validateToken(atToken)) {
+            System.out.println("잘못된 로그아웃 요청 atToken오류 ");
+            return false;
+        }
+
+        // 2. Access Token 에서 User email 을 가져옵니다.
+        Authentication authentication = jwtTokenProvider.getAuthentication(atToken);
+
+        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+            // Refresh Token 삭제
+            redisTemplate.delete("RT:" + authentication.getName());
+        }
+
+        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+        Long expiration = jwtTokenProvider.getExpiration(atToken);
+        redisTemplate.opsForValue()
+                .set(atToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        return true;
+    }
+
     public ResponseEntity<?> reissue(UserRequestDto.Reissue reissue) {
         // 1. Refresh Token 검증
         if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {

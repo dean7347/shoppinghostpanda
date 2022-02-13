@@ -55,7 +55,7 @@ export const signout = () => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
-      await axios.get("/api/user/logout");
+      await axios.get("/api/user/logoutv2");
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");
