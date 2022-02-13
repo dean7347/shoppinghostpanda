@@ -20,10 +20,11 @@ export const signin = (data, onError) => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
-      const res = await axios.post("/api/authenticate", {
-        username: data.account,
-        password: data.password,
-      });
+      let form = new FormData();
+      form.append("email", data.account);
+      form.append("password", data.password);
+
+      const res = await axios.post("/api/login", form);
       const auth = await axios.post("/api/userauth");
       if (res.data) {
         const userData = res.data;
