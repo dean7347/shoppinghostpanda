@@ -52,50 +52,54 @@ public class JwtAuthenticationFilter extends GenericFilterBean  {
         HttpServletRequest request1 = (HttpServletRequest) request;
         Cookie[] cookies = request1.getCookies();
         String token="";
-        for(Cookie c : cookies) {
-            if(c.getName().equals("accessToken"))
-            {
-                token=c.getValue();
+        if(cookies!=null)
+        {
+            for(Cookie c : cookies) {
+                if(c.getName().equals("accessToken"))
+                {
+                    token=c.getValue();
+                }
             }
         }
+
 
 
             // 2. validateToken 으로 토큰 유효성 검사
-        try{
-            Long expiration = jwtTokenProvider.getExpiration(token);
-
-        }catch (Exception e)
-        {
-            log.info("Expired JWT Token 재발급 로직 실행", e);
-
-            //토큰이 만료됐음
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
-            //리프레시 토큰이 없는경우
-            if(ObjectUtils.isEmpty(refreshToken)) {
-                //로그아웃시킴
-                log.info("로그아웃 요청", e);
-
-            }
-            //토큰정보가 일치하지 않는경우
-            if(!refreshToken.equals(refreshToken)) {
-                //로그아웃시킴
-                log.info("로그아웃 요청", e);
-
-            }
-            UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-            redisTemplate.opsForValue()
-                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-            Cookie accessToken = new Cookie("accessToken",tokenInfo.getAccessToken());
-            accessToken.setHttpOnly(true);
-            HttpServletResponse httpServletResponse= (HttpServletResponse) response;
-            httpServletResponse.addCookie(accessToken);
-
-            chain.doFilter(request, httpServletResponse);
-            return;
-
-
-        }
+//        try{
+//            Long expiration = jwtTokenProvider.getExpiration(token);
+//
+//        }catch (Exception e)
+//        {
+//            log.info("Expired JWT Token 재발급 로직 실행", e);
+//
+//            //토큰이 만료됐음
+//            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+//            String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+//            //리프레시 토큰이 없는경우
+//            if(ObjectUtils.isEmpty(refreshToken)) {
+//                //로그아웃시킴
+//                log.info("로그아웃 요청", e);
+//
+//            }
+//            //토큰정보가 일치하지 않는경우
+//            if(!refreshToken.equals(refreshToken)) {
+//                //로그아웃시킴
+//                log.info("로그아웃 요청", e);
+//
+//            }
+//            UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+//            redisTemplate.opsForValue()
+//                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+//            Cookie accessToken = new Cookie("accessToken",tokenInfo.getAccessToken());
+//            accessToken.setHttpOnly(true);
+//            HttpServletResponse httpServletResponse= (HttpServletResponse) response;
+//            httpServletResponse.addCookie(accessToken);
+//
+//            chain.doFilter(request, httpServletResponse);
+//            return;
+//
+//
+//        }
         if (token != null && jwtTokenProvider.validateToken(token)) {
                 // (추가) Redis 에 해당 accessToken logout 여부 확인
                 String isLogout = (String)redisTemplate.opsForValue().get(token);

@@ -4,22 +4,21 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import createSagaMiddleware from "redux-saga";
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 // 스토어생성 프로바이더를 통해 리액트 프로젝트에 리덕스 적용
-import {Provider} from "react-redux";
+import { Provider } from "react-redux";
 import store from "./store";
-import {createStore, applyMiddleware} from "redux";
-import {composeWithDevTools} from "redux-devtools-extension";
-import rootReducer, {rootSaga} from "./modules";
-import {tempSetUser, check} from "./modules/user";
+import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import rootReducer, { rootSaga } from "./modules";
+import { tempSetUser, check } from "./modules/user";
 
-import 'bulma/css/bulma.min.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './assets/css/theme.css'
-import './assets/css/index.css'
-
-
+import "bulma/css/bulma.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./assets/css/theme.css";
+import "./assets/css/index.css";
+import axios from "axios";
 
 // const sagaMiddleware = createSagaMiddleware();
 // const store = createStore(
@@ -41,15 +40,43 @@ import './assets/css/index.css'
 // sagaMiddleware.run(rootSaga);
 // loadUser();
 
+axios.interceptors.response.use(
+  function (response) {
+    /*
+        http status가 200인 경우
+        응답 성공 직전 호출됩니다. 
+        .then() 으로 이어집니다.
+    */
+    return response;
+  },
+  function (error) {
+    alert("만료");
+    /*
+        http status가 200이 아닌 경우
+        응답 에러 직전 호출됩니다.
+        .catch() 으로 이어집니다.    
+    */
+    //401은 Access Token or Refresh Token 이 invalid 될때
+    //response data의 code값이
+    // 4401 : access Token error , 4402: refresh Token error
+    if (error.response.status === 401) {
+      if (error.response.data.code === "4401") {
+        window.location.href = "/";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <Provider store={store}>
-                <App/>
-            </Provider>
-        </BrowserRouter>
-    </React.StrictMode>,
-    document.getElementById("root")
+  <React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
