@@ -1,11 +1,14 @@
 package com.indiduck.panda.jwt;
 
+import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.domain.dto.UserResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +16,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,11 +33,11 @@ public class JwtTokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
-
     private final Key key;
 
     @Value("${spring.jwt.secret}")
     private String SECRET_KEY;
+
 
     public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -99,6 +104,21 @@ public class JwtTokenProvider {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+//            System.out.println(" =만료감지 ");
+//            Authentication authentication = getAuthentication(token);
+//            RedisTemplate redisTemplate= new RedisTemplate() ;
+//            String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+//            if(ObjectUtils.isEmpty(refreshToken)) {
+//                return false;
+//            }
+//            if(!refreshToken.equals(refreshToken)) {
+//                return false;
+//            }
+//            UserResponseDto.TokenInfo tokenInfo = generateToken(authentication);
+//            redisTemplate.opsForValue()
+//                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+//            System.out.println(" =재발급완료 ");
+//            //재발급 로직 실행
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
         } catch (IllegalArgumentException e) {

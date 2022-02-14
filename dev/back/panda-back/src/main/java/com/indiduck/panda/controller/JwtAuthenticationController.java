@@ -137,6 +137,7 @@ public class JwtAuthenticationController {
         String refreshToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
         Cookie accessToken = new Cookie("accessToken",aToken);
+        accessToken.setHttpOnly(true);
         res.addCookie(accessToken);
 
 
@@ -187,25 +188,25 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new TFMessageDto(true,"비밀번호 변경 성공"));
     }
     //체크
-    @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
-    private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        SecurityContextHolder 클리어시켜볼까?
-        System.out.println(" 로그아웃 ");
-        Cookie[] cookies = request.getCookies();
-
-        for(Cookie c : cookies) {
-            System.out.println("쿠키네임"+(c.getName()));  // 쿠키 이름 가져오기
-            System.out.println("쿠키밸류"+(c.getValue()));  // 쿠키 값 가져오기
-        }
-
-        if(authentication !=null)
-        {
-            new SecurityContextLogoutHandler().logout(request,response,authentication);
-        }
-
-
-    }
+//    @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
+//    private void removeCookies(HttpServletRequest request, HttpServletResponse response) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////        SecurityContextHolder 클리어시켜볼까?
+//        System.out.println(" 로그아웃 ");
+//        Cookie[] cookies = request.getCookies();
+//
+//        for(Cookie c : cookies) {
+//            System.out.println("쿠키네임"+(c.getName()));  // 쿠키 이름 가져오기
+//            System.out.println("쿠키밸류"+(c.getValue()));  // 쿠키 값 가져오기
+//        }
+//
+//        if(authentication !=null)
+//        {
+//            new SecurityContextLogoutHandler().logout(request,response,authentication);
+//        }
+//
+//
+//    }
 
     @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.GET)
     public ResponseEntity<?> logout(HttpServletRequest req) {

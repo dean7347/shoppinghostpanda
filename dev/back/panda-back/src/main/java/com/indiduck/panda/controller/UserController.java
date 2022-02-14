@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -115,6 +116,9 @@ public class UserController {
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication,@PageableDefault(sort="createdAt",direction = Sort.Direction.DESC ) Pageable pageable) {
         String name = authentication.getName();
+        System.out.println("name = " + name);
+        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authentication1.getName() = " + authentication1.getName());
         Optional<User> byEmail = userRepository.findByEmail(name);
         Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(),pageable);
         System.out.println("allByUserId = " + allByUserId.get());
