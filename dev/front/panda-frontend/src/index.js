@@ -19,6 +19,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/theme.css";
 import "./assets/css/index.css";
 import axios from "axios";
+import { getCookie, removeCookie, setCookie } from "./store/Cookie";
 
 // const sagaMiddleware = createSagaMiddleware();
 // const store = createStore(
@@ -50,32 +51,61 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    axios.post("/api/reissue").then((response) => {
-      console.log("리이슈");
-      console.log(error.config);
-      console.log(response);
-      if (response.data.status !== 200) {
-        console.log("와성공");
-        console.log(response.status);
+    console.log("에라");
+    console.log(error.response.status);
+    if (error.response.status === 303) {
+      console.log("재실행이다");
 
-        return axios.request(error.config);
-      } else {
-        if (error.response.status === 401) {
-          if (
-            window.confirm(
-              "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
-            )
-          ) {
-            window.location.replace("/signin");
-          } else {
-          }
+      return axios(error.config);
+    }
+    if (error.response.status === 401) {
+      console.log("에라");
+      alert("언오써");
+      return;
+    }
+    if (error.response.status === 400) {
+      removeCookie("loggedIn");
+      removeCookie("userId");
+      removeCookie("panda");
+      removeCookie("seller");
+      console.log("에라2");
+      alert("로그아웃 로직 실행해야댐");
 
-          if (error.response.data.code === "4401") {
-            window.location.href = "/";
-          }
-        }
-      }
-    });
+      return;
+    }
+
+    // axios.post("/api/reissue").then((response) => {
+    //   console.log("리이슈");
+    //   console.log(error.config);
+    //   console.log(response);
+    //   if (response.data.status !== 200) {
+    //     console.log("와성공");
+    //     console.log(response.status);
+
+    //     return;
+    //   } else {
+    //     console.log("에라");
+
+    //     if (error.response.status === 400) {
+    //       alert("로그인해제");
+    //       console.log("로그인해제");
+    //     }
+    //     if (error.response.status === 401) {
+    //       if (
+    //         window.confirm(
+    //           "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+    //         )
+    //       ) {
+    //         window.location.replace("/signin");
+    //       } else {
+    //       }
+
+    //       if (error.response.data.code === "4401") {
+    //         window.location.href = "/";
+    //       }
+    //     }
+    //   }
+    // });
     /*
         http status가 200이 아닌 경우
         응답 에러 직전 호출됩니다.

@@ -45,6 +45,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             errorType = ErrorType.UNAUTHORIZEDException;
             setResponse(response, errorType);
             System.out.println("토큰이 없습니다");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
 
             return;
         }
@@ -57,6 +59,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         {
 
             log.info("위조토큰");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             return;
 
         }
@@ -98,6 +102,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
             if(ObjectUtils.isEmpty(refreshToken)) {
                 System.out.println("로그아웃된 계정입니다");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                setResponse(response, errorType);
 //                return res.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
                 return;
 
@@ -110,17 +116,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
             Cookie NaccessToken = new Cookie("accessToken",tokenInfo.getAccessToken());
             Cookie NrefreshToken = new Cookie("refreshToken",tokenInfo.getRefreshToken());
-
             NaccessToken.setHttpOnly(true);
             NrefreshToken.setHttpOnly(true);
-            
+
             response.addCookie(NaccessToken);
             response.addCookie(NrefreshToken);
             // 5. RefreshToken Redis 업데이트
             redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
             System.out.println(" 새토큰은 "+tokenInfo.getAccessToken());
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_SEE_OTHER);
             setResponse(response, errorType);
             return;
         }
@@ -128,12 +133,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         if(exception.equals("Unsupported"))
         {
             log.info("지원하지 않는토큰");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             return;
         }
         //ecveption
         if(exception.equals("empty"))
         {
             log.info("빈토큰");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             return;
         }
 
@@ -144,10 +153,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         JSONObject json = new JSONObject();
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("utf-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        json.put("code", errorType.getCode());
-        json.put("message", errorType.getDescription());
-        response.getWriter().print(json);
+//        json.put("code", errorType.getCode());
+//        json.put("ermessage", errorType.getDescription());
+//        response.getWriter().print(json);
     }
 }

@@ -263,14 +263,19 @@ function ProductInfo(props) {
       cart: cart.array,
       selectpanda: SelectPanda,
     };
-    axios.post("/api/addcart", body).then((response) => {
-      if (response.data.success) {
-        alert("상품을 장바구니에 성공적으로 담았습니다");
-      } else {
-        alert(response.data.message);
-        console.log(response.data);
-      }
-    });
+    axios
+      .post("/api/addcart", body)
+      .then((response) => {
+        if (response.data.success) {
+          alert("상품을 장바구니에 성공적으로 담았습니다");
+        } else {
+          alert(response.data.message);
+          console.log(response.data);
+        }
+      })
+      .catch(() => {
+        console.log("켓치실행");
+      });
 
     // console.log(body);
   };
