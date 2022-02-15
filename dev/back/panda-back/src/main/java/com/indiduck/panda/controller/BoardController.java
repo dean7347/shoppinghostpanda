@@ -75,8 +75,8 @@ public class BoardController {
     @RequestMapping(value = "/api/getqna", method = RequestMethod.GET)
     public ResponseEntity<?> getqna(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,Pageable pageable,@RequestParam("pid") long pid) throws Exception {
-        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
-        String username = byEmail.get().getUsername();
+//        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+//        String username = byEmail.get().getUsername();
         Optional<Product> byId = productRepository.findById(pid);
         Page<Board> byProduct = boardRepository.findByProduct(pageable, byId.get());
         System.out.println("byProduct = " + byProduct);

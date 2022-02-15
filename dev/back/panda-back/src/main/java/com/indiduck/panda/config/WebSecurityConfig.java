@@ -4,6 +4,8 @@ package com.indiduck.panda.config;
 
 import com.indiduck.panda.jwt.JwtAuthenticationFilter;
 import com.indiduck.panda.jwt.JwtTokenProvider;
+import com.indiduck.panda.lib.CustomAuthenticationEntryPoint;
+import com.indiduck.panda.lib.WebAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -21,18 +24,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
-
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final WebAccessDeniedHandler webAccessDeniedHandler;
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .httpBasic().disable()
-                .csrf().disable()
+//                .csrf().disable()
+//                TODO:cors추가하기
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).
+                and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/sign-up","/api/user/logoutv2", "/api/login", "/api/v1/users/authority", "/api/v1/users/reissue", "/api/v1/users/logout").permitAll()
-                .antMatchers("/api/v1/users/userTest").hasRole("USER")
-                .antMatchers("/api/v1/users/adminTest").hasRole("ADMIN")
+                .antMatchers( "/favicon.ico",    "/css/**",  "/fonts/**", "/img/**",  "/js/**",
+                        "/api/reissue","/api/preview**","/api/product/products_by**","/api/getpandas_by_id**","/api/ispanda**","api/proxy?url=**",
+                        "/api/getqna*","/api/loginv2","/api/userauth","/api/user/logoutv2","/api/signup").permitAll()
+//                .antMatchers("/api**").permitAll()
+                .antMatchers("/api/*").authenticated()
+
+
+                .antMatchers("/api/**").hasRole("USER")
+                .antMatchers("/api/**").hasRole("ADMIN")
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(webAccessDeniedHandler)
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthentictaionFilter 전에 적용시킨다.

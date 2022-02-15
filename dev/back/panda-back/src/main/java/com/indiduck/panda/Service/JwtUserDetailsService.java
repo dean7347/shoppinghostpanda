@@ -354,6 +354,35 @@ public class JwtUserDetailsService implements UserDetailsService {
         return true;
     }
 
+    public ResponseEntity<?> reissueV2(String at,String rt) {
+        // 1. Refresh Token 검증
+        if (!jwtTokenProvider.validateToken(rt)) {
+            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Access Token 에서 User email 을 가져옵니다.
+        Authentication authentication = jwtTokenProvider.getAuthentication(at);
+
+        // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
+        String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
+        if(ObjectUtils.isEmpty(refreshToken)) {
+            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
+        if(!refreshToken.equals(rt)) {
+            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 4. 새로운 토큰 생성
+        UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        // 5. RefreshToken Redis 업데이트
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+
+        return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
+    }
+
     public ResponseEntity<?> reissue(UserRequestDto.Reissue reissue) {
         // 1. Refresh Token 검증
         if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {

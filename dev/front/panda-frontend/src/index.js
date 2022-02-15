@@ -50,7 +50,10 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    alert("만료");
+    // axios.post("/api/reissue").then((response) => {
+    //   console.log("리이슈");
+    //   console.log(response);
+    // });
     /*
         http status가 200이 아닌 경우
         응답 에러 직전 호출됩니다.
@@ -60,6 +63,15 @@ axios.interceptors.response.use(
     //response data의 code값이
     // 4401 : access Token error , 4402: refresh Token error
     if (error.response.status === 401) {
+      if (
+        window.confirm(
+          "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+        )
+      ) {
+        window.location.replace("/signin");
+      } else {
+      }
+
       if (error.response.data.code === "4401") {
         window.location.href = "/";
       }

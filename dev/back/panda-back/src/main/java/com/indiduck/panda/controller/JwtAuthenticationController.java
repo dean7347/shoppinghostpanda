@@ -134,11 +134,15 @@ public class JwtAuthenticationController {
             return response.invalidFields(Helper.refineErrors(errors));
         }
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
-        String refreshToken = tokenInfo.getRefreshToken();
+        String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
         Cookie accessToken = new Cookie("accessToken",aToken);
+        Cookie refreshToken = new Cookie("refreshToken",rToken);
+
         accessToken.setHttpOnly(true);
+        refreshToken.setHttpOnly(true);
         res.addCookie(accessToken);
+        res.addCookie(refreshToken);
 
 
 
@@ -281,24 +285,47 @@ public class JwtAuthenticationController {
     }
 
 
+//    @PostMapping("/api/reissue")
+//    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
+//        // validation check
+//        if (errors.hasErrors()) {
+//            return response.invalidFields(Helper.refineErrors(errors));
+//        }
+//        return userDetailsService.reissue(reissue);
+//    }
+
     @PostMapping("/api/reissue")
-    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
-        // validation check
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
+    public ResponseEntity<?> reissue(HttpServletRequest req) {
+
+        Cookie[] cookies = req.getCookies();
+        String atToken="";
+        String rT="";
+        for(Cookie c : cookies) {
+            if(c.getName().equals("accessToken"))
+            {
+                atToken=c.getValue();
+            }
+            if(c.getName().equals("refreshToken"))
+            {
+                rT=c.getValue();
+            }
         }
-        return userDetailsService.reissue(reissue);
+        // validation check
+//        if (errors.hasErrors()) {
+//            return response.invalidFields(Helper.refineErrors(errors));
+//        }
+        return userDetailsService.reissueV2(atToken,rT);
     }
 
-    @PostMapping("/api/logout")
-    public ResponseEntity<?> logoutv3(@Validated UserRequestDto.Logout logout, Errors errors) {
-        System.out.println("logout = " + logout.getAccessToken());
-        // validation check
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
-        }
-        return userDetailsService.logout(logout);
-    }
+//    @PostMapping("/api/logout")
+//    public ResponseEntity<?> logoutv3(@Validated UserRequestDto.Logout logout, Errors errors) {
+//        System.out.println("logout = " + logout.getAccessToken());
+//        // validation check
+//        if (errors.hasErrors()) {
+//            return response.invalidFields(Helper.refineErrors(errors));
+//        }
+//        return userDetailsService.logout(logout);
+//    }
 
 //    @GetMapping("/authority")
 //    public ResponseEntity<?> authority() {
