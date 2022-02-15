@@ -111,7 +111,7 @@ public class JwtTokenProvider {
             log.info("Invalid JWT Token", e);
             request.setAttribute("exception","MalformedJwtException");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            log.info("Expired JWT Token");
             request.setAttribute("exception","Expired");
 
         } catch (UnsupportedJwtException e) {
@@ -123,6 +123,9 @@ public class JwtTokenProvider {
             log.info("JWT claims string is empty.", e);
             request.setAttribute("exception","empty");
 
+        } catch (Exception e)
+        {
+            log.info("알수없는 오류");
         }
         return false;
     }

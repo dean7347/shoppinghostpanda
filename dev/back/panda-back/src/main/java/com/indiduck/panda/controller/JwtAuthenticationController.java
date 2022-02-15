@@ -213,7 +213,7 @@ public class JwtAuthenticationController {
 //    }
 
     @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.GET)
-    public ResponseEntity<?> logout(HttpServletRequest req) {
+    public ResponseEntity<?> logout(HttpServletRequest req,HttpServletResponse res) {
         Cookie[] cookies = req.getCookies();
         String atToken="";
         for(Cookie c : cookies) {
@@ -226,10 +226,14 @@ public class JwtAuthenticationController {
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
-
         boolean b = userDetailsService.logoutV2(atToken);
-        System.out.println("로그아웃 성공여부 = " + b);
-        return ResponseEntity.ok(new TFMessageDto(true,"로그아웃 성공"));
+        if(b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(b,"로그아웃 성공"));
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(b,"로그아웃 실패"));
+
 
 
     }

@@ -42,6 +42,7 @@ export const signin = (data, onError) => {
         dispatch(setLoading(false));
       }
     } catch (err) {
+      console.log("d어스에러");
       console.log(err);
       onError();
       dispatch(setError("아이디나 비밀번호를 확인해 주십시오"));
@@ -55,16 +56,21 @@ export const signout = () => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
+      console.log("로그아웃 요청 성공");
       await axios.get("/api/user/logoutv2");
+      setCookie("loggedIn", "false", { path: "/" });
+
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");
       removeCookie("seller");
+
       dispatch({
         type: SIGN_OUT,
       });
     } catch (err) {
       console.log(err);
+      console.log("로그아웃실패");
       dispatch(setLoading(false));
     }
     dispatch(setLoading(false));

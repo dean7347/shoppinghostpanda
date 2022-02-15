@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers( "/favicon.ico",    "/css/**",  "/fonts/**", "/img/**",  "/js/**",
                         "/api/reissue","/api/preview**","/api/product/products_by**","/api/getpandas_by_id**","/api/ispanda**","api/proxy?url=**",
-                        "/api/getqna*","/api/loginv2","/api/userauth","/api/user/logoutv2","/api/signup").permitAll()
+                        "/api/getqna*","/api/loginv2","/api/user/logoutv2","/api/signup").permitAll()
 //                .antMatchers("/api**").permitAll()
                 .antMatchers("/api/*").authenticated()
 
