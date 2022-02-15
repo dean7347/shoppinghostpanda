@@ -59,8 +59,19 @@ axios.interceptors.response.use(
       return axios(error.config);
     }
     if (error.response.status === 401) {
-      console.log("에라");
-      alert("언오써");
+      console.log("로그인이 필요한서비스입니다");
+      if (
+        window.confirm(
+          "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+        )
+      ) {
+        window.location.replace("/signin");
+      } else {
+      }
+
+      if (error.response.data.code === "4401") {
+        window.location.href = "/";
+      }
       return;
     }
     if (error.response.status === 400) {
