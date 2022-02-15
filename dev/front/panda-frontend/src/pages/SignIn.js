@@ -32,7 +32,8 @@ const SignIn = (props) => {
     } = props;
     if (loggedIn) {
       if (state && state.next) {
-        history.push(state.next);
+        // history.push(state.next);
+        history.Back();
       } else {
         history.goBack();
       }

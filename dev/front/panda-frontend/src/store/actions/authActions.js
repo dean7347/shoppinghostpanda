@@ -59,7 +59,9 @@ export const signout = () => {
       console.log("로그아웃 요청 성공");
       await axios.get("/api/user/logoutv2");
       setCookie("loggedIn", "false", { path: "/" });
-
+      setCookie("userId", "", { path: "/" });
+      setCookie("panda", "", { path: "/" });
+      setCookie("seller", "", { path: "/" });
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");

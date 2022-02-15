@@ -75,6 +75,10 @@ axios.interceptors.response.use(
       return;
     }
     if (error.response.status === 400) {
+      setCookie("loggedIn", "false", { path: "/" });
+      setCookie("userId", "", { path: "/" });
+      setCookie("panda", "", { path: "/" });
+      setCookie("seller", "", { path: "/" });
       removeCookie("loggedIn");
       removeCookie("userId");
       removeCookie("panda");
