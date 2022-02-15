@@ -50,10 +50,32 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    // axios.post("/api/reissue").then((response) => {
-    //   console.log("리이슈");
-    //   console.log(response);
-    // });
+    axios.post("/api/reissue").then((response) => {
+      console.log("리이슈");
+      console.log(error.config);
+      console.log(response);
+      if (response.data.status !== 200) {
+        console.log("와성공");
+        console.log(response.status);
+
+        return axios.request(error.config);
+      } else {
+        if (error.response.status === 401) {
+          if (
+            window.confirm(
+              "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+            )
+          ) {
+            window.location.replace("/signin");
+          } else {
+          }
+
+          if (error.response.data.code === "4401") {
+            window.location.href = "/";
+          }
+        }
+      }
+    });
     /*
         http status가 200이 아닌 경우
         응답 에러 직전 호출됩니다.
@@ -62,20 +84,7 @@ axios.interceptors.response.use(
     //401은 Access Token or Refresh Token 이 invalid 될때
     //response data의 code값이
     // 4401 : access Token error , 4402: refresh Token error
-    if (error.response.status === 401) {
-      if (
-        window.confirm(
-          "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
-        )
-      ) {
-        window.location.replace("/signin");
-      } else {
-      }
 
-      if (error.response.data.code === "4401") {
-        window.location.href = "/";
-      }
-    }
     return Promise.reject(error);
   }
 );
