@@ -6,6 +6,7 @@ import com.indiduck.panda.domain.dto.Response;
 import com.indiduck.panda.domain.dto.UserResponseDto;
 import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final JwtUserDetailsService jwtUserDetailsService;
@@ -36,9 +38,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         ErrorType errorType;
         System.out.println(" =access재생성로직 시작 ");
 
-        /**
-         * 토큰이 없는 경우 예외처리
-         */
+//        /**
+//         * 토큰이 없는 경우 예외처리
+//         */
         if(exception == null) {
             errorType = ErrorType.UNAUTHORIZEDException;
             setResponse(response, errorType);
@@ -50,7 +52,16 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         /**
          * 토큰이 만료된 경우 예외처리
          */
-        if(exception.equals("ExpiredJwtException")) {
+        //malformed
+        if(exception.equals("MalformedJwtException"))
+        {
+
+            log.info("위조토큰");
+            return;
+
+        }
+        //expried
+        if(exception.equals("Expired")) {
             System.out.println("토큰만료 재생성로직 시작");
 
             errorType = ErrorType.ExpiredJwtException;
@@ -70,14 +81,14 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             System.out.println(" 지금토큰은 "+atToken);
 
             // 1. Refresh Token 검증
-        if (!jwtTokenProvider.validateToken(rT)) {
-            setResponse(response, errorType);
+            if (!jwtTokenProvider.validateToken(rT)) {
+                setResponse(response, errorType);
 
 //            response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
-            System.out.println("유효하지 않은계정입니다");
-            
-            return;
-        }
+                System.out.println("유효하지 않은계정입니다");
+
+                return;
+            }
 
             // 2. Access Token 에서 User email 을 가져옵니다.
             Authentication authentication = jwtTokenProvider.getAuthentication(atToken);
@@ -108,13 +119,25 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-
-
-            System.out.println(" 새로운토큰은 "+NaccessToken);
+            System.out.println(" 새토큰은 "+NaccessToken);
 
             setResponse(response, errorType);
             return;
         }
+        //unsuppoet
+        if(exception.equals("Unsupported"))
+        {
+            log.info("지원하지 않는토큰");
+            return;
+        }
+        //ecveption
+        if(exception.equals("empty"))
+        {
+            log.info("빈토큰");
+            return;
+        }
+
+
     }
 
     private void setResponse(HttpServletResponse response, ErrorType errorType) throws IOException {

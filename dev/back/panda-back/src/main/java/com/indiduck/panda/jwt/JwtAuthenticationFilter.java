@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean  {
         // 1. Request Header 에서 JWT 토큰 추출
 //        String token = resolveToken((HttpServletRequest) request);
 
-        System.out.println("두필타필타핖ㄹ필타");
+
         HttpServletRequest request1 = (HttpServletRequest) request;
         Cookie[] cookies = request1.getCookies();
         String token="";
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean  {
             }
         }
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null && jwtTokenProvider.validateToken(request,token)) {
                 // (추가) Redis 에 해당 accessToken logout 여부 확인
                 String isLogout = (String)redisTemplate.opsForValue().get(token);
                 if (ObjectUtils.isEmpty(isLogout)) {

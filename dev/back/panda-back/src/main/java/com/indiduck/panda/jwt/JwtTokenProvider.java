@@ -22,6 +22,7 @@ import org.springframework.security.web.util.ThrowableCauseExtractor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import javax.servlet.ServletRequest;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,8 +36,8 @@ public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
-//        private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;              // 60초
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
+        private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;              // 60초
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
     private final Key key;
@@ -102,7 +103,31 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public boolean validateToken(ServletRequest request, String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+            request.setAttribute("exception","MalformedJwtException");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+            request.setAttribute("exception","Expired");
+
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+            request.setAttribute("exception","Unsupported");
+
+
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
+            request.setAttribute("exception","empty");
+
+        }
+        return false;
+    }
+
+    public boolean validateToken( String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
