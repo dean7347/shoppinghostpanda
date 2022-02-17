@@ -20,6 +20,7 @@ import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import produce from "immer";
 
 import {
   BrowserView,
@@ -29,6 +30,8 @@ import {
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
 import axios from "../../../../../node_modules/axios/index";
+import { setWeekYear } from "date-fns";
+import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInList(props) {
   console.log("카인리");
   console.log(props);
@@ -73,20 +76,22 @@ function CardInList(props) {
     console.log(id + "환불요청");
     // console.log("환불쓰")
     console.log(refundText);
-    const body = {
-      userOrderId: id,
-      state: "환불신청",
-      courier: refundText,
-      waybill: "",
-    };
-    axios.post("/api/editstatus", body).then((response) => {
-      if (response.data.success) {
-        alert("환불요청을 완료했습니다");
-      } else {
-        alert(response.data.message);
-      }
-    });
+    console.log(Oplist);
+    // const body = {
+    //   userOrderId: id,
+    //   state: "환불신청",
+    //   courier: refundText,
+    //   waybill: "",
+    // };
+    // axios.post("/api/editstatus", body).then((response) => {
+    //   if (response.data.success) {
+    //     alert("환불요청을 완료했습니다");
+    //   } else {
+    //     alert(response.data.message);
+    //   }
+    // });
   };
+
   const onTestCheck = (p, s, c, w) => {
     console.log(p + s);
     const body = {
@@ -107,7 +112,7 @@ function CardInList(props) {
   const onRefundOrder = (p) => {
     if (
       window.confirm(
-        "판매자와 사전 연락이 없었다면 진행에 어려움이 있을수 있습니다. 이에 동의하십니까?"
+        "상세 반품/취소 사항은 상품 판매자와 연락해주세요. 반품신청을 계속하시겠습니까?"
       )
     ) {
       // axios.post("/api/cart/removeoption", body).then((response) => {
@@ -130,6 +135,36 @@ function CardInList(props) {
     }
   }
   //렌더박스
+  const [nextOPKey, setOPKey] = useState(0);
+
+  const [Oplist, setOpList] = useState({
+    array: [],
+  });
+
+  const renderOption =
+    props &&
+    props.situationDetail.products.map((pd, idx) => {
+      return (
+        <>
+          {pd.options.map((op, idxo) => {
+            console.log("정상동작");
+            return (
+              <Menu.Item key={op.odid}>
+                {" "}
+                <div style={{ float: "left" }}>{op.optionName}</div>
+                <div style={{ float: "right" }}>
+                  {op.optionPrice
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                </div>
+              </Menu.Item>
+            );
+            // Oplist.push(op);
+          })}
+        </>
+      );
+    });
+  const column = [];
   const renderbox = () => {
     return (
       <>
@@ -160,7 +195,6 @@ function CardInList(props) {
 
         {props &&
           props.situationDetail.products.map((pd, idx) => {
-            console.log("pd: ", pd);
             var allPrice = 0;
             var purePrice = 0;
             function pricePlus(getprice, getpureprice) {
@@ -208,6 +242,7 @@ function CardInList(props) {
                   >
                     {pd.options.map((option, index) => (
                       <>
+                        {column.push(option)}
                         <div style={{ background: "#FFDBC1" }}>
                           {option.pandaName}/{option.optionName}/
                           {option.optionCount}개*(
@@ -478,7 +513,7 @@ function CardInList(props) {
                   // icon={<DatabaseOutlined />}
                   title="옵션을 선택해주세요"
                 >
-                  {/* {renderOption} */}
+                  {renderOption}
                 </SubMenu>
               </Menu>
             </Row>

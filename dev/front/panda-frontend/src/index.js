@@ -84,7 +84,14 @@ axios.interceptors.response.use(
       removeCookie("panda");
       removeCookie("seller");
       console.log("에라2");
-      alert("로그아웃 로직 실행해야댐");
+      if (
+        window.confirm(
+          "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+        )
+      ) {
+        window.location.replace("/signin");
+      } else {
+      }
 
       return;
     }

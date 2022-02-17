@@ -5,7 +5,6 @@ import axios from "../../../node_modules/axios/index";
 import OptionTemplate from "../common/List/OptionTemplate";
 import TodoInsert from "../common/List/TodoInsert";
 import TodoList from "../common/List/EditTodoList";
-import { useHistory } from "react-router-dom";
 
 const { Titled } = Typography;
 const { TextArea } = Input;
@@ -13,8 +12,6 @@ const { TextArea } = Input;
 function EditProductForm(props) {
   const [getThumbs, setGetThumbs] = useState([]);
   const [getDetail, setGetDetail] = useState([]);
-
-  const history = useHistory();
 
   const { Option, OptGroup } = Select;
   const [Title, setTitle] = useState("");
