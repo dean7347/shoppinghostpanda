@@ -261,13 +261,12 @@ function CardInList(props) {
                 optionname={op.optionName}
                 optionPrice={op.optionPrice}
                 quantity={op.optionCount}
-                optionPrice={op.optionPrice}
                 isdiscount={op.discount}
                 inherenceKey={op.odid}
-                key={idxo}
+                key={idx}
               >
                 {" "}
-                <div style={{ float: "left" }}>{op.optionName}</div>
+                <div style={{ float: "left" }}>{op.optionName}{idx}</div>
                 <div style={{ float: "right" }}>
                   {op.optionPrice
                     .toString()
