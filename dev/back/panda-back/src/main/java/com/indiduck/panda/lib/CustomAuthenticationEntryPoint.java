@@ -106,6 +106,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             if(ObjectUtils.isEmpty(refreshToken)) {
                 System.out.println("로그아웃된 계정입니다");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+
                 setResponse(response, errorType);
 //                return res.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
                 return;
@@ -121,6 +123,17 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             Cookie NrefreshToken = new Cookie("refreshToken",tokenInfo.getRefreshToken());
             NaccessToken.setHttpOnly(true);
             NrefreshToken.setHttpOnly(true);
+            for(Cookie c : cookies) {
+                if(c.getName().equals("accessToken"))
+                {
+                   c.setValue(NaccessToken.toString());
+                }
+                if(c.getName().equals("refreshToken"))
+                {
+                    c.setValue(NrefreshToken.toString());
+
+                }
+            }
 
             response.addCookie(NaccessToken);
             response.addCookie(NrefreshToken);
