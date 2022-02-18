@@ -50,6 +50,7 @@ const VideoCard = ({link, panda, footer}) => {
     const cancelModifyBtnAction = useCallback((e) => {
         e.preventDefault()
         setShowEdit(false)
+        console.log("수정취소");
     }, [showEdit])
 
     return (
