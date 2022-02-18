@@ -166,7 +166,9 @@ function ProductInfo(props) {
 
   const handleClick = (e) => {
     // console.log("클릭");
+    // console.log(e);
     // console.log(options[e.key]);
+    // console.log(options);
     // console.log("카트");
     // console.log(cart.array);
     // console.log("함수");

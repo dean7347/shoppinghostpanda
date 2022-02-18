@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   Button,
+  InputNumber,
   Radio,
   Select,
   Card,
@@ -15,6 +16,7 @@ import {
   Menu,
   Checkbox,
   Pagination,
+  Space,
 } from "antd";
 import { CreditCardOutlined } from "@ant-design/icons";
 import DaumPostCode from "react-daum-postcode";
@@ -77,6 +79,7 @@ function CardInList(props) {
     // console.log("환불쓰")
     console.log(refundText);
     console.log(Oplist);
+    console.log(options);
     // const body = {
     //   userOrderId: id,
     //   state: "환불신청",
@@ -136,10 +139,111 @@ function CardInList(props) {
   }
   //렌더박스
   const [nextOPKey, setOPKey] = useState(0);
-
+  // const [options, setOptions] = useState([]);
+  const options = [];
   const [Oplist, setOpList] = useState({
     array: [],
   });
+  const onChange = (title, key) => (event) => {
+    setOpList(
+      produce(Oplist, (draft) => {
+        let price =
+          event * Oplist.array.find((x) => x.key == key.key).originPrice;
+        draft.array.find((x) => x.key == key.key).optionCount = event;
+        draft.array.find((x) => x.key == key.key).optionPrice = price
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      })
+    );
+  };
+  const onDelete = (title, key) => (event) => {
+    setOpList(
+      produce(Oplist, (draft) => {
+        draft.array.splice(
+          draft.array.find((x) => x.key == key.key),
+          1
+        );
+      })
+    );
+  };
+  const handleClick = (e) => {
+    console.log("ops");
+    console.log(e.key);
+
+    console.log(options);
+    if (
+      Oplist.array.find((x) => x.optionId == options[e.key].odid) !== undefined
+    ) {
+      alert("이미 존재하는 상품입니다");
+      return;
+    } else {
+      console.log("프롭");
+      console.log(e.item.props);
+      console.log("--프롭");
+
+      const info = {
+        key: nextOPKey,
+        optionId: e.item.props.inherenceKey,
+        optionCount: 1,
+        optionName: e.item.props.optionname,
+        optionPrice: e.item.props.optionPrice
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        originPrice: e.item.props.optionPrice,
+      };
+
+      setOpList(
+        produce(Oplist, (draft) => {
+          draft.array.push(info);
+          setOPKey(nextOPKey + 1);
+        })
+      );
+    }
+  };
+
+  const columns = [
+    {
+      title: "상품명",
+      dataIndex: "optionName",
+      key: "optionName",
+      width: "40%",
+    },
+    {
+      title: "수량",
+      dataIndex: "optionCount",
+      key: "optionCount",
+      width: "5%",
+
+      render: (title, key) => (
+        <>
+          <InputNumber
+            min={1}
+            defaultValue={1}
+            onChange={onChange(title, key)}
+            size="small"
+          />
+        </>
+      ),
+    },
+    {
+      title: "가격/원",
+      dataIndex: "optionPrice",
+      key: "optionPrice",
+      width: "30%",
+    },
+
+    {
+      title: "삭제",
+      key: "action",
+      width: "20%",
+
+      render: (title, key) => (
+        <Space size="middle">
+          <Button onClick={onDelete(title, key)}>Delete</Button>
+        </Space>
+      ),
+    },
+  ];
 
   const renderOption =
     props &&
@@ -147,9 +251,21 @@ function CardInList(props) {
       return (
         <>
           {pd.options.map((op, idxo) => {
+            options.push(op);
             console.log("정상동작");
+            console.log(op);
+
             return (
-              <Menu.Item key={op.odid}>
+              <Menu.Item
+                padnaname={op.pandaName}
+                optionname={op.optionName}
+                optionPrice={op.optionPrice}
+                quantity={op.optionCount}
+                optionPrice={op.optionPrice}
+                isdiscount={op.discount}
+                inherenceKey={op.odid}
+                key={idxo}
+              >
                 {" "}
                 <div style={{ float: "left" }}>{op.optionName}</div>
                 <div style={{ float: "right" }}>
@@ -498,12 +614,12 @@ function CardInList(props) {
             <Col span={17}></Col>
             <Row gutter={[16, 16]}>
               <Table
-                // columns={columns}
-                // dataSource={cart.array}
+                columns={columns}
+                dataSource={Oplist.array}
                 pagination={false}
               />
               <Menu
-                // onClick={handleClick}
+                onSelect={handleClick}
                 style={{ width: "100%" }}
                 defaultSelectedKeys={["1"]}
                 mode="inline"
