@@ -48,6 +48,7 @@ axios.interceptors.response.use(
         응답 성공 직전 호출됩니다. 
         .then() 으로 이어집니다.
     */
+    console.log("200받음");
     return response;
   },
   function (error) {
@@ -55,6 +56,7 @@ axios.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 303) {
       console.log("재실행이다");
+      // axios.post("/api/reissue");
 
       return axios(error.config);
     }

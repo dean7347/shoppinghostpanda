@@ -76,9 +76,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 if(c.getName().equals("accessToken"))
                 {
                     atToken=c.getValue();
+                    c.setMaxAge(0);
                 }
                 if(c.getName().equals("refreshToken"))
                 {
+                    c.setMaxAge(0);
+
                     rT=c.getValue();
                 }
             }

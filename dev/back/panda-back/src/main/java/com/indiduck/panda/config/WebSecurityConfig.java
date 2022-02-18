@@ -41,10 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/reissue","/api/preview**","/api/product/products_by**","/api/getpandas_by_id**","/api/ispanda**","api/proxy?url=**",
                         "/api/getqna*","/api/loginv2","/api/user/logoutv2","/api/signup").permitAll()
 //                .antMatchers("/api**").permitAll()
-                .antMatchers("/api/*").authenticated()
+                .antMatchers("/api/*","/api/shop/**").authenticated()
 
 
-                .antMatchers("/api/**").hasRole("USER")
+                .antMatchers("/api/**","/api/shop/**").hasRole("USER")
                 .antMatchers("/api/**").hasRole("ADMIN")
                 .and()
                 .exceptionHandling()
