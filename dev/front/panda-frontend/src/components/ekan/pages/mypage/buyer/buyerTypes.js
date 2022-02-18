@@ -5,7 +5,7 @@ export const buyerSidebarItems = [
         "icon": "bx bx-category-alt"
     },
     {
-        "display_name": "주문 / 배송",
+        "display_name": "전체 주문",
         "route": "/buyer/orderList",
         "icon": "bx bx-package"
     },
