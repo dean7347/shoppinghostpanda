@@ -63,7 +63,8 @@ const BuyerDashboard = () => {
     "완료": "primary",
     "주문취소": "danger",
     "배송중": "success",
-    "반품": "warning"
+    "반품": "warning",
+    "환불대기": "warning"
   }
 
   const renderHead = (item, index) => (
