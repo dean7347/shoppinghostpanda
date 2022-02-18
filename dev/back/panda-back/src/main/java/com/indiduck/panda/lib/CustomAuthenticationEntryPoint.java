@@ -135,8 +135,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 }
             }
 
-            response.addCookie(NaccessToken);
-            response.addCookie(NrefreshToken);
+//            response.addCookie(NaccessToken);
+//            response.addCookie(NrefreshToken);
             // 5. RefreshToken Redis 업데이트
             redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
