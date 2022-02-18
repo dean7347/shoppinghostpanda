@@ -56,9 +56,16 @@ axios.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 303) {
       console.log("재실행이다");
-      // axios.post("/api/reissue");
+      axios.post("/api/reissue").then((response) => {
+        console.log(response.status === 200);
+        if (response.status === 200) {
+          console.log(error.config);
+          // return axios(error.config);
+        }
+        return;
+      });
 
-      return axios(error.config);
+      return;
     }
     if (error.response.status === 401) {
       console.log("로그인이 필요한서비스입니다");

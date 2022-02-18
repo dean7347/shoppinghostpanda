@@ -81,7 +81,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 if(c.getName().equals("refreshToken"))
                 {
                     c.setMaxAge(0);
-
                     rT=c.getValue();
                 }
             }
@@ -123,20 +122,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             Cookie NrefreshToken = new Cookie("refreshToken",tokenInfo.getRefreshToken());
             NaccessToken.setHttpOnly(true);
             NrefreshToken.setHttpOnly(true);
-            for(Cookie c : cookies) {
-                if(c.getName().equals("accessToken"))
-                {
-                   c.setValue(NaccessToken.toString());
-                }
-                if(c.getName().equals("refreshToken"))
-                {
-                    c.setValue(NrefreshToken.toString());
-
-                }
-            }
-
-//            response.addCookie(NaccessToken);
-//            response.addCookie(NrefreshToken);
+            response.addCookie(NaccessToken);
+            response.addCookie(NrefreshToken);
+            Response re=new Response();
             // 5. RefreshToken Redis 업데이트
             redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
