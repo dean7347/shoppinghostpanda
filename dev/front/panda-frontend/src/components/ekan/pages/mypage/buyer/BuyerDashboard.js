@@ -158,6 +158,9 @@ const BuyerDashboard = () => {
                   }
 
                 </div>
+                <div className="card__footer">
+                  <Link to='/buyer/orderList'>View All</Link>
+                </div>
               </div>
             </div>
           </div>
