@@ -66,71 +66,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
         //expried
         if(exception.equals("Expired")) {
-            System.out.println("토큰만료 재생성로직 시작");
-
-            errorType = ErrorType.ExpiredJwtException;
-            Cookie[] cookies = request.getCookies();
-            String atToken="";
-            String rT="";
-            for(Cookie c : cookies) {
-                if(c.getName().equals("accessToken"))
-                {
-                    atToken=c.getValue();
-                    c.setMaxAge(0);
-                }
-                if(c.getName().equals("refreshToken"))
-                {
-                    c.setMaxAge(0);
-                    rT=c.getValue();
-                }
-            }
-            System.out.println(" 지금토큰은 "+atToken);
-
-            // 1. Refresh Token 검증
-            if (!jwtTokenProvider.validateToken(rT)) {
-                setResponse(response, errorType);
-
-//            response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
-                System.out.println("유효하지 않은계정입니다");
-
-                return;
-            }
-
-            // 2. Access Token 에서 User email 을 가져옵니다.
-            Authentication authentication = jwtTokenProvider.getAuthentication(atToken);
-
-            // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-            String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
-            // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
-            if(ObjectUtils.isEmpty(refreshToken)) {
-                System.out.println("로그아웃된 계정입니다");
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-
-                setResponse(response, errorType);
-//                return res.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
-                return;
-
-            }
-//        if(!refreshToken.equals(reissue.getRefreshToken())) {
-//            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
-//        }
-
-            // 4. 새로운 토큰 생성
-            UserResponseDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-            Cookie NaccessToken = new Cookie("accessToken",tokenInfo.getAccessToken());
-            Cookie NrefreshToken = new Cookie("refreshToken",tokenInfo.getRefreshToken());
-            NaccessToken.setHttpOnly(true);
-            NrefreshToken.setHttpOnly(true);
-            response.addCookie(NaccessToken);
-            response.addCookie(NrefreshToken);
-            Response re=new Response();
-            // 5. RefreshToken Redis 업데이트
-            redisTemplate.opsForValue()
-                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-            System.out.println(" 새토큰은 "+tokenInfo.getAccessToken());
-            response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-            setResponse(response, errorType);
+            log.info("만료토큰");
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
             return;
         }
         //unsuppoet

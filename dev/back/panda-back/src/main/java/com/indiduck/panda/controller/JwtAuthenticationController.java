@@ -299,7 +299,7 @@ public class JwtAuthenticationController {
 //    }
 
     @PostMapping("/api/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest req) {
+    public ResponseEntity<?> reissue(HttpServletRequest req,HttpServletResponse res) {
 
         Cookie[] cookies = req.getCookies();
         String atToken="";
@@ -318,7 +318,26 @@ public class JwtAuthenticationController {
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
-        return userDetailsService.reissueV2(atToken,rT);
+        UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atToken, rT);
+        if(tokenInfo!=null)
+        {
+
+            String rToken = tokenInfo.getRefreshToken();
+            String aToken = tokenInfo.getAccessToken();
+            Cookie accessToken = new Cookie("accessToken",aToken);
+            Cookie refreshToken = new Cookie("refreshToken",rToken);
+
+            accessToken.setHttpOnly(true);
+            refreshToken.setHttpOnly(true);
+            res.addCookie(accessToken);
+            res.addCookie(refreshToken);
+
+            return ResponseEntity.ok(new TFMessageDto(true,"재발급 성공"));
+
+        }
+        //TODO:401메서드 보내기
+        return ResponseEntity.ok(new TFMessageDto(false,"재발급 실패"));
+
     }
 
 //    @PostMapping("/api/logout")

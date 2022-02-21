@@ -36,8 +36,8 @@ public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
-//        private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;              // 60초
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
+        private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 1000L;              // 60초
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
     private final Key key;
@@ -111,7 +111,7 @@ public class JwtTokenProvider {
             log.info("Invalid JWT Token", e);
             request.setAttribute("exception","MalformedJwtException");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token");
+            log.info("Expired JWT Token",e);
             request.setAttribute("exception","Expired");
 
         } catch (UnsupportedJwtException e) {

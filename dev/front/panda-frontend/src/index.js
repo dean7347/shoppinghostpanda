@@ -40,32 +40,64 @@ import { getCookie, removeCookie, setCookie } from "./store/Cookie";
 
 // sagaMiddleware.run(rootSaga);
 // loadUser();
-
+//되는거시작
 axios.interceptors.response.use(
   function (response) {
     /*
         http status가 200인 경우
-        응답 성공 직전 호출됩니다. 
+        응답 성공 직전 호출됩니다.
         .then() 으로 이어집니다.
     */
+    console.log(response.status);
+    if (response.status === 202) {
+      console.log(response);
+      // axios.request(response.config);
+      // console.log("여기서 재 갱신을 해야하지않을까?");
+      // axios.post("/api/reissue").then((response) => {
+      //   console.log(response.data.success);
+      //   if (response.data.success) {
+      //     originalRequest._retry = true;
+
+      //     console.log(error.config);
+      //     console.log(response);
+      //     console.log("재요청로직을실행합니다");
+      //     return response;
+    }
     console.log("200받음");
     return response;
   },
-  function (error) {
+  async function (error) {
+    const originalRequest = error.config;
     console.log("에라");
+    console.log(error);
     console.log(error.response.status);
-    if (error.response.status === 303) {
-      console.log("재실행이다");
+    if (error.response.status === 406) {
+      console.log("만료된토큰입니다");
       axios.post("/api/reissue").then((response) => {
-        console.log(response.status === 200);
-        if (response.status === 200) {
-          console.log(error.config);
-          // return axios(error.config);
-        }
-        return;
-      });
+        console.log(response.data.success);
+        if (response.data.success) {
+          originalRequest._retry = true;
 
+          console.log(error.config);
+          console.log(response);
+          console.log("재요청로직을실행합니다");
+          return axios(originalRequest);
+          // return axios.request(originalRequest);
+          // return Promise.reject(error);
+        } else {
+          if (
+            window.confirm(
+              "로그인이 만료되었습니다 로그인페이지로 이동하시겠습니까?"
+            )
+          ) {
+            window.location.replace("/signin");
+          } else {
+          }
+        }
+        // if(response)
+      });
       return;
+      // return axios(error.config);
     }
     if (error.response.status === 401) {
       console.log("로그인이 필요한서비스입니다");
@@ -105,50 +137,32 @@ axios.interceptors.response.use(
       return;
     }
 
-    // axios.post("/api/reissue").then((response) => {
-    //   console.log("리이슈");
-    //   console.log(error.config);
-    //   console.log(response);
-    //   if (response.data.status !== 200) {
-    //     console.log("와성공");
-    //     console.log(response.status);
-
-    //     return;
-    //   } else {
-    //     console.log("에라");
-
-    //     if (error.response.status === 400) {
-    //       alert("로그인해제");
-    //       console.log("로그인해제");
-    //     }
-    //     if (error.response.status === 401) {
-    //       if (
-    //         window.confirm(
-    //           "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
-    //         )
-    //       ) {
-    //         window.location.replace("/signin");
-    //       } else {
-    //       }
-
-    //       if (error.response.data.code === "4401") {
-    //         window.location.href = "/";
-    //       }
-    //     }
-    //   }
-    // });
-    /*
-        http status가 200이 아닌 경우
-        응답 에러 직전 호출됩니다.
-        .catch() 으로 이어집니다.    
-    */
-    //401은 Access Token or Refresh Token 이 invalid 될때
-    //response data의 code값이
-    // 4401 : access Token error , 4402: refresh Token error
-
     return Promise.reject(error);
   }
 );
+//되는거끝
+
+// axios.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   async (error) => {
+//     const originalConfig = error.config;
+//     if (error.response) {
+//       if (error.response.status === 401 && !originalConfig._retry) {
+//         originalConfig._retry = true;
+//         // Do something, call refreshToken() request for example;
+//         // return a request
+//         return axios_instance(config);
+//       }
+//       if (error.response.status === ANOTHER_STATUS_CODE) {
+//         // Do something
+//         return Promise.reject(error.response.data);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 ReactDOM.render(
   <React.StrictMode>
