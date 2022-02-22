@@ -270,8 +270,11 @@ function ProductInfo(props) {
       .then((response) => {
         if (response.data.success) {
           alert("상품을 장바구니에 성공적으로 담았습니다");
+          console.log("장바구니담기");
         } else {
           alert(response.data.message);
+          console.log("장바구니엘즈");
+
           console.log(response.data);
         }
       })

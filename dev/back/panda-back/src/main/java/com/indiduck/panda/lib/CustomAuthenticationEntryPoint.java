@@ -67,7 +67,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         //expried
         if(exception.equals("Expired")) {
             log.info("만료토큰");
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             return;
         }
         //unsuppoet

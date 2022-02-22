@@ -41,6 +41,28 @@ import { getCookie, removeCookie, setCookie } from "./store/Cookie";
 // sagaMiddleware.run(rootSaga);
 // loadUser();
 //되는거시작
+axios.interceptors.request.use(
+  (config) => {
+    if (config.url === "/api/reissuev2") {
+      console.log("재발급요청입니다");
+      const rtoken = window.localStorage.getItem("refreshToken");
+      if (rtoken) {
+        config.headers["refreshToken"] = rtoken;
+      }
+    }
+    console.log(config);
+    const token = window.localStorage.getItem("accessToken");
+    console.log("토큰");
+    console.log(token);
+    if (token) {
+      config.headers["accessToken"] = token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 axios.interceptors.response.use(
   function (response) {
     /*
@@ -73,31 +95,22 @@ axios.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 406) {
       console.log("만료된토큰입니다");
-      axios.post("/api/reissue").then((response) => {
-        console.log(response.data.success);
-        if (response.data.success) {
-          originalRequest._retry = true;
-
-          console.log(error.config);
-          console.log(response);
-          console.log("재요청로직을실행합니다");
-          return axios(originalRequest);
-          // return axios.request(originalRequest);
-          // return Promise.reject(error);
-        } else {
-          if (
-            window.confirm(
-              "로그인이 만료되었습니다 로그인페이지로 이동하시겠습니까?"
-            )
-          ) {
-            window.location.replace("/signin");
-          } else {
-          }
-        }
-        // if(response)
+      const rtoken = window.localStorage.getItem("refreshToken");
+      // axios.config.headers["refreshToken"] = rtoken;
+      console.log("리이슈");
+      axios.post("/api/reissuev2").then((response) => {
+        console.log("리이슈하면?");
+        console.log(response);
+        window.localStorage.setItem(
+          "accessToken",
+          response.data.data.accessToken
+        );
+        window.localStorage.setItem(
+          "refreshToken",
+          response.data.data.refreshToken
+        );
       });
-      return;
-      // return axios(error.config);
+      return axios(originalRequest);
     }
     if (error.response.status === 401) {
       console.log("로그인이 필요한서비스입니다");

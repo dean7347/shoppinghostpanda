@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Key;
+import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -45,19 +46,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean  {
         // 1. Request Header 에서 JWT 토큰 추출
 //        String token = resolveToken((HttpServletRequest) request);
 
-
         HttpServletRequest request1 = (HttpServletRequest) request;
-        Cookie[] cookies = request1.getCookies();
-        String token="";
-        if(cookies!=null)
-        {
-            for(Cookie c : cookies) {
-                if(c.getName().equals("accessToken"))
-                {
-                    token=c.getValue();
-                }
-            }
-        }
+        String accessToken = request1.getHeader("accessToken");
+        System.out.println("accessToken = " + accessToken.toString());
+
+        String token=accessToken;
 
         if (token != null && jwtTokenProvider.validateToken(request,token)) {
                 // (추가) Redis 에 해당 accessToken logout 여부 확인

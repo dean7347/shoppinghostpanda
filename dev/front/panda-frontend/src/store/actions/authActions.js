@@ -29,8 +29,10 @@ export const signin = (data, onError) => {
       console.log(res.data.data.accessToken);
       console.log(res.data.data.refreshToken);
       console.log(res.data.data.refreshTokenExpirationTime);
-      setCookie("at", res.data.data.accessToken, { path: "/" });
-      setCookie("rt", res.data.data.refreshToken, { path: "/" });
+      window.localStorage.setItem("accessToken", res.data.data.accessToken);
+      window.localStorage.setItem("refreshToken", res.data.data.refreshToken);
+      // setCookie("at", res.data.data.accessToken, { path: "/" });
+      // setCookie("rt", res.data.data.refreshToken, { path: "/" });
       const auth = await axios.post("/api/userauth");
       if (res.data) {
         const userData = res.data;

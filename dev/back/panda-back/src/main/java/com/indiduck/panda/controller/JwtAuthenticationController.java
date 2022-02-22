@@ -289,54 +289,27 @@ public class JwtAuthenticationController {
     }
 
 
-//    @PostMapping("/api/reissue")
-//    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
-//        // validation check
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
-//        return userDetailsService.reissue(reissue);
-//    }
-
     @PostMapping("/api/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest req,HttpServletResponse res) {
-
-        Cookie[] cookies = req.getCookies();
-        String atToken="";
-        String rT="";
-        for(Cookie c : cookies) {
-            if(c.getName().equals("accessToken"))
-            {
-                atToken=c.getValue();
-            }
-            if(c.getName().equals("refreshToken"))
-            {
-                rT=c.getValue();
-            }
+    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
+        // validation check
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
         }
+        return userDetailsService.reissue(reissue);
+    }
+
+    @PostMapping("/api/reissuev2")
+    public ResponseEntity<?> reissueV2(HttpServletRequest req,HttpServletResponse res) {
+        String accessToken = req.getHeader("accessToken");
+        String retoken = req.getHeader("refreshToken");
+
+
         // validation check
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
-        UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atToken, rT);
-        if(tokenInfo!=null)
-        {
 
-            String rToken = tokenInfo.getRefreshToken();
-            String aToken = tokenInfo.getAccessToken();
-            Cookie accessToken = new Cookie("accessToken",aToken);
-            Cookie refreshToken = new Cookie("refreshToken",rToken);
-
-            accessToken.setHttpOnly(true);
-            refreshToken.setHttpOnly(true);
-            res.addCookie(accessToken);
-            res.addCookie(refreshToken);
-
-            return ResponseEntity.ok(new TFMessageDto(true,"재발급 성공"));
-
-        }
-        //TODO:401메서드 보내기
-        return ResponseEntity.ok(new TFMessageDto(false,"재발급 실패"));
+        return userDetailsService.reissueV2(accessToken, retoken);
 
     }
 
