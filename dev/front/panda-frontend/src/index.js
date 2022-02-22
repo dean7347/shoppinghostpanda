@@ -95,12 +95,11 @@ axios.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 406) {
       console.log("만료된토큰입니다");
-      const rtoken = window.localStorage.getItem("refreshToken");
       // axios.config.headers["refreshToken"] = rtoken;
       console.log("리이슈");
       axios.post("/api/reissuev2").then((response) => {
         console.log("리이슈하면?");
-        console.log(response);
+        console.log(response.data.result);
         window.localStorage.setItem(
           "accessToken",
           response.data.data.accessToken
@@ -109,6 +108,17 @@ axios.interceptors.response.use(
           "refreshToken",
           response.data.data.refreshToken
         );
+        if (response.data.result === "success") {
+        } else {
+          if (
+            window.confirm(
+              "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
+            )
+          ) {
+            window.location.replace("/signin");
+          } else {
+          }
+        }
       });
       return axios(originalRequest);
     }

@@ -214,15 +214,15 @@ public class JwtAuthenticationController {
 
     @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.GET)
     public ResponseEntity<?> logout(HttpServletRequest req,HttpServletResponse res) {
-        Cookie[] cookies = req.getCookies();
-        String atToken="";
-        for(Cookie c : cookies) {
-            if(c.getName().equals("accessToken"))
-            {
-                atToken=c.getValue();
-            }
-        }
-
+//        Cookie[] cookies = req.getCookies();
+//        String atToken="";
+//        for(Cookie c : cookies) {
+//            if(c.getName().equals("accessToken"))
+//            {
+//                atToken=c.getValue();
+//            }
+//        }
+        String atToken = req.getHeader("accessToken");
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
