@@ -157,9 +157,6 @@ function CardInList(props) {
     );
   };
   const onDelete = (title, key) => (event) => {
-    console.log("딜리트");
-    console.log(title);
-    console.log(key);
     Oplist.array.find((x, id) => {
       console.log("파인드키");
       console.log(x.optionId);

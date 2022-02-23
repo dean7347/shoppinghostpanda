@@ -154,14 +154,27 @@ function ProductInfo(props) {
     );
   };
   const onDelete = (title, key) => (event) => {
-    setCart(
-      produce(cart, (draft) => {
-        draft.array.splice(
-          draft.array.find((x) => x.key == key.key),
-          1
+    console.log(key.optionId);
+    cart.array.find((x, id) => {
+      console.log("파인드키");
+      console.log(x.optionId);
+      if (x.optionId == key.optionId) {
+        setCart(
+          produce(cart, (draft) => {
+            draft.array.splice(id, 1);
+          })
         );
-      })
-    );
+      }
+    });
+
+    // setCart(
+    //   produce(cart, (draft) => {
+    //     draft.array.splice(
+    //       draft.array.find((x) => x.key == key.key),
+    //       1
+    //     );
+    //   })
+    // );
   };
 
   const handleClick = (e) => {

@@ -5,7 +5,7 @@ import Footer from "../components/common/Footer";
 import { Form, Input, Button } from "antd";
 import ProductImage from "../components/sections/ProductImage";
 import ProductInfo from "../components/sections/ProductInfo";
-import ProductInfoFlot from "../components/sections/ProductInfoFloat";
+
 import { Row, Col, Tabs, BackTop, Affix, Collapse, Divider, Modal } from "antd";
 import $ from "jquery";
 import { throttledScroll } from "lodash";
