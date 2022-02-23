@@ -35,8 +35,8 @@ import axios from "../../../../../node_modules/axios/index";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInList(props) {
-  console.log("카인리");
-  console.log(props);
+  // console.log("카인리");
+  // console.log(props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
@@ -157,30 +157,30 @@ function CardInList(props) {
     );
   };
   const onDelete = (title, key) => (event) => {
-    setOpList(
-      produce(Oplist, (draft) => {
-        draft.array.splice(
-          draft.array.find((x) => x.key == key.key),
-          1
+    console.log("딜리트");
+    console.log(title);
+    console.log(key);
+    Oplist.array.find((x, id) => {
+      console.log("파인드키");
+      console.log(x.optionId);
+      if (x.optionId == key.optionId) {
+        setOpList(
+          produce(Oplist, (draft) => {
+            draft.array.splice(id, 1);
+          })
         );
-      })
-    );
+      }
+    });
   };
   const handleClick = (e) => {
     console.log("ops");
     console.log(e.key);
 
     console.log(options);
-    if (
-      Oplist.array.find((x) => x.optionId == options[e.key].odid) !== undefined
-    ) {
+    if (Oplist.array.find((x) => x.optionId == e.key) !== undefined) {
       alert("이미 존재하는 상품입니다");
       return;
     } else {
-      console.log("프롭");
-      console.log(e.item.props);
-      console.log("--프롭");
-
       const info = {
         key: nextOPKey,
         optionId: e.item.props.inherenceKey,
@@ -244,7 +244,6 @@ function CardInList(props) {
       ),
     },
   ];
-
   const renderOption =
     props &&
     props.situationDetail.products.map((pd, idx) => {
@@ -252,8 +251,6 @@ function CardInList(props) {
         <>
           {pd.options.map((op, idxo) => {
             options.push(op);
-            console.log("정상동작");
-            console.log(op);
 
             return (
               <Menu.Item
@@ -263,10 +260,13 @@ function CardInList(props) {
                 quantity={op.optionCount}
                 isdiscount={op.discount}
                 inherenceKey={op.odid}
-                key={idx}
+                key={op.odid}
               >
                 {" "}
-                <div style={{ float: "left" }}>{op.optionName}{idx}</div>
+                <div style={{ float: "left" }}>
+                  {op.optionName}
+                  {op.odid}
+                </div>
                 <div style={{ float: "right" }}>
                   {op.optionPrice
                     .toString()
