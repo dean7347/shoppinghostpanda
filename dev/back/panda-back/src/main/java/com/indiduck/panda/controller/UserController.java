@@ -52,7 +52,7 @@ public class UserController {
         Optional<User> byEmail = userRepository.findByEmail(name);
         List<UserOrder> byUserId = userOrderRepository.findByUserId(byEmail.get());
         Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
-        Optional<List<OrderDetail>> orderDetailByUser = orderDetailRepository.findOrderDetailByUser(byEmail.get());
+//        Optional<List<OrderDetail>> orderDetailByUser = orderDetailRepository.findOrderDetailByUser(byEmail.get());
 
         int ready=0;
         int finish=0;
@@ -186,7 +186,7 @@ public class UserController {
 
 
 
-        recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
+        recentSituationDtoV2 rsd = new recentSituationDtoV2(true,byEmail.get().getUserRName(),userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
                 ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
                 ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
                 userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
@@ -224,7 +224,7 @@ public class UserController {
 
 
 
-            recentSituationDtoV2 rsd = new recentSituationDtoV2(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
+            recentSituationDtoV2 rsd = new recentSituationDtoV2(true,byEmail.get().getUserRName(),userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
                     ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
                     ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
                     userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
@@ -393,12 +393,14 @@ public class UserController {
         String buyerPhone;
         //배송메모
         String shipmemo;
+        String buyerName;
 
 
-        public recentSituationDtoV2(boolean su,Long detailId, int price, int shipprice, int allamount,
+        public recentSituationDtoV2(boolean su,String buyer,Long detailId, int price, int shipprice, int allamount,
                                   String receiver, String address, String receiverPhone, List<OrderDetail> dol,String pn,LocalDateTime oa,
                                     String sn, String sp, OrderStatus os,int pa,int fp,String addressNum,String shipmemo,String bp) {
             this.proName=pn;
+            this.buyerName=buyer;
             this.orderAt=oa;
             this.shopName=sn;
             this.shopPhone=sp;

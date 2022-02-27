@@ -1,9 +1,11 @@
 package com.indiduck.panda.controller;
 
 
+import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Service.RefundRequestService;
 import com.indiduck.panda.Service.UserOrderService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
@@ -36,8 +38,36 @@ public class UserOrderController {
     private final UserRepository userRepository;
     @Autowired
     private final ShopRepository shopRepository;
+    @Autowired
+    private final RefundRequestService refundRequestService;
+    @Autowired
+    private final OrderDetailRepository orderDetailRepository;
+
+    @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
+    public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+
+        System.out.println("refundReq = " + refundReq);
+        Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
+        byId.get().refundOrder(refundReq.refundMessage);
+        List<RefundList> refundList = refundReq.refundList;
+        List<OrderDetail> orderDetails=new ArrayList<>();
+        for (RefundList list : refundList) {
+            long optionId = list.optionId;
+            Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+            OrderDetail orderDetail = byId1.get();
+            orderDetail.reqRefund(list.optionCount);
+
+            orderDetails.add(orderDetail);
+            System.out.println("orderDetail추가완료 = " + orderDetail);
+
+        }
+        refundRequestService.newRefundRequest(byId.get(),orderDetails,refundReq.refundMessage);
+
+        return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
 
 
+    }
 
     @RequestMapping(value = "/api/editstatus", method = RequestMethod.POST)
     public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
@@ -264,6 +294,8 @@ public class UserOrderController {
 
 
     }
+
+
     @Data
     private class pageDto{
         boolean success;
@@ -419,4 +451,25 @@ public class UserOrderController {
     private class PaymentStatusType {
         String type;
     }
+
+    @Data
+    private static class RefundReq {
+        long userOrderId;
+        String refundMessage;
+        List<RefundList> refundList;
+    }
+
+    @Data
+    private static class RefundList {
+        boolean ispanda;
+        long key;
+        int max;
+        int optionCount;
+        long optionId;
+        String optionName;
+        String optionPrice;
+        int originPrice;
+
+    }
+
 }

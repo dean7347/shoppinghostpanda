@@ -3,6 +3,7 @@ package com.indiduck.panda.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,6 +27,16 @@ public class OrderDetail {
     private LocalDateTime shippingAt;
     private LocalDateTime finishedAt;
 
+    //지급된 날자
+    private LocalDateTime paidAt;
+
+    //환불신청에 관한칼럼
+    //환불신청 갯수
+    private int reqRefund=0;
+    //최종 환불완료된 갯수
+    private int confirmRefund=0;
+
+
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,16 +59,18 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     private Shop shop;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private RefundRequest refundRequest;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
-    //지급된 날자
-    private LocalDateTime paidAt;
 
 
-    //12%
+
+   //12%
     private int pandaMoney=0;
 
 
@@ -77,6 +90,8 @@ public class OrderDetail {
         od.paymentStatus=PaymentStatus.지급대기;
         int mo = (int) Math.floor(od.totalPrice*0.95);
         od.pandaMoney= (int) Math.floor(mo*0.12);
+        od.reqRefund=0;
+        od.confirmRefund=0;
         return od;
 
     }
@@ -93,6 +108,8 @@ public class OrderDetail {
         od.createdAt=LocalDateTime.now();
         od.setShop(product.getShop());
         od.pandaMoney=0;
+        od.reqRefund=0;
+        od.confirmRefund=0;
 
         return od;
 
@@ -145,6 +162,10 @@ public class OrderDetail {
         this.userOrder=userOrder;
         this.orderStatus=OrderStatus.결제완료;
         this.paymentAt=LocalDateTime.now();
+    }
+    public void setRefundRequest(RefundRequest refundRequest)
+    {
+        this.refundRequest=refundRequest;
     }
     public void setPaymentM(PaymentStatus paymentStatus)
     {
@@ -213,8 +234,12 @@ public class OrderDetail {
         this.IndividualPrice=this.getOptions().getOptionPrice();
         this.totalPrice=this.getIndividualPrice()*this.productCount;
 
-
-
-
     }
+    public void reqRefund(int num)
+    {
+        this.reqRefund=num;
+        this.orderStatus=OrderStatus.환불대기;
+    }
+
+
 }

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";
 import { fetchSituationDetail } from "../../../../../store/actions/mypageActions/buyerActions";
 import CardInListVshop from "../../../UI/cards/CardInListVshop";
+import CardInRefund from "../../../UI/cards/CardInRefund";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
 
@@ -113,12 +114,10 @@ const SellerCancelReturnOrderConfirmPage = () => {
       },
     },
   ];
-
   const fetchOrderDetail = (event, cellValues) => {
     event.stopPropagation();
     dispatch(fetchSituationDetail(cellValues.id));
     setShowModal(true);
-    console.log(situationDetail);
   };
 
   const confirmSelected = (event) => {
@@ -285,10 +284,13 @@ const SellerCancelReturnOrderConfirmPage = () => {
         <div>주문번호 : ${data.detailId}</div>
 
         <div>받으시는분 : ${data.receiver}</div>
-        <div>받으시는분 전화번호 : ${data.orderAt}</div>
+        <div>받으시는분 전화번호 : ${data.receiverPhone}</div>
         <div>우편번호 : ${data.addressNum}</div>
         <div>주소 : ${data.address}</div>
+        <div>배송메모 : ${data.shipmemo}</div>
+
         <div>-------<div>
+        <div>구매자 이름 : ${data.buyerName}</div>
         <div>구매자 전화번호 : ${data.buyerPhone}</div>
         <div>-------<div>
         <div>주문일시 : ${data.orderAt}</div>
@@ -296,7 +298,6 @@ const SellerCancelReturnOrderConfirmPage = () => {
         <div>주문내역 : 
         <div>-------<div>
         ${pro}</div>
-        <div>배송메모 : ${data.shipmemo}</div>
         <div>-------<div>
  `;
 
@@ -339,7 +340,7 @@ const SellerCancelReturnOrderConfirmPage = () => {
             <Button
               className="is-primary mr-3"
               disabled={selectedRows.length === 0}
-              text="선택 주문 확인"
+              text="확인페이지"
               onClick={confirmSelected}
             />
             <Button
@@ -390,7 +391,7 @@ const SellerCancelReturnOrderConfirmPage = () => {
         >
           {situationDetail ? (
             <>
-              <CardInListVshop situationDetail={situationDetail} />
+              <CardInRefund situationDetail={situationDetail} />
             </>
           ) : (
             <div>데이터 없음</div>

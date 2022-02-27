@@ -99,6 +99,9 @@ public class Shop {
     @OneToOne(optional = true,mappedBy = "shop")
     private User user;
 
+    @OneToMany(mappedBy = "shop")
+    private List<RefundRequest> refundRequestlist;
+
     //== 연관관계메서드 ==//
     public void setUser(User user){
         this.user = user;

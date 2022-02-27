@@ -66,6 +66,8 @@ public class UserOrder {
     @OneToMany(mappedBy = "userOrder")
     private List<OrderDetail> detail= new ArrayList<>();
 
+    @OneToOne
+    private RefundRequest refundRequests;
 
     //택배 송장 등록시 작성되는칼럼
     //택배사
@@ -310,6 +312,11 @@ public class UserOrder {
         this.refundMessage=message;
         this.orderStatus=orderStatus.환불대기;
         this.refundAt=LocalDateTime.now();
+    }
+    public void setRefund(RefundRequest refundRequests)
+    {
+        this.refundRequests=refundRequests;
+
     }
 
 

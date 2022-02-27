@@ -418,10 +418,13 @@ const SellerReadyOrderPage = () => {
         <div>주문번호 : ${data.detailId}</div>
 
         <div>받으시는분 : ${data.receiver}</div>
-        <div>받으시는분 전화번호 : ${data.orderAt}</div>
+        <div>받으시는분 전화번호 : ${data.receiverPhone}</div>
         <div>우편번호 : ${data.addressNum}</div>
         <div>주소 : ${data.address}</div>
+        <div>배송메모 : ${data.shipmemo}</div>
+
         <div>-------<div>
+        <div>구매자 이름 : ${data.buyerName}</div>
         <div>구매자 전화번호 : ${data.buyerPhone}</div>
         <div>-------<div>
         <div>주문일시 : ${data.orderAt}</div>
@@ -429,7 +432,6 @@ const SellerReadyOrderPage = () => {
         <div>주문내역 : 
         <div>-------<div>
         ${pro}</div>
-        <div>배송메모 : ${data.shipmemo}</div>
         <div>-------<div>
  `;
 

@@ -34,9 +34,101 @@ import HeaderContainer from "../../../../containers/common/HeaderContainer";
 import axios from "../../../../../node_modules/axios/index";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
-function CardInList(props) {
-  // console.log("카인리");
-  // console.log(props);
+function CardInRefund(props) {
+  console.log("카인리");
+  console.log(props);
+  const [refundData, SetRefundData] = useState();
+  useEffect(() => {
+    const body = {
+      uoid: props.situationDetail.detailId,
+    };
+    axios.post("/api/readRefundRequest", body).then((response) => {
+      console.log("레스폰스");
+      console.log(response);
+      if (response.data.success) {
+        console.log("이거 리펀드요청임");
+        SetRefundData(response.data);
+        console.log(response.data);
+      }
+    });
+  }, [props]);
+  const confirmReqRefund = (reqnum) => {
+    console.log("환불신청확인");
+    console.log(reqnum);
+  };
+
+  const renderRefund = () => {
+    return (
+      <>
+        <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+          <h1>환불신청내역</h1>
+        </div>
+        {console.log(refundData)}
+        {refundData &&
+          refundData.refundListList.map((rr, idx) => {
+            return (
+              <>
+                <div
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid black",
+                  }}
+                >
+                  <Row align={"middle"} gutter={24}>
+                    <Col
+                      span={24}
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      <h1>상품명/옵션명</h1>
+                    </Col>
+                    <Col
+                      span={24}
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      {rr.productName}/{rr.optionName}
+                    </Col>
+                    <Col
+                      span={24}
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      <h1>
+                        주문갯수: {rr.orderCount} | 환불신청 :{rr.refundCount}
+                      </h1>
+                    </Col>
+                    <Col
+                      span={24}
+                      style={{
+                        textAlign: "center",
+                      }}
+                    ></Col>
+                  </Row>
+                </div>
+                <br></br>
+              </>
+            );
+          })}
+        <Row gutter={24}>
+          <Col span={24}>
+            <Button
+              onClick={() => {
+                confirmReqRefund(refundData.requestId);
+              }}
+              style={{ width: "100%" }}
+            >
+              환불신청확인
+            </Button>
+          </Col>
+        </Row>
+      </>
+    );
+  };
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
@@ -619,86 +711,14 @@ function CardInList(props) {
             {props.situationDetail.status}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
-          {/* <div>
-            ***임시버튼***
-            <Button
-              onClick={() =>
-                onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)
-              }
-            >
-              스테이트 준비중으로 변경
-            </Button>
-            <Button
-              onClick={() =>
-                onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
-              }
-            >
-              스테이트 발송중으로 변경
-            </Button>
-            <Button
-              onClick={() =>
-                onTestCheck(
-                  props.situationDetail.detailId,
-                  "구매확정",
-                  "c",
-                  123
-                )
-              }
-            >
-              스테이트 구매확정 변경
-            </Button>
-            <Button onClick={() => onTestPandaDashboard()}>
-              판다대시보드테스트
-            </Button>
-          </div> */}
         </Row>
         {renderbox()}
-        <div>
-          <hr />
-          <Row gutter={24}>
-            <Col span={12}>환불/교환</Col>
-            <Col span={24}>
-              <TextArea
-                placeholder="사유와 품목을 입력해주세요"
-                onChange={(e) => setRefundText(e.target.value)}
-                rows={4}
-              />
-            </Col>
-            <Col span={17}></Col>
-            <Row gutter={[16, 16]}>
-              <Table
-                columns={columns}
-                dataSource={Oplist.array}
-                pagination={false}
-              />
-              <Menu
-                onSelect={handleClick}
-                style={{ width: "100%" }}
-                defaultSelectedKeys={["1"]}
-                mode="inline"
-              >
-                <SubMenu
-                  key="sub1"
-                  // icon={<DatabaseOutlined />}
-                  title="옵션을 선택해주세요"
-                >
-                  {renderOption}
-                </SubMenu>
-              </Menu>
-            </Row>
-            <Col span={4} justify={"end"}>
-              <Button onClick={() => onRefund(props.situationDetail.detailId)}>
-                환불/교환 요청
-              </Button>
-            </Col>
-          </Row>
-        </div>
 
         <Divider />
-        <div></div>
+        <div>{renderRefund()}</div>
       </div>
     </>
   );
 }
 
-export default CardInList;
+export default CardInRefund;

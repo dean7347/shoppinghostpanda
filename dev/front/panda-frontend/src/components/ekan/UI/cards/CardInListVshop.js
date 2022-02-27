@@ -378,6 +378,26 @@ function CardInListVshop(props) {
           <Row>
             <Col span={12}>
               <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>주문자</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.buyerName}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>주문자 전화번호</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.buyerPhone}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
                 <h3>받으시는 분</h3>
               </div>
               <hr style={{ backgroundColor: "black" }} />
@@ -386,28 +406,14 @@ function CardInListVshop(props) {
               {props.situationDetail.receiver}
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
-
             <Col span={12}>
               <div style={{ fontWeight: "bold", fontSize: "20px" }}>
                 <h3>받으시는 분 전화번호</h3>
               </div>
               <hr style={{ backgroundColor: "black" }} />
             </Col>
-
             <Col span={12}>
               {props.situationDetail.receiverPhone}
-              <hr style={{ backgroundColor: "blue" }} />
-            </Col>
-
-            <Col span={12}>
-              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-                <h3>받으시는 분 우편번호</h3>
-              </div>
-              <hr style={{ backgroundColor: "black" }} />
-            </Col>
-
-            <Col span={12}>
-              {props.situationDetail.addressNum}
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
             <Col span={24}>
@@ -417,7 +423,23 @@ function CardInListVshop(props) {
                 <hr style={{ backgroundColor: "blue" }} />
               </Col>
             </Col>
-
+            <Col span={24}>
+              배송메모
+              <Col span={24}>
+                {props.situationDetail.shipmemo}
+                <hr style={{ backgroundColor: "blue" }} />
+              </Col>
+            </Col>
+            <Col span={12}>
+              <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                <h3>우편번호</h3>
+              </div>
+              <hr style={{ backgroundColor: "black" }} />
+            </Col>
+            <Col span={12}>
+              {props.situationDetail.addressNum}
+              <hr style={{ backgroundColor: "blue" }} />
+            </Col>
             <Col span={12}>
               <div style={{ fontWeight: "bold", fontSize: "20px" }}>
                 <h3>상점 이름</h3>
@@ -459,6 +481,7 @@ function CardInListVshop(props) {
               <hr style={{ backgroundColor: "blue" }} />
             </Col>
           </Row>
+
           {renderbox()}
 
           <Divider />
