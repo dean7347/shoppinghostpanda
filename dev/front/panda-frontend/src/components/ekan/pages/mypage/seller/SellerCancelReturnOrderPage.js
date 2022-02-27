@@ -341,7 +341,7 @@ const SellerCancelReturnOrderPage = () => {
             <Button
               className="is-primary mr-3"
               disabled={selectedRows.length === 0}
-              text="선택 주문 확인"
+              text="최종환불페이지"
               onClick={confirmSelected}
             />
             <Button

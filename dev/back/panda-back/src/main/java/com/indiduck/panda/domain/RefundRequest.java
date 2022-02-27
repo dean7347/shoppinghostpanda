@@ -59,6 +59,12 @@ public class RefundRequest {
         this.orderDetails.add(orderDetail);
         orderDetail.setRefundRequest(this);
     }
+    public void setOrderStatus(OrderStatus os)
+    {
+        for (OrderDetail orderDetail : orderDetails) {
+            orderDetail.setOrderStatus(os);
+        }
+    }
 
 
 

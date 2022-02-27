@@ -151,7 +151,7 @@ public class UserOrderController {
                 break;
 
             //교환/반품요청
-            case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.교환대기);
+            case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.상점확인중);
                 break;
 
             //완료된 주문

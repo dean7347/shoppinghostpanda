@@ -310,8 +310,13 @@ public class UserOrder {
             }
         }
         this.refundMessage=message;
-        this.orderStatus=orderStatus.환불대기;
+        this.orderStatus=OrderStatus.환불대기;
         this.refundAt=LocalDateTime.now();
+    }
+    //환불신청을확인함
+    public void checkRefund(){
+        this.orderStatus=OrderStatus.상점확인중;
+        this.refundRequests.setOrderStatus(OrderStatus.상점확인중);
     }
     public void setRefund(RefundRequest refundRequests)
     {
