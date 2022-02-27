@@ -6,9 +6,9 @@ import Modal from "../../../UI/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";
 import { fetchSituationDetail } from "../../../../../store/actions/mypageActions/buyerActions";
-import CardInListVshop from "../../../UI/cards/CardInListVshop";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
+import CardInRefundFinish from "../../../UI/cards/CardInRefundFinish";
 
 const SellerCancelReturnOrderPage = () => {
   const [page, setPage] = useState(0);
@@ -392,7 +392,7 @@ const SellerCancelReturnOrderPage = () => {
         >
           {situationDetail ? (
             <>
-              <CardInListVshop situationDetail={situationDetail} />
+              <CardInRefundFinish situationDetail={situationDetail} />
             </>
           ) : (
             <div>데이터 없음</div>
