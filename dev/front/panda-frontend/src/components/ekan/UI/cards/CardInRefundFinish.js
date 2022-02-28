@@ -35,8 +35,14 @@ import axios from "../../../../../node_modules/axios/index";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInRefundFinish(props) {
+  const [reFundList, SetRefundList] = useState([]);
   console.log("카인리");
   console.log(props);
+  //최종환불금액
+  const [finalRefundM, setFinalRefundM] = useState(0);
+  const onChangeFinal = (e) => {
+    setFinalRefundM(e);
+  };
   const [refundData, SetRefundData] = useState();
   useEffect(() => {
     const body = {
@@ -48,27 +54,63 @@ function CardInRefundFinish(props) {
       if (response.data.success) {
         console.log("이거 리펀드요청임");
         SetRefundData(response.data);
+        response.data.refundListList.map((data, idx) => {
+          console.log("데이터확인");
+          const info = {
+            idx: idx,
+            key: data.orderDetailId,
+            odid: data.orderDetailId,
+            originOrder: data.orderCount,
+            refundOrder: data.refundCount,
+            refundConfrimOrder: 0,
+            individualPrice: data.optionIndividualPrice,
+            issale: data.panda,
+            expectMoney: 0,
+          };
+          console.log(info);
+          SetRefundList((reFundList) => [...reFundList, info]);
+          // SetRefundList(
+          //   produce(reFundList, (draft) => {
+          //     console.log("셋팅즈");
+          //     draft.array.push(info);
+
+          //     console.log(reFundList);
+          //   })
+          // );
+        });
         console.log(response.data);
       }
     });
   }, [props]);
+  const confirmTrade = () => {
+    alert("미작성");
+  };
   const confirmReqRefund = (reqnum) => {
     console.log("환불신청확인");
-    console.log(props);
+    console.log(reFundList);
+    console.log(expectMoney);
+    console.log(finalRefundM);
+    if (expectMoney < finalRefundM) {
+      alert("전체 상품금액보다 큰 금액은 환불할 수 없습니다");
+      return;
+    }
+    if (reFundList === null || finalRefundM === 0) {
+      alert(
+        "목록이 비었거나 금액이 0원 이라면환불이 진행되지 않습니다 교환처리 버튼을 이용해주세요"
+      );
+      return;
+    }
+
     const body = {
       userOrderId: props.situationDetail.detailId,
-      state: "상점확인중",
-      courier: "",
-      waybill: "",
+      refundArray: reFundList,
+      refundMoney: finalRefundM,
     };
-    axios.post("/api/editstatus", body).then((response) => {
+    console.log(body);
+    axios.post("/api/confirmRefundRequest", body).then((response) => {
       if (response.data.success) {
-        alert(
-          "환불/교환 요청을 확인했습니다.  상품의 안전한 수령/전달을 위해 구매자와 연락해주세요  "
-        );
+        alert("환불요청에 성공했습니다");
         window.location.reload();
-      } else {
-        alert("환불요청 확인에 실패했습니다 다시 시도해주세요");
       }
     });
   };
@@ -130,7 +172,11 @@ function CardInRefundFinish(props) {
                     >
                       <div>
                         최종환불갯수 :
-                        <InputNumber max={rr.orderCount} />
+                        <InputNumber
+                          onChange={onChange(rr.orderDetailId)}
+                          max={rr.orderCount}
+                          min={0}
+                        />
                       </div>
                     </Col>
                   </Row>
@@ -140,8 +186,14 @@ function CardInRefundFinish(props) {
             );
           })}
         <Row gutter={24}>
-          <Col span={24}>환불예상금액:</Col>
-          <Col span={24}>환불금액:</Col>
+          <Col span={24}>
+            선택상품금액:
+            {expectMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          </Col>
+          <Col span={24}>
+            환불금액:
+            <InputNumber onChange={onChangeFinal} min={0} max={expectMoney} />
+          </Col>
           <Col span={24}>
             <Button
               onClick={() => {
@@ -149,7 +201,18 @@ function CardInRefundFinish(props) {
               }}
               style={{ width: "100%" }}
             >
-              교환/환불신청완료
+              환불처리완료
+            </Button>
+          </Col>
+
+          <Col span={24}>
+            <Button
+              onClick={() => {
+                confirmTrade(props.detailId);
+              }}
+              style={{ width: "100%" }}
+            >
+              교환처리완료
             </Button>
           </Col>
         </Row>
@@ -192,34 +255,6 @@ function CardInRefundFinish(props) {
         console.log(response.data);
       }
     });
-  };
-  const onRefund = (id) => {
-    const body = {
-      userOrderId: id,
-      refundMessage: refundText,
-      refundList: Oplist.array,
-    };
-    console.log(body);
-
-    axios.post("/api/refundactionforuser", body).then((response) => {
-      if (response.data.success) {
-        alert("환불/교환 요청을 완료했습니다");
-      }
-    });
-    // console.log(options);
-    // const body = {
-    //   userOrderId: id,
-    //   state: "환불신청",
-    //   courier: refundText,
-    //   waybill: "",
-    // };
-    // axios.post("/api/editstatus", body).then((response) => {
-    //   if (response.data.success) {
-    //     alert("환불요청을 완료했습니다");
-    //   } else {
-    //     alert(response.data.message);
-    //   }
-    // });
   };
 
   const onTestCheck = (p, s, c, w) => {
@@ -268,118 +303,139 @@ function CardInRefundFinish(props) {
   const [nextOPKey, setOPKey] = useState(0);
   // const [options, setOptions] = useState([]);
   const options = [];
-  const [Oplist, setOpList] = useState({
-    array: [],
-  });
+
+  const [expectMoney, setExpectMoney] = useState(0);
+  function moneyCalculater() {
+    console.log("머니칼큘레이터 실행");
+    let money = 0;
+    reFundList.forEach((el) => {
+      console.log(el.issale);
+      if (el.issale) {
+        money += Math.round(el.individualPrice * el.refundConfrimOrder * 0.95);
+      } else {
+        money += el.individualPrice * el.refundConfrimOrder;
+      }
+      setExpectMoney(money);
+    });
+  }
   const onChange = (title, key) => (event) => {
     console.log("체인지키");
+    console.log(title);
     console.log(key);
-    setOpList(
-      produce(Oplist, (draft) => {
-        let price =
-          event * Oplist.array.find((x) => x.key == key.key).originPrice;
-        //할인로직
-        // if (Oplist.array.find((x) => x.key == key.key).ispanda) {
-        //   price = Math.round(price * 0.95);
-        // }
-        draft.array.find((x) => x.key == key.key).optionCount = event;
-        draft.array.find((x) => x.key == key.key).optionPrice = price
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      })
-    );
-  };
-  const onDelete = (title, key) => (event) => {
-    Oplist.array.find((x, id) => {
-      console.log("파인드키");
-      console.log(x.optionId);
-      if (x.optionId == key.optionId) {
-        setOpList(
-          produce(Oplist, (draft) => {
-            draft.array.splice(id, 1);
-          })
-        );
+    console.log(event);
+    reFundList.findIndex((x) => {
+      if (x.key == title) {
+        x.refundConfrimOrder = event;
+        moneyCalculater();
       }
     });
+
+    // setOpList(
+    //   produce(Oplist, (draft) => {
+    //     let price =
+    //       event * Oplist.array.find((x) => x.key == key.key).originPrice;
+    //     //할인로직
+    //     // if (Oplist.array.find((x) => x.key == key.key).ispanda) {
+    //     //   price = Math.round(price * 0.95);
+    //     // }
+    //     draft.array.find((x) => x.key == key.key).optionCount = event;
+    //     draft.array.find((x) => x.key == key.key).optionPrice = price
+    //       .toString()
+    //       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    //   })
+    // );
   };
-  const handleClick = (e) => {
-    console.log("ops");
-    console.log(e.item.props);
+  // const onDelete = (title, key) => (event) => {
+  //   // Oplist.array.find((x, id) => {
+  //   //   console.log("파인드키");
+  //   //   console.log(x.optionId);
+  //   //   if (x.optionId == key.optionId) {
+  //   //     setOpList(
+  //   //       produce(Oplist, (draft) => {
+  //   //         draft.array.splice(id, 1);
+  //   //       })
+  //   //     );
+  //   //   }
+  //   // });
+  // };
+  // const handleClick = (e) => {
+  //   console.log("ops");
+  //   console.log(e.item.props);
 
-    console.log(options);
-    if (Oplist.array.find((x) => x.optionId == e.key) !== undefined) {
-      alert("이미 존재하는 상품입니다");
-      return;
-    } else {
-      console.log("옾션즈");
-      console.log(e);
-      const info = {
-        key: nextOPKey,
-        optionId: e.item.props.inherenceKey,
-        optionCount: 1,
-        optionName: e.item.props.optionname,
-        optionPrice: e.item.props.optionPrice
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-        originPrice: e.item.props.optionPrice,
-        max: e.item.props.quantity,
-        ispanda: e.item.props.ispanda,
-      };
+  //   console.log(options);
+  //   if (Oplist.array.find((x) => x.optionId == e.key) !== undefined) {
+  //     alert("이미 존재하는 상품입니다");
+  //     return;
+  //   } else {
+  //     console.log("옾션즈");
+  //     console.log(e);
+  //     const info = {
+  //       key: nextOPKey,
+  //       optionId: e.item.props.inherenceKey,
+  //       optionCount: 1,
+  //       optionName: e.item.props.optionname,
+  //       optionPrice: e.item.props.optionPrice
+  //         .toString()
+  //         .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //       originPrice: e.item.props.optionPrice,
+  //       max: e.item.props.quantity,
+  //       ispanda: e.item.props.ispanda,
+  //     };
 
-      setOpList(
-        produce(Oplist, (draft) => {
-          draft.array.push(info);
-          setOPKey(nextOPKey + 1);
-        })
-      );
-    }
-  };
+  //     setOpList(
+  //       produce(Oplist, (draft) => {
+  //         draft.array.push(info);
+  //         setOPKey(nextOPKey + 1);
+  //       })
+  //     );
+  //   }
+  // };
 
-  const columns = [
-    {
-      title: "상품명",
-      dataIndex: "optionName",
-      key: "optionName",
-      width: "40%",
-    },
-    {
-      title: "수량",
-      dataIndex: "optionCount",
-      key: "optionCount",
-      width: "5%",
+  // const columns = [
+  //   {
+  //     title: "상품명",
+  //     dataIndex: "optionName",
+  //     key: "optionName",
+  //     width: "40%",
+  //   },
+  //   {
+  //     title: "수량",
+  //     dataIndex: "optionCount",
+  //     key: "optionCount",
+  //     width: "5%",
 
-      render: (title, key) => (
-        <>
-          {console.log(key)}
-          <InputNumber
-            min={1}
-            max={key.max}
-            defaultValue={1}
-            onChange={onChange(title, key)}
-            size="small"
-          />
-        </>
-      ),
-    },
-    {
-      title: "가격/원",
-      dataIndex: "optionPrice",
-      key: "optionPrice",
-      width: "30%",
-    },
+  //     render: (title, key) => (
+  //       <>
+  //         {console.log(key)}
+  //         <InputNumber
+  //           min={1}
+  //           max={key.max}
+  //           defaultValue={1}
+  //           onChange={onChange(title, key)}
+  //           size="small"
+  //         />
+  //       </>
+  //     ),
+  //   },
+  //   {
+  //     title: "가격/원",
+  //     dataIndex: "optionPrice",
+  //     key: "optionPrice",
+  //     width: "30%",
+  //   },
 
-    {
-      title: "삭제",
-      key: "action",
-      width: "20%",
+  //   {
+  //     title: "삭제",
+  //     key: "action",
+  //     width: "20%",
 
-      render: (title, key) => (
-        <Space size="middle">
-          <Button onClick={onDelete(title, key)}>Delete</Button>
-        </Space>
-      ),
-    },
-  ];
+  //     render: (title, key) => (
+  //       <Space size="middle">
+  //         <Button onClick={onDelete(title, key)}>Delete</Button>
+  //       </Space>
+  //     ),
+  //   },
+  // ];
   const renderOption =
     props &&
     props.situationDetail.products.map((pd, idx) => {

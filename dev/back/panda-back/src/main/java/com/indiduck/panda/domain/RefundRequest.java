@@ -36,6 +36,8 @@ public class RefundRequest {
     private LocalDateTime checkedAt;
     //환불 완료된날
     private LocalDateTime finishAt;
+    //최종환불된 금액
+    private long refundMoney;
 
 
     //==생성메서드==//
@@ -45,6 +47,7 @@ public class RefundRequest {
         rr.userOrder=userOrder;
         rr.refundMessage=message;
         rr.shop=userOrder.getShop();
+        rr.refundMoney=0;
 
         return rr;
 
@@ -64,6 +67,10 @@ public class RefundRequest {
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.setOrderStatus(os);
         }
+    }
+    public void setRefundMoney(long money)
+    {
+        this.refundMoney=money;
     }
 
 

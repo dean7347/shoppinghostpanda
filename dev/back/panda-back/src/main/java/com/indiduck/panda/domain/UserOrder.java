@@ -97,6 +97,8 @@ public class UserOrder {
 
     //버림했기때문에 남은돈이 발생한다
     int balance=0;
+    //환불된 금액을 표기한다
+    int finalRefundMoney=0;
     //지급 상태
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
@@ -170,14 +172,18 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
             pandamoney+=orderDetail.getPandaMoney();
         }
-        this.hostMoney=(int) Math.floor(this.amount*0.25)-pandamoney;
-        this.shopMoney =(int) Math.floor(this.amount*0.75);
+        this.hostMoney=(int) Math.floor((this.amount-this.finalRefundMoney)*0.25)-pandamoney;
+        this.shopMoney =(int) Math.floor((this.amount-this.finalRefundMoney)*0.75);
         this.pandaMoney=(int) Math.floor(pandamoney);
         if(this.PureAmount <this.freeprice)
         {
             this.shopMoney+=this.shipPrice;
         }
-        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney-finalRefundMoney;
+
+    }
+    public void reCalAmount()
+    {
 
     }
     public boolean extendConfirm()
@@ -323,7 +329,10 @@ public class UserOrder {
         this.refundRequests=refundRequests;
 
     }
-
+    public void confirmRefundMoney(long money)
+    {
+        this.finalRefundMoney=(int) money;
+    }
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;

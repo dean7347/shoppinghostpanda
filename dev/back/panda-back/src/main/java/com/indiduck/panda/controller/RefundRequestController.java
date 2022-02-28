@@ -2,10 +2,12 @@ package com.indiduck.panda.controller;
 
 
 import com.indiduck.panda.Repository.UserOrderRepository;
+import com.indiduck.panda.Service.RefundRequestService;
 import com.indiduck.panda.domain.OrderDetail;
 import com.indiduck.panda.domain.Panda;
 import com.indiduck.panda.domain.RefundRequest;
 import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class RefundRequestController {
 
     @Autowired
     private final UserOrderRepository userOrderRepository;
+    @Autowired
+    private final RefundRequestService refundRequestService;
 
     @RequestMapping(value = "/api/readRefundRequest", method = RequestMethod.POST)
     public ResponseEntity<?> readRefundRequest(@CurrentSecurityContext(expression = "authentication")
@@ -38,6 +42,18 @@ public class RefundRequestController {
 
         return ResponseEntity.ok(new RefundDTO(true,refundRequests.getRefundMessage(),byId.get().getRefundRequests().getId()
                 ,byId.get(),refundRequests));
+
+    }
+
+
+    @RequestMapping(value = "/api/confirmRefundRequest", method = RequestMethod.POST)
+    public ResponseEntity<?> confirmRefundRequest(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+
+        refundRequestService.confrimRefund(confirmRefundRequest);
+
+        return ResponseEntity.ok(new TFMessageDto(true,"성공"));
 
     }
 
@@ -76,7 +92,6 @@ public class RefundRequestController {
                 this.refundListList.add(new RefundList(orderDetail.getId(),orderDetail.getProducts().getProductName(),
                         orderDetail.getProductCount(),orderDetail.getReqRefund(),orderDetail.getPanda(),
                         orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName()));
-
             }
 
         }
@@ -116,5 +131,27 @@ public class RefundRequestController {
             this.optionAllPrice = optionAllPrice;
             this.optionIndividualPrice = optionIndividualPrice;
         }
+    }
+
+    @Data
+    public static class ConfirmRefundRequest {
+        long userOrderId;
+        long refundMoney;
+        List<RefundArray> refundArray;
+
+    }
+
+    @Data
+    public static class RefundArray {
+        long expectMoney;
+        long idx;
+        long individualPrice;
+        boolean issale;
+        long key;
+        long odid;
+        int originOrder;
+        int refundConfrimOrder;
+        int refundOrder;
+
     }
 }

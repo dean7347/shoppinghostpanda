@@ -181,7 +181,7 @@ public class UserOrderController {
                     redundancy+=shopAndOrderStatus.getShipPrice();
                 }
 
-                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()+redundancy
+                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getAmount()+redundancy
                         ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus(),
                         shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
             }

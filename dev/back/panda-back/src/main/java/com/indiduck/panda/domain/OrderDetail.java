@@ -184,6 +184,15 @@ public class OrderDetail {
             this.pandaMoney= (int) Math.floor(mo*0.12);
         }
     }
+    public void refundCount()
+    {
+        this.totalPrice=this.getIndividualPrice()*(this.productCount-this.confirmRefund);
+        if(panda!=null)
+        {
+            int mo = (int) Math.floor(this.totalPrice*0.95);
+            this.pandaMoney= (int) Math.floor(mo*0.12);
+        }
+    }
 
     //가격이 변경될경우
     public void update(int count)
@@ -239,6 +248,16 @@ public class OrderDetail {
     {
         this.reqRefund=num;
         this.orderStatus=OrderStatus.환불대기;
+    }
+    public void confrimRefund(int number)
+    {
+        this.confirmRefund=number;
+        if(panda!=null)
+        {
+            int mo = (int) Math.floor(this.IndividualPrice*(this.productCount-this.confirmRefund));
+            this.pandaMoney= (int) Math.floor(mo*0.12);
+        }
+        this.orderStatus=OrderStatus.환불완료;
     }
 
 

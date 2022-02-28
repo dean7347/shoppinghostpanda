@@ -35,8 +35,8 @@ import axios from "../../../../../node_modules/axios/index";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInList(props) {
-  // console.log("카인리");
-  // console.log(props);
+  console.log("카인리");
+  console.log(props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
@@ -619,7 +619,7 @@ function CardInList(props) {
             {props.situationDetail.status}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
-          {/* <div>
+          <div>
             ***임시버튼***
             <Button
               onClick={() =>
@@ -650,7 +650,7 @@ function CardInList(props) {
             <Button onClick={() => onTestPandaDashboard()}>
               판다대시보드테스트
             </Button>
-          </div> */}
+          </div>
         </Row>
         {renderbox()}
         <div>
