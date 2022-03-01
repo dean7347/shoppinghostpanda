@@ -182,6 +182,11 @@ public class UserOrder {
         this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney-finalRefundMoney;
 
     }
+
+    public void setReceiptUrl(String url)
+    {
+        this.receiptUrl=url;
+    }
     public void reCalAmount()
     {
 

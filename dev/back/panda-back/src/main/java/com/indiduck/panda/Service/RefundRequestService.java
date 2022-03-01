@@ -4,15 +4,23 @@ package com.indiduck.panda.Service;
 import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.RefundRequestRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
+import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.controller.RefundRequestController;
 import com.indiduck.panda.domain.OrderDetail;
 import com.indiduck.panda.domain.RefundRequest;
 import com.indiduck.panda.domain.UserOrder;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +34,8 @@ public class RefundRequestService {
     private final OrderDetailRepository orderDetailRepository;
     @Autowired
     private final UserOrderRepository userOrderRepository;
+    @Autowired
+    private ApiKey apiKey;
 
     public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails,String message){
         System.out.println("orderDetails서비스꺼 = " + orderDetails);
@@ -39,9 +49,49 @@ public class RefundRequestService {
 
         return rr;
     }
+    public boolean allCancel(String mind,UserOrder userOrder)
+    {
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
+
+        try {
+            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+            String receiptUrl = payment_response.getResponse().getReceiptUrl();
+            userOrder.setReceiptUrl(receiptUrl);
+            System.out.println("payment_response = " + payment_response.getMessage());
+            System.out.println("payment_response =호나불로깆ㄱ실행 ");
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    System.out.println("e = " + e);
+                    return false;
+                case 500 :
+                    //TODO
+                    System.out.println("e = " + e);
+
+                    return false;
+
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+
+        }
+        return true;
+    }
 
     public boolean confrimRefund(RefundRequestController.ConfirmRefundRequest confirmRefundRequest){
         List<RefundRequestController.RefundArray> refundArray = confirmRefundRequest.getRefundArray();
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+
         for (RefundRequestController.RefundArray array : refundArray) {
             long key = array.getKey();
             Optional<OrderDetail> byId = orderDetailRepository.findById(key);
@@ -58,6 +108,38 @@ public class RefundRequestService {
         for (OrderDetail orderDetail : detail) {
             orderDetail.refundCount();
         }
+
+        //환불
+        String test_already_cancelled_imp_uid = byId.get().getMid();
+        CancelData cancel_data = new CancelData(test_already_cancelled_imp_uid, true, BigDecimal.valueOf(refundMoney)); //imp_uid를 통한 500원 부분취소
+        try {
+            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+
+            Payment response = payment_response.getResponse();// 이미 취소된 거래는 response가 null이다
+            userOrder.setReceiptUrl(response.getReceiptUrl());
+            System.out.println(payment_response.getMessage());
+            System.out.println("response = " + response);
+            if(response==null)
+            {
+                return false;
+
+            }
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    break;
+                case 500 :
+                    //TODO
+                    break;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
 
 
         return true;

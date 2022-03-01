@@ -20,6 +20,8 @@ public class UserOrderService {
     private ShopRepository shopRepository;
     @Autowired
     private UserOrderRepository userOrderRepository;
+    @Autowired
+    private final RefundRequestService refundRequestService;
 
     public UserOrder cancelOrder(long userorderId)
     {
@@ -31,6 +33,8 @@ public class UserOrderService {
                 return null;
             }
         }
+        String mid =byId.get().getMid();
+        refundRequestService.allCancel(mid,byId.get());
         byId.get().cancelOrder();
         return byId.get();
 

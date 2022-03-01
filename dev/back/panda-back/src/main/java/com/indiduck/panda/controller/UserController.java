@@ -5,6 +5,7 @@ import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.Service.OrderDetailService;
+import com.indiduck.panda.Service.RefundRequestService;
 import com.indiduck.panda.Service.UserOrderService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
@@ -43,6 +44,7 @@ public class UserController {
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final UserOrderService userOrderService;
+
     
 
     @GetMapping("/api/dashboard")
@@ -99,10 +101,11 @@ public class UserController {
     public ResponseEntity<?> cancelOrder(@CurrentSecurityContext(expression = "authentication")
                                                        Authentication authentication,  @RequestBody SituationDto situationDto) {
         UserOrder userOrder = userOrderService.cancelOrder(situationDto.detailId);
-
+        System.out.println("situationDto = " + situationDto);
         if(userOrder!=null)
         {
-            //TODO : 주문취소 환불 로직
+
+
             return ResponseEntity.ok(new TFMessageDto(true,"변경성공"));
 
         }
