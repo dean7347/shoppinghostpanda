@@ -34,22 +34,22 @@ public class ProductService {
     @Autowired
     ShopRepository shopRepository;
 
-    public Product createNewProduct(String user, List<String> thumb,String title, String descriptoin,
-                                    List<String> images,List<ProductOption> options,int type,String lowvalue){
+    public Product createNewProduct(String user, List<String> thumb, String title, String descriptoin,
+                                    List<String> images, List<ProductOption> options, int type, String lowvalue) {
 
-        Product newProduct = Product.newProDuct(title,descriptoin,type,lowvalue);
+        Product newProduct = Product.newProDuct(title, descriptoin, type, lowvalue);
         productRepository.save(newProduct);
 
-        images.forEach(e ->{
+        images.forEach(e -> {
             File filebyFilepath1 = fileService.getFilebyFilepath(e);
             newProduct.setImage(filebyFilepath1);
         });
-        thumb.forEach(e ->{
+        thumb.forEach(e -> {
             File fileByFilename = fileRepository.myqueryfind(e);
             newProduct.setThumbImage(fileService.getFilebyFilepath(e));
         });
 
-        options.forEach( e->
+        options.forEach(e ->
                 {
                     ProductOption productOption = productOptionService.saveOption(e);
                     newProduct.setProductOptions(productOption);
@@ -64,58 +64,84 @@ public class ProductService {
         return newProduct;
 
     }
-    public void addFileProduct(Long file,Long product,String type)
-    {
+
+    //더미데이터
+    public void addtempProudct() {
+        //더미데이터 만들기기
+        Optional<Product> byId = productRepository.findById(13l);
+//        Product product = byId.get();
+//            Product copy = Product.copyPro(product,999);
+//        Product save = productRepository.save(copy);
+//        System.out.println(" 카피요청받음 "+save.getId());
+//        Optional<Product> byId1 = productRepository.findById(save.getId());
+//        System.out.println("생성된거 = " + byId1.get().getProductName());
+//        for(int i =0; i<=10; i++)
+//        {
+            System.out.println(" 로직싫애");
+            Product newProduct = Product.newProDuct("더미데이터제목+"+"i", "더미밸류"+"i", 2, "{\"a\":\"신발\",\"b\":\"색상\",\"c\":\"치수\",\"d\":\"제조자\",\"e\":\"제조국\",\"f\":\"취급시주의사항\",\"g\":\"품질보증기준\",\"h\":\"A/S책임자와 전화번호\",\"i\":\"\",\"j\":\"\",\"k\":\"\",\"l\":\"\",\"m\":\"\",\"n\":\"\",\"o\":\"\"}");
+            productRepository.save(newProduct);
+            File filebyFilepath = fileService.getFilebyFilepath("shop2@gmail.com/ab3307ea-2fd7-4b46-9d05-c295c0c929e511d91d21-17de-499b-b4b5-8b0cde94f4cb디테일2.png");
+            newProduct.setImage(filebyFilepath);
+            File filebyFilepath1 = fileService.getFilebyFilepath("shop2@gmail.com/5c2fd420-7977-4a08-8ade-d0b5251adcaa54df513d-eb60-4fe6-8afa-987b633b1a0d썸1.png");
+            newProduct.setThumbImage(filebyFilepath1);
+            newProduct.setProductOptions(byId.get().getProductOptions().get(0));
+            newProduct.setShop(byId.get().getShop());
+//        }
+
+
+
+
+        //        for(int i = 0; i>=200; i ++)
+//        {
+//            System.out.println("카피번호 = " + i);
+//            Product copy = Product.copyPro(product,i);
+//            productRepository.save(copy);
+//
+//        }
+    }
+
+    public void addFileProduct(Long file, Long product, String type) {
         Optional<File> byId1 = fileRepository.findById(file);
         Optional<Product> byId = productRepository.findById(product);
         System.out.println(type);
-        if(type.equals("thumb"))
-        {
+        if (type.equals("thumb")) {
             byId.get().setThumbImage(byId1.get());
 
-        }else
-        {
+        } else {
 
             byId.get().setImage(byId1.get());
 
         }
 
     }
-    public void editStatus(long productId,String type)
-    {
+
+    public void editStatus(long productId, String type) {
         Optional<Product> byId = productRepository.findById(productId);
-        if(type.equals("판매중지"))
-        {
+        if (type.equals("판매중지")) {
             byId.get().stopSale();
 
-        }else if(type.equals("상품삭제"))
-        {
+        } else if (type.equals("상품삭제")) {
             byId.get().delProduct();
             byId.get().stopSale();
 
 
-        }else if(type.equals("판매재개"))
-        {
+        } else if (type.equals("판매재개")) {
             byId.get().restartSale();
         }
 
     }
 
-    public void editText(Long product, String type,String text)
-    {
+    public void editText(Long product, String type, String text) {
         Optional<Product> byId = productRepository.findById(product);
-        if(type.equals("name"))
-        {
+        if (type.equals("name")) {
             byId.get().setName(text);
-        }else
-        {
+        } else {
             byId.get().setDesc(text);
 
         }
     }
 
-    public void editLow(Long product, int type,String law)
-    {
+    public void editLow(Long product, int type, String law) {
         Optional<Product> byId = productRepository.findById(product);
         byId.get().setLowvalue(law);
         byId.get().changeType(type);

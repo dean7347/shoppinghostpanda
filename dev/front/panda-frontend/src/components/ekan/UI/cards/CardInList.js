@@ -102,6 +102,12 @@ function CardInList(props) {
     //   }
     // });
   };
+  const copyClick = () => {
+    console.log("상품카피로직실행");
+    axios.post("/api/copyproduct").then((response) => {
+      console.log(response);
+    });
+  };
 
   const onTestCheck = (p, s, c, w) => {
     console.log(p + s);
@@ -621,6 +627,13 @@ function CardInList(props) {
           </Col>
           <div>
             ***임시버튼***
+            <Button
+              onClick={() => {
+                copyClick();
+              }}
+            >
+              임시 복사
+            </Button>
             <Button
               onClick={() =>
                 onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)

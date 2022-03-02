@@ -21,25 +21,27 @@ import java.util.stream.Stream;
 public class Product {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
-    private List<File> images=new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    private List<File> images = new ArrayList<>();
 
     private String productName;
     private int productPrice;
 
-    @Lob @Basic(fetch = FetchType.EAGER)
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
     private String productDesc;
     private LocalDateTime productRegAt;
     private LocalDateTime productEditAt;
     private LocalDateTime productDeleteAt;
 
     //판매중지인지
-    private boolean sales=true;
+    private boolean sales = true;
     //삭제인지
-    private boolean deleted=false;
+    private boolean deleted = false;
 
     private int productHits;
 
@@ -53,94 +55,111 @@ public class Product {
     private List<Board> boards = new ArrayList<>();
 
 
-   @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
-    private List<ProductOption> productOptions=new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    private List<ProductOption> productOptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "products")
-    private List<ProductCategory> categorys=new ArrayList<>();
+    private List<ProductCategory> categorys = new ArrayList<>();
 
     @OneToMany(mappedBy = "products")
-    private List<OrderDetail> orderDetails=new ArrayList<>();
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    private List<PandaToProduct> pandas=new ArrayList<>();
+    private List<PandaToProduct> pandas = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Shop shop;
+
     //연관관계 메서드
-    public void setName (String text){
-        this.productName=text;
+    public void setName(String text) {
+        this.productName = text;
     }
-    public void setDesc(String text)
-    {
-        this.productDesc=text;
+
+    public void setDesc(String text) {
+        this.productDesc = text;
     }
-    public void setShop(Shop shop){
+
+    public void setShop(Shop shop) {
         this.shop = shop;
         shop.getProducts().add(this);
     }
 
-    public void setProductOptions(ProductOption po)
-    {
+    public void setProductOptions(ProductOption po) {
         this.productOptions.add(po);
         po.setProduct(this);
     }
 
-    public void setImage(File file)
-    {
+    public void setImage(File file) {
         this.images.add(file);
         file.setProduct(this);
 
     }
 
-    public void setThumbImage(File file)
-    {
+    public void setThumbImage(File file) {
         this.images.add(file);
         file.setProduct(this);
         file.setIsthumb(true);
 
     }
+
     //==생성==//
-    public static Product newProDuct(String name, String desc,int type,String lowvalue){
+    public static Product newProDuct(String name, String desc, int type, String lowvalue) {
         Product pro = new Product();
-        pro.productName=name;
-        pro.productDesc=desc;
-        pro.type=type;
-        pro.lowvalue=lowvalue;
-        pro.productRegAt=LocalDateTime.now();
+        pro.productName = name;
+        pro.productDesc = desc;
+        pro.type = type;
+        pro.lowvalue = lowvalue;
+        pro.productRegAt = LocalDateTime.now();
 
 
         return pro;
     }
+
+    public static Product copyPro(Product pro, int num) {
+        Product copy = new Product();
+        copy.images = pro.images;
+        copy.productName = pro.getProductName() + num;
+        copy.productPrice = pro.getProductPrice();
+        copy.productDesc = pro.getProductDesc();
+        copy.sales = pro.sales;
+        copy.deleted = pro.deleted;
+        copy.type = pro.type;
+        copy.lowvalue = pro.lowvalue;
+        copy.productOptions = pro.productOptions;
+        copy.shop = pro.shop;
+
+        return copy;
+    }
+
     //==비즈니스==//
-    public void delFile(File file)
-    {
+    public void delFile(File file) {
         images.remove(file);
     }
-    public void setLowvalue(String law)
-    {
-        this.lowvalue=law;
+
+    public void setLowvalue(String law) {
+        this.lowvalue = law;
     }
-    public void changeType(int type)
-    {
-        this.type=type;
+
+    public void changeType(int type) {
+        this.type = type;
     }
-    public void stopSale(){this.sales=false;}
-    public void delProduct(){
-        this.deleted=true;
-        this.productDeleteAt=LocalDateTime.now();
+
+    public void stopSale() {
+        this.sales = false;
+    }
+
+    public void delProduct() {
+        this.deleted = true;
+        this.productDeleteAt = LocalDateTime.now();
 
     }
-    public void restartSale(){this.sales=true;}
 
-
-
-
-
+    public void restartSale() {
+        this.sales = true;
+    }
 
 
     //==조회==//
-
 
 
 }

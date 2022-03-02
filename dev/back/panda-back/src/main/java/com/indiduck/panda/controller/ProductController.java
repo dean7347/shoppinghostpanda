@@ -118,6 +118,28 @@ public class ProductController {
 
     }
 
+    //테스트용으로 카피를 만든다
+    @RequestMapping(value = "/api/copyproduct", method = RequestMethod.POST)
+    public ResponseEntity<?> createFileAmazon(@CurrentSecurityContext(expression = "authentication")
+                                                      Authentication authentication) throws Exception{
+//
+        try{
+
+            productService.addtempProudct();
+            return  ResponseEntity.ok(new ResultDto(true));
+
+        }
+        catch (Exception e)
+        {
+            return  ResponseEntity.ok(new ResultDto(false));
+
+        }
+
+
+
+
+    }
+
 
 
 
