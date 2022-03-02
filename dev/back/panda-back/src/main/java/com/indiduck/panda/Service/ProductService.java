@@ -75,8 +75,8 @@ public class ProductService {
 //        System.out.println(" 카피요청받음 "+save.getId());
 //        Optional<Product> byId1 = productRepository.findById(save.getId());
 //        System.out.println("생성된거 = " + byId1.get().getProductName());
-//        for(int i =0; i<=10; i++)
-//        {
+        for(int i =0; i<=10; i++)
+        {
             System.out.println(" 로직싫애");
             Product newProduct = Product.newProDuct("더미데이터제목+"+"i", "더미밸류"+"i", 2, "{\"a\":\"신발\",\"b\":\"색상\",\"c\":\"치수\",\"d\":\"제조자\",\"e\":\"제조국\",\"f\":\"취급시주의사항\",\"g\":\"품질보증기준\",\"h\":\"A/S책임자와 전화번호\",\"i\":\"\",\"j\":\"\",\"k\":\"\",\"l\":\"\",\"m\":\"\",\"n\":\"\",\"o\":\"\"}");
             productRepository.save(newProduct);
@@ -86,7 +86,7 @@ public class ProductService {
             newProduct.setThumbImage(filebyFilepath1);
             newProduct.setProductOptions(byId.get().getProductOptions().get(0));
             newProduct.setShop(byId.get().getShop());
-//        }
+        }
 
 
 
