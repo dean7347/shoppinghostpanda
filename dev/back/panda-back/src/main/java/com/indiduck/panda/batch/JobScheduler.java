@@ -24,14 +24,14 @@ public class JobScheduler {
 
     @Autowired
     private JobConfiguration jobConfiguration;
+    @Autowired
+    private DepositConfiguration depositConfiguration;
     @Scheduled(cron = "30 * * * * ?")
-    public void runJob() {
-        
-
+    public void runConfirmJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(confMap);
-        System.out.println("스케쥴링시작");
+        System.out.println("구매확정스케쥴링시작");
         try {
 
             jobLauncher.run(jobConfiguration.ConfirmJob(), jobParameters);
@@ -45,6 +45,24 @@ public class JobScheduler {
         }
     }
 
+    @Scheduled(cron = "35 * * * * ?")
+    public void runDepositJob() {
+        Map<String, JobParameter> confMap = new HashMap<>();
+        confMap.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameters = new JobParameters(confMap);
+        System.out.println("청구스케쥴링시작");
+        try {
+
+            jobLauncher.run(depositConfiguration.DepositJob(), jobParameters);
+
+        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
+
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

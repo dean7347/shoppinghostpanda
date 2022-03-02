@@ -98,6 +98,8 @@ public class Shop {
 
     @OneToOne(optional = true,mappedBy = "shop")
     private User user;
+    @OneToMany(mappedBy = "shop")
+    private List<SettleShop> settleShop;
 
     @OneToMany(mappedBy = "shop")
     private List<RefundRequest> refundRequestlist;

@@ -68,6 +68,11 @@ public class UserOrder {
 
     @OneToOne
     private RefundRequest refundRequests;
+//    @ManyToOne
+//    @OneToOne
+//    private SettleShop settleShop;
+//    @OneToOne
+//    private SettlePanda settlePanda;
 
     //택배 송장 등록시 작성되는칼럼
     //택배사
@@ -102,6 +107,12 @@ public class UserOrder {
     //지급 상태
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    //지급목록 등록여부
+    boolean enrollSettle;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SettlePanda settlePanda;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SettleShop settleShop;
     
 
 
@@ -125,7 +136,7 @@ public class UserOrder {
         uo.receiptUrl=receipt;
         uo.memo=memo;
         uo.canExtend=3;
-        //TODO 아래에서 디테일이 변경되어도 재계산 작업을 해주어야 한다
+        uo.enrollSettle=false;
         return  uo;
     }
 

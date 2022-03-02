@@ -241,7 +241,7 @@ public class UserOrderController {
             }
 
             for (UserOrder userOrder : uoList) {
-                if(userOrder.getPaymentStatus()==PaymentStatus.지급대기 || userOrder.getPaymentStatus()==PaymentStatus.지급예정)
+                if(userOrder.getPaymentStatus()==PaymentStatus.지급대기 || userOrder.getPaymentStatus()==PaymentStatus.지급예정 )
                 {
                     yet+=userOrder.getShopMoney();
                 }else if(userOrder.getPaymentStatus()==PaymentStatus.지급완료)
