@@ -144,6 +144,13 @@ public class Shop {
     }
 
     //==비즈니스 로직==//
+    public void SettleShopLogic(){
+
+        for (UserOrder userOrder : userOrders) {
+
+        }
+
+    }
 
 
 }
