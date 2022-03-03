@@ -1,14 +1,13 @@
 package com.indiduck.panda.Service;
 
-import com.indiduck.panda.Repository.PandaRespository;
-import com.indiduck.panda.Repository.UserRepository;
-import com.indiduck.panda.domain.Panda;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.Repository.*;
+import com.indiduck.panda.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +19,12 @@ public class PandaService {
     UserRepository userRepository;
     @Autowired
     PandaRespository pandaRespository;
+    @Autowired
+    private final UserOrderRepository userOrderRepository;
+    @Autowired
+    private final SettlePandaRepository settlePandaRepository;
+    @Autowired
+    private final OrderDetailRepository orderDetailRepository;
 
     public Panda newPanda(String user, String pandaName,String mainCh,
                          String intCategory, boolean terms,boolean info){
@@ -39,6 +44,19 @@ public class PandaService {
         }
 
         return null;
+
+    }
+
+
+    public SettlePanda SettleLogic(Panda panda)
+    {
+//        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByPandaAndPaymentStatusAndEnrollSettlePanda(panda, PaymentStatus.지급대기, false);
+        Optional<List<OrderDetail>> byPandaAndPaymentStatusAndEnrollSettle = orderDetailRepository.findByPandaAndPaymentStatusAndEnrollSettle(panda, PaymentStatus.지급대기, false);
+        List<OrderDetail> orderDetails = byPandaAndPaymentStatusAndEnrollSettle.get();
+        SettlePanda settlePanda=SettlePanda.createSettlePanda(orderDetails,panda);
+        settlePandaRepository.save(settlePanda);
+        return settlePanda;
+
 
     }
 }

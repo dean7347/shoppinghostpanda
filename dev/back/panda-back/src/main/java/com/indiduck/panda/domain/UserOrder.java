@@ -108,9 +108,9 @@ public class UserOrder {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     //지급목록 등록여부
-    boolean enrollSettle;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SettlePanda settlePanda;
+    boolean enrollSettlePanda;
+    boolean enrollSettleShop;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private SettleShop settleShop;
     
@@ -136,7 +136,9 @@ public class UserOrder {
         uo.receiptUrl=receipt;
         uo.memo=memo;
         uo.canExtend=3;
-        uo.enrollSettle=false;
+        uo.enrollSettlePanda=false;
+        uo.enrollSettleShop=false;
+
         return  uo;
     }
 
@@ -345,6 +347,11 @@ public class UserOrder {
         this.refundRequests=refundRequests;
 
     }
+    public void setEnrollRefundShop(boolean tf)
+    {
+        this.enrollSettleShop=tf;
+    }
+
     public void confirmRefundMoney(long money)
     {
         this.finalRefundMoney=(int) money;

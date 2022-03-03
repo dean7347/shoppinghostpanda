@@ -68,7 +68,10 @@ public class OrderDetail {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    boolean enrollSettle;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SettlePanda settlePanda;
 
    //12%
     private int pandaMoney=0;
@@ -92,6 +95,7 @@ public class OrderDetail {
         od.pandaMoney= (int) Math.floor(mo*0.12);
         od.reqRefund=0;
         od.confirmRefund=0;
+        od.enrollSettle=false;
         return od;
 
     }
@@ -110,6 +114,8 @@ public class OrderDetail {
         od.pandaMoney=0;
         od.reqRefund=0;
         od.confirmRefund=0;
+        od.enrollSettle=false;
+
 
         return od;
 
@@ -259,6 +265,9 @@ public class OrderDetail {
         }
         this.orderStatus=OrderStatus.환불완료;
     }
-
+    public void setEnrollRefundPanda(boolean tf)
+    {
+        this.enrollSettle=tf;
+    }
 
 }

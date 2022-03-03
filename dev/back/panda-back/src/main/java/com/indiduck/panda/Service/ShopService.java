@@ -1,10 +1,11 @@
 package com.indiduck.panda.Service;
 
+import com.indiduck.panda.Repository.SettleShopRepository;
 import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.controller.ShopController;
-import com.indiduck.panda.domain.Shop;
-import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,10 @@ public class ShopService {
     private ShopRepository shopRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private final UserOrderRepository userOrderRepository;
+    @Autowired
+    private final SettleShopRepository settleShopRepository;
 
     public Shop createNewShop(String username,String shopName, String representative,String crn,
                               String telnum, int freepee, int nofree,
@@ -45,6 +50,18 @@ public class ShopService {
             return save;
         }
         return null;
+    }
+
+    //샵에서 계산서를 생성하는 로직
+    public SettleShop SettleLogic(Shop shop)
+    {
+        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShop(shop, PaymentStatus.지급대기, false);
+        List<UserOrder> userOrders = byShopAndPaymentStatusAndEnrollSettle.get();
+        SettleShop settleShop=SettleShop.createSettleShop(userOrders,shop);
+        settleShopRepository.save(settleShop);
+        return settleShop;
+
+
     }
 //    //샵이 있는지 조회
 //    public Shop haveShop(String userName)

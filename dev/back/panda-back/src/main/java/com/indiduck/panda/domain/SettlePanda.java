@@ -23,10 +23,29 @@ public class SettlePanda {
     int depoist;
     //정산된 userOrder
     @OneToMany(mappedBy = "settlePanda")
-    private List<UserOrder> userOrder= new ArrayList<>();
+    private List<OrderDetail> orderDetails= new ArrayList<>();
     //정산될 판다
     @ManyToOne(fetch = FetchType.LAZY)
     private Panda panda;
     //입금했는지여부
     boolean isDeposit;
+
+    public static SettlePanda createSettlePanda(List<OrderDetail> od,Panda panda)
+    {
+        SettlePanda settle= new SettlePanda();
+        settle.enrollSettle=LocalDateTime.now();
+        int depoistmoney=0;
+        for (OrderDetail orderDetail : od) {
+            depoistmoney+=orderDetail.getPandaMoney();
+            orderDetail.setEnrollRefundPanda(true);
+        }
+        settle.panda=panda;
+        settle.depoist=depoistmoney;
+        settle.orderDetails=od;
+        return settle;
+
+    }
+
 }
+
+

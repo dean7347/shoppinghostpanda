@@ -31,5 +31,21 @@ public class SettleShop {
     private Shop shop;
     //입금했는지여부
     boolean isDeposit;
+    //생성메서드
+    public static SettleShop createSettleShop(List<UserOrder> us,Shop shop)
+    {
+        SettleShop settle= new SettleShop();
+        settle.enrollSettle=LocalDateTime.now();
+        int depoistmoney=0;
+        for (UserOrder u : us) {
+            depoistmoney+=u.getShopMoney();
+            u.setEnrollRefundShop(true);
+        }
+        settle.shop=shop;
+        settle.depoist=depoistmoney;
+        settle.userOrder=us;
+        return settle;
+
+    }
 
 }

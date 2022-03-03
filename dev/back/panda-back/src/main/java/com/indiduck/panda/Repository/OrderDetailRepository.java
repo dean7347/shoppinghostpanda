@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,Long> {
     Optional<List<OrderDetail>> findByPandaAndPaymentStatusOrPaymentStatusOrPaymentStatusAndFinishedAtBetween(Panda panda, PaymentStatus paymentStatus,PaymentStatus paymentStatusse,PaymentStatus paymentStatusthird, LocalDateTime fromDate, LocalDateTime toDate);
     Optional<List<OrderDetail>> findByPandaAndPaymentStatusAndFinishedAtBetween(Panda panda, PaymentStatus paymentStatus, LocalDateTime fromDate, LocalDateTime toDate);
     Optional<List<OrderDetail>> findByPandaAndPaymentStatusNotNullAndFinishedAtBetween(Panda panda, LocalDateTime fromDate, LocalDateTime toDate);
-
+    Optional<List<OrderDetail>> findByPandaAndPaymentStatusAndEnrollSettle(Panda panda,PaymentStatus py,boolean en);
     //    Optional<List<OrderDetail>> findOrderDetailsByFinishedAtBetween(LocalDateTime fromDate, LocalDateTime toDate);
 
 }

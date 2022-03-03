@@ -20,19 +20,19 @@ import java.util.Optional;
 public class OrderDetailService {
 
     @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
     @Autowired
-    ProductOptionRepository productOptionRepository;
+    private final ProductOptionRepository productOptionRepository;
     @Autowired
-    PandaRespository pandaRespository;
+    private final PandaRespository pandaRespository;
     @Autowired
-    OrderDetailRepository orderDetailRepository;
+    private final OrderDetailRepository orderDetailRepository;
     @Autowired
-    ShopRepository shopRepository;
+    private final ShopRepository shopRepository;
     @Autowired
-    UserOrderRepository userOrderRepository;
+    private final UserOrderRepository userOrderRepository;
 
 
 
