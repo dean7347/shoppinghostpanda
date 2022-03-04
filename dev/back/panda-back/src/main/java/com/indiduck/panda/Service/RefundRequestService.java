@@ -6,10 +6,7 @@ import com.indiduck.panda.Repository.RefundRequestRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.controller.RefundRequestController;
-import com.indiduck.panda.domain.OrderDetail;
-import com.indiduck.panda.domain.RefundRequest;
-import com.indiduck.panda.domain.User;
-import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.*;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -58,6 +55,7 @@ public class RefundRequestService {
         CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
 
         try {
+            userOrder.getRefundRequests().setOrderStatus(OrderStatus.환불완료);
             IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
             String receiptUrl = payment_response.getResponse().getReceiptUrl();
             userOrder.setReceiptUrl(receiptUrl);

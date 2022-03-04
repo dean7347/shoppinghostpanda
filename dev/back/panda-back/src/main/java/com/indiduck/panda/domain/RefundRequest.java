@@ -30,6 +30,9 @@ public class RefundRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus od;
+
     //생성일(환불신청일)
     private LocalDateTime createdAt;
 
@@ -49,6 +52,7 @@ public class RefundRequest {
         rr.userOrder=userOrder;
         rr.refundMessage=message;
         rr.shop=userOrder.getShop();
+        rr.setOrderStatus(OrderStatus.환불대기);
         rr.refundMoney=0;
 
         return rr;

@@ -57,6 +57,17 @@ public class RefundRequestController {
 
     }
 
+    @RequestMapping(value = "/api/refundlist", method = RequestMethod.POST)
+    public ResponseEntity<?> refundList(@CurrentSecurityContext(expression = "authentication")
+                                                          Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+
+        refundRequestService.confrimRefund(confirmRefundRequest);
+
+        return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+    }
+
     @Data
     private static class UserOrderId {
         long uoid;

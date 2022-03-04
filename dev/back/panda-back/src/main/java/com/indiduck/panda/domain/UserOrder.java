@@ -356,6 +356,8 @@ public class UserOrder {
     public void confirmRefundMoney(long money)
     {
         this.finalRefundMoney=(int) money;
+        this.orderStatus=OrderStatus.발송중;
+        this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 
 //    @ManyToOne(fetch = FetchType.LAZY)
