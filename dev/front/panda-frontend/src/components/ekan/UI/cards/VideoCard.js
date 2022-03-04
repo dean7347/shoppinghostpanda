@@ -8,11 +8,6 @@ function deleteBtnAction(e) {
     console.log("삭제하기");
 }
 
-function completeEditAction(e) {
-    e.preventDefault();
-    console.log("수정완료");
-}
-
 function sliceTitle(title) {
     let slicedTitle = title.slice(0, 24)
     if (title.length > 27) {
@@ -24,6 +19,7 @@ function sliceTitle(title) {
 const VideoCard = ({link, panda, footer}) => {
     const [videoInfo, setVideoInfo] = useState(null);
     const [showEdit, setShowEdit] = useState(false)
+    const [linkProps, setLinkProps] = useState(link)
 
     useEffect(() => {
         fetchVideoInfo()
@@ -40,6 +36,12 @@ const VideoCard = ({link, panda, footer}) => {
             .then(setVideoInfo);
     }, [])
 
+    const completeEditAction = useCallback((e) => {
+        e.preventDefault();
+        console.log("수정완료");
+        console.log('링크값: ',linkProps )
+    },[linkProps])
+
     const modifyBtnAction = useCallback((e) => {
         e.preventDefault();
         setShowEdit(true)
@@ -52,6 +54,10 @@ const VideoCard = ({link, panda, footer}) => {
         setShowEdit(false)
         console.log("수정취소");
     }, [showEdit])
+
+    const onChangeLinkAction = useCallback((e) => {
+        setLinkProps(e.target.value)
+    },[linkProps])
 
     return (
         <>
@@ -88,7 +94,9 @@ const VideoCard = ({link, panda, footer}) => {
                                 {
                                     showEdit &&
                                     <span>
-                        <textarea className="textarea is-primary" rows='3' value={link}/>
+                        <textarea className="textarea is-primary" rows='3'
+                                  value={linkProps}
+                                  onChange={onChangeLinkAction}/>
                     </span>
                                 }
                                 <span className="float-start">
