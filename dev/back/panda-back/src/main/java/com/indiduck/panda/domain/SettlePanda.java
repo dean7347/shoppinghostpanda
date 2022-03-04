@@ -37,11 +37,12 @@ public class SettlePanda {
         int depoistmoney=0;
         for (OrderDetail orderDetail : od) {
             depoistmoney+=orderDetail.getPandaMoney();
-            orderDetail.setEnrollRefundPanda(true);
+            orderDetail.setEnrollRefundPanda(true,settle);
         }
         settle.panda=panda;
         settle.depoist=depoistmoney;
         settle.orderDetails=od;
+        settle.isDeposit=false;
         return settle;
 
     }

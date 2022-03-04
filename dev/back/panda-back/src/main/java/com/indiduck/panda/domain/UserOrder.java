@@ -347,9 +347,10 @@ public class UserOrder {
         this.refundRequests=refundRequests;
 
     }
-    public void setEnrollRefundShop(boolean tf)
+    public void setEnrollRefundShop(boolean tf,SettleShop shop)
     {
         this.enrollSettleShop=tf;
+        this.settleShop=shop;
     }
 
     public void confirmRefundMoney(long money)

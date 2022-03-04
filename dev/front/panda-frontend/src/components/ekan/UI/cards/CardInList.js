@@ -102,6 +102,11 @@ function CardInList(props) {
     //   }
     // });
   };
+  const onAdmin = () => {
+    axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
+      console.log(response);
+    });
+  };
   const copyClick = () => {
     console.log("상품카피로직실행");
     axios.post("/api/copyproduct").then((response) => {
@@ -627,6 +632,13 @@ function CardInList(props) {
           </Col>
           <div>
             ***임시버튼***
+            <Button
+              onClick={() => {
+                onAdmin();
+              }}
+            >
+              임시어드민
+            </Button>
             <Button
               onClick={() => {
                 copyClick();

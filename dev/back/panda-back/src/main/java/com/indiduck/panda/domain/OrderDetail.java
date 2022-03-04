@@ -265,9 +265,10 @@ public class OrderDetail {
         }
         this.orderStatus=OrderStatus.환불완료;
     }
-    public void setEnrollRefundPanda(boolean tf)
+    public void setEnrollRefundPanda(boolean tf,SettlePanda panda)
     {
         this.enrollSettle=tf;
+        this.settlePanda=panda;
     }
 
 }

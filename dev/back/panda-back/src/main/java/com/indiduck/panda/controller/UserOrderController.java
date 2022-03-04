@@ -46,7 +46,8 @@ public class UserOrderController {
     @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
     public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
-
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
         System.out.println("refundReq = " + refundReq);
         Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
         byId.get().refundOrder(refundReq.refundMessage);
@@ -62,7 +63,7 @@ public class UserOrderController {
             System.out.println("orderDetail추가완료 = " + orderDetail);
 
         }
-        refundRequestService.newRefundRequest(byId.get(),orderDetails,refundReq.refundMessage);
+        refundRequestService.newRefundRequest(byId.get(),orderDetails,refundReq.refundMessage,byEmail.get());
 
         return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
 

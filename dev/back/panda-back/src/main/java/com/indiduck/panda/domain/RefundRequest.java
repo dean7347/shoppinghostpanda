@@ -27,7 +27,8 @@ public class RefundRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Shop shop;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     //생성일(환불신청일)
     private LocalDateTime createdAt;
@@ -41,8 +42,9 @@ public class RefundRequest {
 
 
     //==생성메서드==//
-    public static RefundRequest newRefundRequest(UserOrder userOrder,String message){
+    public static RefundRequest newRefundRequest(UserOrder userOrder,String message,User user){
         RefundRequest rr = new RefundRequest();
+        rr.user=user;
         rr.createdAt=LocalDateTime.now();
         rr.userOrder=userOrder;
         rr.refundMessage=message;

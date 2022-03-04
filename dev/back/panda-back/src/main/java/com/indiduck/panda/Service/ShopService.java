@@ -58,6 +58,7 @@ public class ShopService {
         Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShop(shop, PaymentStatus.지급대기, false);
         List<UserOrder> userOrders = byShopAndPaymentStatusAndEnrollSettle.get();
         SettleShop settleShop=SettleShop.createSettleShop(userOrders,shop);
+
         settleShopRepository.save(settleShop);
         return settleShop;
 

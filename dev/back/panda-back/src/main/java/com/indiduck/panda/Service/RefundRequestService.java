@@ -8,6 +8,7 @@ import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.controller.RefundRequestController;
 import com.indiduck.panda.domain.OrderDetail;
 import com.indiduck.panda.domain.RefundRequest;
+import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserOrder;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -37,9 +38,9 @@ public class RefundRequestService {
     @Autowired
     private ApiKey apiKey;
 
-    public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails,String message){
+    public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails, String message, User user){
         System.out.println("orderDetails서비스꺼 = " + orderDetails);
-        RefundRequest rr = RefundRequest.newRefundRequest(uo, message);
+        RefundRequest rr = RefundRequest.newRefundRequest(uo, message,user);
         for (OrderDetail orderDetail : orderDetails) {
             rr.addOrderDetail(orderDetail);
         }

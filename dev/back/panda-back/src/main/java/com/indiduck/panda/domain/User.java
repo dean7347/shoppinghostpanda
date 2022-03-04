@@ -67,6 +67,8 @@ public class User implements UserDetails {
     private List<UserOrder> userOrders;
     @OneToOne(mappedBy = "user")
     private Panda panda;
+    @OneToMany(mappedBy = "user")
+    private List<RefundRequest> refundRequests;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
