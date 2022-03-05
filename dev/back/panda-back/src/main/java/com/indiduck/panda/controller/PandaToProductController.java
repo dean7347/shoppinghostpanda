@@ -7,6 +7,7 @@ import com.indiduck.panda.Service.PandaToProductService;
 import com.indiduck.panda.domain.Panda;
 import com.indiduck.panda.domain.PandaToProduct;
 import com.indiduck.panda.domain.User;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class PandaToProductController {
                                                 Authentication authentication,
                                         @RequestParam(name = "id") Long productid) throws Exception {
 
-        List<PandaToProduct> byProduct = pandaToProductRepository.findByProductId(productid);
+        List<PandaToProduct> byProduct = pandaToProductRepository.findByProductIdAndIsDel(productid,false);
 
 
         if(!byProduct.isEmpty())
@@ -70,13 +71,38 @@ public class PandaToProductController {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         Panda panda = byEmail.get().getPanda();
-        Optional<List<PandaToProduct>> byPanda = pandaToProductRepository.findByPanda(panda);
+        Optional<List<PandaToProduct>> byPanda = pandaToProductRepository.findByPandaAndIsDel(panda,false);
         if(!byPanda.isEmpty())
         {
             return ResponseEntity.ok(new PandasDto(true,byPanda.get()));
         }
 
         return ResponseEntity.ok(new PandasDto(false,null));
+
+    }
+
+    @RequestMapping(value = "/api/pandamoviedel", method = RequestMethod.POST)
+    public ResponseEntity<?> pandaMovieDel(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication,@RequestBody PandaMovieID pandaMovieID) throws Exception {
+
+        System.out.println("pandaMovieID = " + pandaMovieID);
+        pandaToProductService.delURL(pandaMovieID.id);
+
+
+        return ResponseEntity.ok(new TFMessageDto(true,"변경성공"));
+
+    }
+
+    @RequestMapping(value = "/api/pandamovieedit", method = RequestMethod.POST)
+    public ResponseEntity<?> pandaMovieEdit(@CurrentSecurityContext(expression = "authentication")
+                                                    Authentication authentication,@RequestBody PandaMovieID pandaMovieID) throws Exception {
+
+        System.out.println("pandaMovieID = " + pandaMovieID);
+        PandaToProduct pandaToProduct = pandaToProductService.editURL(pandaMovieID.id, pandaMovieID.editUrl);
+
+
+
+        return ResponseEntity.ok(new TFMessageDto(true,"변경성공"));
 
     }
 
@@ -90,7 +116,7 @@ public class PandaToProductController {
             success=t;
             for (PandaToProduct pandaToProduct : ptp) {
                details.add(new PandasDetail(pandaToProduct.getLink(),pandaToProduct.getPanda().getPandaName(),
-                       pandaToProduct.getPanda().getId())) ;
+                       pandaToProduct.getPanda().getId(),pandaToProduct.getId())) ;
             }
 
         }
@@ -106,11 +132,13 @@ public class PandaToProductController {
         String link;
         String panda;
         Long pandaId;
-        public PandasDetail(String getLink,String getPanda,Long getPandaId)
+        long pandaToProductId;
+        public PandasDetail(String getLink,String getPanda,Long getPandaId,Long pdid)
         {
             link=getLink;
             panda=getPanda;
             pandaId=getPandaId;
+            pandaToProductId=pdid;
         }
     }
 
@@ -124,5 +152,9 @@ public class PandaToProductController {
         }
     }
 
-
+    @Data
+    private static class PandaMovieID {
+        long id;
+        String editUrl;
+    }
 }

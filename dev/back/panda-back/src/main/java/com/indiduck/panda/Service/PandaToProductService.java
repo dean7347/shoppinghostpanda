@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,4 +48,17 @@ public class PandaToProductService {
     }
 
 
+    public PandaToProduct editURL(Long id, String URl) {
+        Optional<PandaToProduct> byId = pandaToProductRepository.findById(id);
+        byId.get().changeURL(URl);
+        return byId.get();
+    }
+
+    public PandaToProduct delURL(Long id)
+    {
+        Optional<PandaToProduct> byId = pandaToProductRepository.findById(id);
+        byId.get().delURl();
+
+        return byId.get();
+    }
 }

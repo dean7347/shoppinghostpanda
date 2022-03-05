@@ -6,6 +6,7 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.PandaService;
 
 import com.indiduck.panda.domain.*;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.Data;
@@ -43,9 +44,10 @@ public class PandaController {
 
     @GetMapping("/api/ispanda")
     @ResponseBody
-    public ResponseEntity<?> ispanda(@CookieValue(name = "accessToken") String usernameCookie)
+    public ResponseEntity<?> ispanda(@CurrentSecurityContext(expression = "authentication")
+                                                 Authentication authentication)
     {
-        Authentication authentication = jwtTokenUtil.getAuthentication(usernameCookie);
+
         String usernameFromToken = authentication.getName();
         System.out.println("usernameFromToken = " + usernameFromToken);
         if(usernameFromToken !=null)
@@ -72,7 +74,7 @@ public class PandaController {
             }
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 못한 요청입니다 ");
+        return ResponseEntity.ok(new TFMessageDto(false,"실패했습니다"));
 
     }
 

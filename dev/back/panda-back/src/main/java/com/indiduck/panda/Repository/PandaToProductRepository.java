@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface PandaToProductRepository extends JpaRepository<PandaToProduct,Long> {
 
 
-    List<PandaToProduct> findByProductId(Long productId);
-    Optional<List<PandaToProduct>> findByPanda(Panda panda);
+    List<PandaToProduct> findByProductIdAndIsDel(Long productId,boolean tf);
+    Optional<List<PandaToProduct>> findByPandaAndIsDel(Panda panda,boolean tf);
 }
