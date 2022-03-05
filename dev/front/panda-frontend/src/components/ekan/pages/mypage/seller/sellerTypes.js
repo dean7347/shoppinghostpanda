@@ -49,6 +49,11 @@ export const sellerSidebarItems = [
     route: "/seller/settlement",
     icon: "bx bx bx-won",
   },
+  {
+    display_name: "상품 등록",
+    route: "/shop/newProduct",
+    icon: "bx bx bx-won",
+  },
 ];
 
 export const sellerDashboardCard = [

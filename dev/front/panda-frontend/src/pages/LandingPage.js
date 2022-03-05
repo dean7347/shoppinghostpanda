@@ -25,7 +25,7 @@ function LandingPage() {
   const onPageChanged = useCallback(
     (page) => {
       setPage(page);
-      axios.get(`/api/preview?size=5&page=${page - 1}`).then((response) => {
+      axios.get(`/api/preview?size=8&page=${page - 1}`).then((response) => {
         if (response.data != null) {
           setProducts(response.data.content);
           setViewCountPage(response.data.size);
@@ -43,8 +43,9 @@ function LandingPage() {
 
   useEffect(
     (Page) => {
-      axios.get(`/api/preview?size=5&page=${Page - 1}`).then((response) => {
+      axios.get(`/api/preview?size=8&page=${Page - 1}`).then((response) => {
         if (response.data != null) {
+          console.log(response.data);
           // console.log(response.data);
           setProducts(response.data.content);
           //page, count, setPage
