@@ -41,7 +41,7 @@ const Footer = () => {
             </Link>
           </Col>{" "}
           <Col lg={8} md={8} sm={8} xs={8}>
-            <Link to="/private">
+            <Link to="/pandareg">
               <div style={{ padding: "3px" }}>판다신청</div>
             </Link>
           </Col>
