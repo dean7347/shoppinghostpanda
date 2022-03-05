@@ -1,8 +1,10 @@
 package com.indiduck.panda.controller;
 
 
+import com.indiduck.panda.Repository.PandaRespository;
 import com.indiduck.panda.Repository.SettlePandaRepository;
 import com.indiduck.panda.Repository.SettleShopRepository;
+import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
@@ -29,6 +31,10 @@ public class AdminContorller {
     private final SettlePandaRepository settlePandaRepository;
     @Autowired
     private final SettleShopRepository settleShopRepository;
+    @Autowired
+    private final ShopRepository shopRepository;
+    @Autowired
+    private final PandaRespository pandaRepoSitory;
 
     //정산해야될 판다 리스트
     @RequestMapping(value = "/api/admin/pandaSettleList", method = RequestMethod.GET)
@@ -76,6 +82,97 @@ public class AdminContorller {
 
         return ResponseEntity.ok(new ShopListDTO(true,byIsDeposit));
 
+    }
+
+    //신청중인 상점보기
+    @RequestMapping(value = "/api/admin/applyShopList", method = RequestMethod.GET)
+    public ResponseEntity<?> applyShopList(@CurrentSecurityContext(expression = "authentication")
+                                                            Authentication authentication, Pageable pageable) throws Exception {
+
+
+        Page<Shop> byIsApproveAndIsOpen = shopRepository.findByIsApproveAndIsOpen(pageable, false, false);
+
+
+        return ResponseEntity.ok(new ApproveShopDTO(true,byIsApproveAndIsOpen));
+
+    }
+    //신청중인 판다보기
+    @RequestMapping(value = "/api/admin/applyPandaList", method = RequestMethod.GET)
+    public ResponseEntity<?> applyPandaList(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication, Pageable pageable) throws Exception {
+
+
+        Page<Panda> byRecognize = pandaRepoSitory.findByRecognize(pageable, false);
+
+        return ResponseEntity.ok(new ApprovePandaDTO(true,byRecognize));
+
+    }
+
+    @Data
+    private class ApprovePandaDTO
+    {
+        boolean success;
+        long totalElement;
+        int totalPage;
+        List<APLISTPANDA> aplist=new ArrayList<>();
+
+        public ApprovePandaDTO(boolean success,Page<Panda> aplists) {
+            this.success = success;
+            this.totalElement = aplists.getTotalElements();
+            this.totalPage = aplists.getTotalPages();
+            for (Panda aplist : aplists) {
+                this.aplist.add(new APLISTPANDA(aplist));
+            }
+        }
+
+    }
+    @Data
+    private class APLISTPANDA{
+        long id;
+        String Category;
+        String MainCH;
+        String pandaName;
+        public APLISTPANDA(Panda panda) {
+            this.id = panda.getId();
+            this.Category = panda.getIntCategory();
+            this.MainCH = panda.getMainCh();
+            this.pandaName = panda.getPandaName();
+        }
+
+
+    }
+
+    @Data
+    private class ApproveShopDTO
+    {
+        boolean success;
+        long totalElement;
+        int totalPage;
+        List<APLIST> aplist=new ArrayList<>();
+
+        public ApproveShopDTO(boolean success,Page<Shop> aplists) {
+            this.success = success;
+            this.totalElement = aplists.getTotalElements();
+            this.totalPage = aplists.getTotalPages();
+            for (Shop aplist : aplists) {
+               this.aplist.add(new APLIST(aplist));
+            }
+        }
+
+    }
+    @Data
+    private class APLIST{
+        long id;
+        String CRN;
+        String NUMBER;
+        String shopName;
+
+        public APLIST(Shop shop) {
+            this.id = shop.getId();
+            this.CRN = shop.getCRN();
+            this.NUMBER = shop.getNumber();
+            this.shopName=shop.getShopName();
+        }
     }
 
     @Data
