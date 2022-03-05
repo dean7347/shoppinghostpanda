@@ -74,9 +74,9 @@ public class ShopController {
 
     @GetMapping("/api/haveshop")
     @ResponseBody
-    public ResponseEntity<?> haveShop(@CookieValue(name = "accessToken") String usernameCookie)
+    public ResponseEntity<?> haveShop(@CurrentSecurityContext(expression = "authentication")Authentication authentication)
     {
-        Authentication authentication = jwtTokenUtil.getAuthentication(usernameCookie);
+
         String usernameFromToken = authentication.getName();
         if(usernameFromToken !=null)
         {
@@ -93,7 +93,7 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.OK).body(new haveShopDto(byUser.get().getShopName(),true,
                     byUser.get().isApprove(),true));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("올바르지 못한 요청입니다 ");
+        return ResponseEntity.ok(new TFMessageDto(false,"상점을찾을수 없습니다"));
 
     }
 

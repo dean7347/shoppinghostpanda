@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/reissue","/api/reissuev2","/api/preview**","/api/product/products_by**","/api/getpandas_by_id**","/api/ispanda**","api/proxy?url=**",
                         "/api/getqna*","/api/login","/api/loginv2","/api/user/logoutv2","/api/signup","/api/admin/**").permitAll()
 //                .antMatchers("/api**").permitAll()
-                .antMatchers("/api/*","/api/shop/**","/api/cart/**","/api/payment/**","api/readRefundRequest","/api/copyproduct","/api/pandamovieedit","" +
+                .antMatchers("/api/*","/api/shop/**","/api/cart/**","/api/payment/**","api/readRefundRequest","/api/copyproduct","/api/pandamovieedit","/api/haveshop",
                         "/product/api/proxy?url=/http://localhost:3000/**").authenticated()
 
 

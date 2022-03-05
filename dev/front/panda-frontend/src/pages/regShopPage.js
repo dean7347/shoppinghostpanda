@@ -5,9 +5,7 @@ import ShopContainer from "../containers/shop/ShopContainer";
 const regShopPage = () => {
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
+      <div style={{ zIndex: "99" }}></div>
       <ShopContainer />
     </>
   );
