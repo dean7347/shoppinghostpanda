@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { Redirect } from "react-router";
 import axios from "../../../node_modules/axios/index";
 import Shop from "../../components/common/Shop";
 import AdminShop from "../../containers/shop/AdminShop";
+import { useHistory } from "react-router-dom";
 
 const ShopContainer = ({ location, match }) => {
   // const { shop } = useSelector(({ shop }) => ({
@@ -15,7 +17,7 @@ const ShopContainer = ({ location, match }) => {
   // useEffect(() => {
   //   dispatch(haveShop());
   // }, [dispatch]);
-
+  let history = useHistory();
   const [haveshop, sethaveshop] = useState({ shop: "", isapprove: "" });
   useEffect(() => {
     axios.get("/api/haveshop").then((response) => {
@@ -65,7 +67,8 @@ const ShopContainer = ({ location, match }) => {
   if (haveshop.shop === true && haveshop.isapprove === true) {
     return (
       <>
-        <AdminShop />
+        {history.push("/seller/dashboard")}
+        {/* <AdminShop /> */}
       </>
     );
   }

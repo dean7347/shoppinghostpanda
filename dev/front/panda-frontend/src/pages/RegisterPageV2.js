@@ -604,9 +604,7 @@ const RegisterPageV2 = ({ history }) => {
   ////
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
+      <div style={{ zIndex: "99" }}></div>
       <br />
       <br />
       <br />
