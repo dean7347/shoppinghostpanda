@@ -1,11 +1,11 @@
 export const buyerSidebarItems = [
     {
-        "display_name": "Dashboard",
+        "display_name": "마이페이지",
         "route": "/buyer/dashboard",
         "icon": "bx bx-category-alt"
     },
     {
-        "display_name": "전체 주문",
+        "display_name": "주문 / 배송",
         "route": "/buyer/orderList",
         "icon": "bx bx-package"
     },
@@ -30,8 +30,8 @@ export const buyerSidebarItems = [
         "icon": "bx bx-message-dots"
     },
     {
-        "display_name": "설정",
-        "route": "/discount",
+        "display_name": "개인 설정",
+        "route": "/buyer/infoPage",
         "icon": "bx bx-cog"
     }
 ]
@@ -40,25 +40,25 @@ export const dashboardCard = [
     {
         "link": "/buyer/orderList",
         "icon": "bx bxs-truck",
-        "count": "0",
+        "count": 0,
         "title": "배송중"
     },
     {
         "link": "/buyer/orderList",
         "icon": "bx bx-package",
-        "count": "0",
+        "count": 0,
         "title": "배송 완료"
     },
     {
         "link": "/",
         "icon": "bx bx-x-circle",
-        "count": "0",
+        "count": 0,
         "title": "취소 / 반품"
     },
     {
-        "link": "/buyer/cart",
+        "link": "/cart",
         "icon": "bx bx-cart",
-        "count": "0",
+        "count": 0,
         "title": "장바구니"
     }
 ]
@@ -131,14 +131,7 @@ export const latestOrders = {
             date: "17 Jun 2021",
             price: "$900",
             status: "완료"
-        },
-        {
-            id: "#OD1711",
-            user: "john doe",
-            date: "17 Jun 2021",
-            price: "$900",
-            status: "완료"
-        },
+        }
     ]
 }
 

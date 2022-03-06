@@ -20,6 +20,7 @@ import SellerCancelReturnOrderPage from "./seller/SellerCancelReturnOrderPage";
 import AdminPandaManagementPage from "./admin/AdminPandaManagementPage";
 import AdminShopManagementPage from "./admin/AdminShopManagementPage";
 import AdminApplyManagementPage from "./admin/AdminApplyManagementPage";
+import BuyerInfoPage from "./buyer/BuyerInfoPage";
 
 const MyPageRoutes = () => {
     return (
@@ -28,6 +29,7 @@ const MyPageRoutes = () => {
             <Route path="/buyer/orderList" exact component={OrderListPage}/>
             <Route path="/buyer/cancelList" exact component={CancelListPage}/>
             <Route path="/buyer/cart" exact component={BuyerCartPage}/>
+            <Route path="/buyer/infoPage" exact component={BuyerInfoPage}/>
 
             <Route path="/panda/dashboard" exact component={PandaDashboard}/>
             <Route path="/panda/video" exact component={PandaVideoPage}/>
