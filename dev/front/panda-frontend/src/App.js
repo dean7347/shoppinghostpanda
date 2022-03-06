@@ -9,6 +9,7 @@ import Footer from "./components/common/Footer";
 import Loader from "./components/ekan/UI/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { loginCheck } from "./store/actions/authActions";
+import AdminIndex from "./components/ekan/pages/mypage/admin/AdminIndex";
 
 const LandingPage = React.lazy(() => import('./pages/LandingPage'));
 const WritePage = React.lazy(() => import('./pages/WritePage'));
@@ -102,6 +103,7 @@ const App = () => {
           <PrivateRoute path="/buyer" component={BuyerIndex} />
           <PrivateRoute path="/panda" component={PandaIndex} />
           <PrivateRoute path="/seller" component={SellerIndex} />
+          <PrivateRoute path="/admin" component={AdminIndex} />
           {/* //api테스트용 짬통페이지 */}
           <Route path="/testpage" component={TestPage} />
         </Switch>

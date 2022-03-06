@@ -3,10 +3,10 @@ import './statuscard.css'
 import { Link } from 'react-router-dom'
 
 
-const StatusCard = ({link, icon, count, title}) => {
+const StatusCard = ({link, icon, count, title, onClick}) => {
     return (
         <Link to={link}>
-            <div className="status-card">
+            <div className="status-card" id={title} onClick={onClick}>
                 <div className="status-card__icon">
                     <i className={icon}></i>
                 </div>
