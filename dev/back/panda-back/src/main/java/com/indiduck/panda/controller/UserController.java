@@ -69,7 +69,7 @@ public class UserController {
             ispanda=true;
         }
 
-        return ResponseEntity.ok(new UserEditDTO(isshop,ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
+        return ResponseEntity.ok(new UserEditDTO(true,isshop,ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
         //판다여부
     }
 
@@ -556,6 +556,7 @@ public class UserController {
 
     @Data
     private class UserEditDTO{
+        boolean success;
         boolean isShop;
         boolean isPanda;
         LocalDateTime regAt;
@@ -564,7 +565,8 @@ public class UserController {
         IfShop ifShop;
         IfPanda ifPanda;
 
-        public UserEditDTO(boolean isShop, boolean isPanda, LocalDateTime regAt, String email, String userName, Shop shop, Panda panda) {
+        public UserEditDTO(boolean su,boolean isShop, boolean isPanda, LocalDateTime regAt, String email, String userName, Shop shop, Panda panda) {
+            this.success=su;
             this.isShop = isShop;
             this.isPanda = isPanda;
             this.regAt=regAt;
@@ -592,7 +594,7 @@ public class UserController {
         String crn;
 
         //반품/교환 사유에 따른 요청 가능 기간
-        String cnaDate;
+        String canDate;
         //반품 교환 불가능 사유
         String noreturn;
         //회사주소
@@ -636,7 +638,7 @@ public class UserController {
             this.shopName = shop.getShopName();
             this.avdtime = shop.getAVDtime();
             this.crn = shop.getCRN();
-            this.cnaDate = shop.getCandate();
+            this.canDate = shop.getCandate();
             this.noreturn = shop.getNoreturn();
             this.comAddr = shop.getComaddress();
             this.csPhne = shop.getCsPhone();
@@ -661,11 +663,14 @@ public class UserController {
         String pandaName;
         String intCategory;
         String mainCh;
+        //승인여부
+        boolean confirm;
 
         public IfPanda(Panda panda) {
             this.pandaName = panda.getPandaName();
             this.intCategory = panda.getIntCategory();
             this.mainCh = panda.getMainCh();
+            this.confirm=panda.isRecognize();
         }
     }
 
