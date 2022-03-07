@@ -103,7 +103,10 @@ function CardInList(props) {
     // });
   };
   const onAdmin = () => {
-    axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
+    // axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
+    //   console.log(response);
+    // });
+    axios.get("/api/userprivateedit").then((response) => {
       console.log(response);
     });
   };

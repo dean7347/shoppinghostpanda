@@ -45,7 +45,33 @@ public class UserController {
     @Autowired
     private final UserOrderService userOrderService;
 
-    
+
+
+    @GetMapping("/api/userprivateedit")
+    public ResponseEntity<?> userPrivateEdit(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication) { // 회원 추가
+        //상점여부
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        User user = byEmail.get();
+        Shop shop = byEmail.get().getShop();
+        Panda panda = byEmail.get().getPanda();
+        System.out.println("panda = " + panda);
+        System.out.println("shop = " + shop);
+        boolean isshop=false;
+        boolean ispanda=false;
+        if(shop!=null)
+        {
+            isshop=true;
+        }
+        if(panda!=null)
+        {
+            ispanda=true;
+        }
+
+        return ResponseEntity.ok(new UserEditDTO(isshop,ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
+        //판다여부
+    }
 
     @GetMapping("/api/dashboard")
     public ResponseEntity<?> mainDashBoard(@CurrentSecurityContext(expression = "authentication")
@@ -528,7 +554,120 @@ public class UserController {
     }
 
 
+    @Data
+    private class UserEditDTO{
+        boolean isShop;
+        boolean isPanda;
+        LocalDateTime regAt;
+        String Email;
+        String userName;
+        IfShop ifShop;
+        IfPanda ifPanda;
 
+        public UserEditDTO(boolean isShop, boolean isPanda, LocalDateTime regAt, String email, String userName, Shop shop, Panda panda) {
+            this.isShop = isShop;
+            this.isPanda = isPanda;
+            this.regAt=regAt;
+            Email = email;
+            this.userName = userName;
+            if(shop !=null)
+            {
+                this.ifShop=new IfShop(shop);;
+
+            }
+            if(panda !=null)
+            {
+                this.ifPanda =new IfPanda(panda);
+
+            }
+        }
+    }
+    @Data
+    private class IfShop
+    {
+        String shopName;
+        //평균배송기간
+        String avdtime;
+        //CRN
+        String crn;
+
+        //반품/교환 사유에 따른 요청 가능 기간
+        String cnaDate;
+        //반품 교환 불가능 사유
+        String noreturn;
+        //회사주소
+        String comAddr;
+        //cs전화번호
+        String csPhne;
+        //cs시간
+        String csTime;
+        //무료배송비용 (새로 담기는 주문부터 적용됩니다)
+        int freePrice;
+
+        //이즈 어프로브?
+        boolean isApprove;
+        //이즈 오픈?
+        boolean isOpen;
+        //유료 배송비용
+        int NOFREE;
+
+        //통판업번호
+        String number;
+        //비상연락번호
+        String priPhone;
+
+        //대표자
+        String representative;
+
+        //반품지정 택배사
+        String reship;
+        //반송주소
+        String returnAddress;
+        //반품비용
+        int returnpee;
+        //샵 이름
+
+        //투판다
+        String topanda;
+        //교환비용
+        int tradeFee;
+
+        public IfShop(Shop shop) {
+            this.shopName = shop.getShopName();
+            this.avdtime = shop.getAVDtime();
+            this.crn = shop.getCRN();
+            this.cnaDate = shop.getCandate();
+            this.noreturn = shop.getNoreturn();
+            this.comAddr = shop.getComaddress();
+            this.csPhne = shop.getCsPhone();
+            this.csTime = shop.getCsTime();
+            this.freePrice = shop.getFreePrice();
+            this.isApprove = shop.isApprove();
+            this.isOpen = shop.isOpen();
+            this.NOFREE = shop.getNofree();
+            this.number = shop.getNumber();
+            this.priPhone = shop.getPriPhone();
+            this.representative = shop.getRepresentative();
+            this.reship = shop.getReship();
+            this.returnAddress = shop.getReturnaddress();
+            this.returnpee = shop.getReturnpee();
+            this.topanda = shop.getToPanda();
+            this.tradeFee = shop.getTradepee();
+        }
+    }
+    @Data
+    private class IfPanda
+    {
+        String pandaName;
+        String intCategory;
+        String mainCh;
+
+        public IfPanda(Panda panda) {
+            this.pandaName = panda.getPandaName();
+            this.intCategory = panda.getIntCategory();
+            this.mainCh = panda.getMainCh();
+        }
+    }
 
     @Data
     private class DetailOrderList{
