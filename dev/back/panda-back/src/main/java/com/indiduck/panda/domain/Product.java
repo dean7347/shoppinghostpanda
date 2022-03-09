@@ -47,8 +47,18 @@ public class Product {
 
     //전자상거래등에서의상품등의정보제공에관한고시
     private int type;
+
+    //고시값
     @Lob
-    private String lowvalue;
+    private String notice;
+    @Lob
+    private String noticeValue;
+    @Lob
+    private String pandaMessage;
+
+
+//    @Lob
+//    private String lowvalue;
 
     //엮인 게시글
     @OneToMany(mappedBy = "product")
@@ -103,13 +113,15 @@ public class Product {
     }
 
     //==생성==//
-    public static Product newProDuct(String name, String desc, int type, String lowvalue) {
+    public static Product newProDuct(String name, String desc, int type, String notice,String noticeValue,String panam) {
         Product pro = new Product();
         pro.productName = name;
         pro.productDesc = desc;
         pro.type = type;
-        pro.lowvalue = lowvalue;
+        pro.notice=notice;
+        pro.noticeValue=noticeValue;
         pro.productRegAt = LocalDateTime.now();
+        pro.pandaMessage=panam;
 
 
         return pro;
@@ -124,7 +136,7 @@ public class Product {
         copy.sales = pro.sales;
         copy.deleted = pro.deleted;
         copy.type = pro.type;
-        copy.lowvalue = pro.lowvalue;
+
         copy.productOptions = pro.productOptions;
         copy.shop = pro.shop;
 
@@ -136,9 +148,6 @@ public class Product {
         images.remove(file);
     }
 
-    public void setLowvalue(String law) {
-        this.lowvalue = law;
-    }
 
     public void changeType(int type) {
         this.type = type;

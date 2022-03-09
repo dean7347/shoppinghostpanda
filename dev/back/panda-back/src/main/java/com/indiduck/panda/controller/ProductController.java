@@ -14,6 +14,7 @@ import com.indiduck.panda.domain.dto.FileDao;
 import com.indiduck.panda.util.MD5Generator;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.Lob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -249,22 +251,29 @@ public class ProductController {
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                       Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
         System.out.println("createProductDAO = " + createProductDAO);
+        List<String> notice = createProductDAO.notice;
+        String s = notice.toString();
+        System.out.println("s = " + s);
+        List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
+        System.out.println("list = " + list);
+        System.out.println("list.get(0) = " + list.get(0));
+//        Product product=productService.createNewProduct(
+//                authentication.getName(),
+//                createProductDAO.thumb,
+//                createProductDAO.title,
+//                createProductDAO.description,
+//                createProductDAO.images,
+//                createProductDAO.Options,
+//                createProductDAO.type,
+//                createProductDAO.notice.toString(),
+//                createProductDAO.noticeValue.toString(),
+//                createProductDAO.pandaMessage
+//
+//        );
 
-        Product product=productService.createNewProduct(
-                authentication.getName(),
-                createProductDAO.thumb,
-                createProductDAO.title,
-                createProductDAO.description,
-                createProductDAO.images,
-                createProductDAO.Options,
-                createProductDAO.type,
-                createProductDAO.lowform
-
-        );
-
-        if(product==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
-        }
+//        if(product==null){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
+//        }
         return ResponseEntity.ok(new ResultDto(true));
     }
 
@@ -310,21 +319,21 @@ public class ProductController {
                                                       Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
         System.out.println("createProductDAO = " + createProductDAO);
 
-        Product product=productService.createNewProduct(
-                authentication.getName(),
-                createProductDAO.thumb,
-                createProductDAO.title,
-                createProductDAO.description,
-                createProductDAO.images,
-                createProductDAO.Options,
-                createProductDAO.type,
-                createProductDAO.lowform
+//        Product product=productService.createNewProduct(
+//                authentication.getName(),
+//                createProductDAO.thumb,
+//                createProductDAO.title,
+//                createProductDAO.description,
+//                createProductDAO.images,
+//                createProductDAO.Options,
+//                createProductDAO.type
+//                createProductDAO.lowform
+//
+//        );
 
-        );
-
-        if(product==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
-        }
+//        if(product==null){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
+//        }
         return ResponseEntity.ok(new ResultDto(true));
     }
      //상품 수정
@@ -473,7 +482,7 @@ public class ProductController {
             productName=detail.getProductName();
             productDesc=detail.getProductDesc();
             type = detail.getType();
-            lowform =detail.getLowvalue();
+//            lowform =detail.getLowvalue();
             Shop shop = detail.getShop();
             //상점정보
             shopName=shop.getShopName();
@@ -572,7 +581,10 @@ public class ProductController {
         private List<String> images;
         private List<ProductOption> Options;
         private int type;
-        private String lowform;
+        private List<String> notice;
+        private List<String> noticeValue;
+        private String pandaMessage;
+//        private String lowform;
 
     }
 

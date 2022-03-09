@@ -13,12 +13,59 @@ const { TextArea } = Input;
 function NewProductForm() {
   const onFinish = (values) => {
     console.log("Received values of form:", values);
+    // if (
+    //   !Title ||
+    //   !Description ||
+    //   !Images.length > 0 ||
+    //   !Options ||
+    //   !Thumb.length > 0
+    // ) {
+    //   return alert("모든 값을 넣어주셔야 합니다");
+    // }
+    if (Low === undefined) {
+      return alert("품목을 선택해주세요!");
+    }
+    if (values.notice === undefined) {
+      return alert("상품정보는 필수 입력 사항입니다");
+    }
+    let first = [];
+    let last = [];
+    values.notice.map((it, idx) => {
+      first.push(it.first);
+      last.push(it.last);
+    });
+    console.log(first);
+    console.log(last);
+    const body = {
+      //로그인 된 사람의 ID
+      title: Title,
+      description: Description,
+      images: Images,
+      options: Options,
+      thumb: Thumb,
+      type: Low,
+      notice: first,
+      noticeValue: last,
+      pandaMessage: pandaDescription,
+    };
+    console.log(body);
+    // // console.log(body);
+    axios.post("/api/regnewproduct", body).then((response) => {
+      if (response.data.success) {
+        alert("상품 업로드에 성공했습니다");
+        // history.push("/shop");
+      } else {
+        alert("상품업로드에 실패 했습니다.");
+      }
+    });
   };
   const history = useHistory();
 
   const { Option, OptGroup } = Select;
   const [Title, setTitle] = useState("");
   const [Description, setDescription] = useState("");
+  const [pandaDescription, setPandaDescription] = useState("");
+
   const [Price, setPrice] = useState(0);
   const [Continent, setContinent] = useState(1);
   const [Images, setImages] = useState([]);
@@ -49,40 +96,42 @@ function NewProductForm() {
     };
     setForm(nextForm);
   };
-  const onClickForm = async (e) => {
-    const tostringform = JSON.stringify(form);
+  // const onClickForm = async (e) => {
+  //   const tostringform = JSON.stringify(form);
 
-    if (
-      !Title ||
-      !Description ||
-      !Images.length > 0 ||
-      !Options ||
-      !Thumb.length > 0
-    ) {
-      return alert("모든 값을 넣어주셔야 합니다");
-    }
-    // // console.log(tostringform.toString());
-    //서버에 채운 값들 request로 보낸다
-    const body = {
-      //로그인 된 사람의 ID
-      title: Title,
-      description: Description,
-      images: Images,
-      options: Options,
-      thumb: Thumb,
-      type: Low,
-      lowform: tostringform,
-    };
-    // // console.log(body);
-    axios.post("/api/regnewproduct", body).then((response) => {
-      if (response.data.success) {
-        alert("상품 업로드에 성공했습니다");
-        history.push("/shop");
-      } else {
-        alert("상품업로드에 실패 했습니다.");
-      }
-    });
-  };
+  //   if (
+  //     !Title ||
+  //     !Description ||
+  //     !Images.length > 0 ||
+  //     !Options ||
+  //     !pandaDescription ||
+  //     !Thumb.length > 0
+  //   ) {
+  //     return alert("모든 값을 넣어주셔야 합니다");
+  //   }
+  //   // // console.log(tostringform.toString());
+  //   //서버에 채운 값들 request로 보낸다
+  //   const body = {
+  //     //로그인 된 사람의 ID
+  //     title: Title,
+  //     description: Description,
+  //     images: Images,
+  //     options: Options,
+  //     thumb: Thumb,
+  //     type: Low,
+  //     lowform: tostringform,
+  //     pandaMessage: pandaDescription,
+  //   };
+  //   // // console.log(body);
+  //   axios.post("/api/regnewproduct", body).then((response) => {
+  //     if (response.data.success) {
+  //       alert("상품 업로드에 성공했습니다");
+  //       history.push("/shop");
+  //     } else {
+  //       alert("상품업로드에 실패 했습니다.");
+  //     }
+  //   });
+  // };
 
   const [Options, setOptions] = useState([]);
   //고유값으로 사용될 id ref사용하여 번수담기
@@ -120,6 +169,9 @@ function NewProductForm() {
     setDescription(event.currentTarget.value);
   };
 
+  const PandadescriptionChangeHandler = (event) => {
+    setPandaDescription(event.currentTarget.value);
+  };
   const priceChangeHandler = (event) => {
     setPrice(event.currentTarget.value);
   };
@@ -193,6 +245,13 @@ function NewProductForm() {
           <TextArea onChange={descriptionChangeHandler} value={Description} />
           <br />
           <br />
+          <label>판다에게 상품을 홍보시 주의사항/요청사항을 입력해주세요</label>
+          <TextArea
+            onChange={PandadescriptionChangeHandler}
+            value={pandaDescription}
+          />
+          <br />
+          <br />
         </Form>
         {/* <label> 옵션</label> */}
         <OptionTemplate>
@@ -264,7 +323,7 @@ function NewProductForm() {
         <br />
         <br />
         {/* {lowOption(Low)} */}
-        <button onClick={submitHandler}>상품등록하기</button>
+        {/* <button onClick={submitHandler}>상품등록하기</button> */}
       </div>
       <div
         style={{
@@ -279,7 +338,7 @@ function NewProductForm() {
           onFinish={onFinish}
           autoComplete="off"
         >
-          <Form.List name="users">
+          <Form.List name="notice">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
@@ -292,17 +351,17 @@ function NewProductForm() {
                       {...restField}
                       name={[name, "first"]}
                       rules={[
-                        { required: true, message: "Missing first name" },
+                        { required: true, message: "고시항목을 입력해주세요" },
                       ]}
                     >
-                      <Input placeholder="First Name" />
+                      <Input placeholder="고시 항목" />
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       name={[name, "last"]}
-                      rules={[{ required: true, message: "Missing last name" }]}
+                      rules={[{ required: true, message: "값을 입력해주세요" }]}
                     >
-                      <Input placeholder="Last Name" />
+                      <Input placeholder="값" />
                     </Form.Item>
                     <MinusCircleOutlined onClick={() => remove(name)} />
                   </Space>
@@ -320,7 +379,7 @@ function NewProductForm() {
                       block
                       icon={<PlusOutlined />}
                     >
-                      고시항목 추가
+                      상품정보 추가
                     </Button>
                   </div>
                 </Form.Item>
@@ -329,7 +388,7 @@ function NewProductForm() {
           </Form.List>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Submit
+              상품등록하기
             </Button>
           </Form.Item>
         </Form>

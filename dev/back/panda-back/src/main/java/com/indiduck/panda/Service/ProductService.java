@@ -35,9 +35,9 @@ public class ProductService {
     ShopRepository shopRepository;
 
     public Product createNewProduct(String user, List<String> thumb, String title, String descriptoin,
-                                    List<String> images, List<ProductOption> options, int type, String lowvalue) {
+                                    List<String> images, List<ProductOption> options, int type, String notice,String noticeValue,String pandam) {
 
-        Product newProduct = Product.newProDuct(title, descriptoin, type, lowvalue);
+        Product newProduct = Product.newProDuct(title, descriptoin, type, notice,noticeValue,pandam);
         productRepository.save(newProduct);
 
         images.forEach(e -> {
@@ -75,18 +75,18 @@ public class ProductService {
 //        System.out.println(" 카피요청받음 "+save.getId());
 //        Optional<Product> byId1 = productRepository.findById(save.getId());
 //        System.out.println("생성된거 = " + byId1.get().getProductName());
-        for(int i =0; i<=10; i++)
-        {
-            System.out.println(" 로직싫애");
-            Product newProduct = Product.newProDuct("더미데이터제목+"+"i", "더미밸류"+"i", 2, "{\"a\":\"신발\",\"b\":\"색상\",\"c\":\"치수\",\"d\":\"제조자\",\"e\":\"제조국\",\"f\":\"취급시주의사항\",\"g\":\"품질보증기준\",\"h\":\"A/S책임자와 전화번호\",\"i\":\"\",\"j\":\"\",\"k\":\"\",\"l\":\"\",\"m\":\"\",\"n\":\"\",\"o\":\"\"}");
-            productRepository.save(newProduct);
-            File filebyFilepath = fileService.getFilebyFilepath("shop2@gmail.com/ab3307ea-2fd7-4b46-9d05-c295c0c929e511d91d21-17de-499b-b4b5-8b0cde94f4cb디테일2.png");
-            newProduct.setImage(filebyFilepath);
-            File filebyFilepath1 = fileService.getFilebyFilepath("shop2@gmail.com/5c2fd420-7977-4a08-8ade-d0b5251adcaa54df513d-eb60-4fe6-8afa-987b633b1a0d썸1.png");
-            newProduct.setThumbImage(filebyFilepath1);
-            newProduct.setProductOptions(byId.get().getProductOptions().get(0));
-            newProduct.setShop(byId.get().getShop());
-        }
+//        for(int i =0; i<=10; i++)
+//        {
+//            System.out.println(" 로직싫애");
+//            Product newProduct = Product.newProDuct("더미데이터제목+"+"i", "더미밸류"+"i", 2, "{\"a\":\"신발\",\"b\":\"색상\",\"c\":\"치수\",\"d\":\"제조자\",\"e\":\"제조국\",\"f\":\"취급시주의사항\",\"g\":\"품질보증기준\",\"h\":\"A/S책임자와 전화번호\",\"i\":\"\",\"j\":\"\",\"k\":\"\",\"l\":\"\",\"m\":\"\",\"n\":\"\",\"o\":\"\"}");
+//            productRepository.save(newProduct);
+//            File filebyFilepath = fileService.getFilebyFilepath("shop2@gmail.com/ab3307ea-2fd7-4b46-9d05-c295c0c929e511d91d21-17de-499b-b4b5-8b0cde94f4cb디테일2.png");
+//            newProduct.setImage(filebyFilepath);
+//            File filebyFilepath1 = fileService.getFilebyFilepath("shop2@gmail.com/5c2fd420-7977-4a08-8ade-d0b5251adcaa54df513d-eb60-4fe6-8afa-987b633b1a0d썸1.png");
+//            newProduct.setThumbImage(filebyFilepath1);
+//            newProduct.setProductOptions(byId.get().getProductOptions().get(0));
+//            newProduct.setShop(byId.get().getShop());
+//        }
 
 
 
@@ -143,7 +143,7 @@ public class ProductService {
 
     public void editLow(Long product, int type, String law) {
         Optional<Product> byId = productRepository.findById(product);
-        byId.get().setLowvalue(law);
+//        byId.get().setLowvalue(law);
         byId.get().changeType(type);
 
     }
