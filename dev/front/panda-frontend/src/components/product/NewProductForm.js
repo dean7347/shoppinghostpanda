@@ -1,16 +1,19 @@
 import FileUpload from "../common/FileUpload";
-import { Typography, Form, Input, Button, Select } from "antd";
+import { Typography, Form, Input, Button, Select, Space } from "antd";
 import React, { useState, useRef, useCallback } from "react";
 import axios from "../../../node_modules/axios/index";
 import OptionTemplate from "../common/List/OptionTemplate";
 import TodoInsert from "../common/List/TodoInsert";
 import TodoList from "../common/List/TodoList";
 import { useHistory } from "react-router-dom";
-
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 const { Titled } = Typography;
 const { TextArea } = Input;
 
 function NewProductForm() {
+  const onFinish = (values) => {
+    console.log("Received values of form:", values);
+  };
   const history = useHistory();
 
   const { Option, OptGroup } = Select;
@@ -80,7 +83,271 @@ function NewProductForm() {
       }
     });
   };
-  const lowOption = (setOption) => {
+
+  const [Options, setOptions] = useState([]);
+  //고유값으로 사용될 id ref사용하여 번수담기
+  const nextId = useRef(1);
+  function handleChange(value) {
+    // // console.log(`selected ${value}`);
+    setLow(value);
+  }
+  const onInsert = useCallback(
+    (optionName, optionPrice, optionStock) => {
+      const Option = {
+        id: nextId.current,
+        optionName,
+        optionPrice,
+        optionStock,
+      };
+      setOptions(Options.concat(Option));
+      nextId.current += 1;
+    },
+    [Options]
+  );
+
+  const onRemove = useCallback(
+    (id) => {
+      setOptions(Options.filter((Option) => Option.id !== id));
+    },
+    [Options]
+  );
+
+  const titleChangeHandler = (event) => {
+    setTitle(event.currentTarget.value);
+  };
+
+  const descriptionChangeHandler = (event) => {
+    setDescription(event.currentTarget.value);
+  };
+
+  const priceChangeHandler = (event) => {
+    setPrice(event.currentTarget.value);
+  };
+
+  const continentChangeHandler = (event) => {
+    setContinent(event.currentTarget.value);
+  };
+
+  const updateImages = (newImages) => {
+    setImages(newImages);
+  };
+
+  const updateThumb = (newThumb) => {
+    setThumb(newThumb);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    // console.log(event);
+    // // console.log("등록시작");
+
+    // if (!Title || !Description || !Images || !Options || !Thumb) {
+    //   return alert("모든 값을 넣어주셔야 합니다");
+    // }
+
+    // //서버에 채운 값들 request로 보낸다
+    // const body = {
+    //   //로그인 된 사람의 ID
+    //   title: Title,
+    //   description: Description,
+    //   images: Images,
+    //   options: Options,
+    //   thumb: Thumb,
+    // };
+    // axios.post("/regnewproduct", body).then((response) => {
+    //   if (response.data.success) {
+    //     alert("상품 업로드에 성공했습니다");
+    //     history.push("/");
+    //   } else {
+    //     alert("상품업로드에 실패 했습니다.");
+    //   }
+    // });
+  };
+  return (
+    <>
+      <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <h2> 상품 업로드</h2>
+        </div>
+        <Form onSubmit={submitHandler}>
+          <label>
+            썸네일(640 * 640 이하, 가로세로 크기가 같아야합니다)
+            <br />
+            jpg/png 파일만 허용됩니다
+          </label>
+          <FileUpload refreshFunction={updateThumb} type={"thumb"} />
+          <label>
+            상품상세사진 (가로사이즈 860 이하)
+            <br />
+            jpg/png 파일만 허용됩니다
+          </label>
+          <FileUpload refreshFunction={updateImages} type={"detail"} />
+
+          <br />
+          <br />
+          <label>상품 이름</label>
+          <Input onChange={titleChangeHandler} value={Title} />
+          <br />
+          <br />
+          <label>설명</label>
+          <TextArea onChange={descriptionChangeHandler} value={Description} />
+          <br />
+          <br />
+        </Form>
+        {/* <label> 옵션</label> */}
+        <OptionTemplate>
+          <TodoInsert onInsert={onInsert} />
+          <TodoList Options={Options} onRemove={onRemove} onInsert={onInsert} />
+        </OptionTemplate>
+        *https://www.law.go.kr/행정규칙/전자상거래등에서의상품등의정보제공에관한고시
+        <br />를 따르며 사이트의 정책여건상 단축표기될 수 있습니다
+        <br /> 모든 사항은 위 고시에 따르며 해당 내용 미표기,미흡에 대한 책임은
+        <br />
+        쇼핑호스트 판다에서 지지않습니다.
+        <br />
+        관련 필수 표기,법규를 꼭 참고해주시기 바랍니다
+        <br />
+        <Select
+          defaultValue="품목선택"
+          style={{ width: 200 }}
+          onChange={handleChange}
+        >
+          <OptGroup label="분류">
+            <Option value="1">의류</Option>
+            <Option value="2">구두 / 신발</Option>
+            <Option value="3">가방</Option>
+            <Option value="4">패션 잡화 (모자 / 벨트 / 액세서리)</Option>
+            <Option value="5">침구류 / 커튼</Option>
+            <Option value="6">가구(침대 / 소파 / 싱크대 / DIY제품)</Option>
+            <Option value="7">영상가전(TV류)</Option>
+            <Option value="8">
+              가정용 전기제품(냉장고 / 세탁기 /식기세척기 / 전자레인지)
+            </Option>
+            <Option value="9">계절가전(에어컨 /온풍기)</Option>
+            <Option value="10">사무용기기(컴퓨터 / 노트북 / 프린터)</Option>
+            <Option value="11">광학기기(디지털카메라 / 캠코더)</Option>
+            <Option value="12">소형전자(MP3 / 전자사전 등)</Option>
+            <Option value="13">휴대폰</Option>
+            <Option value="14">내비게이션</Option>
+            <Option value="15">자동차용품(자동차부품/기타 자동차용품)</Option>
+            <Option value="16">의료기기</Option>
+            <Option value="17">주방용품</Option>
+            <Option value="18">화장품</Option>
+            <Option value="19">귀금속/보석/시계류</Option>
+            <Option value="20">식품(농수축산물)</Option>
+            <Option value="21">가공식품</Option>
+            <Option value="22">건강기능식품</Option>
+            <Option value="23">영유아용품</Option>
+            <Option value="24">악기</Option>
+            <Option value="25">스포츠용품</Option>
+            <Option value="26">서적</Option>
+            <Option value="27">호텔 /펜션 예약</Option>
+            <Option value="28">여행패키지</Option>
+            <Option value="29">항공권</Option>
+            <Option value="30">자동차 대여 서비스(렌터카)</Option>
+            <Option value="31">
+              물품대여 서비스 (정수기,비데,공기청정기 등 )
+            </Option>
+            <Option value="32">
+              물품대여 서비스 (서적, 유야용품,행사용품 등)
+            </Option>
+            <Option value="33">디지털 콘텐츠(음원, 게임, 인터넷강의 등</Option>
+            <Option value="34">상품권 / 쿠폰</Option>
+            <Option value="35">모바일 쿠폰</Option>
+            <Option value="36">영화 공연</Option>
+            <Option value="37">생활화학제품</Option>
+            <Option value="38">살생물제품</Option>
+            <Option value="39">기타 용역</Option>
+            <Option value="40">기타 재화</Option>
+          </OptGroup>
+        </Select>
+        <br />
+        <br />
+        {/* {lowOption(Low)} */}
+        <button onClick={submitHandler}>상품등록하기</button>
+      </div>
+      <div
+        style={{
+          textAlign: "center",
+
+          marginBottom: "2rem",
+        }}
+      >
+        <Form
+          name="dynamic_form_nest_item"
+          style={{ display: "inline-block" }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.List name="users">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space
+                    key={key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      {...restField}
+                      name={[name, "first"]}
+                      rules={[
+                        { required: true, message: "Missing first name" },
+                      ]}
+                    >
+                      <Input placeholder="First Name" />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "last"]}
+                      rules={[{ required: true, message: "Missing last name" }]}
+                    >
+                      <Input placeholder="Last Name" />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(name)} />
+                  </Space>
+                ))}
+                <Form.Item>
+                  <div
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      고시항목 추가
+                    </Button>
+                  </div>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </>
+  );
+}
+export default NewProductForm;
+
+/**
+ *                 createProductDAO.Image,
+                createProductDAO.productName,
+                createProductDAO.productPrice,
+                createProductDAO.productOptions,
+                createProductDAO.productDesc
+ */
+/*
+ const lowOption = (setOption) => {
     // console.log(setOption);
     switch (setOption) {
       //의류
@@ -3818,198 +4085,4 @@ function NewProductForm() {
         return <div>품목명을확인해주세요</div>;
     }
   };
-
-  const [Options, setOptions] = useState([]);
-  //고유값으로 사용될 id ref사용하여 번수담기
-  const nextId = useRef(1);
-  function handleChange(value) {
-    // // console.log(`selected ${value}`);
-    setLow(value);
-  }
-  const onInsert = useCallback(
-    (optionName, optionPrice, optionStock) => {
-      const Option = {
-        id: nextId.current,
-        optionName,
-        optionPrice,
-        optionStock,
-      };
-      setOptions(Options.concat(Option));
-      nextId.current += 1;
-    },
-    [Options]
-  );
-
-  const onRemove = useCallback(
-    (id) => {
-      setOptions(Options.filter((Option) => Option.id !== id));
-    },
-    [Options]
-  );
-
-  const titleChangeHandler = (event) => {
-    setTitle(event.currentTarget.value);
-  };
-
-  const descriptionChangeHandler = (event) => {
-    setDescription(event.currentTarget.value);
-  };
-
-  const priceChangeHandler = (event) => {
-    setPrice(event.currentTarget.value);
-  };
-
-  const continentChangeHandler = (event) => {
-    setContinent(event.currentTarget.value);
-  };
-
-  const updateImages = (newImages) => {
-    setImages(newImages);
-  };
-
-  const updateThumb = (newThumb) => {
-    setThumb(newThumb);
-  };
-
-  const submitHandler = (event) => {
-    event.preventDefault();
-    // console.log(event);
-    // // console.log("등록시작");
-
-    // if (!Title || !Description || !Images || !Options || !Thumb) {
-    //   return alert("모든 값을 넣어주셔야 합니다");
-    // }
-
-    // //서버에 채운 값들 request로 보낸다
-    // const body = {
-    //   //로그인 된 사람의 ID
-    //   title: Title,
-    //   description: Description,
-    //   images: Images,
-    //   options: Options,
-    //   thumb: Thumb,
-    // };
-    // axios.post("/regnewproduct", body).then((response) => {
-    //   if (response.data.success) {
-    //     alert("상품 업로드에 성공했습니다");
-    //     history.push("/");
-    //   } else {
-    //     alert("상품업로드에 실패 했습니다.");
-    //   }
-    // });
-  };
-  return (
-    <>
-      <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <h2> 상품 업로드</h2>
-        </div>
-        <Form onSubmit={submitHandler}>
-          <label>
-            썸네일(640 * 640 이하, 가로세로 크기가 같아야합니다)
-            <br />
-            jpg/png 파일만 허용됩니다
-          </label>
-          <FileUpload refreshFunction={updateThumb} type={"thumb"} />
-          <label>
-            상품상세사진 (가로사이즈 860 이하)
-            <br />
-            jpg/png 파일만 허용됩니다
-          </label>
-          <FileUpload refreshFunction={updateImages} type={"detail"} />
-
-          <br />
-          <br />
-          <label>상품 이름</label>
-          <Input onChange={titleChangeHandler} value={Title} />
-          <br />
-          <br />
-          <label>설명</label>
-          <TextArea onChange={descriptionChangeHandler} value={Description} />
-          <br />
-          <br />
-        </Form>
-        {/* <label> 옵션</label> */}
-        <OptionTemplate>
-          <TodoInsert onInsert={onInsert} />
-          <TodoList Options={Options} onRemove={onRemove} onInsert={onInsert} />
-        </OptionTemplate>
-        *https://www.law.go.kr/행정규칙/전자상거래등에서의상품등의정보제공에관한고시
-        <br />를 따르며 사이트의 정책여건상 단축표기될 수 있습니다
-        <br /> 모든 사항은 위 고시에 따르며 해당 내용 미표기,미흡에 대한 책임은
-        <br />
-        쇼핑호스트 판다에서 지지않습니다.
-        <br />
-        관련 필수 표기,법규를 꼭 참고해주시기 바랍니다
-        <br />
-        <Select
-          defaultValue="품목선택"
-          style={{ width: 200 }}
-          onChange={handleChange}
-        >
-          <OptGroup label="분류">
-            <Option value="1">의류</Option>
-            <Option value="2">구두 / 신발</Option>
-            <Option value="3">가방</Option>
-            <Option value="4">패션 잡화 (모자 / 벨트 / 액세서리)</Option>
-            <Option value="5">침구류 / 커튼</Option>
-            <Option value="6">가구(침대 / 소파 / 싱크대 / DIY제품)</Option>
-            <Option value="7">영상가전(TV류)</Option>
-            <Option value="8">
-              가정용 전기제품(냉장고 / 세탁기 /식기세척기 / 전자레인지)
-            </Option>
-            <Option value="9">계절가전(에어컨 /온풍기)</Option>
-            <Option value="10">사무용기기(컴퓨터 / 노트북 / 프린터)</Option>
-            <Option value="11">광학기기(디지털카메라 / 캠코더)</Option>
-            <Option value="12">소형전자(MP3 / 전자사전 등)</Option>
-            <Option value="13">휴대폰</Option>
-            <Option value="14">내비게이션</Option>
-            <Option value="15">자동차용품(자동차부품/기타 자동차용품)</Option>
-            <Option value="16">의료기기</Option>
-            <Option value="17">주방용품</Option>
-            <Option value="18">화장품</Option>
-            <Option value="19">귀금속/보석/시계류</Option>
-            <Option value="20">식품(농수축산물)</Option>
-            <Option value="21">가공식품</Option>
-            <Option value="22">건강기능식품</Option>
-            <Option value="23">영유아용품</Option>
-            <Option value="24">악기</Option>
-            <Option value="25">스포츠용품</Option>
-            <Option value="26">서적</Option>
-            <Option value="27">호텔 /펜션 예약</Option>
-            <Option value="28">여행패키지</Option>
-            <Option value="29">항공권</Option>
-            <Option value="30">자동차 대여 서비스(렌터카)</Option>
-            <Option value="31">
-              물품대여 서비스 (정수기,비데,공기청정기 등 )
-            </Option>
-            <Option value="32">
-              물품대여 서비스 (서적, 유야용품,행사용품 등)
-            </Option>
-            <Option value="33">디지털 콘텐츠(음원, 게임, 인터넷강의 등</Option>
-            <Option value="34">상품권 / 쿠폰</Option>
-            <Option value="35">모바일 쿠폰</Option>
-            <Option value="36">영화 공연</Option>
-            <Option value="37">생활화학제품</Option>
-            <Option value="38">살생물제품</Option>
-            <Option value="39">기타 용역</Option>
-            <Option value="40">기타 재화</Option>
-          </OptGroup>
-        </Select>
-        <br />
-        <br />
-        {lowOption(Low)}
-        {/* <button onClick={submitHandler}>상품등록하기</button> */}
-      </div>
-    </>
-  );
-}
-export default NewProductForm;
-
-/**
- *                 createProductDAO.Image,
-                createProductDAO.productName,
-                createProductDAO.productPrice,
-                createProductDAO.productOptions,
-                createProductDAO.productDesc
- */
+*/
