@@ -7,7 +7,6 @@ import { setUserAgent } from "react-device-detect";
 import { Input, Form, Space, InputNumber } from "antd";
 import { objectMethod } from "../../../../../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
 const BuyerInfoPage = () => {
-  const { TextArea } = Input;
   const [loader, SetLoader] = useState(0);
   const [user, SetUser] = useState({
     email: "",
@@ -166,6 +165,10 @@ const BuyerInfoPage = () => {
   const [topanda] = Form.useForm();
   const [tradeFee] = Form.useForm();
 
+  const [pandaName] = Form.useForm();
+  const [intCategory] = Form.useForm();
+  const [mainCh] = Form.useForm();
+
   const onFinish = (values, type, dfd) => {
     var targetKey = Object.keys(values);
     var targetValue = Object.values(values);
@@ -188,12 +191,42 @@ const BuyerInfoPage = () => {
       }
     });
   };
+  const onFinishPanda = (values, type, dfd) => {
+    var targetKey = Object.keys(values);
+    var targetValue = Object.values(values);
+    const body = {
+      target: targetKey[0],
+      values: targetValue[0],
+    };
+    if (body.values === undefined) {
+      alert("빈값은 입력할 수 없습니다");
+      return;
+    }
+    console.log(body);
+    axios.post("/api/editPanda", body).then((response) => {
+      console.log(response);
+      if (response.data.success) {
+        alert("성공적으로 변경되었습니다.");
+        SetLoader(loader + 1);
+      } else {
+        alert("변경에 실패했습니다");
+      }
+    });
+  };
 
   const onFinishFailed = () => {
     console.log("Submit failed!");
   };
 
   const [shopEditor, SetShopEditor] = useState(false);
+  const [pandaEditor, SetPandaEditor] = useState(false);
+  const onClickPandaEditor = () => {
+    if (pandaEditor === true) {
+      SetPandaEditor(false);
+    } else {
+      SetPandaEditor(true);
+    }
+  };
   const onClickShopEditor = () => {
     if (shopEditor === true) {
       SetShopEditor(false);
@@ -1036,9 +1069,21 @@ const BuyerInfoPage = () => {
             <Divider />
             {user.panda && (
               <div>
+                <br />
+                <br />
+                <br />
                 <Divider />
                 <Divider />
                 판다정보
+                <span className="float-end">
+                  <Button
+                    onClick={() => {
+                      onClickPandaEditor();
+                    }}
+                    text="판다정보 수정하기"
+                    className="is-info is-small is-outlined"
+                  />
+                </span>
                 <Divider />
                 <Divider />
                 <Divider />
@@ -1048,6 +1093,38 @@ const BuyerInfoPage = () => {
                   </h4>
                   <div className="mr-2 ml-3">
                     <Badge type={"info"} content={panda.pandaName} />
+                    <span className="float-end">
+                      {pandaEditor && (
+                        <>
+                          <Form
+                            form={pandaName}
+                            layout="Horizontal"
+                            onFinish={(e) => {
+                              onFinishPanda(e, "zdsdd");
+                            }}
+                            onFinishFailed={onFinishFailed}
+                            autoComplete="off"
+                          >
+                            <span className="float-end">
+                              <Form.Item>
+                                <Space>
+                                  <Button
+                                    text="변경하기"
+                                    className="is-info is-small is-outlined"
+                                    htmlType="submit"
+                                  />
+                                </Space>
+                              </Form.Item>
+                            </span>
+                            <span className="float-end">
+                              <Form.Item name="pandaName">
+                                <Input placeholder="판다이름" />
+                              </Form.Item>
+                            </span>
+                          </Form>
+                        </>
+                      )}
+                    </span>
                   </div>
                 </div>{" "}
                 <Divider />
@@ -1057,6 +1134,38 @@ const BuyerInfoPage = () => {
                   </h4>
                   <div className="mr-2 ml-3">
                     <Badge type={"info"} content={panda.intCategory} />
+                    <span className="float-end">
+                      {pandaEditor && (
+                        <>
+                          <Form
+                            form={intCategory}
+                            layout="Horizontal"
+                            onFinish={(e) => {
+                              onFinishPanda(e, "zdsdd");
+                            }}
+                            onFinishFailed={onFinishFailed}
+                            autoComplete="off"
+                          >
+                            <span className="float-end">
+                              <Form.Item>
+                                <Space>
+                                  <Button
+                                    text="변경하기"
+                                    className="is-info is-small is-outlined"
+                                    htmlType="submit"
+                                  />
+                                </Space>
+                              </Form.Item>
+                            </span>
+                            <span className="float-end">
+                              <Form.Item name="intCategory">
+                                <Input placeholder="관심분야" />
+                              </Form.Item>
+                            </span>
+                          </Form>
+                        </>
+                      )}
+                    </span>
                   </div>
                 </div>{" "}
                 <Divider />
@@ -1066,6 +1175,38 @@ const BuyerInfoPage = () => {
                   </h4>
                   <div className="mr-2 ml-3">
                     <Badge type={"info"} content={panda.mainCh} />
+                    <span className="float-end">
+                      {pandaEditor && (
+                        <>
+                          <Form
+                            form={mainCh}
+                            layout="Horizontal"
+                            onFinish={(e) => {
+                              onFinishPanda(e, "zdsdd");
+                            }}
+                            onFinishFailed={onFinishFailed}
+                            autoComplete="off"
+                          >
+                            <span className="float-end">
+                              <Form.Item>
+                                <Space>
+                                  <Button
+                                    text="변경하기"
+                                    className="is-info is-small is-outlined"
+                                    htmlType="submit"
+                                  />
+                                </Space>
+                              </Form.Item>
+                            </span>
+                            <span className="float-end">
+                              <Form.Item name="mainCh">
+                                <Input placeholder="메인채널" />
+                              </Form.Item>
+                            </span>
+                          </Form>
+                        </>
+                      )}
+                    </span>
                   </div>
                 </div>{" "}
                 <Divider />

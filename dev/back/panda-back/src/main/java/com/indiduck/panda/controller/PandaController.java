@@ -45,44 +45,37 @@ public class PandaController {
     @GetMapping("/api/ispanda")
     @ResponseBody
     public ResponseEntity<?> ispanda(@CurrentSecurityContext(expression = "authentication")
-                                                 Authentication authentication)
-    {
+                                             Authentication authentication) {
 
         String usernameFromToken = authentication.getName();
         System.out.println("usernameFromToken = " + usernameFromToken);
-        if(usernameFromToken !=null)
-        {
+        if (usernameFromToken != null) {
             Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
 
-            if(!byEmail.isEmpty())
-            {
+            if (!byEmail.isEmpty()) {
                 Optional<Panda> byUser = pandaRespository.findByUser(byEmail.get());
 
-                if(byUser.isEmpty())
-                {
-                    return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(false,false));
-                }else
-                {
-                    if(byUser.get().isRecognize())
-                    {
-                        return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true,true));
+                if (byUser.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(false, false));
+                } else {
+                    if (byUser.get().isRecognize()) {
+                        return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true, true));
 
                     }
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true,false));
+                return ResponseEntity.status(HttpStatus.OK).body(new isPandaDto(true, false));
 
             }
         }
 
-        return ResponseEntity.ok(new TFMessageDto(false,"실패했습니다"));
+        return ResponseEntity.ok(new TFMessageDto(false, "실패했습니다"));
 
     }
 
 
-
     @RequestMapping(value = "/api/regpanda", method = RequestMethod.POST)
     public ResponseEntity<?> regPanda(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody RegPandaDAO regPandaDAO) throws Exception {
+                                              Authentication authentication, @RequestBody RegPandaDAO regPandaDAO) throws Exception {
 
 
         Panda panda = pandaService.newPanda(authentication.getName(),
@@ -92,160 +85,156 @@ public class PandaController {
                 regPandaDAO.termsagree,
                 regPandaDAO.infoagree);
 
-        if(panda==null){
-            return ResponseEntity.ok(new ResultDto(false,"판다신청에 실패했습니다"));
+        if (panda == null) {
+            return ResponseEntity.ok(new ResultDto(false, "판다신청에 실패했습니다"));
         }
-        return ResponseEntity.ok(new ResultDto(true,"판다신청에 성공했습니다"));
+        return ResponseEntity.ok(new ResultDto(true, "판다신청에 성공했습니다"));
     }
 
     //자신이 판다인지 조회하고 시작날짜 끝날자, 스테이터스로 조회한다다
     @RequestMapping(value = "/api/pandadashboard", method = RequestMethod.POST)
     public ResponseEntity<?> pandaDashBoard(@CurrentSecurityContext(expression = "authentication")
-                                              Authentication authentication, @RequestBody PandaDashBoardDto pandaDashBoardDto) throws Exception {
+                                                    Authentication authentication, @RequestBody PandaDashBoardDto pandaDashBoardDto) throws Exception {
 
-        LocalDateTime startDay= LocalDateTime.of(pandaDashBoardDto.startYear,pandaDashBoardDto.startMonth+1,pandaDashBoardDto.startDay
-        ,0,0,0,0);
-        LocalDateTime endDay= LocalDateTime.of(pandaDashBoardDto.endYear,pandaDashBoardDto.endMonth+1,pandaDashBoardDto.endDay
-                ,23,59,59,999999999);
+        LocalDateTime startDay = LocalDateTime.of(pandaDashBoardDto.startYear, pandaDashBoardDto.startMonth + 1, pandaDashBoardDto.startDay
+                , 0, 0, 0, 0);
+        LocalDateTime endDay = LocalDateTime.of(pandaDashBoardDto.endYear, pandaDashBoardDto.endMonth + 1, pandaDashBoardDto.endDay
+                , 23, 59, 59, 999999999);
 
         System.out.println("startDay = " + startDay);
         System.out.println("endDay = " + endDay);
         System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
-        try{
+        try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Panda panda = byEmail.get().getPanda();
-            List<PandaDashboardDtoType> pandaDashboardDtoList=new ArrayList<>();
+            List<PandaDashboardDtoType> pandaDashboardDtoList = new ArrayList<>();
             List<OrderDetail> odList = new ArrayList<>();
 
 
-
-
-            if(pandaDashBoardDto.status.equals("all"))
-            {
+            if (pandaDashBoardDto.status.equals("all")) {
                 System.out.println("전체");
                 Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
                 Optional<List<OrderDetail>> two = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료, startDay, endDay);
                 Optional<List<OrderDetail>> three = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급대기, startDay, endDay);
-                if(!one.isEmpty())
-                {
+                if (!one.isEmpty()) {
                     odList.addAll(one.get());
                 }
-                if(!two.isEmpty())
-                {
+                if (!two.isEmpty()) {
                     odList.addAll(two.get());
                 }
-                if(!three.isEmpty())
-                {
+                if (!three.isEmpty()) {
                     odList.addAll(three.get());
                 }
 
-            }else if(pandaDashBoardDto.status.equals("지급완료"))
-            {
+            } else if (pandaDashBoardDto.status.equals("지급완료")) {
                 System.out.println("정산완료");
                 Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
-                if(!one.isEmpty())
-                {
+                if (!one.isEmpty()) {
                     odList.addAll(one.get());
                 }
 
 
-
-            }else if(pandaDashBoardDto.status.equals("지급예정"))
-            {
+            } else if (pandaDashBoardDto.status.equals("지급예정")) {
                 Optional<List<OrderDetail>> two = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료, startDay, endDay);
                 Optional<List<OrderDetail>> three = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급대기, startDay, endDay);
 
-                if(!two.isEmpty())
-                {
+                if (!two.isEmpty()) {
                     odList.addAll(two.get());
                 }
-                if(!three.isEmpty())
-                {
+                if (!three.isEmpty()) {
                     odList.addAll(three.get());
                 }
 
             }
-            int finish=0;
-            int yet=0;
+            int finish = 0;
+            int yet = 0;
 
             for (OrderDetail orderDetail : odList) {
-                if(orderDetail.getPaymentStatus()==PaymentStatus.지급완료)
-                {
-                    finish+=orderDetail.getPandaMoney();
-                }else if(orderDetail.getPaymentStatus()==PaymentStatus.지급예정||orderDetail.getPaymentStatus()==PaymentStatus.지급대기)
-                {
-                    yet+=orderDetail.getPandaMoney();
+                if (orderDetail.getPaymentStatus() == PaymentStatus.지급완료) {
+                    finish += orderDetail.getPandaMoney();
+                } else if (orderDetail.getPaymentStatus() == PaymentStatus.지급예정 || orderDetail.getPaymentStatus() == PaymentStatus.지급대기) {
+                    yet += orderDetail.getPandaMoney();
                 }
-                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getId(),orderDetail.getPaymentStatus().toString(),orderDetail.getPandaMoney(),orderDetail.getFinishedAt()));
+                pandaDashboardDtoList.add(new PandaDashboardDtoType(orderDetail.getId(), orderDetail.getPaymentStatus().toString(), orderDetail.getPandaMoney(), orderDetail.getFinishedAt()));
 
             }
 
-            return ResponseEntity.ok(new DashboardDto(true,pandaDashboardDtoList,finish,yet));
+            return ResponseEntity.ok(new DashboardDto(true, pandaDashboardDtoList, finish, yet));
 
 
-
-        }catch (Exception E)
-        {
+        } catch (Exception E) {
             System.out.println("E = " + E);
-            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0));
 
         }
-
-
 
 
     }
 
     @RequestMapping(value = "/api/pandadashboardmain", method = RequestMethod.POST)
     public ResponseEntity<?> pandaDashBoardMain(@CurrentSecurityContext(expression = "authentication")
-                                                    Authentication authentication, @RequestBody PandaDashBoardMain pandaDashBoardMain) throws Exception {
+                                                        Authentication authentication, @RequestBody PandaDashBoardMain pandaDashBoardMain) throws Exception {
 
 
-        try{
-            LocalDateTime startDay= LocalDateTime.of(pandaDashBoardMain.year,1,1
-                    ,0,0,0,0);
-            LocalDateTime endDay= LocalDateTime.of(pandaDashBoardMain.year,12,31
-                    ,23,59,59,999999999);
+        try {
+            LocalDateTime startDay = LocalDateTime.of(pandaDashBoardMain.year, 1, 1
+                    , 0, 0, 0, 0);
+            LocalDateTime endDay = LocalDateTime.of(pandaDashBoardMain.year, 12, 31
+                    , 23, 59, 59, 999999999);
 
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Panda panda = byEmail.get().getPanda();
-            Optional<List<OrderDetail>> byPandaAndPaymentStatusNotNull = orderDetailRepository.findByPandaAndPaymentStatusNotNullAndFinishedAtBetween(panda,startDay,endDay);
+            Optional<List<OrderDetail>> byPandaAndPaymentStatusNotNull = orderDetailRepository.findByPandaAndPaymentStatusNotNullAndFinishedAtBetween(panda, startDay, endDay);
             int fin = 0;
             int yet = 0;
-            int[] salse={0,0,0,0,0,0,0,0,0,0,0,0};
+            int[] salse = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             for (OrderDetail orderDetail : byPandaAndPaymentStatusNotNull.get()) {
-                if(orderDetail.getPaymentStatus()==PaymentStatus.지급완료)
-                {
-                    fin+=orderDetail.getPandaMoney();
-                }else if(orderDetail.getPaymentStatus()==PaymentStatus.지급대기||orderDetail.getPaymentStatus()==PaymentStatus.지급예정)
-                {
-                    yet+=orderDetail.getPandaMoney();
+                if (orderDetail.getPaymentStatus() == PaymentStatus.지급완료) {
+                    fin += orderDetail.getPandaMoney();
+                } else if (orderDetail.getPaymentStatus() == PaymentStatus.지급대기 || orderDetail.getPaymentStatus() == PaymentStatus.지급예정) {
+                    yet += orderDetail.getPandaMoney();
                 }
                 int monthValue = orderDetail.getFinishedAt().getMonthValue();
-                salse[monthValue-1]++;
+                salse[monthValue - 1]++;
 
             }
 
-            return ResponseEntity.ok(new DashBoardMainDto(salse,fin,yet));
+            return ResponseEntity.ok(new DashBoardMainDto(salse, fin, yet));
 
-        }catch (Exception E)
-        {
+        } catch (Exception E) {
             System.out.println("E = " + E);
-            return ResponseEntity.ok(new DashBoardMainDto(null,0,0));
+            return ResponseEntity.ok(new DashBoardMainDto(null, 0, 0));
 
 
         }
 
 
+    }
 
+    @RequestMapping(value = "/api/editPanda", method = RequestMethod.POST)
+    public ResponseEntity<?> editPanda(@CurrentSecurityContext(expression = "authentication")
+                                              Authentication authentication, @RequestBody EditPandaDAO editPandaDAO) throws Exception{
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        Panda panda = byEmail.get().getPanda();
+        Panda result = pandaService.editPanda(editPandaDAO.target, editPandaDAO.values, panda);
+        if(result==null)
+        {
+            return ResponseEntity.ok(new ShopController.shopControllerResultDto(false,"변경실패 "));
+
+        }
+
+
+
+        return ResponseEntity.ok(new ShopController.shopControllerResultDto(true,"변경성공 "));
 
     }
+
     @Data
-    private static class DashBoardMainDto
-    {
-        int salse[]=null;
+    private static class DashBoardMainDto {
+        int salse[] = null;
         long finish;
         long expect;
 
@@ -258,37 +247,36 @@ public class PandaController {
 
 
     @Data
-    private static class DashboardDto
-    {
+    private static class DashboardDto {
         boolean success;
-        List<PandaDashboardDtoType> pandaDashboardDtoList=null;
+        List<PandaDashboardDtoType> pandaDashboardDtoList = null;
         int finMoney;
         int expectMoney;
 
 
-        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList,int f,int e) {
+        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList, int f, int e) {
             this.success = success;
             this.pandaDashboardDtoList = pandaDashboardDtoList;
-            this.finMoney=f;
-            this.expectMoney=e;
+            this.finMoney = f;
+            this.expectMoney = e;
         }
     }
 
     @Data
-    private static class PandaDashboardDtoType
-    {
+    private static class PandaDashboardDtoType {
         Long id;
         String status;
         int money;
         LocalDateTime localDateTime;
 
-        public PandaDashboardDtoType(Long id,String status, int money, LocalDateTime localDateTime) {
-            this.id= id;
+        public PandaDashboardDtoType(Long id, String status, int money, LocalDateTime localDateTime) {
+            this.id = id;
             this.status = status;
             this.money = money;
             this.localDateTime = localDateTime;
         }
     }
+
     @Data
     private static class PandaDashBoardDto {
         int startYear;
@@ -304,15 +292,17 @@ public class PandaController {
 
     }
 
-   @Data
+    @Data
     static class isPandaDto {
         boolean ispanda;
         boolean approve;
-        public isPandaDto(boolean b,boolean a) {
-            ispanda=b;
-            approve=a;
+
+        public isPandaDto(boolean b, boolean a) {
+            ispanda = b;
+            approve = a;
         }
     }
+
     @Data
     static class RegPandaDAO {
         String pandaname;
@@ -323,7 +313,13 @@ public class PandaController {
     }
 
     @Data
-    private static  class PandaDashBoardMain {
+    private static class PandaDashBoardMain {
         int year;
+    }
+
+    @Data
+    private static class EditPandaDAO {
+        String target;
+        String values;
     }
 }

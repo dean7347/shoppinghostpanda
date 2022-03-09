@@ -26,16 +26,14 @@ public class PandaService {
     @Autowired
     private final OrderDetailRepository orderDetailRepository;
 
-    public Panda newPanda(String user, String pandaName,String mainCh,
-                         String intCategory, boolean terms,boolean info){
+    public Panda newPanda(String user, String pandaName, String mainCh,
+                          String intCategory, boolean terms, boolean info) {
 
         Optional<User> byEmail = userRepository.findByEmail(user);
 
-        if(!byEmail.isEmpty())
-        {
-            if(byEmail.get().getPanda() ==null)
-            {
-                Panda panda =Panda.newPanda(pandaName,mainCh,intCategory,terms,info);
+        if (!byEmail.isEmpty()) {
+            if (byEmail.get().getPanda() == null) {
+                Panda panda = Panda.newPanda(pandaName, mainCh, intCategory, terms, info);
                 panda.setUser(byEmail.get());
                 pandaRespository.save(panda);
                 return panda;
@@ -48,15 +46,29 @@ public class PandaService {
     }
 
 
-    public SettlePanda SettleLogic(Panda panda)
-    {
+    public SettlePanda SettleLogic(Panda panda) {
 //        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByPandaAndPaymentStatusAndEnrollSettlePanda(panda, PaymentStatus.지급대기, false);
         Optional<List<OrderDetail>> byPandaAndPaymentStatusAndEnrollSettle = orderDetailRepository.findByPandaAndPaymentStatusAndEnrollSettle(panda, PaymentStatus.지급대기, false);
         List<OrderDetail> orderDetails = byPandaAndPaymentStatusAndEnrollSettle.get();
-        SettlePanda settlePanda=SettlePanda.createSettlePanda(orderDetails,panda);
+        SettlePanda settlePanda = SettlePanda.createSettlePanda(orderDetails, panda);
         settlePandaRepository.save(settlePanda);
         return settlePanda;
 
+
+    }
+    public Panda editPanda(String target,String value,Panda panda)
+    {
+        switch (target)
+        {
+            case"pandaName":panda.setPandaName(value);
+                break;
+            case"intCategory":panda.setIntCategory(value);
+                break;
+            case"mainCh":panda.setMainCh(value);
+                break;
+            default:return null;
+        }
+        return panda;
 
     }
 }
