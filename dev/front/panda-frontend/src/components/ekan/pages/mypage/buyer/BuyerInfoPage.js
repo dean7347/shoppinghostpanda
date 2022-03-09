@@ -4,9 +4,11 @@ import { Divider } from "@mui/material";
 import Button from "../../../UI/Button";
 import axios from "../../../../../../node_modules/axios/index";
 import { setUserAgent } from "react-device-detect";
-import { Input, Form, Space } from "antd";
+import { Input, Form, Space, InputNumber } from "antd";
 import { objectMethod } from "../../../../../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
 const BuyerInfoPage = () => {
+  const { TextArea } = Input;
+  const [loader, SetLoader] = useState(0);
   const [user, SetUser] = useState({
     email: "",
     name: "",
@@ -144,7 +146,7 @@ const BuyerInfoPage = () => {
         }
       }
     });
-  }, []);
+  }, [loader]);
   const [shopName] = Form.useForm();
   const [avdtime] = Form.useForm();
   const [crn] = Form.useForm();
@@ -176,6 +178,15 @@ const BuyerInfoPage = () => {
       return;
     }
     console.log(body);
+    axios.post("/api/editShop", body).then((response) => {
+      console.log(response);
+      if (response.data.success) {
+        alert("성공적으로 변경되었습니다.");
+        SetLoader(loader + 1);
+      } else {
+        alert("변경에 실패했습니다");
+      }
+    });
   };
 
   const onFinishFailed = () => {
@@ -396,7 +407,7 @@ const BuyerInfoPage = () => {
                     <Badge type={"info"} content={shop.canDate} />
                     <span className="float-end">
                       {shopEditor && (
-                        <>
+                        <div style={{ display: "inline" }}>
                           <Form
                             form={canDate}
                             layout="Horizontal"
@@ -417,14 +428,20 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="canDate">
-                                <Input placeholder="반품/교환사유에따른요청기간" />
+                                <Input.TextArea
+                                  showCount
+                                  maxLength={250}
+                                  placeholder="반품/교환사유에따른요청기간"
+                                />
                               </Form.Item>
                             </span>
                           </Form>
-                        </>
+                        </div>
                       )}
                     </span>
                   </div>
+                  <br />
+                  <br />
                 </div>
                 <Divider />
                 <div className="mb-4 mt-4">
@@ -435,7 +452,7 @@ const BuyerInfoPage = () => {
                     <Badge type={"info"} content={shop.noreturn} />
                     <span className="float-end">
                       {shopEditor && (
-                        <>
+                        <div>
                           <Form
                             form={noreturn}
                             layout="Horizontal"
@@ -456,14 +473,21 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="noreturn">
-                                <Input placeholder="반품/교환불가능사유" />
+                                <Input.TextArea
+                                  rows={2}
+                                  showCount
+                                  maxLength={500}
+                                  placeholder="반품/교환불가능사유"
+                                />
                               </Form.Item>
                             </span>
                           </Form>
-                        </>
+                        </div>
                       )}
                     </span>
                   </div>
+                  <br />
+                  <br />
                 </div>
                 <Divider />
                 <div className="mb-4 mt-4">
@@ -613,7 +637,11 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="freePrice">
-                                <Input placeholder="무료배송비용" />
+                                <InputNumber
+                                  width={"100%"}
+                                  min={0}
+                                  placeholder="무료배송비용"
+                                />
                               </Form.Item>
                             </span>
                           </Form>
@@ -670,7 +698,10 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="noFree">
-                                <Input placeholder="유료배송비용" />
+                                <InputNumber
+                                  min={0}
+                                  placeholder="유료배송비용"
+                                />
                               </Form.Item>
                             </span>
                           </Form>
@@ -904,7 +935,7 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="returnPee">
-                                <Input placeholder="반품비용" />
+                                <InputNumber mina={0} placeholder="반품비용" />
                               </Form.Item>
                             </span>
                           </Form>
@@ -943,7 +974,11 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="toPanda">
-                                <Input placeholder="to 판다" />
+                                <Input.TextArea
+                                  showCount
+                                  maxLength={250}
+                                  placeholder="to 판다"
+                                />
                               </Form.Item>
                             </span>
                           </Form>
@@ -951,6 +986,8 @@ const BuyerInfoPage = () => {
                       )}
                     </span>
                   </div>
+                  <br />
+                  <br />
                 </div>
                 <Divider />
                 <div className="mb-4 mt-4">
@@ -982,7 +1019,10 @@ const BuyerInfoPage = () => {
                             </span>
                             <span className="float-end">
                               <Form.Item name="tradeFee">
-                                <Input placeholder="상품 교환 비용" />
+                                <InputNumber
+                                  min={0}
+                                  placeholder="상품 교환 비용"
+                                />
                               </Form.Item>
                             </span>
                           </Form>

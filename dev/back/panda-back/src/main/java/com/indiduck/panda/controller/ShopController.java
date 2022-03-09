@@ -71,6 +71,26 @@ public class ShopController {
 
     }
 
+    //샵수정메소드
+    @RequestMapping(value = "/api/editShop", method = RequestMethod.POST)
+    public ResponseEntity<?> editShop(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication, @RequestBody EditShopDAO editShopDAO) throws Exception{
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        Shop shop = byEmail.get().getShop();
+        Shop result = shopService.editShop(editShopDAO.target, editShopDAO.values, shop);
+        if(result==null)
+        {
+            return ResponseEntity.ok(new shopControllerResultDto(false,"변경실패 "));
+
+        }
+        
+
+
+        return ResponseEntity.ok(new shopControllerResultDto(true,"변경성공 "));
+
+    }
+
 
     @GetMapping("/api/haveshop")
     @ResponseBody
@@ -527,5 +547,11 @@ public class ShopController {
     @Data
     private static class ConfirmDto {
         Long userorderId;
+    }
+
+    @Data
+    private static class EditShopDAO {
+        String target;
+        String values;
     }
 }
