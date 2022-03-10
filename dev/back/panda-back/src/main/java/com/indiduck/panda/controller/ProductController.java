@@ -257,23 +257,24 @@ public class ProductController {
         List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
         System.out.println("list = " + list);
         System.out.println("list.get(0) = " + list.get(0));
-//        Product product=productService.createNewProduct(
-//                authentication.getName(),
-//                createProductDAO.thumb,
-//                createProductDAO.title,
-//                createProductDAO.description,
-//                createProductDAO.images,
-//                createProductDAO.Options,
-//                createProductDAO.type,
-//                createProductDAO.notice.toString(),
-//                createProductDAO.noticeValue.toString(),
-//                createProductDAO.pandaMessage
-//
-//        );
+        Product product=productService.createNewProduct(
+                authentication.getName(),
+                createProductDAO.thumb,
+                createProductDAO.title,
+                createProductDAO.description,
+                createProductDAO.images,
+                createProductDAO.Options,
+                createProductDAO.type,
+                createProductDAO.notice.toString(),
+                createProductDAO.noticeValue.toString(),
+                createProductDAO.pandaMessage
 
-//        if(product==null){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
-//        }
+        );
+
+        if(product==null){
+            return ResponseEntity.ok(new ResultDto(false));
+
+        }
         return ResponseEntity.ok(new ResultDto(true));
     }
 

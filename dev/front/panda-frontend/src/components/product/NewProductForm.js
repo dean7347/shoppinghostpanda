@@ -53,7 +53,7 @@ function NewProductForm() {
     axios.post("/api/regnewproduct", body).then((response) => {
       if (response.data.success) {
         alert("상품 업로드에 성공했습니다");
-        // history.push("/shop");
+        history.push("/shop");
       } else {
         alert("상품업로드에 실패 했습니다.");
       }
