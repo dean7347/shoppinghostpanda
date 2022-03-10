@@ -44,13 +44,13 @@ import { QueryClient, QueryClientProvider } from "react-query";
 //되는거시작
 axios.interceptors.request.use(
   (config) => {
-    console.log("나가는데이터");
-    console.log(config.url.toString().includes("noembed"));
+    // console.log("나가는데이터");
+    // console.log(config.url.toString().includes("noembed"));
     if (config.url.toString().includes("noembed.com")) {
       return config;
     }
     if (config.url === "/api/reissuev2") {
-      console.log("재발급요청입니다");
+      // console.log("재발급요청입니다");
       const rtoken = window.localStorage.getItem("refreshToken");
       if (rtoken) {
         config.headers["refreshToken"] = rtoken;
@@ -58,8 +58,8 @@ axios.interceptors.request.use(
     }
     console.log(config);
     const token = window.localStorage.getItem("accessToken");
-    console.log("토큰");
-    console.log(token);
+    // console.log("토큰");
+    // console.log(token);
     if (token) {
       config.headers["accessToken"] = token;
     }
@@ -78,34 +78,33 @@ axios.interceptors.response.use(
         */
     console.log(response.status);
     if (response.status === 202) {
-      console.log(response);
+      // console.log(response);
       // axios.request(response.config);
       // console.log("여기서 재 갱신을 해야하지않을까?");
       // axios.post("/api/reissue").then((response) => {
       //   console.log(response.data.success);
       //   if (response.data.success) {
       //     originalRequest._retry = true;
-
       //     console.log(error.config);
       //     console.log(response);
       //     console.log("재요청로직을실행합니다");
       //     return response;
     }
-    console.log("200받음");
+    // console.log("200받음");
     return response;
   },
   async function (error) {
     const originalRequest = error.config;
-    console.log("에라");
+    // console.log("에라");
     console.log(error);
     console.log(error.response.status);
     if (error.response.status === 406) {
-      console.log("만료된토큰입니다");
+      // console.log("만료된토큰입니다");
       // axios.config.headers["refreshToken"] = rtoken;
-      console.log("리이슈");
+      // console.log("리이슈");
       axios.post("/api/reissuev2").then((response) => {
-        console.log("리이슈하면?");
-        console.log(response.data.result);
+        // console.log("리이슈하면?");
+        // console.log(response.data.result);
         window.localStorage.setItem(
           "accessToken",
           response.data.data.accessToken

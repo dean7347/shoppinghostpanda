@@ -9,6 +9,7 @@ import com.indiduck.panda.Service.ProductService;
 
 import com.indiduck.panda.Service.S3Uploader;
 import com.indiduck.panda.domain.*;
+import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.FileDao;
 
 import com.indiduck.panda.util.MD5Generator;
@@ -346,7 +347,8 @@ public class ProductController {
 
         if(!authentication.isAuthenticated())
         {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+            return ResponseEntity.ok(new TFMessageDto(false,"preview 조회 실패"));
+
 
         }
          System.out.println("authentication = " + authentication);
@@ -358,7 +360,8 @@ public class ProductController {
          if(!tomap.isEmpty()){
              return  ResponseEntity.ok(tomap);
          }
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+         return ResponseEntity.ok(new TFMessageDto(false,"preview 조회 실패"));
+
      }
 
 
@@ -377,7 +380,8 @@ public class ProductController {
         if(!tomap.isEmpty()){
             return  ResponseEntity.ok(tomap);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+        return ResponseEntity.ok(new TFMessageDto(false,"마이프로덕트 조회 실패"));
+
     }
 
 
@@ -395,7 +399,7 @@ public class ProductController {
         if(!tomap.isEmpty()){
             return  ResponseEntity.ok(tomap);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+        return ResponseEntity.ok(new TFMessageDto(false,"서치 조회 실패"));
     }
 
     //detail
@@ -405,7 +409,6 @@ public class ProductController {
                                         @RequestParam(name = "id") Long productid) throws Exception {
 
         Optional<Product> byId = productRepository.findById(productid);
-        System.out.println("byId = " + byId.get());
         ProductDetailDto productDetailDto = new ProductDetailDto(true,byId.get());
 
 
@@ -415,7 +418,7 @@ public class ProductController {
         }
 
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("view 조회 실패");
+        return ResponseEntity.ok(new TFMessageDto(false,"뷰죠회 실패"));
     }
     @Data
     static class ProductDetailDto {
@@ -471,6 +474,13 @@ public class ProductController {
         private String noreturn;
         private String AVDtime;
 
+
+        //고시정보
+        private List<String> notice=new ArrayList<>();
+        private List<String> noticeV=new ArrayList<>();
+        private String pandaMessage;
+
+        //판다 메시지
         //반품교환정보
         //판매자 정보보
        List<DetailOptionDto> Poptions=new ArrayList<>();
@@ -482,6 +492,12 @@ public class ProductController {
             isdel=detail.isDeleted();
             productName=detail.getProductName();
             productDesc=detail.getProductDesc();
+            this.pandaMessage=detail.getPandaMessage();
+            this.notice = Arrays.asList(detail.getNotice().substring(1,
+                    detail.getNotice().length() - 1).split(", "));
+            this.noticeV=Arrays.asList(detail.getNoticeValue().substring(1,
+                    detail.getNoticeValue().length() - 1).split(", "));
+
             type = detail.getType();
 //            lowform =detail.getLowvalue();
             Shop shop = detail.getShop();
