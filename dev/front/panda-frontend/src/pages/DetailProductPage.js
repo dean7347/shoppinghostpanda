@@ -86,7 +86,7 @@ function DetailProductPage(props) {
         .get(`/api/getqna?pid=${productId}&size=5&page=${page - 1}`)
         .then((response) => {
           if (response.data != null) {
-            console.log("데이터가져옴");
+            console.log("데이터가져옴", response.data);
             setBoard(response.data.boardLists);
             console.log(board);
             console.log(response.data.boardLists);
@@ -100,34 +100,34 @@ function DetailProductPage(props) {
     [Page]
   );
 
-  // useEffect(
-  //   (Page) => {
-  //     axios
-  //       .get(`/api/getqna?pid=${productId}&size=5&page=${Page - 1}`)
-  //       .then((response) => {
-  //         if (response.data != null) {
-  //           console.log("데이타");
+  useEffect(
+    (Page) => {
+      axios
+        .get(`/api/getqna?pid=${productId}&size=5&page=${Page - 1}`)
+        .then((response) => {
+          if (response.data != null) {
+            console.log("데이타");
 
-  //           console.log(response.data);
-  //           setBoard(response.data.boardLists);
+            console.log(response.data);
+            setBoard(response.data.boardLists);
 
-  //           //page, count, setPage
-  //           //현재 페이지
-  //           console.log("Page");
+            //page, count, setPage
+            //현재 페이지
+            console.log("Page");
 
-  //           console.log(Page);
-  //           // // console.log(response.data.pageable.pageNumber);
-  //           //한페이지당 보여줄 리스트 아이템 갯수
-  //           setViewCountPage(5);
-  //           //총 아이템의 갯수
-  //           setTotalCountPage(response.data.totalE);
-  //         } else {
-  //           // console.log("상품들을 가져오는데 실패했습니다.");
-  //         }
-  //       });
-  //   },
-  //   [ViewCount, TotalCount]
-  // );
+            console.log(Page);
+            // // console.log(response.data.pageable.pageNumber);
+            //한페이지당 보여줄 리스트 아이템 갯수
+            setViewCountPage(5);
+            //총 아이템의 갯수
+            setTotalCountPage(response.data.totalE);
+          } else {
+            // console.log("상품들을 가져오는데 실패했습니다.");
+          }
+        });
+    },
+    [ViewCount, TotalCount]
+  );
   const [qna, setQna] = useState({
     title: "",
     content: "",
@@ -211,20 +211,22 @@ function DetailProductPage(props) {
           <Collapse onChange={baordClick}>
             <Panel
               header={
-                <Row justify="center">
-                  <Col lg={6} md={12} sm={12} xs={12}>
-                    {item.boardId}
-                  </Col>
-                  <Col lg={6} md={12} sm={12} xs={12}>
-                    {item.title}
-                  </Col>
-                  <Col lg={6} md={12} sm={12} xs={12}>
-                    {stringsplit(item.createdAt)}
-                  </Col>
-                  <Col lg={6} md={12} sm={12} xs={12}>
-                    {item.user.substring(0, 7)}
-                  </Col>
-                </Row>
+                <div style={{ width: "100%" }}>
+                  <Row justify="center" gutter={24}>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.boardId}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.title}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {stringsplit(item.createdAt)}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.user.substring(0, 7)}
+                    </Col>
+                  </Row>
+                </div>
               }
               key={idx}
             >

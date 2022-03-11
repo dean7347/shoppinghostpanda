@@ -135,14 +135,20 @@ public class ProductService {
         Optional<Product> byId = productRepository.findById(product);
         if (type.equals("name")) {
             byId.get().setName(text);
-        } else {
+        } else if(type.equals("desc")) {
             byId.get().setDesc(text);
 
+        }else if(type.equals("pandaMessage"))
+        {
+            byId.get().setPandaMessage(text);
         }
     }
 
-    public void editLow(Long product, int type, String law) {
+
+    public void editLow(Long product, int type, String no,String nV) {
         Optional<Product> byId = productRepository.findById(product);
+        byId.get().setNotice(no);
+        byId.get().setNoticeValue(nV);
 //        byId.get().setLowvalue(law);
         byId.get().changeType(type);
 

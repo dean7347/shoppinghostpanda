@@ -5,9 +5,7 @@ import EditProductForm from "../components/product/EditProductForm";
 function EditProductPage(props) {
   return (
     <>
-      <div style={{ zIndex: "99" }}>
-        <HeaderContainer />
-      </div>
+      <div style={{ zIndex: "99" }}></div>
       <EditProductForm productId={props.location.state.proid} />
     </>
   );

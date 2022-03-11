@@ -23,10 +23,11 @@ function MyProductPage() {
   const [ViewCount, setViewCountPage] = useState([]);
   const [TotalCount, setTotalCountPage] = useState([]);
   const [Page, setPage] = useState(1);
+
   const onPageChanged = useCallback(
     (page) => {
       setPage(page);
-      axios.get(`/api/preview?size=5&page=${page - 1}`).then((response) => {
+      axios.get(`/api/myproduct?size=8&page=${page - 1}`).then((response) => {
         if (response.data != null) {
           setProducts(response.data.content);
           setViewCountPage(response.data.size);
@@ -39,6 +40,30 @@ function MyProductPage() {
     [setPage]
   );
 
+  ///검색
+  const [SearchTerm, setSearchTerm] = useState("");
+
+  useEffect(
+    (Page) => {
+      axios.get(`/api/myproduct?size=8&page=${Page - 1}`).then((response) => {
+        if (response.data != null) {
+          console.log(response.data);
+          // console.log(response.data);
+          setProducts(response.data.content);
+          //page, count, setPage
+          //현재 페이지
+          // // console.log(response.data.pageable.pageNumber);
+          //한페이지당 보여줄 리스트 아이템 갯수
+          setViewCountPage(response.data.size);
+          //총 아이템의 갯수
+          setTotalCountPage(response.data.totalElements);
+        } else {
+          // console.log("상품들을 가져오는데 실패했습니다.");
+        }
+      });
+    },
+    [ViewCount, TotalCount]
+  );
   const onClickStatusChange = (id, st) => {
     console.log(id);
     console.log(st);
@@ -56,33 +81,6 @@ function MyProductPage() {
     });
   };
 
-  ///검색
-  const [SearchTerm, setSearchTerm] = useState("");
-
-  useEffect(
-    (Page) => {
-      axios.get(`/api/myproduct?size=5&page=${Page - 1}`).then((response) => {
-        if (response.data != null) {
-          // console.log(response.data);
-          setProducts(response.data.content);
-          //page, count, setPage
-          //현재 페이지
-          // // console.log(response.data.pageable.pageNumber);
-          //한페이지당 보여줄 리스트 아이템 갯수
-          setViewCountPage(response.data.size);
-          //총 아이템의 갯수
-          setTotalCountPage(response.data.totalElements);
-        } else {
-          // console.log("상품들을 가져오는데 실패했습니다.");
-        }
-      });
-    },
-    [ViewCount, TotalCount]
-  );
-
-  const updateSearchTerm = (newSearchTerm) => {
-    setSearchTerm(newSearchTerm);
-  };
   const clickHandler = (e, param) => {
     console.log(param);
   };
@@ -138,18 +136,6 @@ function MyProductPage() {
           >
             <Button block>상품수정</Button>
           </Link>
-
-          {/* <Link to={`/product/edit/${product.proId}`}>
-            <div style={{}}>상품수정</div>
-          </Link> */}
-          {/* <button
-            onClick={(e) => {
-              clickHandler(e, product.proId);
-            }}
-            style={{ width: "100%" }}
-          >
-            상품수정
-          </button> */}
         </div>
       </Col>
     );

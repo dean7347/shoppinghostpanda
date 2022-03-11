@@ -258,7 +258,7 @@ public class ProductController {
         List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
         System.out.println("list = " + list);
         System.out.println("list.get(0) = " + list.get(0));
-        Product product=productService.createNewProduct(
+        Product product= productService.createNewProduct(
                 authentication.getName(),
                 createProductDAO.thumb,
                 createProductDAO.title,
@@ -284,7 +284,7 @@ public class ProductController {
                                                       Authentication authentication, @RequestBody LawDAO lawDAO) throws Exception {
         System.out.println("createProductDAO = " + lawDAO);
         try{
-            productService.editLow(lawDAO.productId, lawDAO.type, lawDAO.lowform);
+            productService.editLow(lawDAO.productId, lawDAO.type, lawDAO.notice.toString(), lawDAO.noticeValue.toString());
             return ResponseEntity.ok(new ResultDto(true));
 
         }catch (Exception e)
@@ -659,7 +659,8 @@ public class ProductController {
     }
     @Data
     static class LawDAO {
-        private String lowform;
+        private List<String> notice;
+        private List<String> noticeValue;
         private int type;
         private Long productId;
 
