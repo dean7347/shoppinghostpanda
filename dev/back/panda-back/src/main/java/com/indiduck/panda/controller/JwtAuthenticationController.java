@@ -6,6 +6,7 @@ package com.indiduck.panda.controller;
 //이제 컨트롤러를 작성해보겠습니다.
 //
 //- JwtRequest를 Json 형식으로 받았다면, 인증을 통해 토큰을 발급해주는 기능을 작성하였습니다.
+
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.RedisUtil;
 import com.indiduck.panda.Service.JwtUserDetailsService;
@@ -59,8 +60,6 @@ import static org.springframework.http.ResponseEntity.status;
 public class JwtAuthenticationController {
 
 
-
-
     private final Response response;
 
 
@@ -76,7 +75,7 @@ public class JwtAuthenticationController {
     @Autowired
     private RedisUtil redisUtil;
 
-//    //로그인
+    //    //로그인
 //    @RequestMapping(value = "/api/authenticate", method = RequestMethod.POST)
 //    public  ResponseEntity<ApiResponseMessage> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletRequest req,
 //                                                                         HttpServletResponse res) throws Exception {
@@ -128,26 +127,28 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/api/loginv2")
-    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletResponse res, Errors errors) {
+    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login, HttpServletResponse res, Errors errors) {
         // validation check
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = login.toAuthentication();
+        String name = usernamePasswordAuthenticationToken.getName();
+
+        System.out.println("name = " + name);
+        Optional<User> byEmail = userRepository.findByEmail(name);
         String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
-        Cookie refreshToken = new Cookie("refreshToken",rToken);
-
+        Cookie refreshToken = new Cookie("refreshToken", rToken);
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
         res.addCookie(refreshToken);
 
 
-
-        return ResponseEntity.ok(new TokenLoginTAO(true,aToken) );
+        return ResponseEntity.ok(new TokenLoginVTAO(true, aToken, byEmail.get()));
 
     }
-
 
 
     //회원가입
@@ -156,20 +157,18 @@ public class JwtAuthenticationController {
         System.out.println("infoDto = " + infoDto.getEmail());
 
 
-
         try {
             String save = userDetailsService.save(infoDto);
-            if(!save.equals("회원가입성공"))
-            {
-                return ResponseEntity.ok(new signupDto(false,save));
+            if (!save.equals("회원가입성공")) {
+                return ResponseEntity.ok(new signupDto(false, save));
 
             }
 
         } catch (Exception e) {
-            return ResponseEntity.ok(new signupDto(false,"회원가입에 실패했습니다 같은 오류가 반복될경우 고객센터에 문의남겨주시기 바랍니다"));
+            return ResponseEntity.ok(new signupDto(false, "회원가입에 실패했습니다 같은 오류가 반복될경우 고객센터에 문의남겨주시기 바랍니다"));
 
         }
-        return ResponseEntity.ok(new signupDto(true,"회원가입에성공했습니다"));
+        return ResponseEntity.ok(new signupDto(true, "회원가입에성공했습니다"));
     }
 
 
@@ -179,15 +178,15 @@ public class JwtAuthenticationController {
         String code = findId.code;
         User id = userDetailsService.findId(code);
 
-        return ResponseEntity.ok(new findIdDto(true,id.getId(),id.getEmail()));
+        return ResponseEntity.ok(new findIdDto(true, id.getId(), id.getEmail()));
     }
 
     //비밀번호 변경
     @PostMapping("/api/changepw")
-    public ResponseEntity<?> changepw(@RequestBody  ChangePw changePw) throws IamportResponseException, IOException { // 회원 추가
+    public ResponseEntity<?> changepw(@RequestBody ChangePw changePw) throws IamportResponseException, IOException { // 회원 추가
 
         userDetailsService.changePw(changePw.code, changePw.pw);
-        return ResponseEntity.ok(new TFMessageDto(true,"비밀번호 변경 성공"));
+        return ResponseEntity.ok(new TFMessageDto(true, "비밀번호 변경 성공"));
     }
     //체크
 //    @RequestMapping(path = "/api/user/logout", method = RequestMethod.GET)
@@ -211,7 +210,7 @@ public class JwtAuthenticationController {
 //    }
 
     @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.GET)
-    public ResponseEntity<?> logout(HttpServletRequest req,HttpServletResponse res) {
+    public ResponseEntity<?> logout(HttpServletRequest req, HttpServletResponse res) {
 //        Cookie[] cookies = req.getCookies();
 //        String atToken="";
 //        for(Cookie c : cookies) {
@@ -225,13 +224,11 @@ public class JwtAuthenticationController {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
         boolean b = userDetailsService.logoutV2(atToken);
-        if(b)
-        {
-            return ResponseEntity.ok(new TFMessageDto(b,"로그아웃 성공"));
+        if (b) {
+            return ResponseEntity.ok(new TFMessageDto(b, "로그아웃 성공"));
 
         }
-        return ResponseEntity.ok(new TFMessageDto(b,"로그아웃 실패"));
-
+        return ResponseEntity.ok(new TFMessageDto(b, "로그아웃 실패"));
 
 
     }
@@ -258,29 +255,26 @@ public class JwtAuthenticationController {
                                                                  Authentication authentication) throws Exception {
 
         System.out.println("authentication = " + authentication);
-        try{
+        try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Shop shop = byEmail.get().getShop();
             Panda panda = byEmail.get().getPanda();
-            boolean isShop= false;
-            boolean isPanda= false;
-            if(shop!=null) isShop=true;
-            if(panda!=null) isPanda=true;
-            if(authentication.isAuthenticated())
-            {
-                return ResponseEntity.ok(new RoleCheckDto(authentication.getName(),isShop,isPanda,false));
+            boolean isShop = false;
+            boolean isPanda = false;
+            if (shop != null) isShop = true;
+            if (panda != null) isPanda = true;
+            if (authentication.isAuthenticated()) {
+                return ResponseEntity.ok(new RoleCheckDto(authentication.getName(), isShop, isPanda, false));
 
             }
-            return ResponseEntity.ok(new RoleCheckDto(null,false,false,false));
+            return ResponseEntity.ok(new RoleCheckDto(null, false, false, false));
 
 
-
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new RoleCheckDto("사용자정보없음",false,false,false));
+            return ResponseEntity.ok(new RoleCheckDto("사용자정보없음", false, false, false));
 
 
         }
@@ -297,23 +291,22 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/api/reissuev2")
-    public ResponseEntity<?> reissueV2(HttpServletRequest req,HttpServletResponse res) {
+    public ResponseEntity<?> reissueV2(HttpServletRequest req, HttpServletResponse res) {
         String accessToken = req.getHeader("accessToken");
         String retoken = req.getHeader("refreshToken");
 
-        String rtCookie="";
+        String rtCookie = "";
         Cookie[] cookies = req.getCookies();
-        if(cookies==null) return null;
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("refreshToken"))
-                rtCookie= cookie.getValue();
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("refreshToken"))
+                rtCookie = cookie.getValue();
         }
         System.out.println("retoken = " + rtCookie);
         System.out.println("accessToken = " + accessToken);
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(accessToken, rtCookie);
-        if (tokenInfo==null)
-        {
-            return ResponseEntity.badRequest().body(new TFMessageDto(false,"로그인실패"));
+        if (tokenInfo == null) {
+            return ResponseEntity.badRequest().body(new TFMessageDto(false, "로그인실패"));
         }
 
         //
@@ -323,19 +316,19 @@ public class JwtAuthenticationController {
         //기존 쿡히 삭제
         String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
-        Cookie refreshToken = new Cookie("refreshToken",null);
+        Cookie refreshToken = new Cookie("refreshToken", null);
         refreshToken.setMaxAge(0);
         refreshToken.setPath("/");
 
         //새로운쿡히
-        refreshToken = new Cookie("refreshToken",rToken);
+        refreshToken = new Cookie("refreshToken", rToken);
 
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
 
-        System.out.println(" =발송완료 " );
+        System.out.println(" =발송완료 ");
 
-        return ResponseEntity.ok(new TokenLoginTAO(true,aToken) );
+        return ResponseEntity.ok(new TokenLoginTAO(true, aToken));
 
 
     }
@@ -373,7 +366,7 @@ public class JwtAuthenticationController {
      */
 
 
-//    private void authenticate(String username, String password) throws Exception {
+    //    private void authenticate(String username, String password) throws Exception {
 //        try {
 //            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 //        } catch (DisabledException e) {
@@ -405,18 +398,50 @@ public class JwtAuthenticationController {
 //    }
     //////////////dto///////////
     @Data
-    private  static  class TokenLoginTAO
-    {
+    private static class TokenLoginVTAO {
         boolean success;
         String accessToken;
+        boolean panda=false;
+        boolean shop=false;
+        boolean user=false;
+
+        public TokenLoginVTAO(boolean success, String accessToken, User user) {
+            this.success = success;
+            this.accessToken = accessToken;
+            if(user ==null)
+            {
+                this.user=false;
+                this.panda=false;
+                this.shop=false;
+            }else
+            {
+                this.user=true;
+            }
+            if(user.getShop()!=null)
+            {
+                shop=true;
+            }
+            if(user.getPanda()!=null)
+            {
+                panda=true;
+            }
+        }
+    }
+
+    @Data
+    private static class TokenLoginTAO {
+        boolean success;
+        String accessToken;
+
 
         public TokenLoginTAO(boolean success, String accessToken) {
             this.success = success;
             this.accessToken = accessToken;
         }
     }
+
     @Data
-    static class findId{
+    static class findId {
 
         String code;
 
@@ -424,25 +449,27 @@ public class JwtAuthenticationController {
     }
 
     @Data
-    static class ChangePw{
+    static class ChangePw {
 
         String code;
         String pw;
 
 
     }
+
     @Data
-    static class findIdDto{
+    static class findIdDto {
         boolean success;
         long id;
         String email;
 
-        public findIdDto(boolean success,long id, String email) {
-            this.success=success;
+        public findIdDto(boolean success, long id, String email) {
+            this.success = success;
             this.id = id;
             this.email = email;
         }
     }
+
     @Data
     static class RoleCheckDto {
 
@@ -451,8 +478,8 @@ public class JwtAuthenticationController {
         boolean isAdmin;
         String userName;
 
-        public RoleCheckDto(String un,boolean isShop, boolean isPanda, boolean isAdmin) {
-            this.userName=un;
+        public RoleCheckDto(String un, boolean isShop, boolean isPanda, boolean isAdmin) {
+            this.userName = un;
             this.isShop = isShop;
             this.isPanda = isPanda;
             this.isAdmin = isAdmin;
@@ -463,20 +490,22 @@ public class JwtAuthenticationController {
     static class SimpleCheckDto {
 
         private String username;
-        public SimpleCheckDto(String user){
 
-            this.username=user;
+        public SimpleCheckDto(String user) {
+
+            this.username = user;
 
         }
     }
+
     @Data
-    static class signupDto{
+    static class signupDto {
         private boolean success;
         private String message;
-        public signupDto(boolean su,String me)
-        {
-            success=su;
-            message=me;
+
+        public signupDto(boolean su, String me) {
+            success = su;
+            message = me;
         }
     }
 
@@ -486,9 +515,9 @@ public class JwtAuthenticationController {
         private boolean auth;
         private boolean authError;
 
-        public loginResultDto(boolean auth,boolean authError){
-            this.auth=auth;
-            this.authError=authError;
+        public loginResultDto(boolean auth, boolean authError) {
+            this.auth = auth;
+            this.authError = authError;
 
         }
     }
