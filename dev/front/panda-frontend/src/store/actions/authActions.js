@@ -26,10 +26,10 @@ export const signin = (data, onError) => {
 
       const res = await axios.post("/api/loginv2", form);
       console.log("res정보");
-      console.log(res.data.data.accessToken);
-      console.log(res.data.data.refreshToken);
-      console.log(res.data.data.refreshTokenExpirationTime);
-      window.localStorage.setItem("accessToken", res.data.data.accessToken);
+      console.log(res.data);
+      // console.log(res.data.data.refreshToken);
+      // console.log(res.data.data.refreshTokenExpirationTime);
+      window.localStorage.setItem("accessToken", res.data.accessToken);
       // window.localStorage.setItem("refreshToken", res.data.data.refreshToken);
       // setCookie("at", res.data.data.accessToken, { path: "/" });
       // setCookie("rt", res.data.data.refreshToken, { path: "/" });

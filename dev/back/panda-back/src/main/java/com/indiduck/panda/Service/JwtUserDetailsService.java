@@ -427,10 +427,10 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 
 
-    public ResponseEntity<?> reissueV2(String token,String rt) {
+    public UserResponseDto.TokenInfo reissueV2(String token, String rt) {
 //         1. Refresh Token 검증
         if (!jwtTokenProvider.validateToken(rt)) {
-            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+            return null;
         }
 
         // 2. Access Token 에서 User email 을 가져옵니다.
@@ -440,7 +440,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
         // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
         if(ObjectUtils.isEmpty(refreshToken)) {
-            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+            return null;
         }
 //        if(!refreshToken.equals(reissue.getRefreshToken())) {
 //            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
@@ -453,7 +453,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-        return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
+        return tokenInfo;
     }
 
 

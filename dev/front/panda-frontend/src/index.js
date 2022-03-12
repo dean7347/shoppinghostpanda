@@ -50,13 +50,14 @@ axios.interceptors.request.use(
       return config;
     }
     if (config.url === "/api/reissuev2") {
-      // console.log("재발급요청입니다");
-      const rtoken = window.localStorage.getItem("refreshToken");
-      if (rtoken) {
-        config.headers["refreshToken"] = rtoken;
-      }
+      console.log("재발급요청입니다");
+
+      // const rtoken = window.localStorage.getItem("refreshToken");
+      // if (rtoken) {
+      //   config.headers["refreshToken"] = rtoken;
+      // }
+      // console.log("콘피그", config);
     }
-    console.log(config);
     const token = window.localStorage.getItem("accessToken");
     // console.log("토큰");
     // console.log(token);
@@ -103,16 +104,13 @@ axios.interceptors.response.use(
       // axios.config.headers["refreshToken"] = rtoken;
       // console.log("리이슈");
       axios.post("/api/reissuev2").then((response) => {
-        // console.log("리이슈하면?");
-        // console.log(response.data.result);
-        window.localStorage.setItem(
-          "accessToken",
-          response.data.data.accessToken
-        );
-        window.localStorage.setItem(
-          "refreshToken",
-          response.data.data.refreshToken
-        );
+        console.log("리이슈하면?", response.data);
+        console.log();
+        window.localStorage.setItem("accessToken", response.data.accessToken);
+        // window.localStorage.setItem(
+        //   "refreshToken",
+        //   response.data.data.refreshToken
+        // );
         if (response.data.result === "success") {
         } else {
           if (

@@ -257,7 +257,7 @@ public class JwtAuthenticationController {
     public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
                                                                  Authentication authentication) throws Exception {
 
-
+        System.out.println("authentication = " + authentication);
         try{
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
@@ -301,13 +301,42 @@ public class JwtAuthenticationController {
         String accessToken = req.getHeader("accessToken");
         String retoken = req.getHeader("refreshToken");
 
+        String rtCookie="";
+        Cookie[] cookies = req.getCookies();
+        if(cookies==null) return null;
+        for(Cookie cookie : cookies){
+            if(cookie.getName().equals("refreshToken"))
+                rtCookie= cookie.getValue();
+        }
+        System.out.println("retoken = " + rtCookie);
+        System.out.println("accessToken = " + accessToken);
+        UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(accessToken, rtCookie);
+        if (tokenInfo==null)
+        {
+            return ResponseEntity.badRequest().body(new TFMessageDto(false,"로그인실패"));
+        }
 
-        // validation check
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
+        //
+        System.out.println(" =재발급로직을 실행합니ㄷ=== ");
 
-        return userDetailsService.reissueV2(accessToken, retoken);
+        //////로그인꺼 참고용
+        //기존 쿡히 삭제
+        String rToken = tokenInfo.getRefreshToken();
+        String aToken = tokenInfo.getAccessToken();
+        Cookie refreshToken = new Cookie("refreshToken",null);
+        refreshToken.setMaxAge(0);
+        refreshToken.setPath("/");
+
+        //새로운쿡히
+        refreshToken = new Cookie("refreshToken",rToken);
+
+        refreshToken.setHttpOnly(true);
+        refreshToken.setPath("/");
+
+        System.out.println(" =발송완료 " );
+
+        return ResponseEntity.ok(new TokenLoginTAO(true,aToken) );
+
 
     }
 
@@ -376,7 +405,7 @@ public class JwtAuthenticationController {
 //    }
     //////////////dto///////////
     @Data
-    private class TokenLoginTAO
+    private  static  class TokenLoginTAO
     {
         boolean success;
         String accessToken;
