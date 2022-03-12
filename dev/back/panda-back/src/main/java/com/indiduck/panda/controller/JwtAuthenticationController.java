@@ -136,17 +136,15 @@ public class JwtAuthenticationController {
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
         String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
-        Cookie accessToken = new Cookie("accessToken",aToken);
         Cookie refreshToken = new Cookie("refreshToken",rToken);
 
-        accessToken.setHttpOnly(true);
         refreshToken.setHttpOnly(true);
-        res.addCookie(accessToken);
+        refreshToken.setPath("/");
         res.addCookie(refreshToken);
 
 
 
-        return ResponseEntity.ok(new TFMessageDto(true,"로그인 성공"));
+        return ResponseEntity.ok(new TokenLoginTAO(true,aToken) );
 
     }
 
@@ -377,6 +375,17 @@ public class JwtAuthenticationController {
 //        return null;
 //    }
     //////////////dto///////////
+    @Data
+    private class TokenLoginTAO
+    {
+        boolean success;
+        String accessToken;
+
+        public TokenLoginTAO(boolean success, String accessToken) {
+            this.success = success;
+            this.accessToken = accessToken;
+        }
+    }
     @Data
     static class findId{
 
