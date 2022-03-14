@@ -73,6 +73,20 @@ public class PandaController {
     }
 
 
+
+    @RequestMapping(value = "/api/admin/confirmregpanda", method = RequestMethod.POST)
+    public ResponseEntity<?> confirmpanda(@CurrentSecurityContext(expression = "authentication")
+                                              Authentication authentication, @RequestBody RegID regID) throws Exception {
+
+
+        Panda panda = pandaService.regPandaResult(regID.getRegid(),regID.result);
+        if (panda == null) {
+            return ResponseEntity.ok(new ResultDto(false, "판다신청에 실패했습니다"));
+        }
+        return ResponseEntity.ok(new ResultDto(true, "판다신청에 성공했습니다"));
+    }
+
+
     @RequestMapping(value = "/api/regpanda", method = RequestMethod.POST)
     public ResponseEntity<?> regPanda(@CurrentSecurityContext(expression = "authentication")
                                               Authentication authentication, @RequestBody RegPandaDAO regPandaDAO) throws Exception {
@@ -277,6 +291,11 @@ public class PandaController {
         }
     }
 
+    @Data
+    private static class RegID{
+        long regid;
+        String result;
+    }
     @Data
     private static class PandaDashBoardDto {
         int startYear;

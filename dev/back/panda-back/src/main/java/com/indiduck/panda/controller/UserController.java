@@ -1,8 +1,6 @@
 package com.indiduck.panda.controller;
 
-import com.indiduck.panda.Repository.OrderDetailRepository;
-import com.indiduck.panda.Repository.UserOrderRepository;
-import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Repository.*;
 import com.indiduck.panda.Service.JwtUserDetailsService;
 import com.indiduck.panda.Service.OrderDetailService;
 import com.indiduck.panda.Service.RefundRequestService;
@@ -44,12 +42,88 @@ public class UserController {
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final UserOrderService userOrderService;
+    @Autowired
+    private final ShopRepository shopRepository;
+    @Autowired
+    private final ProductRepository productRepository;
+    @Autowired
+    private final PandaToProductRepository pandaToProductRepository;
 
+    @GetMapping("/api/userresign")
+    public ResponseEntity<?> userResign(@CurrentSecurityContext(expression = "authentication")
+                                                Authentication authentication) {
+        //상점여부
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        User user = byEmail.get();
+        Shop shop = byEmail.get().getShop();
+        Panda panda = byEmail.get().getPanda();
+        boolean isshop = false;
+        boolean ispanda = false;
+        if (shop != null) {
+            isshop = true;
+        }
+        if (panda != null) {
+            ispanda = true;
+        }
+
+
+        //판다 샵이없을경우
+        //주문상태가 모두 완료되어야 한다
+        if (ispanda == true) {
+            System.out.println("판다가 있는회원입니다");
+            Optional<List<PandaToProduct>> byPandaAndIsDel = pandaToProductRepository.findByPandaAndIsDel(panda, true);
+            if(!byPandaAndIsDel.isEmpty())
+            {
+                return ResponseEntity.ok(new TFMessageDto(false, "모든 영상을 삭제한 후 탈퇴 가능합니다 "));
+
+            }
+            //모든 영상이 삭제되어야 한다
+
+        }
+        //샵이 있을경우
+        //모든 상품이 삭제되어야 하고 모든 상품이 배송 완료, 주문 취소 상태여야한다
+        if (isshop == true) {
+            //모든 상품이 삭제되었는가?
+            Optional<Product> byShopAndDeleted = productRepository.findByShopAndDeleted(shop, false);
+            if(byShopAndDeleted.isEmpty())
+            {
+                return ResponseEntity.ok(new TFMessageDto(false, "모든 상품을 삭제후 탈퇴 가능합니다"));
+
+            }
+            //준비중인 상품이 있는가? 배송중인 상품이 있는가?
+            Optional<List<UserOrder>> payorder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.결제완료);
+            Optional<List<UserOrder>> readyOrder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.준비중);
+            Optional<List<UserOrder>> shipOrder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.발송중);
+            if(!payorder.isEmpty() && !readyOrder.isEmpty() && !shipOrder.isEmpty())
+            {
+                return ResponseEntity.ok(new TFMessageDto(false, "결제완료, 준비중인, 발송중인 상태의 상품이 있습니다. 모든 처리가 완료 된 후 탈퇴가 가능합니다"));
+            }
+
+            System.out.println("샵이 있는 회원입니다");
+
+        }
+
+
+        //구매확정 되지 않은 상품이 있는가
+        Optional<List<UserOrder>> payorder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.결제완료);
+        Optional<List<UserOrder>> readyOrder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.준비중);
+        Optional<List<UserOrder>> shipOrder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.발송중);
+        if(!payorder.isEmpty() && !readyOrder.isEmpty() && !shipOrder.isEmpty())
+        {
+            return ResponseEntity.ok(new TFMessageDto(false, "주문중인 상품이 있습니다 모두 구매확정 후 탈퇴가 가능합니다 "));
+        }
+
+        user.setLeaveAt(LocalDateTime.now());
+        return ResponseEntity.ok(new TFMessageDto(true, "회원 탈퇴요청이 성공적으로 입력되었습니다 7일이후 계정정보는 완전히 삭제됩니다 "));
+
+
+    }
 
 
     @GetMapping("/api/userprivateedit")
     public ResponseEntity<?> userPrivateEdit(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication) { // 회원 추가
+                                                     Authentication authentication) { // 회원 추가
         //상점여부
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
@@ -58,84 +132,74 @@ public class UserController {
         Panda panda = byEmail.get().getPanda();
         System.out.println("panda = " + panda);
         System.out.println("shop = " + shop);
-        boolean isshop=false;
-        boolean ispanda=false;
-        if(shop!=null)
-        {
-            isshop=true;
+        boolean isshop = false;
+        boolean ispanda = false;
+        if (shop != null) {
+            isshop = true;
         }
-        if(panda!=null)
-        {
-            ispanda=true;
+        if (panda != null) {
+            ispanda = true;
         }
 
-        return ResponseEntity.ok(new UserEditDTO(true,isshop,ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
+        return ResponseEntity.ok(new UserEditDTO(true, isshop, ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
         //판다여부
     }
 
     @GetMapping("/api/dashboard")
     public ResponseEntity<?> mainDashBoard(@CurrentSecurityContext(expression = "authentication")
-                                                       Authentication authentication) { // 회원 추가
+                                                   Authentication authentication) { // 회원 추가
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         List<UserOrder> byUserId = userOrderRepository.findByUserId(byEmail.get());
         Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
 //        Optional<List<OrderDetail>> orderDetailByUser = orderDetailRepository.findOrderDetailByUser(byEmail.get());
 
-        int ready=0;
-        int finish=0;
-        int cancel=0;
-        int cart=0;
+        int ready = 0;
+        int finish = 0;
+        int cancel = 0;
+        int cart = 0;
         for (UserOrder userOrder : byUserId) {
-            if((userOrder.getOrderStatus()==(OrderStatus.발송중))||(userOrder.getOrderStatus()==(OrderStatus.준비중))||(userOrder.getOrderStatus()==(OrderStatus.결제완료)))
-            {
+            if ((userOrder.getOrderStatus() == (OrderStatus.발송중)) || (userOrder.getOrderStatus() == (OrderStatus.준비중)) || (userOrder.getOrderStatus() == (OrderStatus.결제완료))) {
                 ready++;
             }
 
-            if((userOrder.getOrderStatus()==(OrderStatus.배송완료))||(userOrder.getOrderStatus()==(OrderStatus.구매확정)))
-            {
+            if ((userOrder.getOrderStatus() == (OrderStatus.배송완료)) || (userOrder.getOrderStatus() == (OrderStatus.구매확정))) {
                 ready++;
             }
-            if((userOrder.getOrderStatus()==(OrderStatus.환불대기))||(userOrder.getOrderStatus()==(OrderStatus.환불완료))||(userOrder.getOrderStatus()==(OrderStatus.주문취소)))
-            {
+            if ((userOrder.getOrderStatus() == (OrderStatus.환불대기)) || (userOrder.getOrderStatus() == (OrderStatus.환불완료)) || (userOrder.getOrderStatus() == (OrderStatus.주문취소))) {
                 cancel++;
             }
-            if((userOrder.getOrderStatus()==(OrderStatus.결제대기)))
-            {
+            if ((userOrder.getOrderStatus() == (OrderStatus.결제대기))) {
                 cart++;
             }
         }
-        if(byUserAndOrderStatus.get().isEmpty())
-        {
-            cart=0;
-        }else
-        {
+        if (byUserAndOrderStatus.get().isEmpty()) {
+            cart = 0;
+        } else {
             byUserAndOrderStatus.get().size();
         }
         //유저의 내역이 비었을경우
-        if(byUserId.isEmpty())
-        {
-            ready=0;
-            finish=0;
-            cancel=0;
+        if (byUserId.isEmpty()) {
+            ready = 0;
+            finish = 0;
+            cancel = 0;
         }
-        return ResponseEntity.ok(new dashBoardDto(true,ready,finish,cancel,cart));
+        return ResponseEntity.ok(new dashBoardDto(true, ready, finish, cancel, cart));
     }
 
     //주문취소
     @PostMapping("/api/userordercancel")
     public ResponseEntity<?> cancelOrder(@CurrentSecurityContext(expression = "authentication")
-                                                       Authentication authentication,  @RequestBody SituationDto situationDto) {
+                                                 Authentication authentication, @RequestBody SituationDto situationDto) {
         UserOrder userOrder = userOrderService.cancelOrder(situationDto.detailId);
         System.out.println("situationDto = " + situationDto);
-        if(userOrder!=null)
-        {
+        if (userOrder != null) {
 
 
-            return ResponseEntity.ok(new TFMessageDto(true,"변경성공"));
+            return ResponseEntity.ok(new TFMessageDto(true, "변경성공"));
 
         }
-        return ResponseEntity.ok(new TFMessageDto(false,"취소할 수 없는주문입니다"));
+        return ResponseEntity.ok(new TFMessageDto(false, "취소할 수 없는주문입니다"));
 
 
     }
@@ -143,51 +207,50 @@ public class UserController {
 
     @GetMapping("/api/recentsituation")
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication,@PageableDefault(sort="createdAt",direction = Sort.Direction.DESC ) Pageable pageable) {
+                                                     Authentication authentication, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         String name = authentication.getName();
         System.out.println("name = " + name);
         Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("authentication1.getName() = " + authentication1.getName());
         Optional<User> byEmail = userRepository.findByEmail(name);
-        Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(),pageable);
+        Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(), pageable);
         System.out.println("allByUserId = " + allByUserId.get());
         List<recentSituation> pageList = new ArrayList<>();
         System.out.println("allByUserId = " + allByUserId.get());
 //        for (UserOrder userOrder : allByUserId) {
 //            System.out.println("userOrder = " + userOrder.getReveiverName());
 //        }
-        HashSet<String> proname=new HashSet<>();
+        HashSet<String> proname = new HashSet<>();
 
         for (UserOrder userOrder : allByUserId) {
-            proname=new HashSet<>();
+            proname = new HashSet<>();
             List<OrderDetail> detail = userOrder.getDetail();
             for (OrderDetail orderDetail : detail) {
                 String productName = orderDetail.getProducts().getProductName();
                 proname.add(productName);
 
             }
-            pageList.add(new recentSituation(userOrder.getId(),proname.toString(),userOrder.getFullprice(),
-                    userOrder.getCreatedAt(),userOrder.getOrderStatus().toString()));
+            pageList.add(new recentSituation(userOrder.getId(), proname.toString(), userOrder.getFullprice(),
+                    userOrder.getCreatedAt(), userOrder.getOrderStatus().toString()));
         }
-        return ResponseEntity.ok(new pageDto(true,allByUserId.getTotalPages(),allByUserId.getTotalElements(),pageList));
+        return ResponseEntity.ok(new pageDto(true, allByUserId.getTotalPages(), allByUserId.getTotalElements(), pageList));
     }
 
-//디테일 내려주는곳
+    //디테일 내려주는곳
     @PostMapping("/api/situationdetail")
     public ResponseEntity<?> situationDetail(@CurrentSecurityContext(expression = "authentication")
-                                                     Authentication authentication,  @RequestBody SituationDto situationDto) {
-                String name = authentication.getName();
+                                                     Authentication authentication, @RequestBody SituationDto situationDto) {
+        String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
 
         Optional<UserOrder> byId = userOrderRepository.findById(situationDto.detailId);
         UserOrder userOrder = byId.get();
         List<OrderDetail> detail = userOrder.getDetail();
-        List<DetailOrderList> dol =new ArrayList<>();
+        List<DetailOrderList> dol = new ArrayList<>();
 
 
-
-        recentSituationDto rsd = new recentSituationDto(true,userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
-        ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail);
+        recentSituationDto rsd = new recentSituationDto(true, userOrder.getId(), userOrder.getAmount(), userOrder.getShipPrice()
+                , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail);
 
 
         return ResponseEntity.ok(rsd);
@@ -196,16 +259,15 @@ public class UserController {
 
     @PostMapping("/api/situationdetailv2")
     public ResponseEntity<?> situationDetailV2(@CurrentSecurityContext(expression = "authentication")
-                                                     Authentication authentication,  @RequestBody SituationDto situationDto) {
+                                                       Authentication authentication, @RequestBody SituationDto situationDto) {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
 
         Optional<UserOrder> byId = userOrderRepository.findById(situationDto.detailId);
         UserOrder userOrder = byId.get();
         List<OrderDetail> detail = userOrder.getDetail();
-        List<DetailOrderList> dol =new ArrayList<>();
-        HashSet<String> proname=new HashSet<>();
-
+        List<DetailOrderList> dol = new ArrayList<>();
+        HashSet<String> proname = new HashSet<>();
 
 
         for (OrderDetail orderDetail : userOrder.getDetail()) {
@@ -214,21 +276,19 @@ public class UserController {
         System.out.println("내려주는데이타 = " + proname);
 
 
-
-        recentSituationDtoV2 rsd = new recentSituationDtoV2(true,byEmail.get().getUserRName(),userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
-                ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
-                ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
-                userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
+        recentSituationDtoV2 rsd = new recentSituationDtoV2(true, byEmail.get().getUserRName(), userOrder.getId(), userOrder.getAmount(), userOrder.getShipPrice()
+                , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
+                , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
+                userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber());
 
 
         return ResponseEntity.ok(rsd);
     }
 
 
-
     @PostMapping("/api/situationListdetail")
     public ResponseEntity<?> situationListDetailV1(@CurrentSecurityContext(expression = "authentication")
-                                                       Authentication authentication,  @RequestBody SituationListDto situationDto) {
+                                                           Authentication authentication, @RequestBody SituationListDto situationDto) {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         List<recentSituationDtoV2> printdatas = new ArrayList<>();
@@ -236,13 +296,12 @@ public class UserController {
             Optional<UserOrder> byId = userOrderRepository.findById(l);
             UserOrder userOrder = byId.get();
             List<OrderDetail> detail = userOrder.getDetail();
-            List<DetailOrderList> dol =new ArrayList<>();
-            HashSet<String> proname=new HashSet<>();
+            List<DetailOrderList> dol = new ArrayList<>();
+            HashSet<String> proname = new HashSet<>();
 
             UserOrder sta = userOrderService.ChangeOrder(l, "준비중", "", "");
-            if(sta ==null)
-            {
-                return ResponseEntity.ok(new TFMessageDto(false,userOrder.getId()+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+            if (sta == null) {
+                return ResponseEntity.ok(new TFMessageDto(false, userOrder.getId() + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
             }
 
@@ -252,32 +311,31 @@ public class UserController {
             System.out.println("내려주는데이타 = " + proname);
 
 
-
-            recentSituationDtoV2 rsd = new recentSituationDtoV2(true,byEmail.get().getUserRName(),userOrder.getId(),userOrder.getAmount(),userOrder.getShipPrice()
-                    ,userOrder.getFullprice(),userOrder.getReveiverName(),userOrder.getReceiverAddress(),userOrder.getReceiverPhone(),detail
-                    ,proname.toString(),detail.get(0).getPaymentAt(),detail.get(0).getShop().getShopName(),detail.get(0).getShop().getCsPhone(),
-                    userOrder.getOrderStatus(),userOrder.getPureAmount(),userOrder.getFreeprice(),userOrder.getReceiverZipCode(),userOrder.getMemo(),userOrder.getUserId().getUserPhoneNumber());
+            recentSituationDtoV2 rsd = new recentSituationDtoV2(true, byEmail.get().getUserRName(), userOrder.getId(), userOrder.getAmount(), userOrder.getShipPrice()
+                    , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
+                    , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
+                    userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber());
             printdatas.add(rsd);
 
 
         }
 
-        return ResponseEntity.ok(new DetailListDTO(true,printdatas));
+        return ResponseEntity.ok(new DetailListDTO(true, printdatas));
     }
 
 
     //주문 상태 변경신청
     @PostMapping("/api/changeuserorderstate")
     public ResponseEntity<?> changeStateUserOrder(@CurrentSecurityContext(expression = "authentication")
-                                                       Authentication authentication,  @RequestBody ChageDao chageDao) {
+                                                          Authentication authentication, @RequestBody ChageDao chageDao) {
 
-        userOrderService.ChangeOrder(chageDao.userOrderId,chageDao.state,chageDao.shipCompany,chageDao.shipNumber);
-        return ResponseEntity.ok(new TFMessageDto(true,"상태변경에 성공했습니다"));
+        userOrderService.ChangeOrder(chageDao.userOrderId, chageDao.state, chageDao.shipCompany, chageDao.shipNumber);
+        return ResponseEntity.ok(new TFMessageDto(true, "상태변경에 성공했습니다"));
 
     }
 
     @Data
-    private static class DetailListDTO{
+    private static class DetailListDTO {
         boolean success;
         List<recentSituationDtoV2> sld;
 
@@ -288,7 +346,7 @@ public class UserController {
     }
 
     @Data
-    private static class ChageDao{
+    private static class ChageDao {
         long userOrderId;
         String state;
         String shipCompany;
@@ -299,23 +357,23 @@ public class UserController {
 
 
     @Data
-    private class pageDto{
+    private class pageDto {
         boolean success;
         int totalpage;
         Long totalElement;
-        List<recentSituation> pageList=new ArrayList<>();
-        public pageDto(boolean su,int totalP,Long totalE, List<recentSituation> pl)
-        {
-            success=su;
-            totalpage=totalP;
-            totalElement=totalE;
-            pageList=pl;
+        List<recentSituation> pageList = new ArrayList<>();
+
+        public pageDto(boolean su, int totalP, Long totalE, List<recentSituation> pl) {
+            success = su;
+            totalpage = totalP;
+            totalElement = totalE;
+            pageList = pl;
         }
     }
 
 
     @Data
-    private class recentSituation{
+    private class recentSituation {
         //주문번호
         long num;
         //상품이름
@@ -328,16 +386,16 @@ public class UserController {
         String status;
         //프로덕트 아이디
 
-        public recentSituation(Long no,String pn,int pri,LocalDateTime dateTime,String stat )
-        {
-            num=no;
-            productName=pn;
-            price=pri;
-            orderAt=dateTime;
-            status=stat;
+        public recentSituation(Long no, String pn, int pri, LocalDateTime dateTime, String stat) {
+            num = no;
+            productName = pn;
+            price = pri;
+            orderAt = dateTime;
+            status = stat;
 
         }
     }
+
     @Data
     private class dashBoardDto {
         boolean success;
@@ -349,13 +407,13 @@ public class UserController {
         int cancelProduct;
         //장바구니 갯수
         int cartProduct;
-        public dashBoardDto(boolean result,int ready,int fin,int cancel, int cart)
-        {
-            success=result;
-            readyProduct=ready;
-            finishProduct=fin;
-            cancelProduct=cancel;
-            cartProduct=cart;
+
+        public dashBoardDto(boolean result, int ready, int fin, int cancel, int cart) {
+            success = result;
+            readyProduct = ready;
+            finishProduct = fin;
+            cancelProduct = cancel;
+            cartProduct = cart;
 
         }
 
@@ -374,6 +432,7 @@ public class UserController {
         //상태태
         OrderStatus status;
     }
+
     @Data
     private static class SituationListDto {
         //주문번호
@@ -410,8 +469,8 @@ public class UserController {
         //받는사람전화번호
         String receiverPhone;
         //상품DTO
-        HashSet<DetailOrderList> products=new HashSet<>();
-        List<DetailOrderList> orderDetails=new ArrayList<>();
+        HashSet<DetailOrderList> products = new HashSet<>();
+        List<DetailOrderList> orderDetails = new ArrayList<>();
         //추가된것
         String proName;
         LocalDateTime orderAt;
@@ -425,61 +484,57 @@ public class UserController {
         String buyerName;
 
 
-        public recentSituationDtoV2(boolean su,String buyer,Long detailId, int price, int shipprice, int allamount,
-                                  String receiver, String address, String receiverPhone, List<OrderDetail> dol,String pn,LocalDateTime oa,
-                                    String sn, String sp, OrderStatus os,int pa,int fp,String addressNum,String shipmemo,String bp) {
-            this.proName=pn;
-            this.buyerName=buyer;
-            this.orderAt=oa;
-            this.shopName=sn;
-            this.shopPhone=sp;
-            this.status=os;
-            this.success=su;
+        public recentSituationDtoV2(boolean su, String buyer, Long detailId, int price, int shipprice, int allamount,
+                                    String receiver, String address, String receiverPhone, List<OrderDetail> dol, String pn, LocalDateTime oa,
+                                    String sn, String sp, OrderStatus os, int pa, int fp, String addressNum, String shipmemo, String bp) {
+            this.proName = pn;
+            this.buyerName = buyer;
+            this.orderAt = oa;
+            this.shopName = sn;
+            this.shopPhone = sp;
+            this.status = os;
+            this.success = su;
             this.detailId = detailId;
             this.price = price;
-            this.buyerPhone=bp;
+            this.buyerPhone = bp;
             this.shipprice = shipprice;
             this.allamount = allamount;
             this.receiver = receiver;
             this.address = address;
-            this.addressNum=addressNum;
-            this.shipmemo=shipmemo;
+            this.addressNum = addressNum;
+            this.shipmemo = shipmemo;
             this.receiverPhone = receiverPhone;
-            this.pureamount=pa;
-            this.freeprice=fp;
+            this.pureamount = pa;
+            this.freeprice = fp;
             for (OrderDetail orderDetail : dol) {
-                String img=null;
+                String img = null;
                 List<File> images = orderDetail.getProducts().getImages();
                 for (File image : images) {
-                    if(image.isIsthumb())
-                    {
-                        img= image.getFilepath();
+                    if (image.isIsthumb()) {
+                        img = image.getFilepath();
                         break;
                     }
                 }
-                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img,orderDetail.getProducts().getId()));
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(), img, orderDetail.getProducts().getId()));
             }
 
             for (OrderDetail orderDetail : dol) {
                 for (DetailOrderList product : products) {
 
-                    if(product.productName==orderDetail.getProducts().getProductName()){
-                        if(orderDetail.getPanda()==null)
-                        {
-                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null",orderDetail.getId()
-                                    ,orderDetail.getOrderStatus()));
-                        }else
-                        {
-                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName(),orderDetail.getId()
-                                    ,orderDetail.getOrderStatus()));
+                    if (product.productName == orderDetail.getProducts().getProductName()) {
+                        if (orderDetail.getPanda() == null) {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), "null", orderDetail.getId()
+                                    , orderDetail.getOrderStatus()));
+                        } else {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), orderDetail.getPanda().getPandaName(), orderDetail.getId()
+                                    , orderDetail.getOrderStatus()));
                         }
 
                     }
                 }
             }
-
 
 
         }
@@ -503,12 +558,12 @@ public class UserController {
         //받는사람전화번호
         String receiverPhone;
         //상품DTO
-        HashSet<DetailOrderList> products=new HashSet<>();
-        List<DetailOrderList> orderDetails=new ArrayList<>();
+        HashSet<DetailOrderList> products = new HashSet<>();
+        List<DetailOrderList> orderDetails = new ArrayList<>();
 
-        public recentSituationDto(boolean su,Long detailId, int price, int shipprice, int allamount,
+        public recentSituationDto(boolean su, Long detailId, int price, int shipprice, int allamount,
                                   String receiver, String address, String receiverPhone, List<OrderDetail> dol) {
-            this.success=su;
+            this.success = su;
             this.detailId = detailId;
             this.price = price;
             this.shipprice = shipprice;
@@ -517,31 +572,28 @@ public class UserController {
             this.address = address;
             this.receiverPhone = receiverPhone;
             for (OrderDetail orderDetail : dol) {
-                String img=null;
+                String img = null;
                 List<File> images = orderDetail.getProducts().getImages();
                 for (File image : images) {
-                    if(image.isIsthumb())
-                    {
-                       img= image.getFilepath();
+                    if (image.isIsthumb()) {
+                        img = image.getFilepath();
                     }
                 }
-                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(),img,orderDetail.getProducts().getId()));
+                products.add(new DetailOrderList(orderDetail.getProducts().getProductName(), img, orderDetail.getProducts().getId()));
             }
 
             for (OrderDetail orderDetail : dol) {
                 for (DetailOrderList product : products) {
 
-                    if(product.productName==orderDetail.getProducts().getProductName()){
-                        if(orderDetail.getPanda()==null)
-                        {
-                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),"null",orderDetail.getId()
-                            ,orderDetail.getOrderStatus()));
-                        }else
-                        {
-                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(),orderDetail.getProductCount(),
-                                    orderDetail.getIndividualPrice(),orderDetail.getTotalPrice(),orderDetail.getPanda().getPandaName(),orderDetail.getId()
-                                    ,orderDetail.getOrderStatus()));
+                    if (product.productName == orderDetail.getProducts().getProductName()) {
+                        if (orderDetail.getPanda() == null) {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), "null", orderDetail.getId()
+                                    , orderDetail.getOrderStatus()));
+                        } else {
+                            product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
+                                    orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), orderDetail.getPanda().getPandaName(), orderDetail.getId()
+                                    , orderDetail.getOrderStatus()));
                         }
 
                     }
@@ -549,13 +601,12 @@ public class UserController {
             }
 
 
-
         }
     }
 
 
     @Data
-    private class UserEditDTO{
+    private class UserEditDTO {
         boolean success;
         boolean isShop;
         boolean isPanda;
@@ -565,28 +616,27 @@ public class UserController {
         IfShop ifShop;
         IfPanda ifPanda;
 
-        public UserEditDTO(boolean su,boolean isShop, boolean isPanda, LocalDateTime regAt, String email, String userName, Shop shop, Panda panda) {
-            this.success=su;
+        public UserEditDTO(boolean su, boolean isShop, boolean isPanda, LocalDateTime regAt, String email, String userName, Shop shop, Panda panda) {
+            this.success = su;
             this.isShop = isShop;
             this.isPanda = isPanda;
-            this.regAt=regAt;
+            this.regAt = regAt;
             Email = email;
             this.userName = userName;
-            if(shop !=null)
-            {
-                this.ifShop=new IfShop(shop);;
+            if (shop != null) {
+                this.ifShop = new IfShop(shop);
+                ;
 
             }
-            if(panda !=null)
-            {
-                this.ifPanda =new IfPanda(panda);
+            if (panda != null) {
+                this.ifPanda = new IfPanda(panda);
 
             }
         }
     }
+
     @Data
-    private class IfShop
-    {
+    private class IfShop {
         String shopName;
         //평균배송기간
         String avdtime;
@@ -657,9 +707,9 @@ public class UserController {
             this.tradeFee = shop.getTradepee();
         }
     }
+
     @Data
-    private class IfPanda
-    {
+    private class IfPanda {
         String pandaName;
         String intCategory;
         String mainCh;
@@ -670,31 +720,31 @@ public class UserController {
             this.pandaName = panda.getPandaName();
             this.intCategory = panda.getIntCategory();
             this.mainCh = panda.getMainCh();
-            this.confirm=panda.isRecognize();
+            this.confirm = panda.isRecognize();
         }
     }
 
     @Data
-    private class DetailOrderList{
+    private class DetailOrderList {
         String productName;
         String imgPath;
-        List<OptionList> options= new ArrayList<>();
+        List<OptionList> options = new ArrayList<>();
         long proId;
 
-        public DetailOrderList(String pn,String img,long pi) {
-            productName=pn;
-            imgPath=img;
-            proId=pi;
+        public DetailOrderList(String pn, String img, long pi) {
+            productName = pn;
+            imgPath = img;
+            proId = pi;
         }
-        public void setOptions(OptionList list)
-        {
+
+        public void setOptions(OptionList list) {
             options.add(list);
 
         }
     }
 
     @Data
-    private class OptionList{
+    private class OptionList {
         String optionName;
         int optionCount;
         int optionPrice;
@@ -704,20 +754,18 @@ public class UserController {
         long odid;
         OrderStatus orderStatus;
 
-        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName,long odid,OrderStatus odst) {
+        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName, long odid, OrderStatus odst) {
             this.optionName = optionName;
             this.optionCount = optionCount;
             this.optionPrice = optionPrice;
             this.allAmount = allAmount;
             this.pandaName = pandaName;
-            this.odid=odid;
-            this.orderStatus=odst;
-            if(pandaName=="null")
-            {
-                discount=false;
-            }
-            else{
-                discount=true;
+            this.odid = odid;
+            this.orderStatus = odst;
+            if (pandaName == "null") {
+                discount = false;
+            } else {
+                discount = true;
             }
         }
     }

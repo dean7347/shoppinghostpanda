@@ -7,6 +7,7 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.ShopService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
+import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.*;
 import org.apache.tomcat.jni.Local;
@@ -40,6 +41,17 @@ public class ShopController {
     UserRepository userRepository;
     @Autowired
     UserOrderRepository userOrderRepository;
+
+
+    @RequestMapping(value = "/api/admin/confirmregshop", method = RequestMethod.POST)
+    public ResponseEntity<?> confirmregshop(@CurrentSecurityContext(expression = "authentication")
+                                                  Authentication authentication, @RequestBody RegShopID regID) throws Exception {
+        Shop shop = shopService.regShopResult(regID.getRegid(), regID.result);
+        if (shop == null) {
+            return ResponseEntity.ok(new ResultDto(false, "판다신청에 실패했습니다"));
+        }
+        return ResponseEntity.ok(new ResultDto(true, "판다신청에 성공했습니다"));
+    }
 
     //샵 생성메소드
     @RequestMapping(value = "/api/createShop", method = RequestMethod.POST)
@@ -553,5 +565,11 @@ public class ShopController {
     private static class EditShopDAO {
         String target;
         String values;
+    }
+    @Data
+    private static class RegShopID{
+        long regid;
+        String result;
+
     }
 }

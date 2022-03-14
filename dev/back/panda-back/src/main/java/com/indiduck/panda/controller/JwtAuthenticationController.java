@@ -158,7 +158,7 @@ public class JwtAuthenticationController {
 
 
         try {
-            String save = userDetailsService.save(infoDto);
+            String save = userDetailsService.saveTEST(infoDto);
             if (!save.equals("회원가입성공")) {
                 return ResponseEntity.ok(new signupDto(false, save));
 

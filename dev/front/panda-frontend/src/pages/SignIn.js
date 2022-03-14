@@ -55,6 +55,7 @@ const SignIn = (props) => {
         <h2 className="has-text-centered is-size-2 mb-3">Sign In</h2>
         <form className="form" onSubmit={submitHandler}>
           {error && <Message type="danger" msg={error} />}
+          <input type="hidden" name="_csrf" value="{{#_csrf}}token{{/_csrf}}" />
           <Input
             type="email"
             name="email"

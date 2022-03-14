@@ -61,6 +61,10 @@ public class Panda {
         this.user=user;
         user.setPanda(this);
     }
+    public void confrimPanda()
+    {
+        this.recognize=true;
+    }
     public void deleteOrderdetail(OrderDetail od)
     {
         orderDetailPandas.remove(od);

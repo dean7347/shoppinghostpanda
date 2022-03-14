@@ -26,6 +26,26 @@ public class PandaService {
     @Autowired
     private final OrderDetailRepository orderDetailRepository;
 
+//    public Panda confirmSettlePanda(long id)
+//    {
+//        return
+//    }
+    public Panda regPandaResult(long id, String result)
+    {
+        Optional<Panda> byId = pandaRespository.findById(id);
+        Panda panda = byId.get();
+
+        if(result.equals("confirm"))
+        {
+            panda.confrimPanda();
+            return panda;
+        }else
+        {
+            pandaRespository.delete(panda);
+            return null;
+        }
+    }
+
     public Panda newPanda(String user, String pandaName, String mainCh,
                           String intCategory, boolean terms, boolean info) {
 

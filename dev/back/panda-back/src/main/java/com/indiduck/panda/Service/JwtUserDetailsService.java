@@ -228,6 +228,48 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     }
 
+
+    // TODO 테스트버전에서의 로그인
+
+    @Transactional
+    public String saveTEST(UserDto infoDto) {
+
+
+
+        try {
+
+            if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
+            {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                infoDto.setPassword(encoder.encode(infoDto.getPassword()));
+                //만나이 계산
+
+                userRepository.save(User.builder()
+                        .email(infoDto.getEmail())
+                        .auth(infoDto.getAuth())
+                        .adult(infoDto.isAdult())
+                        .apprterm(infoDto.isApprterm())
+                        .userRName("테스트버전용네임")
+                        .priagree(infoDto.isPriagree())
+                        .userPhoneNumber("01012345678")
+                        .ci("testCICICI")
+                        .regAt(LocalDateTime.now())
+                        .password(infoDto.getPassword())
+                        .roles(Collections.singletonList(UserType.ROLE_ADMIN.toString())).build()).getId();
+                return "회원가입성공";
+
+            }
+            return "중복된 아이디가 존재합니다";
+
+        }catch (Exception e)
+        {
+            System.out.println("e = " + e);
+        }
+
+        return  null;
+
+    }
+
     public User findId(String code) throws IamportResponseException, IOException {
         IamportClient client;
         String test_api_key = apiKey.getRESTAPIKEY();

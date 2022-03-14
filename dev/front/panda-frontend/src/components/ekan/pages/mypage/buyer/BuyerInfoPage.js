@@ -169,6 +169,22 @@ const BuyerInfoPage = () => {
   const [intCategory] = Form.useForm();
   const [mainCh] = Form.useForm();
 
+  const onClickResign = () => {
+    if (
+      window.confirm("회원탈퇴시 되돌릴수 없습니다 정말로 탈퇴하시겠습니까?")
+    ) {
+      axios.get("/api/userresign").then((response) => {
+        if (response.data.success) {
+          console.log(response);
+          alert(response.data.message);
+        } else {
+          console.log(response);
+          alert(response.data.message);
+        }
+      });
+    } else {
+    }
+  };
   const onFinish = (values, type, dfd) => {
     var targetKey = Object.keys(values);
     var targetValue = Object.values(values);
@@ -1223,7 +1239,8 @@ const BuyerInfoPage = () => {
 
             <div className="card__footer mt-4">
               <Button
-                text={"홈으로"}
+                onClick={onClickResign}
+                text={"회원탈퇴"}
                 className="is-primary is-large is-rounded is-outlined mr-5"
               />
               <Button

@@ -28,6 +28,25 @@ public class ShopService {
     @Autowired
     private final SettleShopRepository settleShopRepository;
 
+
+    public Shop regShopResult(long id, String result){
+        Optional<Shop> byId = shopRepository.findById(id);
+        Shop shop = byId.get();
+
+        if(result.equals("confirm"))
+        {
+            shop.confirmShop();
+            return shop;
+        }else
+        {
+            shop.getUser().deleteShop();
+            shopRepository.delete(shop);
+            return null;
+        }
+
+
+    }
+
     public Shop createNewShop(String username, String shopName, String representative, String crn,
                               String telnum, int freepee, int nofree,
                               String priPhone, String csPhone, String csTime,

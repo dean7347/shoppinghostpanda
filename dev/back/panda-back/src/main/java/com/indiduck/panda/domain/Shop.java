@@ -144,6 +144,12 @@ public class Shop {
     }
 
     //==비즈니스 로직==//
+
+    public void confirmShop()
+    {
+        this.isApprove=true;
+        this.isOpen=true;
+    }
     public void SettleShopLogic(){
 
         for (UserOrder userOrder : userOrders) {

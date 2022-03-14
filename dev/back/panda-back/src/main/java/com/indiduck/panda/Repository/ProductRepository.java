@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Transactional(readOnly = true)
 public interface ProductRepository extends JpaRepository<Product,Long> {
@@ -22,6 +24,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findByShop(Pageable pageable, Shop shop);
     Page<Product> findByShopAndDeleted(Pageable pageable, Shop shop,boolean tf);
     Page<Product> findAllByDeletedAndSales(Pageable pageable,boolean tf,boolean tf2);
+
+    //회원탈퇴로직
+    Optional<Product> findByShopAndDeleted(Shop shop, boolean delete);
 
 
 
