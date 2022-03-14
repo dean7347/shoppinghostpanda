@@ -48,5 +48,13 @@ public class SettleShop {
         return settle;
 
     }
+    public void depoist()
+    {
+        this.isDeposit=true;
+        this.depositDate=LocalDateTime.now();
+        for (UserOrder order : userOrder) {
+            order.settlefinishShop();
+        }
+    }
 
 }

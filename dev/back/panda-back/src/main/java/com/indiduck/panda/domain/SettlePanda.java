@@ -46,6 +46,13 @@ public class SettlePanda {
         return settle;
 
     }
+    public void deposit()
+    {
+        this.isDeposit=true;
+        for (OrderDetail orderDetail : orderDetails) {
+            orderDetail.finishSettler();
+        }
+    }
 
 }
 

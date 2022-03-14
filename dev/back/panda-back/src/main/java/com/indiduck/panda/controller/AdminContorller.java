@@ -5,6 +5,7 @@ import com.indiduck.panda.Repository.PandaRespository;
 import com.indiduck.panda.Repository.SettlePandaRepository;
 import com.indiduck.panda.Repository.SettleShopRepository;
 import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Service.SettleService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
@@ -35,6 +36,26 @@ public class AdminContorller {
     private final ShopRepository shopRepository;
     @Autowired
     private final PandaRespository pandaRepoSitory;
+
+    @Autowired
+    private final SettleService settleService;
+
+
+    //샵 정산완료
+
+    //샵,판다 정산 완료
+    @RequestMapping(value = "/api/admin/pandaSettleConfirm", method = RequestMethod.POST)
+    public ResponseEntity<?> pandaSettleConfirm(@CurrentSecurityContext(expression = "authentication")
+                                                 Authentication authentication,  @RequestBody GetID getid) throws Exception {
+
+        String s = settleService.doingSettle(getid.id, getid.type);
+        if(s==null)
+        {
+            return ResponseEntity.ok(new TFMessageDto(false,"정산실패"));
+        }
+        return ResponseEntity.ok(new TFMessageDto(true,"정산입력성공"));
+
+    }
 
     //정산해야될 판다 리스트
     @RequestMapping(value = "/api/admin/pandaSettleList", method = RequestMethod.GET)
@@ -108,6 +129,13 @@ public class AdminContorller {
 
     }
 
+
+    @Data
+    private static class GetID
+    {
+        long id;
+        String type;
+    }
     @Data
     private class ApprovePandaDTO
     {

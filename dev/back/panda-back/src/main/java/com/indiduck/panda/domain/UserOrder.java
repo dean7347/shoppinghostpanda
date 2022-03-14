@@ -104,9 +104,14 @@ public class UserOrder {
     int balance=0;
     //환불된 금액을 표기한다
     int finalRefundMoney=0;
-    //지급 상태
+    //지급 상태 샵에대해서
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+
+    //지급 상태 판다에 대해서
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus pandaPaymentStatus;
+
     //지급목록 등록여부
     boolean enrollSettlePanda;
     boolean enrollSettleShop;
@@ -237,6 +242,10 @@ public class UserOrder {
         this.finishAt=ldt;
     }
 
+    public void settlefinishShop()
+    {
+        this.paymentStatus=PaymentStatus.지급완료;
+    }
     public void batchTest(LocalDateTime ldt)
     {
         this.arriveAt=ldt;

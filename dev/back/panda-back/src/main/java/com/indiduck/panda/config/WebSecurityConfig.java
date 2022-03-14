@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
                 .antMatchers("/api/**","/api/shop/**").hasRole("USER")
-                .antMatchers("/api/**","/api/admin/**","/api/admin/confirmregpanda","/api/admin/confirmregshop").hasRole("ADMIN")
+                .antMatchers("/api/**","/api/admin/**","/api/admin/confirmregpanda","/api/admin/confirmregshop","/api/admin/pandaSettleConfirm").hasRole("ADMIN")
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)

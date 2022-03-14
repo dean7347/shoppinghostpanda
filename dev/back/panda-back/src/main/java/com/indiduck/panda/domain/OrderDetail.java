@@ -270,5 +270,9 @@ public class OrderDetail {
         this.enrollSettle=tf;
         this.settlePanda=panda;
     }
+    public void finishSettler()
+    {
+        this.paymentStatus=PaymentStatus.지급완료;
+    }
 
 }
