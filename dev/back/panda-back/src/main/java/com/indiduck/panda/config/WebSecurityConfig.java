@@ -42,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/getqna*","/api/login","/api/loginv2","/api/user/logoutv2","/api/signup","/api/userresign").permitAll()
 //                .antMatchers("/api**").permitAll()
                 .antMatchers("/api/*","/api/shop/**","/api/cart/**","/api/payment/**","api/readRefundRequest","/api/copyproduct","/api/pandamovieedit","/api/haveshop",
-                        "/product/api/proxy?url=/http://localhost:3000/**","/api/userprivateedit","/api/editShop","/api/editPanda","/api/editLow","/api/createqna","/api/createqnareply").authenticated()
+                        "/product/api/proxy?url=/http://localhost:3000/**","/api/userprivateedit","/api/editShop","/api/editPanda","/api/editLow","/api/createqna","/api/createqnareply"
+                ,"/api/product/changeprostatus").authenticated()
 
 
                 .antMatchers("/api/**","/api/shop/**").hasRole("USER")

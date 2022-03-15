@@ -84,62 +84,71 @@ function MyProductPage() {
   const clickHandler = (e, param) => {
     console.log(param);
   };
-  const renderCards = Products.map((product, index) => {
-    return (
-      <Col lg={6} md={8} xs={24} key={index}>
-        <a href={`/product/${product.proId}`}>
-          <Card cover={<ImageSlider images={product} />}>
-            <Meta title={product.proname} description={`${product.shopname}`} />
-          </Card>
-        </a>
+  const renderCards =
+    Products &&
+    Products.map((product, index) => {
+      return (
+        <Col lg={6} md={8} xs={24} key={index}>
+          <a href={`/product/${product.proId}`}>
+            <Card cover={<ImageSlider images={product} />}>
+              <Meta
+                title={product.proname}
+                description={`${product.shopname}`}
+              />
+            </Card>
+          </a>
 
-        <div style={{ border: "1px solid", justityContent: "center" }}>
-          <div>
-            <div style={{ width: "50%", float: "left" }}>
-              {product.salse ? (
+          <div style={{ border: "1px solid", justityContent: "center" }}>
+            <div>
+              <div style={{ width: "50%", float: "left" }}>
+                {product.salse ? (
+                  <Button
+                    block
+                    variant="success"
+                    size="sm"
+                    onClick={() =>
+                      onClickStatusChange(product.proId, "판매중지")
+                    }
+                  >
+                    판매중지
+                  </Button>
+                ) : (
+                  <Button
+                    block
+                    variant="success"
+                    size="sm"
+                    onClick={() =>
+                      onClickStatusChange(product.proId, "판매재개")
+                    }
+                  >
+                    판매재개
+                  </Button>
+                )}
+              </div>
+              <div style={{ width: "50%", float: "left" }}>
                 <Button
                   block
-                  variant="success"
+                  variant="danger"
                   size="sm"
-                  onClick={() => onClickStatusChange(product.proId, "판매중지")}
+                  danger
+                  onClick={() => onClickStatusChange(product.proId, "상품삭제")}
                 >
-                  판매중지
+                  상품삭제
                 </Button>
-              ) : (
-                <Button
-                  block
-                  variant="success"
-                  size="sm"
-                  onClick={() => onClickStatusChange(product.proId, "판매재개")}
-                >
-                  판매재개
-                </Button>
-              )}
+              </div>
             </div>
-            <div style={{ width: "50%", float: "left" }}>
-              <Button
-                block
-                variant="danger"
-                size="sm"
-                danger
-                onClick={() => onClickStatusChange(product.proId, "상품삭제")}
-              >
-                상품삭제
-              </Button>
-            </div>
+            <Link
+              to={{
+                pathname: `/shop/editProduct/${product.proId}`,
+                state: { proid: product.proId },
+              }}
+            >
+              <Button block>상품수정</Button>
+            </Link>
           </div>
-          <Link
-            to={{
-              pathname: `/shop/editProduct/${product.proId}`,
-              state: { proid: product.proId },
-            }}
-          >
-            <Button block>상품수정</Button>
-          </Link>
-        </div>
-      </Col>
-    );
-  });
+        </Col>
+      );
+    });
 
   return (
     <>
