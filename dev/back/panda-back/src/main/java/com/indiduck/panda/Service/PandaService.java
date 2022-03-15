@@ -41,6 +41,7 @@ public class PandaService {
             return panda;
         }else
         {
+            panda.getUser().deletePanda();
             pandaRespository.delete(panda);
             return null;
         }

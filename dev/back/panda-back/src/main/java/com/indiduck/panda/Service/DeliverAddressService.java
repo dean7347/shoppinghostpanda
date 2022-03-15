@@ -33,4 +33,9 @@ public class DeliverAddressService {
 
 
     }
+
+    public void userAddressDeleteAll(User user)
+    {
+
+    }
 }

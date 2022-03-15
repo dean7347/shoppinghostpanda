@@ -3,6 +3,7 @@ package com.indiduck.panda.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 public class OrderDetail {
 
     @Id
@@ -121,7 +123,7 @@ public class OrderDetail {
 
     }
     //==연관관계매서드==//
-    private void setUser(User user)
+    public void setUser(User user)
     {
         this.user=user;
         user.getOrders().add(this);
@@ -239,6 +241,7 @@ public class OrderDetail {
 
         }
     }
+
     public void setOrderready(OrderStatus status)
     {
         this.orderStatus=status;

@@ -54,7 +54,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<OrderDetail> orders =new ArrayList<>();
 
-    @OneToMany(mappedBy = "userName")
+    @OneToMany(mappedBy = "userName", orphanRemoval = true)
     private List<DeliverAddress> userAddress =new ArrayList<>();
 //
 //    @OneToMany(mappedBy = "writerName")
@@ -132,5 +132,22 @@ public class User implements UserDetails {
     public void deleteShop()
     {
         this.shop=null;
+    }
+    public void deletePanda()
+    {
+        this.panda=null;
+    }
+
+    public User deleteAll()
+    {
+
+        System.out.println(" =회원 탈퇴로직 시작 ");
+        for (UserOrder userOrder : userOrders) {
+            userOrder.resignUser();
+        }
+        this.userPhoneNumber="조회 불가능한 회원입니다";
+        this.userRName="조회 불가능한 회원입니다";
+        this.ci="조회 불가능한 회원입니다";
+        return this;
     }
 }

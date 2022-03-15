@@ -35,7 +35,8 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private final UserRepository userRepository;
-
+    @Autowired
+    private final JwtUserDetailsService userService;
     @Autowired
     private final OrderDetailRepository orderDetailRepository;
     @Autowired
@@ -44,6 +45,8 @@ public class UserController {
     private final UserOrderService userOrderService;
     @Autowired
     private final ShopRepository shopRepository;
+    @Autowired
+    private final  PandaRespository pandaRespository;
     @Autowired
     private final ProductRepository productRepository;
     @Autowired
@@ -73,7 +76,7 @@ public class UserController {
         if (ispanda == true) {
             System.out.println("판다가 있는회원입니다");
             Optional<List<PandaToProduct>> byPandaAndIsDel = pandaToProductRepository.findByPandaAndIsDel(panda, true);
-            if(!byPandaAndIsDel.isEmpty())
+            if(byPandaAndIsDel.isEmpty())
             {
                 return ResponseEntity.ok(new TFMessageDto(false, "모든 영상을 삭제한 후 탈퇴 가능합니다 "));
 
@@ -86,8 +89,9 @@ public class UserController {
         if (isshop == true) {
             //모든 상품이 삭제되었는가?
             Optional<Product> byShopAndDeleted = productRepository.findByShopAndDeleted(shop, false);
-            if(byShopAndDeleted.isEmpty())
+            if(!byShopAndDeleted.isEmpty())
             {
+                System.out.println("byShopAndDeleted = " + byShopAndDeleted);
                 return ResponseEntity.ok(new TFMessageDto(false, "모든 상품을 삭제후 탈퇴 가능합니다"));
 
             }
@@ -95,11 +99,10 @@ public class UserController {
             Optional<List<UserOrder>> payorder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.결제완료);
             Optional<List<UserOrder>> readyOrder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.준비중);
             Optional<List<UserOrder>> shipOrder = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.발송중);
-            if(!payorder.isEmpty() && !readyOrder.isEmpty() && !shipOrder.isEmpty())
+            if(payorder.isEmpty() && readyOrder.isEmpty() && shipOrder.isEmpty())
             {
                 return ResponseEntity.ok(new TFMessageDto(false, "결제완료, 준비중인, 발송중인 상태의 상품이 있습니다. 모든 처리가 완료 된 후 탈퇴가 가능합니다"));
             }
-
             System.out.println("샵이 있는 회원입니다");
 
         }
@@ -109,12 +112,22 @@ public class UserController {
         Optional<List<UserOrder>> payorder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.결제완료);
         Optional<List<UserOrder>> readyOrder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.준비중);
         Optional<List<UserOrder>> shipOrder = userOrderRepository.findByUserIdAndOrderStatus(user, OrderStatus.발송중);
-        if(!payorder.isEmpty() && !readyOrder.isEmpty() && !shipOrder.isEmpty())
+        if(payorder.isEmpty() && readyOrder.isEmpty() && shipOrder.isEmpty())
         {
             return ResponseEntity.ok(new TFMessageDto(false, "주문중인 상품이 있습니다 모두 구매확정 후 탈퇴가 가능합니다 "));
         }
 
+
+        //지금버전에선 이걸로 삭제 시그널을주고
         user.setLeaveAt(LocalDateTime.now());
+        //유저의 주소록을 다 삭제한다
+
+        //판다를 삭제하고
+        //샵을 삭제하고
+        //유저를 삭제한다
+        //배치시에 실행할 로직
+        userService.deleteUser(user);
+
         return ResponseEntity.ok(new TFMessageDto(true, "회원 탈퇴요청이 성공적으로 입력되었습니다 7일이후 계정정보는 완전히 삭제됩니다 "));
 
 

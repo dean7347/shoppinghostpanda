@@ -12,6 +12,7 @@ package com.indiduck.panda.Service;
 //- https://www.javainuse.com/onlineBcrypt 에서 user_pw를 Bcrypt화할 수 있습니다.
 //
 //- id : user_id, pw: user_pw로 고정해 사용자 확인하고, 사용자 확인 실패시 throw Exception을 제공합니다.
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.indiduck.panda.Repository.DeliverAddressRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.domain.User;
@@ -79,10 +81,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 //			throw new UsernameNotFoundException("User not found with username: " + username);
 //		}
 //	}
+    @Autowired
     private final UserRepository userRepository;
-
-//    @Autowired
+    @Autowired
+    private final DeliverAddressService deliverAddressService;
+    @Autowired
+    private final DeliverAddressRepository deliverAddressRepository;
+    //    @Autowired
 //    private CookieUtil cookieUtil;
+
     @Autowired
     private JwtUserDetailsService userDetailsService;
     @Autowired
@@ -113,25 +120,23 @@ public class JwtUserDetailsService implements UserDetailsService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException((email)));
     }
+
     /**
      * 비밀번호 검증
      */
-    public User loginUser(String id,String password) throws Exception{
+    public User loginUser(String id, String password) throws Exception {
         Optional<User> byEmail = userRepository.findByEmail(id);
-        User user =byEmail.get();
-        if(user == null) throw new Exception("멤버가 없습니다");
+        User user = byEmail.get();
+        if (user == null) throw new Exception("멤버가 없습니다");
         String passwordEncode = user.getPassword();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean matches = encoder.matches(password, passwordEncode);
 
-        if(matches)
-        {
+        if (matches) {
             return user;
         }
         return null;
     }
-
-
 
 
     /**
@@ -167,21 +172,18 @@ public class JwtUserDetailsService implements UserDetailsService {
 
             int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear(); // (1)
             if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
-                americanAge = americanAge -1;
+                americanAge = americanAge - 1;
             }
             //19세이하 가입불가
-            if(americanAge <19 )
-            {
+            if (americanAge < 19) {
                 return "만 19세 이하는 가입할 수 없습니다";
             }
             //인증실패
-            if(!certification_response.getResponse().isCertified() )
-            {
+            if (!certification_response.getResponse().isCertified()) {
                 return "인증실패";
             }
 
-            if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
-            {
+            if (userRepository.findByEmail(infoDto.getEmail()).isEmpty()) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 infoDto.setPassword(encoder.encode(infoDto.getPassword()));
                 //만나이 계산
@@ -206,13 +208,13 @@ public class JwtUserDetailsService implements UserDetailsService {
         } catch (IamportResponseException e) {
             System.out.println(e.getMessage());
 
-            switch(e.getHttpStatusCode()) {
-                case 401 :
+            switch (e.getHttpStatusCode()) {
+                case 401:
                     //TODO
                     return "ERR 401이 발생했습니다 해당 사항이 계속된다면 쇼핑호스트 판다로 문의부탁드립니다";
 
 
-                case 500 :
+                case 500:
                     return "ERR 500이 발생했습니다 해당 사항이 계속된다면 쇼핑호스트 판다로 문의부탁드립니다";
 
             }
@@ -224,7 +226,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         }
 
-    return  null;
+        return null;
 
     }
 
@@ -235,11 +237,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     public String saveTEST(UserDto infoDto) {
 
 
-
         try {
 
-            if(userRepository.findByEmail(infoDto.getEmail()).isEmpty())
-            {
+            if (userRepository.findByEmail(infoDto.getEmail()).isEmpty()) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 infoDto.setPassword(encoder.encode(infoDto.getPassword()));
                 //만나이 계산
@@ -261,12 +261,11 @@ public class JwtUserDetailsService implements UserDetailsService {
             }
             return "중복된 아이디가 존재합니다";
 
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("e = " + e);
         }
 
-        return  null;
+        return null;
 
     }
 
@@ -280,12 +279,12 @@ public class JwtUserDetailsService implements UserDetailsService {
         IamportResponse<Certification> certification_response = client.certificationByImpUid(test_imp_uid);
         String uniqueKey = certification_response.getResponse().getUniqueKey();
         Optional<User> byCi = userRepository.findByCi(uniqueKey);
-        return  byCi.get();
+        return byCi.get();
 
     }
 
     @Transactional
-    public User changePw(String code,String pw) throws IamportResponseException, IOException {
+    public User changePw(String code, String pw) throws IamportResponseException, IOException {
         IamportClient client;
         String test_api_key = apiKey.getRESTAPIKEY();
         String test_api_secret = apiKey.getRESTAPISECRET();
@@ -297,7 +296,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         Optional<User> byCi = userRepository.findByCi(uniqueKey);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         byCi.get().setPassword(encoder.encode(pw));
-        return  byCi.get();
+        return byCi.get();
 
     }
 
@@ -448,12 +447,12 @@ public class JwtUserDetailsService implements UserDetailsService {
         Authentication authentication = jwtTokenProvider.getAuthentication(reissue.getAccessToken());
 
         // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-        String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
         // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
-        if(ObjectUtils.isEmpty(refreshToken)) {
+        if (ObjectUtils.isEmpty(refreshToken)) {
             return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
-        if(!refreshToken.equals(reissue.getRefreshToken())) {
+        if (!refreshToken.equals(reissue.getRefreshToken())) {
             return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
 
@@ -468,6 +467,14 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
 
+    public void deleteUser(User user) {
+
+
+        User user1 = user.deleteAll();
+        deliverAddressRepository.deleteByUserName(user);
+        userRepository.save(user1);
+
+    }
 
     public UserResponseDto.TokenInfo reissueV2(String token, String rt) {
 //         1. Refresh Token 검증
@@ -479,9 +486,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
 
         // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
-        String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
         // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
-        if(ObjectUtils.isEmpty(refreshToken)) {
+        if (ObjectUtils.isEmpty(refreshToken)) {
             return null;
         }
 //        if(!refreshToken.equals(reissue.getRefreshToken())) {
@@ -497,7 +504,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         return tokenInfo;
     }
-
 
 
 //    public ResponseEntity<?> authority() {

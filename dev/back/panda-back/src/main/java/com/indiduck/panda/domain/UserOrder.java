@@ -368,7 +368,15 @@ public class UserOrder {
         this.orderStatus=OrderStatus.발송중;
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
+// 회원 탈퇴/ 기록 삭제시시 바꿔줄것
+    public void resignUser()
+    {
+        this.receiverAddress="조회 불가능한 회원입니다";
+        this.receiverPhone="조회 불가능한 회원입니다";
+        this.receiverZipCode="조회 불가능한 회원입니다";
+        this.reveiverName="조회 불가능한 회원입니다";
 
+    }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;
 }
