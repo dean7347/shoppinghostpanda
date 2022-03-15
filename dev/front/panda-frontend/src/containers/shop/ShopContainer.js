@@ -67,8 +67,12 @@ const ShopContainer = ({ location, match }) => {
   if (haveshop.shop === true && haveshop.isapprove === true) {
     return (
       <>
-        {/* <div>히스토리분제</div> */}
-        {history.push("/seller/dashboard")}
+        <div>
+          상점등록 신청이 완료되었습니다.
+          <hr /> 메뉴항목의 판매자 센터를 통해 판매자 기능에 접근 가능합니다.
+          <hr /> 메뉴항목에 판매자 센터가 보이지 않을경우 다시 로그인을 해주세요
+        </div>
+        {/* {history.push("/seller/dashboard")} */}
         {/* <AdminShop /> */}
       </>
     );
