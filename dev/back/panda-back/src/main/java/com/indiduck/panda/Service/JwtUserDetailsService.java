@@ -306,6 +306,12 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (userRepository.findByEmail(login.getEmail()).orElse(null) == null) {
             return response.fail("해당하는 유저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
+        Optional<User> byEmail = userRepository.findByEmail((login.getEmail()));
+        if(byEmail.get().getRegAt()!=null)
+        {
+            return response.fail("탈퇴된 유저입니다", HttpStatus.BAD_REQUEST);
+
+        }
 
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
@@ -466,6 +472,12 @@ public class JwtUserDetailsService implements UserDetailsService {
         return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
     }
 
+
+    public void deleteTempSet(User user)
+    {
+        user.setLeaveAt(LocalDateTime.now());
+
+    }
 
     public void deleteUser(User user) {
 

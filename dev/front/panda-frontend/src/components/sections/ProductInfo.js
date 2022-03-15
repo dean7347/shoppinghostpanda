@@ -391,7 +391,7 @@ function ProductInfo(props) {
             </div>
 
             <div style={{ float: "right", margin: "0 40px 30px" }}>
-              {approvePanda && (
+              {/* {approvePanda && (
                 <Button
                   size="large"
                   shape="round"
@@ -400,7 +400,7 @@ function ProductInfo(props) {
                 >
                   판다!
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
           <Form

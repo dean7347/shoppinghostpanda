@@ -23,6 +23,7 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class UserController {
 
     @GetMapping("/api/userresign")
     public ResponseEntity<?> userResign(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication) {
+                                                Authentication authentication,HttpServletRequest req) {
         //상점여부
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
@@ -119,16 +120,26 @@ public class UserController {
 
 
         //지금버전에선 이걸로 삭제 시그널을주고
-        user.setLeaveAt(LocalDateTime.now());
         //유저의 주소록을 다 삭제한다
 
         //판다를 삭제하고
         //샵을 삭제하고
         //유저를 삭제한다
         //배치시에 실행할 로직
-        userService.deleteUser(user);
+        userService.deleteTempSet(user);
 
-        return ResponseEntity.ok(new TFMessageDto(true, "회원 탈퇴요청이 성공적으로 입력되었습니다 7일이후 계정정보는 완전히 삭제됩니다 "));
+        String atToken = req.getHeader("accessToken");
+//        if (errors.hasErrors()) {
+//            return response.invalidFields(Helper.refineErrors(errors));
+//        }
+        boolean b = userService.logoutV2(atToken);
+        if (b) {
+            return ResponseEntity.ok(new TFMessageDto(true, "회원 탈퇴요청이 성공적으로 입력되었습니다 7일이후 계정정보는 완전히 삭제됩니다 "));
+
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(b, "요청에 실패했습니다"));
+
 
 
     }

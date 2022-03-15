@@ -67,6 +67,7 @@ const ShopContainer = ({ location, match }) => {
   if (haveshop.shop === true && haveshop.isapprove === true) {
     return (
       <>
+        {/* <div>히스토리분제</div> */}
         {history.push("/seller/dashboard")}
         {/* <AdminShop /> */}
       </>
