@@ -193,6 +193,9 @@ const SellerCancelReturnOrderConfirmPage = () => {
         window.location.reload();
       }
     });
+    // window.location.reload();
+    console.log("인쉐뒤에 작동하는지본ㅂ니다");
+    // fetchTableData();
   };
 
   const fetchTableData = useCallback(async () => {

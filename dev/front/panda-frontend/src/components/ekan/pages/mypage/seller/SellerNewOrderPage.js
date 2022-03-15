@@ -307,6 +307,7 @@ const SellerNewOrderPage = () => {
         printPage();
       });
       fetchTableData();
+      window.location.reload();
     }
   }, [PLD]);
 

@@ -50,28 +50,32 @@ function CardInListVshop(props) {
     });
   };
 
-  const onTestPandaDashboard = () => {
-    const body = {
-      startDay: new Date(),
-      endDay: new Date(),
-      status: "지급예정",
-    };
-    axios.post("/api/pandadashboard", body).then((response) => {
-      if (response.data.success) {
-        console.log("스테이터스변경성공");
-        console.log(response.data);
-      } else {
-        console.log("스테이터스실패");
-        console.log(response.data);
-      }
-    });
-  };
+  // const onTestPandaDashboard = () => {
+  //   const body = {
+  //     startDay: new Date(),
+  //     endDay: new Date(),
+  //     status: "지급예정",
+  //   };
+  //   axios.post("/api/pandadashboard", body).then((response) => {
+  //     if (response.data.success) {
+  //       console.log("스테이터스변경성공");
+  //       console.log(response.data);
+  //     } else {
+  //       console.log("스테이터스실패");
+  //       console.log(response.data);
+  //     }
+  //   });
+  // };
   const onPrint = () => {
     console.log("주문서출력");
     window.print();
   };
   const onTestCheck = (p, s, c, w) => {
     console.log(p + s);
+    if (!(s === "준비중" || s === "주문취소")) {
+      alert("잘못된 접근입니다!");
+      return;
+    }
     const body = {
       userOrderId: p,
       state: s,
@@ -81,9 +85,9 @@ function CardInListVshop(props) {
     };
     axios.post("/api/editstatus", body).then((response) => {
       if (response.data.success) {
-        console.log("스테이터스변경성공");
+        alert("상태를 변경했습니다");
       } else {
-        console.log("스테이터스실패");
+        alert("상태 변경실패");
       }
     });
   };
@@ -353,12 +357,20 @@ function CardInListVshop(props) {
           </Button>
           <Button
             onClick={() =>
+              onTestCheck(props.situationDetail.detailId, "주문취소", "c", 123)
+            }
+          >
+            주문취소
+          </Button>
+          {/* 
+          <Button
+            onClick={() =>
               onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
             }
           >
             스테이트 발송중으로 변경
-          </Button>
-          <Button
+          </Button> */}
+          {/* <Button
             onClick={() =>
               onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
             }
@@ -367,7 +379,7 @@ function CardInListVshop(props) {
           </Button>
           <Button onClick={() => onTestPandaDashboard()}>
             판다대시보드테스트
-          </Button>
+          </Button> */}
         </div>
         <Divider />
         <div ref={componentRef}>
