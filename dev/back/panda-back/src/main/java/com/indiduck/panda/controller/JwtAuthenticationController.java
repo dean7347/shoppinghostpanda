@@ -209,7 +209,7 @@ public class JwtAuthenticationController {
 //
 //    }
 
-    @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/user/logoutv2", method = RequestMethod.POST)
     public ResponseEntity<?> logout(HttpServletRequest req, HttpServletResponse res) {
 //        Cookie[] cookies = req.getCookies();
 //        String atToken="";
