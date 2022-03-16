@@ -369,7 +369,7 @@ public class UserOrder {
     public void confirmRefundMoney(long money)
     {
         this.finalRefundMoney=(int) money;
-        this.orderStatus=OrderStatus.발송중;
+        this.orderStatus=OrderStatus.환불완료;
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 // 회원 탈퇴/ 기록 삭제시시 바꿔줄것

@@ -118,7 +118,7 @@ public class RefundRequestController {
             for (OrderDetail orderDetail : refundRequest.getOrderDetails()) {
                 this.refundListList.add(new RefundList(orderDetail.getId(),orderDetail.getProducts().getProductName(),
                         orderDetail.getProductCount(),orderDetail.getReqRefund(),orderDetail.getPanda(),
-                        orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName()));
+                        orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName(),refundRequest.getRefundMoney()));
             }
 
         }
@@ -133,6 +133,8 @@ public class RefundRequestController {
         int orderCount;
         //환불신청갯수
         int refundCount;
+        //환불신청된액수
+        long refundMoney;
 
         //판다여부
         boolean isPanda;
@@ -142,7 +144,7 @@ public class RefundRequestController {
         long optionIndividualPrice;
 
         public RefundList(long orderDetailId, String productName, int orderCount,
-                          int refundCount, Panda isPanda, long optionAllPrice, long optionIndividualPrice,String optionName) {
+                          int refundCount, Panda isPanda, long optionAllPrice, long optionIndividualPrice,String optionName,long refundMoney) {
             this.orderDetailId = orderDetailId;
             this.productName = productName;
             this.optionName=optionName;
@@ -157,6 +159,7 @@ public class RefundRequestController {
 
             this.optionAllPrice = optionAllPrice;
             this.optionIndividualPrice = optionIndividualPrice;
+            this.refundMoney=refundMoney;
         }
     }
 

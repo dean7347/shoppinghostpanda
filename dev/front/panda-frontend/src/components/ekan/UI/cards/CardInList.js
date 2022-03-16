@@ -140,7 +140,8 @@ function CardInList(props) {
           <h1>환불/교환신청내역</h1>
         </div>
         {props.situationDetail.status === "환불대기" ||
-        props.situationDetail.status === "상점확인중" ? (
+        props.situationDetail.status === "상점확인중" ||
+        props.situationDetail.status === "환불완료" ? (
           <div>
             <div>환불신청사유</div>
             {refundData && <div>{refundData.refundMessage}</div>}
@@ -148,6 +149,7 @@ function CardInList(props) {
               refundData.refundListList.map((rr, idx) => {
                 return (
                   <>
+                    {console.log("리펀트데이터", refundData)}
                     <div
                       style={{
                         alignItems: "center",
@@ -182,6 +184,14 @@ function CardInList(props) {
                             주문갯수: {rr.orderCount} | 환불신청 :
                             {rr.refundCount}
                           </h1>
+                        </Col>
+                        <Col
+                          span={24}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        >
+                          <h1>환불액수: {rr.refundMoney}</h1>
                         </Col>
                         <Col
                           span={24}

@@ -25,6 +25,7 @@ const orderStatus = {
   구매확정: "success",
   반품: "warning",
   환불대기: "warning",
+  환불완료: "warning",
   상점확인중: "warning",
 };
 
