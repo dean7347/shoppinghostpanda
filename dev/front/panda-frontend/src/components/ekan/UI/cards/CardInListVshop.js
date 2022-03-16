@@ -229,7 +229,7 @@ function CardInListVshop(props) {
                               </Col>
                               <Col span={12}>{option.orderStatus}</Col>
 
-                              <Col span={12}>
+                              {/* <Col span={12}>
                                 {option.orderStatus !== "결제완료" ? (
                                   <div>
                                     {option.orderStatus === "주문취소" ? (
@@ -251,7 +251,7 @@ function CardInListVshop(props) {
                                 ) : (
                                   <div></div>
                                 )}
-                              </Col>
+                              </Col> */}
                             </Row>
                           </div>
                         </div>

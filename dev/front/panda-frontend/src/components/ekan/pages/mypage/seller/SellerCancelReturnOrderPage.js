@@ -20,83 +20,83 @@ const SellerCancelReturnOrderPage = () => {
   const { situationDetail } = useSelector((state) => state.buyer);
   const dispatch = useDispatch();
   const componentRef = useRef();
-  function confirmOrder(event, cellValues) {
-    event.stopPropagation();
-    console.log(cellValues);
-    //진동API작업
-    const body = {
-      userOrderId: cellValues.id,
-      state: "준비중",
-      courier: "",
-      waybill: "",
-    };
-    axios.post("/api/editstatus", body).then((response) => {
-      if (response.data.success) {
-        alert("주문을 확인했습니다");
-        fetchTableData();
-      } else {
-        alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
-        fetchTableData();
-      }
-    });
-  }
-  function cancelOrder(event, cellValues) {
-    event.stopPropagation();
-    console.log(cellValues);
-    //진동API작업
-    const body = {
-      userOrderId: cellValues.id,
-      state: "주문취소",
-      courier: "",
-      waybill: "",
-    };
-    axios.post("/api/editstatus", body).then((response) => {
-      if (response.data.success) {
-        alert("주문을 취소했습니다");
-        fetchTableData();
-      } else {
-        alert("주문확인에 실패했습니다");
-      }
-    });
-  }
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+  // function confirmOrder(event, cellValues) {
+  //   event.stopPropagation();
+  //   console.log(cellValues);
+  //   //진동API작업
+  //   const body = {
+  //     userOrderId: cellValues.id,
+  //     state: "준비중",
+  //     courier: "",
+  //     waybill: "",
+  //   };
+  //   axios.post("/api/editstatus", body).then((response) => {
+  //     if (response.data.success) {
+  //       alert("주문을 확인했습니다");
+  //       fetchTableData();
+  //     } else {
+  //       alert("이미 취소된 주문이거나 주문확인에 실패했습니다");
+  //       fetchTableData();
+  //     }
+  //   });
+  // }
+  // function cancelOrder(event, cellValues) {
+  //   event.stopPropagation();
+  //   console.log(cellValues);
+  //   //진동API작업
+  //   const body = {
+  //     userOrderId: cellValues.id,
+  //     state: "주문취소",
+  //     courier: "",
+  //     waybill: "",
+  //   };
+  //   axios.post("/api/editstatus", body).then((response) => {
+  //     if (response.data.success) {
+  //       alert("주문을 취소했습니다");
+  //       fetchTableData();
+  //     } else {
+  //       alert("주문확인에 실패했습니다");
+  //     }
+  //   });
+  // }
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  // });
   const columns = [
     { field: "id", headerName: "주문번호", flex: 0.5 },
     { field: "name", headerName: "상품명", flex: 2 },
     { field: "price", headerName: "가격", flex: 0.7 },
     { field: "orderAt", headerName: "주문일자", flex: 1.1 },
-    {
-      field: "주문확인",
-      flex: 0.6,
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            text="주문확인"
-            className="is-primary"
-            onClick={(event) => {
-              confirmOrder(event, cellValues);
-            }}
-          ></Button>
-        );
-      },
-    },
-    {
-      field: "주문취소",
-      flex: 0.6,
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            text="주문취소"
-            className="is-danger"
-            onClick={(event) => {
-              cancelOrder(event, cellValues);
-            }}
-          ></Button>
-        );
-      },
-    },
+    // {
+    //   field: "주문확인",
+    //   flex: 0.6,
+    //   renderCell: (cellValues) => {
+    //     return (
+    //       <Button
+    //         text="주문확인"
+    //         className="is-primary"
+    //         onClick={(event) => {
+    //           confirmOrder(event, cellValues);
+    //         }}
+    //       ></Button>
+    //     );
+    //   },
+    // },
+    // {
+    //   field: "주문취소",
+    //   flex: 0.6,
+    //   renderCell: (cellValues) => {
+    //     return (
+    //       <Button
+    //         text="주문취소"
+    //         className="is-danger"
+    //         onClick={(event) => {
+    //           cancelOrder(event, cellValues);
+    //         }}
+    //       ></Button>
+    //     );
+    //   },
+    // },
     {
       field: "주문상세",
       flex: 0.6,
@@ -121,80 +121,80 @@ const SellerCancelReturnOrderPage = () => {
     console.log(situationDetail);
   };
 
-  const confirmSelected = (event) => {
-    event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
-    //진동 API작업
-    var ids = [];
-    for (var i = 0; i < selectedRows.length; i++) {
-      ids.push(selectedRows[i].id);
-    }
-    console.log(ids);
-    //진동API작업
-    const body = {
-      userOrderId: ids,
-      state: "준비중",
-      courier: "",
-      waybill: "",
-    };
-    axios.post("/api/selecteditstatus", body).then((response) => {
-      if (response.data.success) {
-        alert("주문을 확인했습니다");
-        fetchTableData();
-      } else {
-        alert(response.data.message);
-      }
-    });
-  };
+  // const confirmSelected = (event) => {
+  //   event.preventDefault();
+  //   console.log("선택된 주문 확인", selectedRows);
+  //   //진동 API작업
+  //   var ids = [];
+  //   for (var i = 0; i < selectedRows.length; i++) {
+  //     ids.push(selectedRows[i].id);
+  //   }
+  //   console.log(ids);
+  //   //진동API작업
+  //   const body = {
+  //     userOrderId: ids,
+  //     state: "준비중",
+  //     courier: "",
+  //     waybill: "",
+  //   };
+  //   axios.post("/api/selecteditstatus", body).then((response) => {
+  //     if (response.data.success) {
+  //       alert("주문을 확인했습니다");
+  //       fetchTableData();
+  //     } else {
+  //       alert(response.data.message);
+  //     }
+  //   });
+  // };
 
-  const cancelSelected = (event) => {
-    event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
-    //진동 API작업
-    var ids = [];
-    for (var i = 0; i < selectedRows.length; i++) {
-      ids.push(selectedRows[i].id);
-    }
-    console.log(ids);
-    //진동API작업
-    const body = {
-      userOrderId: ids,
-      state: "주문취소",
-      courier: "",
-      waybill: "",
-    };
-    axios.post("/api/selecteditstatus", body).then((response) => {
-      if (response.data.success) {
-        alert("주문을 확인했습니다");
-        window.location.reload();
-      } else {
-        alert(response.data.message);
-      }
-    });
-  };
+  // const cancelSelected = (event) => {
+  //   event.preventDefault();
+  //   console.log("선택된 주문 확인", selectedRows);
+  //   //진동 API작업
+  //   var ids = [];
+  //   for (var i = 0; i < selectedRows.length; i++) {
+  //     ids.push(selectedRows[i].id);
+  //   }
+  //   console.log(ids);
+  //   //진동API작업
+  //   const body = {
+  //     userOrderId: ids,
+  //     state: "주문취소",
+  //     courier: "",
+  //     waybill: "",
+  //   };
+  //   axios.post("/api/selecteditstatus", body).then((response) => {
+  //     if (response.data.success) {
+  //       alert("주문을 확인했습니다");
+  //       window.location.reload();
+  //     } else {
+  //       alert(response.data.message);
+  //     }
+  //   });
+  // };
   const [PLD, setPLD] = useState();
 
-  const PrintList = (event) => {
-    event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
-    var ids = [];
-    for (var i = 0; i < selectedRows.length; i++) {
-      ids.push(selectedRows[i].id);
-    }
-    //진동API작업
-    const body = {
-      detailId: ids,
-    };
+  // const PrintList = (event) => {
+  //   event.preventDefault();
+  //   console.log("선택된 주문 확인", selectedRows);
+  //   var ids = [];
+  //   for (var i = 0; i < selectedRows.length; i++) {
+  //     ids.push(selectedRows[i].id);
+  //   }
+  //   //진동API작업
+  //   const body = {
+  //     detailId: ids,
+  //   };
 
-    axios.post("/api/situationListdetail", body).then((response) => {
-      if (response.data.success) {
-        setPLD(response.data.sld);
-      } else {
-        alert(response.data.message);
-        window.location.reload();
-      }
-    });
-  };
+  //   axios.post("/api/situationListdetail", body).then((response) => {
+  //     if (response.data.success) {
+  //       setPLD(response.data.sld);
+  //     } else {
+  //       alert(response.data.message);
+  //       window.location.reload();
+  //     }
+  //   });
+  // };
 
   const fetchTableData = useCallback(async () => {
     try {
@@ -338,7 +338,7 @@ const SellerCancelReturnOrderPage = () => {
       <div className="container">
         <div className="custom-card">
           <div className="card__header">
-            <Button
+            {/* <Button
               className="is-primary mr-3"
               disabled={selectedRows.length === 0}
               text="최종환불페이지"
@@ -352,9 +352,9 @@ const SellerCancelReturnOrderPage = () => {
             />
             <Button
               className="is-info float-end"
-              text="주문서 인쇄(인쇄시 주문확인)"
+              text="주문서 1인쇄(인쇄시 주문확인)"
               onClick={PrintList}
-            />
+            /> */}
           </div>
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid

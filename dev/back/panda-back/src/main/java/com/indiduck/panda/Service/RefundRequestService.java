@@ -47,6 +47,48 @@ public class RefundRequestService {
 
         return rr;
     }
+
+
+    //판매자캔슬
+    public boolean allCancelForSeller(String mind,UserOrder userOrder)
+    {
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
+
+        try {
+            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+            String receiptUrl = payment_response.getResponse().getReceiptUrl();
+            userOrder.setReceiptUrl(receiptUrl);
+
+        } catch (IamportResponseException e) {
+            System.out.println(e.getMessage());
+            switch(e.getHttpStatusCode()) {
+                case 401 :
+                    //TODO
+                    System.out.println("e = " + e);
+                    return false;
+                case 500 :
+                    //TODO
+                    System.out.println("e = " + e);
+                    return false;
+
+            }
+            return false;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+
+            e.printStackTrace();
+            return false;
+
+        } catch ( Exception e)
+        {
+            return  false;
+        }
+        return true;
+    }
+    //환불로인한 캔슬
     public boolean allCancel(String mind,UserOrder userOrder)
     {
         String test_api_key = apiKey.getRESTAPIKEY();
@@ -59,8 +101,7 @@ public class RefundRequestService {
             IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
             String receiptUrl = payment_response.getResponse().getReceiptUrl();
             userOrder.setReceiptUrl(receiptUrl);
-            System.out.println("payment_response = " + payment_response.getMessage());
-            System.out.println("payment_response =호나불로깆ㄱ실행 ");
+
         } catch (IamportResponseException e) {
             System.out.println(e.getMessage());
 

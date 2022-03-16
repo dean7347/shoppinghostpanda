@@ -23,6 +23,8 @@ public class UserOrderService {
     @Autowired
     private final RefundRequestService refundRequestService;
 
+
+    //구매자가 호출하는것
     public UserOrder cancelOrder(long userorderId)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(userorderId);
@@ -34,7 +36,7 @@ public class UserOrderService {
             }
         }
         String mid =byId.get().getMid();
-        refundRequestService.allCancel(mid,byId.get());
+        refundRequestService.allCancelForSeller(mid,byId.get());
         byId.get().cancelOrder();
         return byId.get();
 
@@ -48,6 +50,8 @@ public class UserOrderService {
 
     }
 
+
+    //판매자의 호출스테이터스
     public UserOrder ChangeOrder(long id,String status,String cur,String wayb)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(id);
@@ -70,7 +74,16 @@ public class UserOrderService {
                 userOrder.confirmOrder();
                 break;
             case "주문취소":
-                userOrder.cancelOrder();
+                boolean b = refundRequestService.allCancelForSeller(userOrder.getMid(), byId.get());
+                if(b==false)
+                {
+                    System.out.println(" 널을리턴합니다" );
+                    return null;
+                }else
+                {
+                    userOrder.cancelOrder();
+
+                }
                 break;
             case "환불신청":
                 userOrder.refundOrder(cur);

@@ -58,22 +58,22 @@ function CardInList(props) {
 
   const { TextArea } = Input;
   const [refundText, setRefundText] = useState("환불요청메시지");
-  const onTestPandaDashboard = () => {
-    const body = {
-      startDay: new Date(),
-      endDay: new Date(),
-      status: "지급예정",
-    };
-    axios.post("/api/pandadashboard", body).then((response) => {
-      if (response.data.success) {
-        console.log("스테이터스변경성공");
-        console.log(response.data);
-      } else {
-        console.log("스테이터스실패");
-        console.log(response.data);
-      }
-    });
-  };
+  // const onTestPandaDashboard = () => {
+  //   const body = {
+  //     startDay: new Date(),
+  //     endDay: new Date(),
+  //     status: "지급예정",
+  //   };
+  //   axios.post("/api/pandadashboard", body).then((response) => {
+  //     if (response.data.success) {
+  //       console.log("스테이터스변경성공");
+  //       console.log(response.data);
+  //     } else {
+  //       console.log("스테이터스실패");
+  //       console.log(response.data);
+  //     }
+  //   });
+  // };
   const onRefund = (id) => {
     const body = {
       userOrderId: id,
@@ -102,22 +102,110 @@ function CardInList(props) {
     //   }
     // });
   };
-  const onAdmin = () => {
-    // axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
-    //   console.log(response);
-    // });
-    axios.get("/api/userprivateedit").then((response) => {
+  // const onAdmin = () => {
+  //   // axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
+  //   //   console.log(response);
+  //   // });
+  //   axios.get("/api/userprivateedit").then((response) => {
+  //     console.log(response);
+  //   });
+  // };
+  // const copyClick = () => {
+  //   console.log("상품카피로직실행");
+  //   axios.post("/api/copyproduct").then((response) => {
+  //     console.log(response);
+  //   });
+  // };
+  const [refundData, SetRefundData] = useState();
+  useEffect(() => {
+    const body = {
+      uoid: props.situationDetail.detailId,
+    };
+    axios.post("/api/readRefundRequest", body).then((response) => {
+      console.log("레스폰스");
       console.log(response);
+      if (response.data.success) {
+        console.log("이거 리펀드요청임");
+        SetRefundData(response.data);
+        console.log(response.data);
+      }
     });
+  }, [props]);
+  const renderRefund = () => {
+    return (
+      <>
+        <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+          <h1>환불/교환신청내역</h1>
+        </div>
+        {props.situationDetail.status === "환불대기" ||
+        props.situationDetail.status === "상점확인중" ? (
+          <div>
+            <div>환불신청사유</div>
+            {refundData && <div>{refundData.refundMessage}</div>}
+            {refundData &&
+              refundData.refundListList.map((rr, idx) => {
+                return (
+                  <>
+                    <div
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid black",
+                      }}
+                    >
+                      <Row align={"middle"} gutter={24}>
+                        <Col
+                          span={24}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        >
+                          <h1>상품명/옵션명</h1>
+                        </Col>
+                        <Col
+                          span={24}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        >
+                          {rr.productName}/{rr.optionName}
+                        </Col>
+                        <Col
+                          span={24}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        >
+                          <h1>
+                            주문갯수: {rr.orderCount} | 환불신청 :
+                            {rr.refundCount}
+                          </h1>
+                        </Col>
+                        <Col
+                          span={24}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        ></Col>
+                      </Row>
+                    </div>
+                    <br></br>
+                  </>
+                );
+              })}
+          </div>
+        ) : (
+          <div>환불신청내역이없습니다</div>
+        )}
+      </>
+    );
   };
-  const copyClick = () => {
-    console.log("상품카피로직실행");
-    axios.post("/api/copyproduct").then((response) => {
-      console.log(response);
-    });
-  };
-
   const onTestCheck = (p, s, c, w) => {
+    if (s !== "구매확정") {
+      alert("올바른 요청이 아닙니다");
+      return;
+    }
+
     console.log(p + s);
     const body = {
       userOrderId: p,
@@ -425,7 +513,7 @@ function CardInList(props) {
                               </Col>
                               <Col span={12}>{option.orderStatus}</Col>
 
-                              <Col span={12}>
+                              {/* <Col span={12}>
                                 {option.orderStatus !== "결제완료" ? (
                                   <div>
                                     {option.orderStatus === "주문취소" ? (
@@ -447,7 +535,7 @@ function CardInList(props) {
                                 ) : (
                                   <div></div>
                                 )}
-                              </Col>
+                              </Col> */}
                             </Row>
                           </div>
                         </div>
@@ -500,7 +588,7 @@ function CardInList(props) {
             <hr className="cart-hr" />
           </div>
         </div>
-        {props.situationDetail.status === "결제완료" ? (
+        {/* {props.situationDetail.status === "결제완료" ? (
           <Row justify={"end"}>
             <Col span={6}>
               {" "}
@@ -514,7 +602,7 @@ function CardInList(props) {
           </Row>
         ) : (
           <div></div>
-        )}
+        )} */}
       </>
     );
   };
@@ -523,6 +611,31 @@ function CardInList(props) {
   return (
     <>
       <div style={{ width: "85%", margin: "3rem auto" }}>
+        {props.situationDetail.status === "주문취소" ||
+        props.situationDetail.status === "환불대기" ||
+        props.situationDetail.status === "상점확인중" ? (
+          <div></div>
+        ) : (
+          <Button
+            onClick={() =>
+              onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
+            }
+          >
+            구매확정
+          </Button>
+        )}
+
+        {props.situationDetail.status === "결제완료" ? (
+          <Button
+            onClick={() => onCancelOrder(props.situationDetail.detailId)}
+            danger
+          >
+            주문취소
+          </Button>
+        ) : (
+          <div></div>
+        )}
+
         <Divider />
         <div style={{ fontWeight: "bold", fontSize: "25px" }}>
           <h3>상품정보</h3>
@@ -634,93 +747,91 @@ function CardInList(props) {
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
           <div>
-            ***임시버튼***
-            <Button
+            {/* <Button
               onClick={() => {
                 onAdmin();
               }}
             >
               임시어드민
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               onClick={() => {
                 copyClick();
               }}
             >
               임시 복사
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               onClick={() =>
                 onTestCheck(props.situationDetail.detailId, "준비중", "c", 123)
               }
             >
               스테이트 준비중으로 변경
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               onClick={() =>
                 onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
               }
             >
               스테이트 발송중으로 변경
-            </Button>
-            <Button
-              onClick={() =>
-                onTestCheck(
-                  props.situationDetail.detailId,
-                  "구매확정",
-                  "c",
-                  123
-                )
-              }
-            >
-              스테이트 구매확정 변경
-            </Button>
-            <Button onClick={() => onTestPandaDashboard()}>
+            </Button> */}
+
+            {/* <Button onClick={() => onTestPandaDashboard()}>
               판다대시보드테스트
-            </Button>
+            </Button> */}
           </div>
         </Row>
         {renderbox()}
-        <div>
-          <hr />
-          <Row gutter={24}>
-            <Col span={12}>환불/교환</Col>
-            <Col span={24}>
-              <TextArea
-                placeholder="사유와 품목을 입력해주세요"
-                onChange={(e) => setRefundText(e.target.value)}
-                rows={4}
-              />
-            </Col>
-            <Col span={17}></Col>
-            <Row gutter={[16, 16]}>
-              <Table
-                columns={columns}
-                dataSource={Oplist.array}
-                pagination={false}
-              />
-              <Menu
-                onSelect={handleClick}
-                style={{ width: "100%" }}
-                defaultSelectedKeys={["1"]}
-                mode="inline"
-              >
-                <SubMenu
-                  key="sub1"
-                  // icon={<DatabaseOutlined />}
-                  title="옵션을 선택해주세요"
+        {renderRefund()}
+        {props.situationDetail.status === "결제완료" ||
+        props.situationDetail.status === "주문취소" ||
+        props.situationDetail.status === "환불대기" ||
+        props.situationDetail.status === "상점확인중" ? (
+          <div></div>
+        ) : (
+          <div>
+            <hr />
+            <Row gutter={24}>
+              <Col span={12}>환불/교환</Col>
+              <Col span={24}>
+                <TextArea
+                  placeholder="사유와 품목을 입력해주세요"
+                  onChange={(e) => setRefundText(e.target.value)}
+                  rows={4}
+                />
+              </Col>
+              <Col span={17}></Col>
+              <Row gutter={[16, 16]}>
+                <Table
+                  columns={columns}
+                  dataSource={Oplist.array}
+                  pagination={false}
+                />
+                <Menu
+                  onSelect={handleClick}
+                  style={{ width: "100%" }}
+                  defaultSelectedKeys={["1"]}
+                  mode="inline"
                 >
-                  {renderOption}
-                </SubMenu>
-              </Menu>
+                  <SubMenu
+                    key="sub1"
+                    // icon={<DatabaseOutlined />}
+                    title="옵션을 선택해주세요"
+                  >
+                    {renderOption}
+                  </SubMenu>
+                </Menu>
+              </Row>
+              <Col span={4} justify={"end"}>
+                <Button
+                  onClick={() => onRefund(props.situationDetail.detailId)}
+                >
+                  환불/교환 요청
+                </Button>
+              </Col>
             </Row>
-            <Col span={4} justify={"end"}>
-              <Button onClick={() => onRefund(props.situationDetail.detailId)}>
-                환불/교환 요청
-              </Button>
-            </Col>
-          </Row>
-        </div>
+          </div>
+        )}
 
         <Divider />
         <div></div>

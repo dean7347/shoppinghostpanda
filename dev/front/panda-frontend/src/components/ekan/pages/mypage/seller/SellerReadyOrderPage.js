@@ -479,7 +479,7 @@ const SellerReadyOrderPage = () => {
             />
             <Button
               className="is-info float-end"
-              text="주문서 인쇄(인쇄시 주문확인)"
+              text="주문서 인쇄"
               onClick={PrintList}
             />
           </div>

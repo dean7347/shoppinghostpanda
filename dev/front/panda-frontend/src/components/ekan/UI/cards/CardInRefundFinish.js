@@ -194,7 +194,11 @@ function CardInRefundFinish(props) {
             환불금액:
             <InputNumber onChange={onChangeFinal} min={0} max={expectMoney} />
           </Col>
+          <br />
+          <br />
+
           <Col span={24}>
+            <div>환불처리 안내사항</div>
             <Button
               onClick={() => {
                 confirmReqRefund(props.detailId);
@@ -206,6 +210,8 @@ function CardInRefundFinish(props) {
           </Col>
 
           <Col span={24}>
+            <div>교환처리 안내사항</div>
+
             <Button
               onClick={() => {
                 confirmTrade(props.detailId);
