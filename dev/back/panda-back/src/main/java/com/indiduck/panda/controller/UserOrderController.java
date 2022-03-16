@@ -43,6 +43,8 @@ public class UserOrderController {
     @Autowired
     private final OrderDetailRepository orderDetailRepository;
 
+
+    //유저가 최초로 환불 신청을 한다
     @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
     public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {

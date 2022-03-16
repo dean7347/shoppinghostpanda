@@ -37,6 +37,8 @@ const SellerCancelReturnOrderConfirmPage = () => {
           "환불/교환 요청을 확인했습니다.  상품의 안전한 수령/전달을 위해 구매자와 연락해주세요  "
         );
         window.location.reload();
+
+        fetchTableData();
       } else {
         alert("환불요청 확인에 실패했습니다 다시 시도해주세요");
       }

@@ -36,12 +36,17 @@ public class RefundRequestController {
         System.out.println("userOrderId = " + userOrderId);
         Optional<UserOrder> byId = userOrderRepository.findById(userOrderId.uoid);
         System.out.println("byId = " + byId);
-        RefundRequest refundRequests = byId.get().getRefundRequests();
+        RefundRequest refundRequests=null;
+        if(byId.get().getRefundRequest() !=null)
+        {
+            refundRequests=byId.get().getRefundRequest();
+            return ResponseEntity.ok(new RefundDTO(true,refundRequests.getRefundMessage(),byId.get().getRefundRequest().getId()
+                    ,byId.get(),refundRequests));
+        }
+        return null;
 
-        refundRequests.getOrderDetails();
 
-        return ResponseEntity.ok(new RefundDTO(true,refundRequests.getRefundMessage(),byId.get().getRefundRequests().getId()
-                ,byId.get(),refundRequests));
+
 
     }
 
@@ -51,10 +56,14 @@ public class RefundRequestController {
                                                        Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
         System.out.println("confirmRefundRequest = " + confirmRefundRequest);
 
-        refundRequestService.confrimRefund(confirmRefundRequest);
+        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
 
-        return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+        if(b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
 
+        }
+        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
     }
 
     @RequestMapping(value = "/api/refundlist", method = RequestMethod.POST)
@@ -62,9 +71,16 @@ public class RefundRequestController {
                                                           Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
         System.out.println("confirmRefundRequest = " + confirmRefundRequest);
 
-        refundRequestService.confrimRefund(confirmRefundRequest);
+        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
 
-        return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+        if(b)
+        {
+
+            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
 
     }
 

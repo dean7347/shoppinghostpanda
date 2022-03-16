@@ -22,6 +22,7 @@ const orderStatus = {
   주문취소: "danger",
   배송중: "success",
   발송중: "success",
+  구매확정: "success",
   반품: "warning",
   환불대기: "warning",
   상점확인중: "warning",

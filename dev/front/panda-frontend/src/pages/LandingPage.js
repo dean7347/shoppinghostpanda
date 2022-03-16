@@ -67,17 +67,22 @@ function LandingPage() {
     setSearchTerm(newSearchTerm);
   };
 
-  const renderCards = Products.map((product, index) => {
-    return (
-      <Col lg={6} md={8} xs={24} key={index}>
-        <a href={`/product/${product.proId}`}>
-          <Card cover={<ImageSlider images={product} />}>
-            <Meta title={product.proname} description={`${product.shopname}`} />
-          </Card>
-        </a>
-      </Col>
-    );
-  });
+  const renderCards =
+    Products &&
+    Products.map((product, index) => {
+      return (
+        <Col lg={6} md={8} xs={24} key={index}>
+          <a href={`/product/${product.proId}`}>
+            <Card cover={<ImageSlider images={product} />}>
+              <Meta
+                title={product.proname}
+                description={`${product.shopname}`}
+              />
+            </Card>
+          </a>
+        </Col>
+      );
+    });
 
   return (
     <>

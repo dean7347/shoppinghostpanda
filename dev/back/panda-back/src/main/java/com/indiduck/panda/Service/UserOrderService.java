@@ -36,7 +36,11 @@ public class UserOrderService {
             }
         }
         String mid =byId.get().getMid();
-        refundRequestService.allCancelForSeller(mid,byId.get());
+        boolean b = refundRequestService.allCancelForSeller(mid, byId.get());
+        if(!b)
+        {
+            return null;
+        }
         byId.get().cancelOrder();
         return byId.get();
 

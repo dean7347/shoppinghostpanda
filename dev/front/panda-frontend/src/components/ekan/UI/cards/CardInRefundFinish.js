@@ -109,8 +109,10 @@ function CardInRefundFinish(props) {
     console.log(body);
     axios.post("/api/confirmRefundRequest", body).then((response) => {
       if (response.data.success) {
-        alert("환불요청에 성공했습니다");
+        alert("환불요청처리에 성공했습니다");
         window.location.reload();
+      } else {
+        alert("환불요청처리에 실패했습니다");
       }
     });
   };
@@ -199,6 +201,19 @@ function CardInRefundFinish(props) {
 
           <Col span={24}>
             <div>환불처리 안내사항</div>
+            <div>
+              가. 환불은 상품 갯수에 기반해서 정산됩니다.
+              <br />
+              나. 상품 홍보인 (판다)가 있을경우 전체금액에서 판다에게 지급될
+              돈을 뺀 금액보다 많은 금액을 환불할 수 없습니다. 환불 갯수를 꼭
+              확인해 주세요
+              <br />
+              다. 교환,반품에 소요되는 비용은 소비자와 협의후 다른 방법으로
+              청구하시기를 권장드립니다. 판매자의 실수로 인한 잘못된 청구는
+              되돌릴 수 없습니다.
+              <br />
+              라. 환불 요청 이후 되돌릴수 없으므로 유의해 주시기 바랍니다.
+            </div>
             <Button
               onClick={() => {
                 confirmReqRefund(props.detailId);
@@ -210,8 +225,12 @@ function CardInRefundFinish(props) {
           </Col>
 
           <Col span={24}>
+            <br />
             <div>교환처리 안내사항</div>
-
+            <br />
+            교환 처리는 금액의 환불없이 상품만이 오고 갔을 경우이며 금액의
+            차감이 없습니다 교환,반품비는 소비자와 협의후 다른 방법으로
+            청구받으시기 바랍니다.
             <Button
               onClick={() => {
                 confirmTrade(props.detailId);

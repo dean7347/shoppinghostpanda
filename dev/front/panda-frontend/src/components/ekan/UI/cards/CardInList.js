@@ -85,6 +85,10 @@ function CardInList(props) {
     axios.post("/api/refundactionforuser", body).then((response) => {
       if (response.data.success) {
         alert("환불/교환 요청을 완료했습니다");
+      } else {
+        alert(
+          "환불 교환 요청에 실패했습니다 해당 현상이 반복된다면 고객센터로 문의주시기 바랍니다."
+        );
       }
     });
     // console.log(options);
@@ -122,10 +126,8 @@ function CardInList(props) {
       uoid: props.situationDetail.detailId,
     };
     axios.post("/api/readRefundRequest", body).then((response) => {
-      console.log("레스폰스");
       console.log(response);
       if (response.data.success) {
-        console.log("이거 리펀드요청임");
         SetRefundData(response.data);
         console.log(response.data);
       }

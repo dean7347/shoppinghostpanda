@@ -66,8 +66,8 @@ public class UserOrder {
     @OneToMany(mappedBy = "userOrder")
     private List<OrderDetail> detail= new ArrayList<>();
 
-    @OneToOne
-    private RefundRequest refundRequests;
+    @OneToOne(optional = true)
+    private RefundRequest refundRequest;
 //    @ManyToOne
 //    @OneToOne
 //    private SettleShop settleShop;
@@ -349,11 +349,15 @@ public class UserOrder {
     //환불신청을확인함
     public void checkRefund(){
         this.orderStatus=OrderStatus.상점확인중;
-        this.refundRequests.setOrderStatus(OrderStatus.상점확인중);
+        this.refundRequest.setOrderStatus(OrderStatus.상점확인중);
     }
     public void setRefund(RefundRequest refundRequests)
     {
-        this.refundRequests=refundRequests;
+        System.out.println("셋팅쿼리를 볼꺼야");
+        this.refundRequest=refundRequests;
+        refundRequests.setUserOrder(this);
+
+
 
     }
     public void setEnrollRefundShop(boolean tf,SettleShop shop)
