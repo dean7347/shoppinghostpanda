@@ -3,9 +3,7 @@ import Badge from "../../../UI/badge/Badge";
 import { Divider } from "@mui/material";
 import Button from "../../../UI/Button";
 import axios from "../../../../../../node_modules/axios/index";
-import { setUserAgent } from "react-device-detect";
 import { Input, Form, Space, InputNumber } from "antd";
-import { objectMethod } from "../../../../../../../../../../../AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index";
 const BuyerInfoPage = () => {
   const [loader, SetLoader] = useState(0);
   const [user, SetUser] = useState({
