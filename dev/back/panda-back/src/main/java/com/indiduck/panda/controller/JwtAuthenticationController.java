@@ -291,7 +291,8 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/api/reissuev2")
-    public ResponseEntity<?> reissueV2(HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication,HttpServletRequest req, HttpServletResponse res) {
         String accessToken = req.getHeader("accessToken");
         String retoken = req.getHeader("refreshToken");
 
@@ -327,8 +328,13 @@ public class JwtAuthenticationController {
         refreshToken.setPath("/");
 
         System.out.println(" =발송완료 ");
+        String name = authentication.getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
+        /////
 
-        return ResponseEntity.ok(new TokenLoginTAO(true, aToken));
+
+
+        return ResponseEntity.ok(new TokenLoginVTAO(true, aToken, byEmail.get()));
 
 
     }

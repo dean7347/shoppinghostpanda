@@ -34,7 +34,7 @@ import HeaderContainer from "../../../../containers/common/HeaderContainer";
 import axios from "../../../../../node_modules/axios/index";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
-function CardInList(props) {
+function CardInListVReady(props) {
   console.log("카인리", props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
@@ -81,13 +81,12 @@ function CardInList(props) {
     };
     console.log(body);
 
-    axios.post("/api/refundactionforuser", body).then((response) => {
+    axios.post("/api/partialCancel", body).then((response) => {
       if (response.data.success) {
-        alert("환불/교환 요청을 완료했습니다");
+        alert("부분취소신청을 완료했습니다");
+        window.location.reload();
       } else {
-        alert(
-          "환불 교환 요청에 실패했습니다 해당 현상이 반복된다면 고객센터로 문의주시기 바랍니다."
-        );
+        alert(response.data.message);
         console.log(response.data.message);
       }
     });
@@ -222,7 +221,7 @@ function CardInList(props) {
     );
   };
   const onTestCheck = (p, s, c, w) => {
-    if (s !== "구매확정") {
+    if (s !== "주문취소") {
       alert("올바른 요청이 아닙니다");
       return;
     }
@@ -639,10 +638,10 @@ function CardInList(props) {
         ) : (
           <Button
             onClick={() =>
-              onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
+              onTestCheck(props.situationDetail.detailId, "주문취소", "c", 123)
             }
           >
-            구매확정
+            주문취소
           </Button>
         )}
 
@@ -813,7 +812,12 @@ function CardInList(props) {
           <div>
             <hr />
             <Row gutter={24}>
-              <Col span={12}>환불/교환</Col>
+              <Col span={24}>부분취소</Col>
+              <Col span={12}>
+                *구매자와 협의후 진행해주세요 구매자와 합의없이 변경된 사항은
+                판다에서 어떤 책임도 지지 않습니다.
+              </Col>
+
               <Col span={24}>
                 <TextArea
                   placeholder="사유와 품목을 입력해주세요"
@@ -847,7 +851,7 @@ function CardInList(props) {
                 <Button
                   onClick={() => onRefund(props.situationDetail.detailId)}
                 >
-                  환불/교환 요청
+                  부분취소
                 </Button>
               </Col>
             </Row>
@@ -861,4 +865,4 @@ function CardInList(props) {
   );
 }
 
-export default CardInList;
+export default CardInListVReady;

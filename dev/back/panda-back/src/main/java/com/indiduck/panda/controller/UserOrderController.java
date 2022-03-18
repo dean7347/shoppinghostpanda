@@ -5,6 +5,7 @@ import com.indiduck.panda.Repository.OrderDetailRepository;
 import com.indiduck.panda.Repository.ShopRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
+import com.indiduck.panda.Service.OrderDetailService;
 import com.indiduck.panda.Service.RefundRequestService;
 import com.indiduck.panda.Service.UserOrderService;
 import com.indiduck.panda.domain.*;
@@ -42,19 +43,22 @@ public class UserOrderController {
     private final RefundRequestService refundRequestService;
     @Autowired
     private final OrderDetailRepository orderDetailRepository;
-
+    @Autowired
+    private final OrderDetailService orderDetailService;
 
     //유저가 최초로 환불 신청을 한다
     @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
     public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+                                                         Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+
+
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         System.out.println("refundReq = " + refundReq);
+
         Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
-        byId.get().refundOrder(refundReq.refundMessage);
         List<RefundList> refundList = refundReq.refundList;
-        List<OrderDetail> orderDetails=new ArrayList<>();
+        List<OrderDetail> orderDetails = new ArrayList<>();
         for (RefundList list : refundList) {
             long optionId = list.optionId;
             Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
@@ -65,9 +69,57 @@ public class UserOrderController {
             System.out.println("orderDetail추가완료 = " + orderDetail);
 
         }
-        refundRequestService.newRefundRequest(byId.get(),orderDetails,refundReq.refundMessage,byEmail.get());
+        refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
+        byId.get().refundOrder(refundReq.refundMessage);
 
-        return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
+        return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
+
+
+    }
+
+    //부분취소
+    @RequestMapping(value = "/api/partialCancel", method = RequestMethod.POST)
+    public ResponseEntity<?> partialCancel(@CurrentSecurityContext(expression = "authentication")
+                                                   Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+        try {
+            System.out.println("refundReq = " + refundReq);
+            List<RefundList> refundList = refundReq.refundList;
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            int refundMoney = 0;
+            boolean result = true;
+            for (RefundList list : refundList) {
+                long optionId = list.optionId;
+                Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+                //현재갯수보다 작인지 체크
+                if (byId1.get().getProductCount() >= list.optionCount) {
+                    orderDetailService.partialCancelation(byId1.get(), list.optionCount, refundReq.refundMessage);
+                    refundMoney += Integer.parseInt(list.optionPrice.replace(",", ""));
+
+                } else {
+                    result = false;
+                }
+
+            }
+            if (result) {
+                boolean b = orderDetailService.refundOrder(refundReq.getUserOrderId(), refundMoney);
+                System.out.println("b가이게맞나 = " + b);
+                if (b) {
+                    return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
+
+                } else {
+                    System.out.println(" 엘즈 " );
+                    return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 성공했으니 환불에 실패했습니다  고객센터로 문의주세요(필수사항)"));
+
+                }
+
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new TFMessageDto(false, "문자오류로 인해 상태변경에 실패했습니다"));
+
+        }
+
+
+        return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 실패했습니다"));
 
 
     }
@@ -78,115 +130,113 @@ public class UserOrderController {
 
 
         UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
-        if(userOrder !=null)
-        {
-            return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
+        if (userOrder != null) {
+            return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
         }
 
-        return ResponseEntity.ok(new TFMessageDto(false,"상태변경에 실패했습니다"));
+        return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 실패했습니다"));
 
     }
 
     @RequestMapping(value = "/api/extendconfirm", method = RequestMethod.POST)
     public ResponseEntity<?> extendConfirm(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody ShopDashBoardForUserOrderId sdbf) throws Exception {
+                                                   Authentication authentication, @RequestBody ShopDashBoardForUserOrderId sdbf) throws Exception {
 
 
         boolean b = userOrderService.extendConfirm(sdbf.orderId);
-        if(b)
-        {
-            return ResponseEntity.ok(new TFMessageDto(true,"구매기간 연장 성공"));
-            
+        if (b) {
+            return ResponseEntity.ok(new TFMessageDto(true, "구매기간 연장 성공"));
+
         }
 
-        return ResponseEntity.ok(new TFMessageDto(false,"3번이상 연장을 했거나 연장할 수 있는 상태가 아닙니다"));
+        return ResponseEntity.ok(new TFMessageDto(false, "3번이상 연장을 했거나 연장할 수 있는 상태가 아닙니다"));
 
     }
 
     @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
     public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
+                                                        Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
 
         System.out.println("changeAction = " + changeAction.userOrderId);
-        long num=0;
+        long num = 0;
         for (long l : changeAction.userOrderId) {
             UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
-            if(userOrder==null)
-            {
-                num=l;
+            if (userOrder == null) {
+                num = l;
 
-                return ResponseEntity.ok(new TFMessageDto(false,num+"번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+                return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
 
             }
 
 
         }
-        return ResponseEntity.ok(new TFMessageDto(true,"상태변경 완료"));
+        return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
 
     }
 
 
-
-
     @RequestMapping(value = "/api/shop/shoporderlist", method = RequestMethod.GET)
     public ResponseEntity<?> editStatus(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, Pageable pageable, @RequestParam("type")String type) throws Exception {
+                                                Authentication authentication, Pageable pageable, @RequestParam("type") String type) throws Exception {
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
         List<UserOrder> byUserId = new ArrayList<>();
         Page<UserOrder> byShopAndOrderStatus = null;
 
-        switch (type)
-        {
+        switch (type) {
             //신규주문
-            case "recent":byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.결제완료);
+            case "recent":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.결제완료);
                 System.out.println("최근주문조회");
-            break;
+                break;
             //준비중인주문
-            case "ready" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.준비중);
+            case "ready":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.준비중);
                 break;
 
             //배송중인주문
-            case "shipping" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.발송중);
+            case "shipping":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.발송중);
                 break;
 
             //교환/반품요청
-            case "change" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.상점확인중);
+            case "change":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.상점확인중);
                 break;
 
             //완료된 주문
-            case "finish" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.구매확정);
+            case "finish":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.구매확정);
                 break;
 
             //교환/반품확인
-            case "check" :byShopAndOrderStatus=userOrderRepository.findByShopAndOrderStatus(pageable,byEmail.get().getShop(),OrderStatus.환불대기);
+            case "check":
+                byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.환불대기);
                 break;
             default:
                 System.out.println("없는 주문요청입니다");
                 break;
 
         }
-        List<ShopDashBoardDTO> dashs= new ArrayList<>();
-        if(!byShopAndOrderStatus.isEmpty())
-        {
+        List<ShopDashBoardDTO> dashs = new ArrayList<>();
+        if (!byShopAndOrderStatus.isEmpty()) {
             for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
                 List<OrderDetail> detail = shopAndOrderStatus.getDetail();
-                HashSet<String> productName=new HashSet<>();
+                HashSet<String> productName = new HashSet<>();
                 for (OrderDetail orderDetail : detail) {
                     productName.add(orderDetail.getProducts().getProductName());
                 }
-                int redundancy =0;
-                if(shopAndOrderStatus.getPureAmount()<shopAndOrderStatus.getFreeprice())
-                {
-                    redundancy+=shopAndOrderStatus.getShipPrice();
+                int redundancy = 0;
+                if (shopAndOrderStatus.getPureAmount() < shopAndOrderStatus.getFreeprice()) {
+                    redundancy += shopAndOrderStatus.getShipPrice();
                 }
 
-                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(),productName.toString(),shopAndOrderStatus.getPureAmount()+redundancy
-                        ,shopAndOrderStatus.getCreatedAt(),shopAndOrderStatus.getPaymentStatus(),
-                        shopAndOrderStatus.getCourierCom(),shopAndOrderStatus.getWaybillNumber()));
+                dashs.add(new ShopDashBoardDTO(shopAndOrderStatus.getId(), productName.toString(), shopAndOrderStatus.getPureAmount() + redundancy
+                        , shopAndOrderStatus.getCreatedAt(), shopAndOrderStatus.getPaymentStatus(),
+                        shopAndOrderStatus.getCourierCom(), shopAndOrderStatus.getWaybillNumber()));
             }
         }
 
@@ -197,71 +247,64 @@ public class UserOrderController {
         System.out.println("dashs = " + dashs);
 
 
-        return ResponseEntity.ok(new pageDto(true,byShopAndOrderStatus.getTotalPages(),byShopAndOrderStatus.getTotalElements(),dashs));
+        return ResponseEntity.ok(new pageDto(true, byShopAndOrderStatus.getTotalPages(), byShopAndOrderStatus.getTotalElements(), dashs));
 
     }
 
     @RequestMapping(value = "/api/shopdashboard", method = RequestMethod.POST)
     public ResponseEntity<?> shopDashBoard(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestBody ShopDashBoard shopDashBoard) throws Exception {
+                                                   Authentication authentication, @RequestBody ShopDashBoard shopDashBoard) throws Exception {
 
         System.out.println("shopDashBoard = " + shopDashBoard);
-        try{
-            LocalDateTime startDay= LocalDateTime.of(shopDashBoard.startYear,shopDashBoard.startMonth+1,shopDashBoard.startDay
-                    ,0,0,0,0);
-            LocalDateTime endDay= LocalDateTime.of(shopDashBoard.endYear,shopDashBoard.endMonth+1,shopDashBoard.endDay
-                    ,23,59,59,999999999);
+        try {
+            LocalDateTime startDay = LocalDateTime.of(shopDashBoard.startYear, shopDashBoard.startMonth + 1, shopDashBoard.startDay
+                    , 0, 0, 0, 0);
+            LocalDateTime endDay = LocalDateTime.of(shopDashBoard.endYear, shopDashBoard.endMonth + 1, shopDashBoard.endDay
+                    , 23, 59, 59, 999999999);
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Shop shop = byEmail.get().getShop();
             List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
-            List<UserOrder> uoList =new ArrayList<>();
-            int finish=0;
-            int yet =0;
-           //상태정의
-            if(shopDashBoard.searchDateMode.equals("정산일자"))
-            {
+            List<UserOrder> uoList = new ArrayList<>();
+            int finish = 0;
+            int yet = 0;
+            //상태정의
+            if (shopDashBoard.searchDateMode.equals("정산일자")) {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndDepositCompletedNotNullAndDepositCompletedBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
-            }else if(shopDashBoard.searchDateMode.equals("정산예정일")){
+            } else if (shopDashBoard.searchDateMode.equals("정산예정일")) {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndExpectCalculateNotNullAndExpectCalculateBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
 
-            }else if(shopDashBoard.searchDateMode.equals("판매일자"))
-            {
+            } else if (shopDashBoard.searchDateMode.equals("판매일자")) {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndCreatedAtNotNullAndCreatedAtBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
 
-            }else if(shopDashBoard.searchDateMode.equals("구매확정일자"))
-            {
+            } else if (shopDashBoard.searchDateMode.equals("구매확정일자")) {
                 Optional<List<UserOrder>> data = userOrderRepository.findByShopAndFinishAtNotNullAndFinishAtBetween(shop, startDay, endDay);
                 uoList.addAll(data.get());
 
-            }else
-            {
-                return ResponseEntity.ok(new DashboardDto(true,null,0,0));
+            } else {
+                return ResponseEntity.ok(new DashboardDto(true, null, 0, 0));
 
             }
 
             for (UserOrder userOrder : uoList) {
-                if(userOrder.getPaymentStatus()==PaymentStatus.지급대기 || userOrder.getPaymentStatus()==PaymentStatus.지급예정 )
-                {
-                    yet+=userOrder.getShopMoney();
-                }else if(userOrder.getPaymentStatus()==PaymentStatus.지급완료)
-                {
-                    finish+=userOrder.getShopMoney();
+                if (userOrder.getPaymentStatus() == PaymentStatus.지급대기 || userOrder.getPaymentStatus() == PaymentStatus.지급예정) {
+                    yet += userOrder.getShopMoney();
+                } else if (userOrder.getPaymentStatus() == PaymentStatus.지급완료) {
+                    finish += userOrder.getShopMoney();
                 }
 
                 shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder));
             }
             System.out.println(" 나가는데이터= " + shopDashboardDtoTypeList);
-            return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,finish,yet));
+            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, finish, yet));
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new DashboardDto(true,null,0,0));
+            return ResponseEntity.ok(new DashboardDto(true, null, 0, 0));
 
 
         }
@@ -271,26 +314,25 @@ public class UserOrderController {
 
     @RequestMapping(value = "/api/shopdashboardforordernumber", method = RequestMethod.POST)
     public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication, @RequestBody ShopDashBoardForUserOrderId shopDashBoardForUserOrderId) throws Exception {
+                                                                 Authentication authentication, @RequestBody ShopDashBoardForUserOrderId shopDashBoardForUserOrderId) throws Exception {
 
 
-        try{
+        try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Shop shop = byEmail.get().getShop();
-            Optional<UserOrder> byId = userOrderRepository.findByShopAndId(shop,shopDashBoardForUserOrderId.orderId);
+            Optional<UserOrder> byId = userOrderRepository.findByShopAndId(shop, shopDashBoardForUserOrderId.orderId);
             List<ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
 
             shopDashboardDtoTypeList.add(new ShopDashboardDtoType(byId.get()));
 
 
-            return ResponseEntity.ok(new DashboardDto(true,shopDashboardDtoTypeList,0,0));
+            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, 0, 0));
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new DashboardDto(false,null,0,0));
+            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0));
 
 
         }
@@ -300,22 +342,22 @@ public class UserOrderController {
 
 
     @Data
-    private class pageDto{
+    private class pageDto {
         boolean success;
         int totalpage;
         Long totalElement;
-        List<ShopDashBoardDTO> pageList=new ArrayList<>();
-        public pageDto(boolean su, int totalP, Long totalE, List<ShopDashBoardDTO> pl)
-        {
-            success=su;
-            totalpage=totalP;
-            totalElement=totalE;
-            pageList=pl;
+        List<ShopDashBoardDTO> pageList = new ArrayList<>();
+
+        public pageDto(boolean su, int totalP, Long totalE, List<ShopDashBoardDTO> pl) {
+            success = su;
+            totalpage = totalP;
+            totalElement = totalE;
+            pageList = pl;
         }
     }
 
     @Data
-    private static class ShopDashBoardDTO{
+    private static class ShopDashBoardDTO {
         long id;
         String name;
         int price;
@@ -329,12 +371,10 @@ public class UserOrderController {
             this.name = name;
             this.price = price;
             this.orderAt = orderAt;
-            if(paymentStatus==null)
-            {
+            if (paymentStatus == null) {
                 this.paymentStatus = null;
 
-            }else
-            {
+            } else {
                 this.paymentStatus = paymentStatus.toString();
 
             }
@@ -343,11 +383,11 @@ public class UserOrderController {
         }
 
     }
+
     @Data
-    private static class DashboardDto
-    {
+    private static class DashboardDto {
         boolean success;
-        List<ShopDashboardDtoType> shopDashboardDtoTypeList=null;
+        List<ShopDashboardDtoType> shopDashboardDtoTypeList = null;
         int finMoney;
         int expectMoney;
 
@@ -355,13 +395,13 @@ public class UserOrderController {
         public DashboardDto(boolean success, List<ShopDashboardDtoType> spdl, int f, int e) {
             this.success = success;
             this.shopDashboardDtoTypeList = spdl;
-            this.finMoney=f;
-            this.expectMoney=e;
+            this.finMoney = f;
+            this.expectMoney = e;
         }
     }
+
     @Data
-    private static class ShopDashboardDtoType
-    {
+    private static class ShopDashboardDtoType {
         //주문번호
         Long id;
         //정가
@@ -373,7 +413,7 @@ public class UserOrderController {
         int realPrice;
 
 
-       //정산금액
+        //정산금액
         int settlePrice;
         //수수료
         int fees;
@@ -391,17 +431,15 @@ public class UserOrderController {
 
         public ShopDashboardDtoType(UserOrder uo) {
             this.id = uo.getId();
-            this.realPrice=uo.getFullprice();
+            this.realPrice = uo.getFullprice();
             //무료배송이 아닐경우
-            if(uo.getFreeprice()>uo.getPureAmount())
-            {
-                this.beforeSalePrice = uo.getPureAmount()+uo.getShipPrice();
-            }else
-            {
-                this.beforeSalePrice =uo.getPureAmount();
+            if (uo.getFreeprice() > uo.getPureAmount()) {
+                this.beforeSalePrice = uo.getPureAmount() + uo.getShipPrice();
+            } else {
+                this.beforeSalePrice = uo.getPureAmount();
             }
             this.settlePrice = uo.getShopMoney();
-            this.fees = uo.getPandaMoney()+uo.getHostMoney()+uo.getBalance();
+            this.fees = uo.getPandaMoney() + uo.getHostMoney() + uo.getBalance();
             this.salesDate = uo.getCreatedAt();
             this.confirmDate = uo.getFinishAt();
             //정산예정일
@@ -422,6 +460,7 @@ public class UserOrderController {
         String courier;
         String waybill;
     }
+
     @Data
     static class ChangeActions {
         //필수항목
@@ -445,9 +484,9 @@ public class UserOrderController {
         String status;
         String searchDateMode;
     }
+
     @Data
-    private static class ShopDashBoardForUserOrderId
-    {
+    private static class ShopDashBoardForUserOrderId {
         long orderId;
     }
 
@@ -456,14 +495,14 @@ public class UserOrderController {
     }
 
     @Data
-    private static class RefundReq {
+    public static class RefundReq {
         long userOrderId;
         String refundMessage;
         List<RefundList> refundList;
     }
 
     @Data
-    private static class RefundList {
+    public static class RefundList {
         boolean ispanda;
         long key;
         int max;

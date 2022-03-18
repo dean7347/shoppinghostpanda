@@ -38,6 +38,12 @@ public class OrderDetail {
     //최종 환불완료된 갯수
     private int confirmRefund=0;
 
+    //판매자가 취소한 갯수수
+   private int reqCancel=0;
+   //취소이유
+    private String cancelReson;
+   private LocalDateTime PartialCancelDate;
+
 
 
 
@@ -74,7 +80,8 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SettlePanda settlePanda;
-
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private PartialCancellation partialCancellation;
    //12%
     private int pandaMoney=0;
 
@@ -98,6 +105,7 @@ public class OrderDetail {
         od.reqRefund=0;
         od.confirmRefund=0;
         od.enrollSettle=false;
+
         return od;
 
     }
@@ -273,9 +281,27 @@ public class OrderDetail {
         this.enrollSettle=tf;
         this.settlePanda=panda;
     }
+    //부분취소
+    public void setPartialCancelAction(int count)
+    {
+
+    }
+
+
     public void finishSettler()
     {
         this.paymentStatus=PaymentStatus.지급완료;
     }
+
+    public void partialCancel(int count,String message)
+    {
+        this.reqCancel=count;
+        this.productCount-=reqCancel;
+        this.cancelReson=message;
+        this.PartialCancelDate=LocalDateTime.now();
+        System.out.println("productCount = " + productCount);
+
+    }
+
 
 }

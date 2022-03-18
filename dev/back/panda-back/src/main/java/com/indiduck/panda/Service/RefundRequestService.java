@@ -41,9 +41,6 @@ public class RefundRequestService {
         for (OrderDetail orderDetail : orderDetails) {
             rr.addOrderDetail(orderDetail);
         }
-        //연관관계의 주인에서 넣어주자
-
-//        System.out.println("uo.getRefundRequests().getUserOrder().getReveiverName() = " + uo.getRefundRequests().getUserOrder().getReveiverName());
         refundRequestRepository.save(rr);
         uo.setRefund(rr);
 
@@ -52,6 +49,15 @@ public class RefundRequestService {
 
         return rr;
     }
+
+    public RefundRequest addRefundRequest(RefundRequest origin, List<OrderDetail> orderDetails, String message)
+    {
+        for (OrderDetail orderDetail : orderDetails) {
+             origin.addOrderDetail(orderDetail);
+        }
+        return origin;
+    }
+
 
 
     //판매자캔슬
@@ -96,38 +102,38 @@ public class RefundRequestService {
     //환불로인한 캔슬
     public boolean allCancel(String mind,UserOrder userOrder)
     {
-        String test_api_key = apiKey.getRESTAPIKEY();
-        String test_api_secret = apiKey.getRESTAPISECRET();
-        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
-        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
-
-        try {
-            userOrder.getRefundRequest().setOrderStatus(OrderStatus.환불완료);
-            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
-            String receiptUrl = payment_response.getResponse().getReceiptUrl();
-            userOrder.setReceiptUrl(receiptUrl);
-
-        } catch (IamportResponseException e) {
-            System.out.println(e.getMessage());
-
-            switch(e.getHttpStatusCode()) {
-                case 401 :
-                    //TODO
-                    System.out.println("e = " + e);
-                    return false;
-                case 500 :
-                    //TODO
-                    System.out.println("e = " + e);
-
-                    return false;
-
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-
-        }
+//        String test_api_key = apiKey.getRESTAPIKEY();
+//        String test_api_secret = apiKey.getRESTAPISECRET();
+//        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+//        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
+//
+//        try {
+//            userOrder.getRefundRequest().setOrderStatus(OrderStatus.환불완료);
+//            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+//            String receiptUrl = payment_response.getResponse().getReceiptUrl();
+//            userOrder.setReceiptUrl(receiptUrl);
+//
+//        } catch (IamportResponseException e) {
+//            System.out.println(e.getMessage());
+//
+//            switch(e.getHttpStatusCode()) {
+//                case 401 :
+//                    //TODO
+//                    System.out.println("e = " + e);
+//                    return false;
+//                case 500 :
+//                    //TODO
+//                    System.out.println("e = " + e);
+//
+//                    return false;
+//
+//            }
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return false;
+//
+//        }
         return true;
     }
 
@@ -165,7 +171,10 @@ public class RefundRequestService {
             System.out.println("페이먼트메시지"+payment_response.getMessage());
             if(response==null)
             {
-                return false;
+//                return false;
+                userOrder.getRefundRequest().setRefundMoney(refundMoney);
+                userOrder.confirmRefundMoney(refundMoney);
+                return true;
 
             }else
             {
@@ -192,8 +201,8 @@ public class RefundRequestService {
             return false;
         }
 
-        userOrder.getRefundRequest().setRefundMoney(refundMoney);
-        userOrder.confirmRefundMoney(refundMoney);
+//        userOrder.getRefundRequest().setRefundMoney(refundMoney);
+//        userOrder.confirmRefundMoney(refundMoney);
 
         return true;
     }

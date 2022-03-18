@@ -118,6 +118,9 @@ public class UserOrder {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SettleShop settleShop;
+
+    //취소로 인해 환불됐어야 ㅎ ㅏㄹ 돈
+    int cancelMoney=0;
     
 
 
@@ -148,6 +151,11 @@ public class UserOrder {
     }
 
     //==연관관계 메서드 ==//
+    public void setCancelMoney(int money)
+    {
+        this.cancelMoney+=money;
+    }
+
     public void setUser(User user)
     {
         this.userId=user;

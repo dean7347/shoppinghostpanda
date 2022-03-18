@@ -6,7 +6,7 @@ import Modal from "../../../UI/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";
 import { fetchSituationDetail } from "../../../../../store/actions/mypageActions/buyerActions";
-import CardInListVshop from "../../../UI/cards/CardInListVshop";
+import CardInListVReady from "../../../UI/cards/CardInListVReady";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
 import {
@@ -520,7 +520,7 @@ const SellerReadyOrderPage = () => {
         >
           {situationDetail ? (
             <>
-              <CardInListVshop situationDetail={situationDetail} />
+              <CardInListVReady situationDetail={situationDetail} />
             </>
           ) : (
             <div>데이터 없음</div>

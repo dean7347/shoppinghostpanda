@@ -102,6 +102,8 @@ public class RefundRequestController {
         int shipPrice;
         //배송비를 제외한 상품 금액
         long allPriceMinusShipPrice;
+        //이 주문에서 전체 환불한 금액?
+        long allRefundMoney;
 
         //환불 리스트
         List<RefundList> refundListList=new ArrayList<>();
@@ -113,12 +115,13 @@ public class RefundRequestController {
             this.userOrderId = uo.getId();
             this.allPrice = uo.finalPrice();
             this.shipPrice = uo.getShipPrice();
+            this.allRefundMoney=uo.getFinalRefundMoney();
             this.allPriceMinusShipPrice = uo.getAmount();
             System.out.println("refundRequest.getOrderDetails() = " + refundRequest.getOrderDetails());
             for (OrderDetail orderDetail : refundRequest.getOrderDetails()) {
                 this.refundListList.add(new RefundList(orderDetail.getId(),orderDetail.getProducts().getProductName(),
                         orderDetail.getProductCount(),orderDetail.getReqRefund(),orderDetail.getPanda(),
-                        orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName(),refundRequest.getRefundMoney()));
+                        orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName(),refundRequest.getRefundMoney(),orderDetail.getConfirmRefund()));
             }
 
         }
@@ -135,6 +138,8 @@ public class RefundRequestController {
         int refundCount;
         //환불신청된액수
         long refundMoney;
+        //환불 완료된 갯수
+        int compleCount;
 
         //판다여부
         boolean isPanda;
@@ -144,7 +149,7 @@ public class RefundRequestController {
         long optionIndividualPrice;
 
         public RefundList(long orderDetailId, String productName, int orderCount,
-                          int refundCount, Panda isPanda, long optionAllPrice, long optionIndividualPrice,String optionName,long refundMoney) {
+                          int refundCount, Panda isPanda, long optionAllPrice, long optionIndividualPrice,String optionName,long refundMoney,int com) {
             this.orderDetailId = orderDetailId;
             this.productName = productName;
             this.optionName=optionName;
@@ -156,7 +161,7 @@ public class RefundRequestController {
             }else{
                 this.isPanda=false;
             }
-
+            this.compleCount=com;
             this.optionAllPrice = optionAllPrice;
             this.optionIndividualPrice = optionIndividualPrice;
             this.refundMoney=refundMoney;

@@ -65,7 +65,7 @@ export const signout = () => {
     try {
       dispatch(setLoading(true));
       console.log("로그아웃 요청 성공");
-      await axios.get("/api/user/logoutv2");
+      await axios.post("/api/user/logoutv2");
       setCookie("loggedIn", "false", { path: "/" });
       setCookie("userId", "", { path: "/" });
       setCookie("panda", "", { path: "/" });

@@ -68,6 +68,7 @@ public class RefundRequest {
     public void addOrderDetail(OrderDetail orderDetail)
     {
         this.orderDetails.add(orderDetail);
+        this.setOrderStatus(OrderStatus.환불대기);
         orderDetail.setRefundRequest(this);
     }
     public void setOrderStatus(OrderStatus os)
