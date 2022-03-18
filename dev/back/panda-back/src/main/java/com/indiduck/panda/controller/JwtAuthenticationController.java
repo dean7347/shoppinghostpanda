@@ -17,6 +17,7 @@ import com.indiduck.panda.domain.UserOrder;
 import com.indiduck.panda.domain.dao.JwtRequest;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.*;
+import com.indiduck.panda.jwt.JwtTokenProvider;
 import com.indiduck.panda.lib.Helper;
 import com.indiduck.panda.util.ApiResponseMessage;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -67,7 +68,8 @@ public class JwtAuthenticationController {
     private JwtUserDetailsService userDetailsService;
     @Autowired
     private UserRepository userRepository;
-
+@Autowired
+private final JwtTokenProvider jwtTokenProvider;
 
 //    @Autowired
 //    private CookieUtil cookieUtil;
@@ -292,7 +294,7 @@ public class JwtAuthenticationController {
 
     @PostMapping("/api/reissuev2")
     public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")
-                                                   Authentication authentication,HttpServletRequest req, HttpServletResponse res) {
+                                                   HttpServletRequest req, HttpServletResponse res) {
         String accessToken = req.getHeader("accessToken");
         String retoken = req.getHeader("refreshToken");
 
@@ -328,10 +330,9 @@ public class JwtAuthenticationController {
         refreshToken.setPath("/");
 
         System.out.println(" =발송완료 ");
-        String name = authentication.getName();
-        Optional<User> byEmail = userRepository.findByEmail(name);
         /////
-
+        String name = jwtTokenProvider.getAuthentication(aToken).getName();
+        Optional<User> byEmail = userRepository.findByEmail(name);
 
 
         return ResponseEntity.ok(new TokenLoginVTAO(true, aToken, byEmail.get()));
