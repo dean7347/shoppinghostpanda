@@ -69,8 +69,9 @@ public class UserOrderController {
             System.out.println("orderDetail추가완료 = " + orderDetail);
 
         }
+//        userOrderService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
         refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
-        byId.get().refundOrder(refundReq.refundMessage);
+//        byId.get().refundOrder(refundReq.refundMessage);
 
         return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 

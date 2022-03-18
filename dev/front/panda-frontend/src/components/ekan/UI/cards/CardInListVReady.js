@@ -531,7 +531,13 @@ function CardInListVReady(props) {
                                   </div>
                                 )}
                               </Col>
-                              <Col span={12}>{option.orderStatus}</Col>
+                              <Col span={24}>{option.orderStatus}</Col>
+                              <Col span={12}>환불 갯수 :</Col>
+
+                              <Col span={12}>{option.completeRefund}</Col>
+                              <Col span={12}>취소 갯수 :</Col>
+
+                              <Col span={12}>{option.completeCancel}</Col>
 
                               {/* <Col span={12}>
                                 {option.orderStatus !== "결제완료" ? (

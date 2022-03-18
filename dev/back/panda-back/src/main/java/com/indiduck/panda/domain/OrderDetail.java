@@ -299,6 +299,18 @@ public class OrderDetail {
         this.productCount-=reqCancel;
         this.cancelReson=message;
         this.PartialCancelDate=LocalDateTime.now();
+        if(this.panda!=null)
+        {
+            this.userOrder.refundAndCancelMinusPrice(true,this.IndividualPrice,count);
+            this.totalPrice=this.IndividualPrice*productCount;
+
+        }else
+        {
+            this.userOrder.refundAndCancelMinusPrice(false,this.IndividualPrice,count);
+            this.totalPrice=(int) Math.round(this.IndividualPrice*productCount*0.95);
+
+
+        }
         System.out.println("productCount = " + productCount);
 
     }

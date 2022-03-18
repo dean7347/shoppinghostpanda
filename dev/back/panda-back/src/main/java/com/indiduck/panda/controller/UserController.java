@@ -549,11 +549,11 @@ public class UserController {
                         if (orderDetail.getPanda() == null) {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
                                     orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), "null", orderDetail.getId()
-                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund()));
+                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund(),orderDetail.getReqCancel()));
                         } else {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
                                     orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), orderDetail.getPanda().getPandaName(), orderDetail.getId()
-                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund()));
+                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund(),orderDetail.getReqCancel()));
                         }
 
                     }
@@ -613,11 +613,11 @@ public class UserController {
                         if (orderDetail.getPanda() == null) {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
                                     orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), "null", orderDetail.getId()
-                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund()));
+                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund(),orderDetail.getReqCancel()));
                         } else {
                             product.setOptions(new OptionList(orderDetail.getOptions().getOptionName(), orderDetail.getProductCount(),
                                     orderDetail.getIndividualPrice(), orderDetail.getTotalPrice(), orderDetail.getPanda().getPandaName(), orderDetail.getId()
-                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund()));
+                                    , orderDetail.getOrderStatus(),orderDetail.getConfirmRefund(),orderDetail.getReqCancel()));
                         }
 
                     }
@@ -779,14 +779,17 @@ public class UserController {
         OrderStatus orderStatus;
         //환불 완료된 갯수?
         int completeRefund;
+        //취소 완료된 갯수
+        int completeCancel;
 
-        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName, long odid, OrderStatus odst,int complete) {
+        public OptionList(String optionName, int optionCount, int optionPrice, int allAmount, String pandaName, long odid, OrderStatus odst,int complete,int cancel) {
             this.optionName = optionName;
             this.optionCount = optionCount;
             this.optionPrice = optionPrice;
             this.allAmount = allAmount;
             this.pandaName = pandaName;
             this.completeRefund=complete;
+            this.completeCancel=cancel;
             this.odid = odid;
             this.orderStatus = odst;
             if (pandaName == "null") {

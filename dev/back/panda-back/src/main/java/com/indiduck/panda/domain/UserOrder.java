@@ -389,6 +389,32 @@ public class UserOrder {
         this.reveiverName="조회 불가능한 회원입니다";
 
     }
+
+    //환불  취소시 전체 금액에서 빼주는 로직
+    public void refundAndCancelMinusPrice(boolean isPanda,int originPrice,int count)
+    {
+
+        //택배비가 포함된 금액을 말합니다
+        int fullprice=0;
+
+        //택배비가 포함되지 않은 판다할인 적용 결제금액을 말합니다.
+        int amount=0;
+        //판다금액과 택배비가 없는 가격
+        int PureAmount =0;
+//        퓨어어마운트,어마운트,풀푸라이스
+        if(isPanda)
+        {
+            this.fullprice-=originPrice*count;
+            this.amount -=originPrice*count;
+            this.PureAmount-=originPrice*count;
+        }else
+        {
+            this.fullprice-=Math.round(originPrice*count*0.95);
+            this.amount -=Math.round(originPrice*count*0.95);
+            this.PureAmount-=originPrice*count;
+        }
+
+    }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;
 }

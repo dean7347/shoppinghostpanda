@@ -33,6 +33,7 @@ public class RefundRequestService {
     @Autowired
     private final UserOrderRepository userOrderRepository;
     @Autowired
+    private final UserOrderService userOrderService;
     private ApiKey apiKey;
 
     public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails, String message, User user){
