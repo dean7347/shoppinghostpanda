@@ -1,4 +1,5 @@
 import create from 'zustand'
+import axios from '../api/axiosDefaults';
 
 export const useAuthStore = create(set => ({
     user: null,
