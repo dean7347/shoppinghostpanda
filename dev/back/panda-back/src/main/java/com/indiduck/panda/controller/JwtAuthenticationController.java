@@ -444,7 +444,7 @@ private final JwtTokenProvider jwtTokenProvider;
     private static class TokenLoginVTAO {
         boolean success;
         String accessToken;
-        String userName;
+        String userName="";
         boolean panda=false;
         boolean shop=false;
         boolean user=false;
