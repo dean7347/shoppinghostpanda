@@ -129,7 +129,7 @@ private final JwtTokenProvider jwtTokenProvider;
     }
 
     @PostMapping("/api/loginv2")
-    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login, HttpServletResponse res, Errors errors) {
+    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletRequest req, HttpServletResponse res, Errors errors) {
         // validation check
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
@@ -139,13 +139,39 @@ private final JwtTokenProvider jwtTokenProvider;
         String name = usernamePasswordAuthenticationToken.getName();
 
         System.out.println("name = " + name);
+        //만약 존재하면
+//        String rtCookie = "";
+//        String aCookie="";
+//        Cookie[] cookies = req.getCookies();
+//        if (cookies != null){
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("refreshToken"))
+//                    rtCookie = cookie.getValue();
+//
+//                if (cookie.getName().equals("accessToken"))
+//                    aCookie = cookie.getValue();
+//            }
+//        }
+        Cookie refreshToken = new Cookie("refreshToken", null);
+        refreshToken.setMaxAge(0);
+        refreshToken.setPath("/");
+        Cookie newAccessToken = new Cookie("accessToken", null);
+        newAccessToken.setMaxAge(0);
+        newAccessToken.setPath("/");
+
         Optional<User> byEmail = userRepository.findByEmail(name);
         String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
-        Cookie refreshToken = new Cookie("refreshToken", rToken);
-        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-        res.addCookie(refreshToken);
+        Cookie rfreshToken = new Cookie("refreshToken", rToken);
+        rfreshToken.setHttpOnly(true);
+        rfreshToken.setPath("/");
+        res.addCookie(rfreshToken);
+
+        Cookie AccessToken = new Cookie("accessToken", aToken);
+        AccessToken.setHttpOnly(true);
+        AccessToken.setPath("/");
+        res.addCookie(AccessToken);
+
 
 
         return ResponseEntity.ok(new TokenLoginVTAO(true, aToken, byEmail.get()));
@@ -299,17 +325,19 @@ private final JwtTokenProvider jwtTokenProvider;
         String retoken = req.getHeader("refreshToken");
 
         String rtCookie = "";
+        String atCookie="";
         Cookie[] cookies = req.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("refreshToken"))
                 rtCookie = cookie.getValue();
+            if (cookie.getName().equals("accessToken"))
+                atCookie = cookie.getValue();
         }
-        System.out.println("retoken = " + rtCookie);
-        System.out.println("accessToken = " + accessToken);
-        UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(accessToken, rtCookie);
+
+        UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
-            return ResponseEntity.badRequest().body(new TFMessageDto(false, "로그인실패"));
+            return ResponseEntity.badRequest().body(new TFMessageDto(false, "재발급 실패"));
         }
 
         //
@@ -322,12 +350,20 @@ private final JwtTokenProvider jwtTokenProvider;
         Cookie refreshToken = new Cookie("refreshToken", null);
         refreshToken.setMaxAge(0);
         refreshToken.setPath("/");
+        Cookie newAccessToken = new Cookie("accessToken", null);
+        newAccessToken.setMaxAge(0);
+        newAccessToken.setPath("/");
 
         //새로운쿡히
         refreshToken = new Cookie("refreshToken", rToken);
-
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
+
+        newAccessToken = new Cookie("accessToken", rToken);
+        newAccessToken.setHttpOnly(true);
+        newAccessToken.setPath("/");
+
+
 
         System.out.println(" =발송완료 ");
         /////
