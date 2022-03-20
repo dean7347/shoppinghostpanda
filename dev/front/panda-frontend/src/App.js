@@ -10,6 +10,7 @@ import Loader from "./components/ekan/UI/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { loginCheck } from "./store/actions/authActions";
 import AdminIndex from "./components/ekan/pages/mypage/admin/AdminIndex";
+import {useAuthStore} from "./store/authHooks";
 
 const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const WritePage = React.lazy(() => import("./pages/WritePage"));
@@ -48,8 +49,10 @@ const FindIdPage = React.lazy(() => import("./pages/FindIdPage"));
 const App = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.page);
+  const reIssue = useAuthStore(state => state.reIssue)
 
   useEffect(() => {
+    reIssue()
     dispatch(loginCheck());
   }, [dispatch]);
 
