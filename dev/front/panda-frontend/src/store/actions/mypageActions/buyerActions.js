@@ -3,10 +3,9 @@ import {
   FETCH_BUYER_SITUATION,
   FETCH_BUYER_SITUATION_LIST,
   FETCH_CANCEL_SITUATION_DETAIL,
-  FETCH_CANCEL_SITUATION_LIST
-
+  FETCH_CANCEL_SITUATION_LIST,
 } from "../../types";
-import axios from "axios";
+import axios from "../../../api/axiosDefaults";
 import { setError } from "../pageActions";
 // 대쉬보드
 export const fetchDashBoard = () => {
@@ -99,7 +98,7 @@ export const fetchCancelSituationWithPage = (size, page) => {
   return async (dispatch) => {
     try {
       const res = await axios.get(
-          `/api/cancelsituation?size=${size}&page=${page}&sord=id,DESC`
+        `/api/cancelsituation?size=${size}&page=${page}&sord=id,DESC`
       );
 
       if (res.data) {

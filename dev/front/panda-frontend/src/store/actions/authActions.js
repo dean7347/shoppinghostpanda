@@ -1,5 +1,5 @@
 import { LOGIN_CHECK, SET_USER, SIGN_OUT } from "../types";
-import axios from "axios";
+import axios from "../../api/axiosDefaults";
 import { setError, setLoading } from "./pageActions";
 import { getCookie, removeCookie, setCookie } from "../Cookie";
 

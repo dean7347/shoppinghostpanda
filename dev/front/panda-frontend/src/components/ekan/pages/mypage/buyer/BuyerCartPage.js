@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../../../../api/axiosDefaults";
 import UserCardBlock from "../../../../common/CartPage/Sections/UserCardBlock";
 import "./buyerCartPage.css";
 import Button from "../../../UI/Button";

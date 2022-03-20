@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import "./UserCardBlock.css";
 import { Button, Checkbox, Divider, Modal, Row, Col } from "antd";
-import axios from "../../../../../node_modules/axios/index";
+import axios from "../../../../api/axiosDefaults";
 import ProductInfo from "../../../../components/sections/ProductInfoFloat";
 import Button2 from "react-bootstrap/Button";
 import { Link } from "react-router-dom";

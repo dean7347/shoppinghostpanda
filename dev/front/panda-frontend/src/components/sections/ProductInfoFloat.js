@@ -16,7 +16,7 @@ import {
 } from "antd";
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
-import axios from "../../../node_modules/axios/index";
+import axios from "../../api/axiosDefaults";
 const { SubMenu } = Menu;
 
 function ProductInfoFlot(props) {

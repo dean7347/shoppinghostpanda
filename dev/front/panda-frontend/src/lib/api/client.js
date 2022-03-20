@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../api/axiosDefaults";
 
 // axios 인스턴스로 나중에 API 클라이언트에 공통된 설정을 쉽게 넣어줄 수 있따
 //인스턴스를 만들지 않아도 되지만  만들지 않으면

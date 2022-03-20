@@ -27,8 +27,7 @@ import {
   isMobile,
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
-import axios from "../../../../../node_modules/axios/index";
-
+import axios from "../../../../api/axiosDefaults";
 function CardInListVshop(props) {
   console.log("카인리");
   console.log(props);

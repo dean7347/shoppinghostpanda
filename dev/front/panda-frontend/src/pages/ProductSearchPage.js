@@ -6,7 +6,7 @@ import React, {
   useSelector,
 } from "react";
 import HeaderContainer from "../containers/common/HeaderContainer";
-import axios from "axios";
+import axios from "../api/axiosDefaults";
 import { Col, Card, Row, Carousel } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ImageSlider from "../components/common/ImageSlider";

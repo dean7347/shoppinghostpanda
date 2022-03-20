@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../node_modules/axios/index";
+import axios from "../api/axiosDefaults";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import UserCardBlock from "../components/common/CartPage/Sections/UserCardBlock";
 import { propTypes } from "../../node_modules/react-bootstrap/esm/Image";

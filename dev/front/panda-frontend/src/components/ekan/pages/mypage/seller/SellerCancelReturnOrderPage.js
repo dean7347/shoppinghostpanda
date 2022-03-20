@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "../../../UI/Button";
-import axios from "axios";
+import axios from "../../../../../api/axiosDefaults";
 import Modal from "../../../UI/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { dateFormatter } from "../../../../../store/actions/DateFormat";

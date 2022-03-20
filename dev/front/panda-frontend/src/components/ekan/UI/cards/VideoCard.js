@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Button from "../Button";
 import "./videocard.css";
-import axios from "axios";
-
+import axios from "../../../../api/axiosDefaults";
 function deleteBtnAction(e, id) {
   e.preventDefault();
   console.log("삭제하기");

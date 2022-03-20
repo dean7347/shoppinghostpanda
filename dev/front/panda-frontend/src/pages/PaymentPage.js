@@ -1,6 +1,6 @@
 import { useEffect, useState, useScript } from "react";
 import HeaderContainer from "../containers/common/HeaderContainer";
-import axios from "../../node_modules/axios/index";
+import axios from "../api/axiosDefaults";
 import {
   Divider,
   Form,

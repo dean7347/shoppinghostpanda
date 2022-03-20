@@ -17,8 +17,7 @@ import {
 import { DatabaseOutlined } from "@ant-design/icons";
 import produce from "immer";
 import { ReactTinyLink } from "react-tiny-link";
-
-import axios from "../../../node_modules/axios/index";
+import axios from "../../api/axiosDefaults";
 const { SubMenu } = Menu;
 
 function ProductInfo(props) {

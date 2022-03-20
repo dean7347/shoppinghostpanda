@@ -31,7 +31,7 @@ import {
   isMobile,
 } from "react-device-detect";
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
-import axios from "../../../../../node_modules/axios/index";
+import axios from "../../../../api/axiosDefaults";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInListVReady(props) {

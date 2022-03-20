@@ -6,7 +6,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosDefaults";
 import Paging from "../../components/common/Paging";
 import MyProductPage from "../../pages/MyProductPage";
 
@@ -82,7 +82,7 @@ const AdminShop = () => {
       <tbody>
         {uosd &&
           uosd.map((uo, index) => {
-            console.log(uo)
+            console.log(uo);
             return (
               <>
                 <td>{uo.userOrderId}</td>

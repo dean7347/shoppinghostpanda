@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Switch, Collapse } from "antd";
 import styled from "styled-components";
-import axios from "../../node_modules/axios/index";
+import axios from "../api/axiosDefaults";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import queryString from "query-string";
 const RegisterPageV2 = ({ history }) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../../UI/Button";
-import axios from "axios";
+import axios from "../../../../../api/axiosDefaults";
 import { setError } from "../../../../../store/actions/pageActions";
 import {
   fetchSituationList,

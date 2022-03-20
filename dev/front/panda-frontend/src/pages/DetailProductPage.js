@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import axios from "axios";
+import axios from "../api/axiosDefaults";
 import HeaderContainer from "../containers/common/HeaderContainer";
 import Footer from "../components/common/Footer";
 import { Form, Input, Button } from "antd";

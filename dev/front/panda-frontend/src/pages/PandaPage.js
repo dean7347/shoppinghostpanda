@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import HeaderContainer from "../containers/common/HeaderContainer";
-import axios from "axios";
+import axios from "../api/axiosDefaults";
 import PandaRegFormContainer from "../containers/panda/PandaRegFormContainer";
 
 const PandaPage = () => {

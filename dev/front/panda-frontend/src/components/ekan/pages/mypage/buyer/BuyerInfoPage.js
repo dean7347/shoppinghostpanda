@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Badge from "../../../UI/badge/Badge";
 import { Divider } from "@mui/material";
 import Button from "../../../UI/Button";
-import axios from "../../../../../../node_modules/axios/index";
+import axios from "../../../../../api/axiosDefaults";
 import { Input, Form, Space, InputNumber } from "antd";
 const BuyerInfoPage = () => {
   const [loader, SetLoader] = useState(0);

@@ -5,8 +5,7 @@ import {
   useGetAdminPandaSettlementCompleteList,
   useGetAdminPandaSettlementList,
 } from "./adminPageHooks";
-import axios from "axios";
-
+import axios from "../../axiosDefaults";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);

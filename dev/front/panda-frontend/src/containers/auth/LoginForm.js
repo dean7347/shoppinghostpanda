@@ -4,7 +4,7 @@ import { changeField, initializeForm, login } from "../../modules/auth";
 import AuthForm from "../../components/auth/AuthForm";
 import { withRouter } from "react-router-dom";
 import { check } from "../../modules/user";
-import axios from "../../../node_modules/axios/index";
+import axios from "../../api/axiosDefaults";
 
 const LoginForm = ({ history }) => {
   const [error, setError] = useState(null);

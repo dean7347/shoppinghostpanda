@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Switch, Collapse } from "antd";
 import styled from "styled-components";
-import axios from "../../../node_modules/axios/index";
+import axios from "../../api/axiosDefaults";
 
 const ShopRegFormContainer = ({ history }) => {
   const ErrorMessage = styled.div`

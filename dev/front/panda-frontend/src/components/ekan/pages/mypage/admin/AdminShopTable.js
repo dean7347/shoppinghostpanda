@@ -5,8 +5,7 @@ import {
   useGetAdminShopSettlementCompleteList,
   useGetAdminShopSettlementList,
 } from "../../../../../api/queryHooks/mypageHooks/adminPageHooks";
-import axios from "axios";
-
+import axios from "../../../../../api/axiosDefaults";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);

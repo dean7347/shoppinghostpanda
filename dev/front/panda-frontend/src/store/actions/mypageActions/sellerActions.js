@@ -2,7 +2,7 @@ import {
   FETCH_SELLER_DASHBOARD,
   FETCH_SELLER_SETTLEMENT_LIST,
 } from "../../types";
-import axios from "axios";
+import axios from "../../../api/axiosDefaults";
 import { setError } from "../pageActions";
 
 export const fetchSellerDashboard = (year, onError) => {

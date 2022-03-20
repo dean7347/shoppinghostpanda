@@ -18,7 +18,7 @@ import "bulma/css/bulma.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/theme.css";
 import "./assets/css/index.css";
-import axios from "axios";
+import axios from "./api/axiosDefaults";
 import { getCookie, removeCookie, setCookie } from "./store/Cookie";
 import { QueryClient, QueryClientProvider } from "react-query";
 

@@ -7,7 +7,7 @@ import {
 import "./TodoListItem.scss";
 import cn from "classnames";
 import { Button, Modal } from "antd";
-import axios from "../../../../node_modules/axios/index";
+import axios from "../../../api/axiosDefaults";
 import TodoInsert from "./EditInsert";
 const EditTodoListItem = ({ Option, onRemove }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Dropzone from "react-dropzone";
 import Icon from "@ant-design/icons";
-import axios from "axios";
-
+import axios from "../../api/axiosDefaults";
 function FileEdit(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);

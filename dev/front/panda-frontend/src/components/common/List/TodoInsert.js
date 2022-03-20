@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { MdAdd } from "react-icons/md";
 import "./TodoInsert.scss";
-import axios from "../../../../node_modules/axios/index";
+import axios from "../../../api/axiosDefaults";
 const TodoInsert = ({ onInsert }) => {
   const [inputs, setInputs] = useState({
     optionName: "",
