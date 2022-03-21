@@ -321,8 +321,6 @@ private final JwtTokenProvider jwtTokenProvider;
     @PostMapping("/api/reissuev2")
     public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")
                                                    HttpServletRequest req, HttpServletResponse res) {
-        String accessToken = req.getHeader("accessToken");
-        String retoken = req.getHeader("refreshToken");
 
         String rtCookie = "";
         String atCookie="";
@@ -334,6 +332,7 @@ private final JwtTokenProvider jwtTokenProvider;
             if (cookie.getName().equals("accessToken"))
                 atCookie = cookie.getValue();
         }
+        System.out.println("기존쿡히"+atCookie);
 
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
@@ -362,8 +361,10 @@ private final JwtTokenProvider jwtTokenProvider;
         newAccessToken = new Cookie("accessToken", rToken);
         newAccessToken.setHttpOnly(true);
         newAccessToken.setPath("/");
+        res.addCookie(refreshToken);
+        res.addCookie(newAccessToken);
 
-
+        System.out.println("변경쿡히"+newAccessToken.getValue());
 
         System.out.println(" =발송완료 ");
         /////

@@ -35,13 +35,15 @@ export const onTokenRefresh = async () => {
   try {
     console.log("리프래시중임");
     const { data } = await axios.post("/api/reissuev2");
+    console.log("??", data);
     if (data) {
+      console.log("받아오기 성공");
       useAuthStore.setState({
         user: data,
       });
     }
   } catch (err) {
-    console.error(err);
+    console.error("리프레시에러", err);
     // 실패 처리
   }
 };
