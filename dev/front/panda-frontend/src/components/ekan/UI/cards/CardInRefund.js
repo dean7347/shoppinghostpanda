@@ -51,7 +51,7 @@ function CardInRefund(props) {
         console.log(response.data);
       }
     });
-  }, [props]);
+  }, []);
   const confirmReqRefund = (reqnum) => {
     console.log("환불신청확인");
     console.log(props);
@@ -83,7 +83,7 @@ function CardInRefund(props) {
           <div>환불신청사유</div>
           {refundData && <div>{refundData.refundMessage}</div>}
         </div>
-        {console.log(refundData)}
+        {console.log("리판드데이터", refundData)}
         {refundData &&
           refundData.refundListList.map((rr, idx) => {
             return (

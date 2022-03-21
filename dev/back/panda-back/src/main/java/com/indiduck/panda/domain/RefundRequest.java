@@ -20,10 +20,9 @@ public class RefundRequest {
     @Lob
     private String refundMessage;
 
-    @OneToMany(mappedBy = "refundRequest")
-    private List<OrderDetail> orderDetails=new ArrayList<>();
 
-    @OneToOne(mappedBy = "refundRequest")
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserOrder userOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,10 +51,8 @@ public class RefundRequest {
         rr.createdAt=LocalDateTime.now();
         rr.refundMessage=message;
         rr.shop=userOrder.getShop();
-        rr.setOrderStatus(OrderStatus.환불대기);
         rr.userOrder=userOrder;
         rr.refundMoney=0;
-        System.out.println("rr = " + rr.userOrder.getId());
 
         return rr;
 
@@ -65,18 +62,7 @@ public class RefundRequest {
 
     }
     //비즈니스 메서드
-    public void addOrderDetail(OrderDetail orderDetail)
-    {
-        this.orderDetails.add(orderDetail);
-        this.setOrderStatus(OrderStatus.환불대기);
-        orderDetail.setRefundRequest(this);
-    }
-    public void setOrderStatus(OrderStatus os)
-    {
-        for (OrderDetail orderDetail : orderDetails) {
-            orderDetail.setOrderStatus(os);
-        }
-    }
+
     public void setUserOrder(UserOrder uo)
     {
         this.userOrder=uo;

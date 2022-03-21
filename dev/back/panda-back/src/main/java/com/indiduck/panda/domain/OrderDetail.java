@@ -266,16 +266,16 @@ public class OrderDetail {
         this.reqRefund=num;
         this.orderStatus=OrderStatus.환불대기;
     }
-    public void confrimRefund(int number)
-    {
-        this.confirmRefund=number;
-        if(panda!=null)
-        {
-            int mo = (int) Math.floor(this.IndividualPrice*(this.productCount-this.confirmRefund));
-            this.pandaMoney= (int) Math.floor(mo*0.12);
-        }
-        this.orderStatus=OrderStatus.환불완료;
-    }
+//    public void confrimRefund(int number)
+//    {
+//        this.confirmRefund=number;
+//        if(panda!=null)
+//        {
+//            int mo = (int) Math.floor(this.IndividualPrice*(this.productCount-this.confirmRefund));
+//            this.pandaMoney= (int) Math.floor(mo*0.12);
+//        }
+//        this.orderStatus=OrderStatus.환불완료;
+//    }
     public void setEnrollRefundPanda(boolean tf,SettlePanda panda)
     {
         this.enrollSettle=tf;
@@ -312,6 +312,27 @@ public class OrderDetail {
 
         }
         System.out.println("productCount = " + productCount);
+
+    }
+
+
+    public void partialRefund(int count)
+    {
+        this.confirmRefund=count;
+        this.productCount-=confirmRefund;
+        if(this.panda!=null)
+        {
+            this.userOrder.refundAndCancelMinusPrice(true,this.IndividualPrice,count);
+            this.totalPrice=this.IndividualPrice*productCount;
+
+        }else
+        {
+            this.userOrder.refundAndCancelMinusPrice(false,this.IndividualPrice,count);
+            this.totalPrice=(int) Math.round(this.IndividualPrice*productCount*0.95);
+
+
+        }
+        this.orderStatus=OrderStatus.환불완료;
 
     }
 

@@ -3,10 +3,7 @@ package com.indiduck.panda.controller;
 
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Service.RefundRequestService;
-import com.indiduck.panda.domain.OrderDetail;
-import com.indiduck.panda.domain.Panda;
-import com.indiduck.panda.domain.RefundRequest;
-import com.indiduck.panda.domain.UserOrder;
+import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -66,23 +63,23 @@ public class RefundRequestController {
         return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
     }
 
-    @RequestMapping(value = "/api/refundlist", method = RequestMethod.POST)
-    public ResponseEntity<?> refundList(@CurrentSecurityContext(expression = "authentication")
-                                                          Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
-        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
-
-        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
-
-
-        if(b)
-        {
-
-            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
-
-        }
-        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
-
-    }
+//    @RequestMapping(value = "/api/refundlist", method = RequestMethod.POST)
+//    public ResponseEntity<?> refundList(@CurrentSecurityContext(expression = "authentication")
+//                                                          Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+//        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+//
+//        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
+//
+//
+//        if(b)
+//        {
+//
+//            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+//
+//        }
+//        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+//
+//    }
 
     @Data
     private static class UserOrderId {
@@ -117,12 +114,15 @@ public class RefundRequestController {
             this.shipPrice = uo.getShipPrice();
             this.allRefundMoney=uo.getFinalRefundMoney();
             this.allPriceMinusShipPrice = uo.getAmount();
-            System.out.println("refundRequest.getOrderDetails() = " + refundRequest.getOrderDetails());
-            for (OrderDetail orderDetail : refundRequest.getOrderDetails()) {
-                this.refundListList.add(new RefundList(orderDetail.getId(),orderDetail.getProducts().getProductName(),
-                        orderDetail.getProductCount(),orderDetail.getReqRefund(),orderDetail.getPanda(),
-                        orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName(),refundRequest.getRefundMoney(),orderDetail.getConfirmRefund()));
+            for (OrderDetail orderDetail : uo.getDetail()) {
+                if(orderDetail.getOrderStatus()== OrderStatus.환불대기)
+                {
+                    this.refundListList.add(new RefundList(orderDetail.getId(),orderDetail.getProducts().getProductName(),
+                            orderDetail.getProductCount(),orderDetail.getReqRefund(),orderDetail.getPanda(),
+                            orderDetail.getTotalPrice(),orderDetail.getIndividualPrice(),orderDetail.getOptions().getOptionName(),refundRequest.getRefundMoney(),orderDetail.getConfirmRefund()));
+                }
             }
+
 
         }
     }

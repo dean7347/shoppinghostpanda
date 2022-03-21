@@ -37,9 +37,7 @@ public class RefundRequestService {
     public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails, String message, User user){
         System.out.println("orderDetails서비스꺼 = " + orderDetails);
         RefundRequest rr = RefundRequest.newRefundRequest(uo, message,user);
-        for (OrderDetail orderDetail : orderDetails) {
-            rr.addOrderDetail(orderDetail);
-        }
+
         refundRequestRepository.save(rr);
         uo.setRefund(rr);
 
@@ -49,13 +47,6 @@ public class RefundRequestService {
         return rr;
     }
 
-    public RefundRequest addRefundRequest(RefundRequest origin, List<OrderDetail> orderDetails, String message)
-    {
-        for (OrderDetail orderDetail : orderDetails) {
-             origin.addOrderDetail(orderDetail);
-        }
-        return origin;
-    }
 
 
 
@@ -145,7 +136,7 @@ public class RefundRequestService {
         for (RefundRequestController.RefundArray array : refundArray) {
             long key = array.getKey();
             Optional<OrderDetail> byId = orderDetailRepository.findById(key);
-            byId.get().confrimRefund(array.getRefundConfrimOrder());
+            byId.get().partialRefund(array.getRefundConfrimOrder());
         }
 
         long refundMoney = confirmRefundRequest.getRefundMoney();
@@ -197,8 +188,11 @@ public class RefundRequestService {
         } catch (Exception e)
         {
             System.out.println("환불요청 최종 실패 = " + e.getMessage());
-            return false;
+//            return false;
+        userOrder.confirmRefundMoney(refundMoney);
+            return true;
         }
+
 
 //        userOrder.getRefundRequest().setRefundMoney(refundMoney);
 //        userOrder.confirmRefundMoney(refundMoney);

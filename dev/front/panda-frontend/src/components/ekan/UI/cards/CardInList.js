@@ -136,6 +136,7 @@ function CardInList(props) {
   const renderRefund = () => {
     return (
       <>
+        {console.log("zz", refundData)}
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
           <h1>환불/교환신청내역</h1>
         </div>

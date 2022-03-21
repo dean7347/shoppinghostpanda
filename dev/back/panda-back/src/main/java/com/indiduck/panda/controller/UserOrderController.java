@@ -54,8 +54,6 @@ public class UserOrderController {
 
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
-        System.out.println("refundReq = " + refundReq);
-
         Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
         List<RefundList> refundList = refundReq.refundList;
         List<OrderDetail> orderDetails = new ArrayList<>();
@@ -64,14 +62,31 @@ public class UserOrderController {
             Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
             OrderDetail orderDetail = byId1.get();
             orderDetail.reqRefund(list.optionCount);
-
             orderDetails.add(orderDetail);
-            System.out.println("orderDetail추가완료 = " + orderDetail);
 
         }
-//        userOrderService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
+
+        //리펀드 리퀘스트 생성
         refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
-//        byId.get().refundOrder(refundReq.refundMessage);
+
+
+//        System.out.println("refundReq = " + refundReq);
+//
+//        Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
+//        List<RefundList> refundList = refundReq.refundList;
+//        List<OrderDetail> orderDetails = new ArrayList<>();
+//        for (RefundList list : refundList) {
+//            long optionId = list.optionId;
+//            Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+//            OrderDetail orderDetail = byId1.get();
+//            orderDetail.reqRefund(list.optionCount);
+//
+//            orderDetails.add(orderDetail);
+//            System.out.println("orderDetail추가완료 = " + orderDetail);
+//
+//        }
+////        userOrderService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
+////        byId.get().refundOrder(refundReq.refundMessage);
 
         return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
@@ -108,7 +123,7 @@ public class UserOrderController {
                     return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
                 } else {
-                    System.out.println(" 엘즈 " );
+                    System.out.println(" 엘즈 ");
                     return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 성공했으니 환불에 실패했습니다  고객센터로 문의주세요(필수사항)"));
 
                 }

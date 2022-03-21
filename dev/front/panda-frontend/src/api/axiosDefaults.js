@@ -38,11 +38,11 @@ axios.interceptors.response.use(
     if (status === 401) {
       // 추후에 401 필요하면 추가
     }
-    // if (status === 500) {
-    //   if (window.confirm("알수없는 오류가 발생했습니다 다시 로그인 해주세요")) {
-    //     window.location.replace("/signin");
-    //   }
-    // }
+    if (status === 404) {
+      alert(
+        "알수 없는 오류가 발생했습니다 해당 상황이 계속된다면 문의해 주세요"
+      );
+    }
     return Promise.reject(error);
   }
 );
