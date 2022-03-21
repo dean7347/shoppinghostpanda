@@ -21,6 +21,7 @@ import com.indiduck.panda.jwt.JwtTokenProvider;
 import com.indiduck.panda.lib.Helper;
 import com.indiduck.panda.util.ApiResponseMessage;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.Data;
@@ -309,17 +310,17 @@ private final JwtTokenProvider jwtTokenProvider;
     }
 
 
-    @PostMapping("/api/reissue")
-    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
-        // validation check
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
-        }
-        return userDetailsService.reissue(reissue);
-    }
+//    @PostMapping("/api/reissue")
+//    public ResponseEntity<?> reissue(@Validated UserRequestDto.Reissue reissue, Errors errors) {
+//        // validation check
+//        if (errors.hasErrors()) {
+//            return response.invalidFields(Helper.refineErrors(errors));
+//        }
+//        return userDetailsService.reissue(reissue);
+//    }
 
     @PostMapping("/api/reissuev2")
-    public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")Authentication authentication,
                                                    HttpServletRequest req, HttpServletResponse res) {
 
         String rtCookie = "";
@@ -358,18 +359,20 @@ private final JwtTokenProvider jwtTokenProvider;
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
 
-        newAccessToken = new Cookie("accessToken", rToken);
+        newAccessToken = new Cookie("accessToken", aToken);
         newAccessToken.setHttpOnly(true);
         newAccessToken.setPath("/");
         res.addCookie(refreshToken);
         res.addCookie(newAccessToken);
-
+        System.out.println("가야대는쿡히 = " + tokenInfo.getAccessToken());
         System.out.println("변경쿡히"+newAccessToken.getValue());
 
         System.out.println(" =발송완료 ");
         /////
         String name = jwtTokenProvider.getAuthentication(aToken).getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
+        Authentication auth = jwtTokenProvider.getAuthentication(aToken);
+        System.out.println("auth = " + auth);
 
 
         return ResponseEntity.ok(new TokenLoginVTAO(true, aToken, byEmail.get()));

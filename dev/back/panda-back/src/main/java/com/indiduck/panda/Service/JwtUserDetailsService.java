@@ -493,7 +493,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (!jwtTokenProvider.validateToken(rt)) {
             return null;
         }
-
+        System.out.println("token = " + token);
         // 2. Access Token 에서 User email 을 가져옵니다.
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
 
