@@ -127,76 +127,76 @@ public class RefundRequestService {
         return true;
     }
 
-    public boolean confrimRefund(RefundRequestController.ConfirmRefundRequest confirmRefundRequest){
-        List<RefundRequestController.RefundArray> refundArray = confirmRefundRequest.getRefundArray();
-        String test_api_key = apiKey.getRESTAPIKEY();
-        String test_api_secret = apiKey.getRESTAPISECRET();
-        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
-
-        for (RefundRequestController.RefundArray array : refundArray) {
-            long key = array.getKey();
-            Optional<OrderDetail> byId = orderDetailRepository.findById(key);
-            byId.get().partialRefund(array.getRefundConfrimOrder());
-        }
-
-        long refundMoney = confirmRefundRequest.getRefundMoney();
-        long userOrderId = confirmRefundRequest.getUserOrderId();
-        Optional<UserOrder> byId = userOrderRepository.findById(userOrderId);
-        UserOrder userOrder = byId.get();
-
-        List<OrderDetail> detail = userOrder.getDetail();
-        for (OrderDetail orderDetail : detail) {
-            orderDetail.refundCount();
-        }
-
-        //환불
-        String test_already_cancelled_imp_uid = byId.get().getMid();
-        CancelData cancel_data = new CancelData(test_already_cancelled_imp_uid, true, BigDecimal.valueOf(refundMoney)); //imp_uid를 통한 500원 부분취소
-
-
-        try {
-            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
-            System.out.println("payment_response = " + payment_response.getResponse());
-            Payment response = payment_response.getResponse();// 이미 취소된 거래는 response가 null이다
-            System.out.println("페이먼트메시지"+payment_response.getMessage());
-            if(response==null)
-            {
-//                return false;
-                userOrder.getRefundRequest().setRefundMoney(refundMoney);
-                userOrder.confirmRefundMoney(refundMoney);
-                return true;
-
-            }else
-            {
-                userOrder.setReceiptUrl(response.getReceiptUrl());
-
-            }
-        } catch (IamportResponseException e) {
-            System.out.println(e.getMessage());
-
-            switch(e.getHttpStatusCode()) {
-                case 401 :
-                    //TODO
-                    break;
-                case 500 :
-                    //TODO
-                    break;
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception e)
-        {
-            System.out.println("환불요청 최종 실패 = " + e.getMessage());
-//            return false;
-        userOrder.confirmRefundMoney(refundMoney);
-            return true;
-        }
-
-
-//        userOrder.getRefundRequest().setRefundMoney(refundMoney);
+//    public boolean confrimRefund(RefundRequestController.ConfirmRefundRequest confirmRefundRequest){
+//        List<RefundRequestController.RefundArray> refundArray = confirmRefundRequest.getRefundArray();
+//        String test_api_key = apiKey.getRESTAPIKEY();
+//        String test_api_secret = apiKey.getRESTAPISECRET();
+//        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+//
+//        for (RefundRequestController.RefundArray array : refundArray) {
+//            long key = array.getKey();
+//            Optional<OrderDetail> byId = orderDetailRepository.findById(key);
+//            byId.get().partialRefund(array.getRefundConfrimOrder());
+//        }
+//
+//        long refundMoney = confirmRefundRequest.getRefundMoney();
+//        long userOrderId = confirmRefundRequest.getUserOrderId();
+//        Optional<UserOrder> byId = userOrderRepository.findById(userOrderId);
+//        UserOrder userOrder = byId.get();
+//
+//        List<OrderDetail> detail = userOrder.getDetail();
+//        for (OrderDetail orderDetail : detail) {
+//            orderDetail.refundCount();
+//        }
+//
+//        //환불
+//        String test_already_cancelled_imp_uid = byId.get().getMid();
+//        CancelData cancel_data = new CancelData(test_already_cancelled_imp_uid, true, BigDecimal.valueOf(refundMoney)); //imp_uid를 통한 500원 부분취소
+//
+//
+//        try {
+//            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+//            System.out.println("payment_response = " + payment_response.getResponse());
+//            Payment response = payment_response.getResponse();// 이미 취소된 거래는 response가 null이다
+//            System.out.println("페이먼트메시지"+payment_response.getMessage());
+//            if(response==null)
+//            {
+////                return false;
+//                userOrder.getRefundRequest().setRefundMoney(refundMoney);
+//                userOrder.confirmRefundMoney(refundMoney);
+//                return true;
+//
+//            }else
+//            {
+//                userOrder.setReceiptUrl(response.getReceiptUrl());
+//
+//            }
+//        } catch (IamportResponseException e) {
+//            System.out.println(e.getMessage());
+//
+//            switch(e.getHttpStatusCode()) {
+//                case 401 :
+//                    //TODO
+//                    break;
+//                case 500 :
+//                    //TODO
+//                    break;
+//            }
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (Exception e)
+//        {
+//            System.out.println("환불요청 최종 실패 = " + e.getMessage());
+////            return false;
 //        userOrder.confirmRefundMoney(refundMoney);
-
-        return true;
-    }
+//            return true;
+//        }
+//
+//
+////        userOrder.getRefundRequest().setRefundMoney(refundMoney);
+////        userOrder.confirmRefundMoney(refundMoney);
+//
+//        return true;
+//    }
 }
