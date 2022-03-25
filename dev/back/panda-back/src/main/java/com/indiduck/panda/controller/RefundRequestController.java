@@ -47,21 +47,45 @@ public class RefundRequestController {
 
     }
 
+    //교환승인
+    @RequestMapping(value = "/api/confirmtrade", method = RequestMethod.POST)
+    public ResponseEntity<?> confirmTrade(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
 
-//    @RequestMapping(value = "/api/confirmRefundRequest", method = RequestMethod.POST)
-//    public ResponseEntity<?> confirmRefundRequest(@CurrentSecurityContext(expression = "authentication")
-//                                                       Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
-//        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
-//
-//        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
-//
-//        if(b)
-//        {
-//            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
-//
-//        }
-//        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
-//    }
+
+
+        //기준일 뒤로 미루고
+        boolean b = refundRequestService.confirmTrade(confirmRefundRequest);
+
+        if(b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+        }
+
+
+        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+    }
+
+
+    @RequestMapping(value = "/api/confirmRefundRequest", method = RequestMethod.POST)
+    public ResponseEntity<?> confirmRefundRequest(@CurrentSecurityContext(expression = "authentication")
+                                                       Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+
+
+
+        //기준일 뒤로 미루고
+        boolean b = refundRequestService.confrimRefund(confirmRefundRequest);
+
+        if(b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+        }
+        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+    }
 
 //    @RequestMapping(value = "/api/refundlist", method = RequestMethod.POST)
 //    public ResponseEntity<?> refundList(@CurrentSecurityContext(expression = "authentication")
@@ -170,6 +194,7 @@ public class RefundRequestController {
 
     @Data
     public static class ConfirmRefundRequest {
+        long  refundId;
         long userOrderId;
         long refundMoney;
         List<RefundArray> refundArray;

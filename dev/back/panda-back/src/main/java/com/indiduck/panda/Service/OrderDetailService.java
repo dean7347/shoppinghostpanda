@@ -210,6 +210,7 @@ public class OrderDetailService {
         od.partialCancel(cancel,message);
     }
 
+    //부분취소 환불
     public boolean refundOrder(long uo,int money)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(uo);
@@ -218,7 +219,6 @@ public class OrderDetailService {
         String test_api_secret = apiKey.getRESTAPISECRET();
         IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
         CancelData cancel_data = new CancelData(byId.get().getMid(), true, BigDecimal.valueOf(money)); //imp_uid를 통한 전액취소
-        userOrder.setCancelMoney(money);
 
 
         try {
@@ -252,6 +252,7 @@ public class OrderDetailService {
             System.out.println(" 부분환불이 불가능합니다 ");
             return false;
         }
+        userOrder.setCancelMoney(money);
 
         return true;
     }

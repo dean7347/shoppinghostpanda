@@ -83,18 +83,46 @@ function CardInRefundFinish(props) {
     });
   }, [props]);
   const confirmTrade = () => {
-    alert("미작성");
+    console.log("교환학인");
+    // console.log(finalRefundM);
+    // if (expectMoney < finalRefundM) {
+    //   alert("전체 상품금액보다 큰 금액은 환불할 수 없습니다");
+    //   return;
+    // }
+    if (reFundList === null) {
+      alert(
+        "목록이 비었다면 교환이 진행되지 않습니다 교환처리 버튼을 이용해주세요"
+      );
+      return;
+    }
+
+    const body = {
+      userOrderId: props.situationDetail.detailId,
+      refundId: refundData.requestId,
+      refundArray: reFundList,
+      refundMoney: expectMoney,
+    };
+    console.log(body);
+    axios.post("/api/confirmtrade", body).then((response) => {
+      if (response.data.success) {
+        alert("교환요청처리에 성공했습니다");
+        window.location.reload();
+      } else {
+        alert("교환요청처리에 실패했습니다");
+      }
+    });
   };
   const confirmReqRefund = (reqnum) => {
     console.log("환불신청확인");
+    console.log(refundData);
     console.log(reFundList);
     console.log(expectMoney);
-    console.log(finalRefundM);
-    if (expectMoney < finalRefundM) {
-      alert("전체 상품금액보다 큰 금액은 환불할 수 없습니다");
-      return;
-    }
-    if (reFundList === null || finalRefundM === 0) {
+    // console.log(finalRefundM);
+    // if (expectMoney < finalRefundM) {
+    //   alert("전체 상품금액보다 큰 금액은 환불할 수 없습니다");
+    //   return;
+    // }
+    if (reFundList === null || expectMoney === 0) {
       alert(
         "목록이 비었거나 금액이 0원 이라면환불이 진행되지 않습니다 교환처리 버튼을 이용해주세요"
       );
@@ -103,8 +131,9 @@ function CardInRefundFinish(props) {
 
     const body = {
       userOrderId: props.situationDetail.detailId,
+      refundId: refundData.requestId,
       refundArray: reFundList,
-      refundMoney: finalRefundM,
+      refundMoney: expectMoney,
     };
     console.log(body);
     axios.post("/api/confirmRefundRequest", body).then((response) => {
@@ -163,7 +192,8 @@ function CardInRefundFinish(props) {
                       }}
                     >
                       <div>
-                        주문갯수: {rr.orderCount} | 환불신청 :{rr.refundCount}
+                        주문갯수: {rr.orderCount} | 환불/교환 신청 :
+                        {rr.refundCount}
                       </div>
                     </Col>
                     <Col
@@ -173,7 +203,7 @@ function CardInRefundFinish(props) {
                       }}
                     >
                       <div>
-                        최종환불갯수 :
+                        최종환불/교환 갯수 :
                         <InputNumber
                           onChange={onChange(rr.orderDetailId)}
                           max={rr.orderCount}
@@ -192,10 +222,10 @@ function CardInRefundFinish(props) {
             선택상품금액:
             {expectMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </Col>
-          <Col span={24}>
+          {/* <Col span={24}>
             환불금액:
             <InputNumber onChange={onChangeFinal} min={0} max={expectMoney} />
-          </Col>
+          </Col> */}
           <br />
           <br />
 

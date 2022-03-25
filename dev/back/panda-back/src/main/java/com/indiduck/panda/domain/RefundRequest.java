@@ -71,6 +71,18 @@ public class RefundRequest {
     {
         this.refundMoney=money;
     }
+    public void confirmRefund(long money)
+    {
+        this.refundMoney=money;
+        this.od=OrderStatus.환불완료;
+        this.finishAt=LocalDateTime.now();
+    }
+    public void confrimTrade()
+    {
+        this.finishAt=LocalDateTime.now();
+        this.od=OrderStatus.교환완료;
+
+    }
 
 
 

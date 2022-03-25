@@ -37,6 +37,8 @@ public class OrderDetail {
     private int reqRefund=0;
     //최종 환불완료된 갯수
     private int confirmRefund=0;
+    //최종 교환된 갯수
+    private int confirmTrade=0;
 
     //판매자가 취소한 갯수수
    private int reqCancel=0;
@@ -314,13 +316,18 @@ public class OrderDetail {
         System.out.println("productCount = " + productCount);
 
     }
+    public void tradeConfirm(int count)
+    {
+        this.confirmTrade+=count;
+    }
 
 
     public void partialRefund(int count)
     {
-        this.confirmRefund=count;
+
+        this.confirmRefund+=count;
         this.productCount-=confirmRefund;
-        if(this.panda!=null)
+        if(this.panda==null)
         {
             this.userOrder.refundAndCancelMinusPrice(true,this.IndividualPrice,count);
             this.totalPrice=this.IndividualPrice*productCount;

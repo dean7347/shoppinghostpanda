@@ -217,6 +217,7 @@ public class UserOrder {
     {
 
     }
+    //구매확정기간 연장
     public boolean extendConfirm()
     {
         if(this.canExtend<=0 && this.orderStatus!=OrderStatus.발송중)
@@ -374,10 +375,11 @@ public class UserOrder {
         this.settleShop=shop;
     }
 
+    //환불이후
     public void confirmRefundMoney(long money)
     {
         this.finalRefundMoney=(int) money;
-        this.orderStatus=OrderStatus.환불완료;
+        this.orderStatus=OrderStatus.발송중;
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 // 회원 탈퇴/ 기록 삭제시시 바꿔줄것
@@ -388,6 +390,12 @@ public class UserOrder {
         this.receiverZipCode="조회 불가능한 회원입니다";
         this.reveiverName="조회 불가능한 회원입니다";
 
+    }
+    //교환후
+    public void confirmUserOrderTrade()
+    {
+        this.orderStatus=OrderStatus.발송중;
+        this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 
     //환불  취소시 전체 금액에서 빼주는 로직

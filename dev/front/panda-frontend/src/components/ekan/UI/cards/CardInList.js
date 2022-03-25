@@ -404,7 +404,7 @@ function CardInList(props) {
                 isdiscount={op.discount}
                 inherenceKey={op.odid}
                 ispanda={op.discount}
-                canrefund={op.optionCount - op.completeRefund}
+                canrefund={op.optionCount}
                 key={op.odid}
               >
                 {" "}
