@@ -270,6 +270,23 @@ function CardInRefundFinish(props) {
               교환처리완료
             </Button>
           </Col>
+
+          <Col span={24}>
+            <br />
+            <div>교환처리 안내사항</div>
+            <br />
+            교환 처리는 금액의 환불없이 상품만이 오고 갔을 경우이며 금액의
+            차감이 없습니다 교환,반품비는 소비자와 협의후 다른 방법으로
+            청구받으시기 바랍니다.
+            <Button
+              onClick={() => {
+                confirmTrade(props.detailId);
+              }}
+              style={{ width: "100%" }}
+            >
+              환불거절
+            </Button>
+          </Col>
         </Row>
       </>
     );
