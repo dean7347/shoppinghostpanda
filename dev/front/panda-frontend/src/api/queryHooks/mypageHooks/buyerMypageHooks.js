@@ -1,32 +1,37 @@
-import { useQuery } from "react-query";
-import axios from "../../axiosDefaults";
+import {useQuery} from "react-query";
+import axios from '../../axiosDefaults';
 
-export const BuyerEnum = {
-  RecentSituation: "recentSituation",
-  RecentSituationDetail: "recentSituationDetail",
-  BuyerDashboard: "buyerDashboard",
-};
+export const BuyerKeysEnum = {
+    RecentSituationList : 'recentSituationList',
+    RecentSituationDetail : 'recentSituationDetail',
+    BuyerDashboard : 'buyerDashboard',
+}
 
-export const useGetRecentSituation = () =>
-  useQuery(BuyerEnum.RecentSituation, () =>
-    axios.get("/api/recentsituation").then((res) => res.data)
-  );
+export const useGetRecentSituationList = (size, page) =>
+    useQuery(
+        [BuyerKeysEnum.RecentSituationList, page], async () => {
+            const res = await axios.get(`/api/recentsituation?size=${size}&page=${page}`)
+            return res.data
+        }, {
+            keepPreviousData: true
+        }
+    )
 
 export const useGetBuyerDashboard = () =>
-  useQuery(BuyerEnum.BuyerDashboard, () =>
-    axios.get("/api/dashboard").then((res) => res.data)
-  );
+    useQuery(
+        BuyerKeysEnum.BuyerDashboard, async () => {
+            const res = await axios.get('/api/dashboard')
+            return res.data
+        }
+    )
 
 export const useGetSituationDetail = (detailId) =>
-  useQuery(
-    [BuyerEnum.RecentSituationDetail, detailId],
-    () =>
-      axios
-        .post("/api/situationdetailv2", {
-          detailId: detailId,
+    useQuery(
+        [BuyerKeysEnum.RecentSituationDetail, detailId], async () => {
+            const res = await axios.post('/api/situationdetail', {
+                detailId: detailId
+            })
+            return res.data
+        }, {
+            enabled: !!detailId
         })
-        .then((res) => res.data),
-    {
-      enabled: !!detailId,
-    }
-  );
