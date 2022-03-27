@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { dashboardCard } from "./buyerTypes";
 import StatusCard from "../../../UI/cards/StatusCard";
 import MyPageTable from "../../../UI/table/MyPageTable";
@@ -8,12 +8,12 @@ import Modal from "../../../UI/modal/Modal";
 import { Link } from "react-router-dom";
 import Message from "../../../UI/Message";
 import {
-  useGetBuyerDashboard,
-  useGetRecentSituation,
+  useGetBuyerDashboard, useGetRecentSituationList,
   useGetSituationDetail,
 } from "../../../../../api/queryHooks/mypageHooks/buyerMypageHooks";
 import LoadingComponent from "../../../UI/LoadingComponent";
 import CardInList from "../../../UI/cards/CardInList";
+import {Pagination} from "@mui/material";
 
 const orderStatus = {
   결제완료: "primary",
@@ -32,14 +32,13 @@ const orderStatus = {
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const BuyerDashboard = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [cardItems, setCardItems] = useState(dashboardCard);
-  const { data: buyerSituationList, error: situationError } =
-    useGetRecentSituation();
-  const { data: buyerDashboard } = useGetBuyerDashboard();
-  const [detailId, setDetailId] = useState(0);
-  const { data: buyerSituationDetail, isFetching: detailFetching } =
-    useGetSituationDetail(detailId);
+  const [showModal, setShowModal] = useState(false)
+  const [cardItems, setCardItems] = useState(dashboardCard)
+  const [detailId, setDetailId] = useState(0)
+  const [page, setPage] = useState(0)
+  const {data: buyerDashboard} = useGetBuyerDashboard();
+  const {data: buyerSituationDetail, isFetching: detailFetching} = useGetSituationDetail(detailId)
+  const {data: buyerSituationList, error: situationError} = useGetRecentSituationList(5, page);
 
   useEffect(() => {
     let copy = [...cardItems];
@@ -52,10 +51,15 @@ const BuyerDashboard = () => {
     }
   }, [buyerDashboard]);
 
-  const handleClick = async (item) => {
-    await setDetailId(+item);
-    setShowModal(true);
-  };
+  const handleClick = useCallback(async (item) => {
+    await setDetailId(+item)
+    setShowModal(true)
+  },[detailId])
+
+  const handlePageChange = useCallback((e) => {
+    e.preventDefault()
+    setPage(+e.target.textContent - 1)
+  },[page])
 
   const renderBody = (item, index) => (
     <tr
@@ -138,6 +142,12 @@ const BuyerDashboard = () => {
                     renderBody={(item, index) => renderBodyMobile(item, index)}
                   />
                 ) : null}
+              </div>
+              <div className='card__footer'>
+                <Pagination count={buyerSituationList?.totalpage} sx={{maxWidth: 350}}
+                            className='mx-auto'
+                            onChange={handlePageChange}
+                />
               </div>
             </div>
           </div>
