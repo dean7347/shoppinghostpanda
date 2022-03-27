@@ -331,12 +331,12 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
             {
                 orderDetail.setOrderStatus(OrderStatus.구매확정);
-                orderDetail.setPaymentM(PaymentStatus.지급대기);
+                orderDetail.setPaymentM(PaymentStatus.지급예정);
 
             }
         }
         this.finishAt=LocalDateTime.now();
-        this.paymentStatus=PaymentStatus.지급대기;
+        this.paymentStatus=PaymentStatus.지급예정;
         this.settle();
         this.orderStatus= OrderStatus.구매확정;
     }
