@@ -67,7 +67,7 @@ public class DepositConfiguration {
         Map<String,Object> parameterValues = new HashMap<>();
         parameterValues.put("Estatus", false);
 //        parameterValues.put("od", OrderStatus.구매확정);
-        parameterValues.put("ps", PaymentStatus.지급예정);
+        parameterValues.put("ps", PaymentStatus.지급대기);
         return new JpaPagingItemReaderBuilder<Shop>()
                 .pageSize(10)
                 .parameterValues(parameterValues)

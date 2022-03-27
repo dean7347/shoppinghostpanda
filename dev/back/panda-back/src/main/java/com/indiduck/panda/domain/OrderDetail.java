@@ -101,7 +101,7 @@ public class OrderDetail {
         od.orderStatus = OrderStatus.결제대기;
         od.createdAt=LocalDateTime.now();
         od.setShop(product.getShop());
-        od.paymentStatus=PaymentStatus.지급대기;
+        od.paymentStatus=PaymentStatus.지급예정;
         int mo = (int) Math.floor(od.totalPrice*0.95);
         od.pandaMoney= (int) Math.floor(mo*0.12);
         od.reqRefund=0;
