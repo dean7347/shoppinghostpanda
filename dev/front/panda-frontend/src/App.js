@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, {Suspense, useLayoutEffect} from "react";
 import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,10 +7,10 @@ import "antd/dist/antd.css";
 import Navbar from "./components/sections/navbar/Navbar";
 import Footer from "./components/common/Footer";
 import Loader from "./components/ekan/UI/Loader";
-import { useDispatch, useSelector } from "react-redux";
-import { loginCheck } from "./store/actions/authActions";
+import { useSelector } from "react-redux";
 import AdminIndex from "./components/ekan/pages/mypage/admin/AdminIndex";
 import {useAuthStore} from "./store/authHooks";
+import {useWindowStore} from "./store/windowHooks";
 
 const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const WritePage = React.lazy(() => import("./pages/WritePage"));
@@ -47,14 +47,12 @@ const TestPage = React.lazy(() => import("./pages/TestPage"));
 const FindIdPage = React.lazy(() => import("./pages/FindIdPage"));
 
 const App = () => {
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.page);
+  const loading = useWindowStore(state => state.loading)
   const reIssue = useAuthStore(state => state.reIssue)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     reIssue()
-    dispatch(loginCheck());
-  }, [dispatch]);
+  },[])
 
   if (loading) {
     return <Loader />;
