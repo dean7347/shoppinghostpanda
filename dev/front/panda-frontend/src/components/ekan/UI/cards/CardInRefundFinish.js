@@ -82,8 +82,26 @@ function CardInRefundFinish(props) {
       }
     });
   }, [props]);
+  const cancelRequest = () => {
+    const body = {
+      userOrderId: props.situationDetail.detailId,
+      refundId: refundData.requestId,
+      refundArray: reFundList,
+      refundMoney: expectMoney,
+    };
+    console.log(body);
+    axios.post("/api/confirmtrade", body).then((response) => {
+      if (response.data.success) {
+        alert("거절에 성공했습니다");
+        window.location.reload();
+      } else {
+        alert("거절에 실패했습니다");
+      }
+    });
+  };
+
   const confirmTrade = () => {
-    console.log("교환학인");
+    console.log("교환/환불거절");
     // console.log(finalRefundM);
     // if (expectMoney < finalRefundM) {
     //   alert("전체 상품금액보다 큰 금액은 환불할 수 없습니다");
@@ -273,14 +291,12 @@ function CardInRefundFinish(props) {
 
           <Col span={24}>
             <br />
-            <div>교환처리 안내사항</div>
+            <div>환불/교환거절 안내사항</div>
             <br />
-            교환 처리는 금액의 환불없이 상품만이 오고 갔을 경우이며 금액의
-            차감이 없습니다 교환,반품비는 소비자와 협의후 다른 방법으로
-            청구받으시기 바랍니다.
+            환불/교환은 소비자보호법을 우선합니다.
             <Button
               onClick={() => {
-                confirmTrade(props.detailId);
+                cancelRequest(props.detailId);
               }}
               style={{ width: "100%" }}
             >

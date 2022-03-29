@@ -3,10 +3,12 @@ package com.indiduck.panda.controller;
 
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Service.RefundRequestService;
+import com.indiduck.panda.Service.VerifyService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,12 +22,15 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class RefundRequestController {
 
     @Autowired
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final RefundRequestService refundRequestService;
+    @Autowired
+    private final VerifyService verifyService;
 
     @RequestMapping(value = "/api/readRefundRequest", method = RequestMethod.POST)
     public ResponseEntity<?> readRefundRequest(@CurrentSecurityContext(expression = "authentication")
@@ -47,11 +52,54 @@ public class RefundRequestController {
 
     }
 
+    //교환거절절
+   @RequestMapping(value = "/api/rejecttrade", method = RequestMethod.POST)
+    public ResponseEntity<?> rejectTrade(@CurrentSecurityContext(expression = "authentication")
+                                                  Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
+
+
+        log.info(authentication.getName()+"교환 승인 거절");
+        boolean b1 = verifyService.orderForShop(authentication.getName(), confirmRefundRequest.userOrderId);
+        if(!b1)
+        {
+            log.error(authentication.getName()+"교환 승인 요청 실패");
+
+            return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+
+        }
+
+
+        //기준일 뒤로 미루고
+        boolean b = refundRequestService.rejectTrade(confirmRefundRequest);
+
+        if(b)
+        {
+            log.info(authentication.getName()+"교환 승인 거절 성공");
+
+            return ResponseEntity.ok(new TFMessageDto(true,"성공"));
+
+        }
+
+       log.error(authentication.getName()+"교환 승인 요청 실패"+confirmRefundRequest.refundId+"<리펀드아이디"+confirmRefundRequest.userOrderId+"<유저오더아이디");
+
+        return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+    }
+
     //교환승인
     @RequestMapping(value = "/api/confirmtrade", method = RequestMethod.POST)
     public ResponseEntity<?> confirmTrade(@CurrentSecurityContext(expression = "authentication")
                                                        Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
-        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+
+        
+        String name = authentication.getName();
+        boolean before = verifyService.verifyByerOrder(name, confirmRefundRequest.userOrderId);
+        if(!before)
+        {
+            log.error(name+"교환 검증 실패");
+
+            return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+
+        }
 
 
 
@@ -60,19 +108,30 @@ public class RefundRequestController {
 
         if(b)
         {
+            log.info(name+"교환신청성공");
+
             return ResponseEntity.ok(new TFMessageDto(true,"성공"));
 
         }
-
+        
+        log.error(name+"교환요청 실패");
 
         return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
     }
 
 
+    //환불신청확인
     @RequestMapping(value = "/api/confirmRefundRequest", method = RequestMethod.POST)
     public ResponseEntity<?> confirmRefundRequest(@CurrentSecurityContext(expression = "authentication")
                                                        Authentication authentication, @RequestBody ConfirmRefundRequest confirmRefundRequest) throws Exception {
-        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+//        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+        String name = authentication.getName();
+        boolean before = verifyService.verifyByerOrder(name, confirmRefundRequest.userOrderId);
+        if(!before)
+        {
+            return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
+
+        }
 
 
 
@@ -81,9 +140,13 @@ public class RefundRequestController {
 
         if(b)
         {
+            log.info(name+"환불신청성공");
+
             return ResponseEntity.ok(new TFMessageDto(true,"성공"));
 
         }
+        log.info(name+"환불신청실패");
+
         return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
     }
 

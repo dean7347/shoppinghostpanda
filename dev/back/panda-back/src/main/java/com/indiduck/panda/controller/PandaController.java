@@ -11,6 +11,7 @@ import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.*;
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class PandaController {
 
     @Autowired
@@ -73,7 +75,7 @@ public class PandaController {
     }
 
 
-
+    //판다승인하기
     @RequestMapping(value = "/api/admin/confirmregpanda", method = RequestMethod.POST)
     public ResponseEntity<?> confirmpanda(@CurrentSecurityContext(expression = "authentication")
                                               Authentication authentication, @RequestBody RegID regID) throws Exception {
@@ -236,12 +238,13 @@ public class PandaController {
         Panda result = pandaService.editPanda(editPandaDAO.target, editPandaDAO.values, panda);
         if(result==null)
         {
+            log.error(authentication.getName()+"의 판다 정보 변경 실패");
             return ResponseEntity.ok(new ShopController.shopControllerResultDto(false,"변경실패 "));
 
         }
 
 
-
+        log.info(authentication.getName()+"의 판다정보 변경 성공");
         return ResponseEntity.ok(new ShopController.shopControllerResultDto(true,"변경성공 "));
 
     }

@@ -77,6 +77,11 @@ public class RefundRequest {
         this.od=OrderStatus.환불완료;
         this.finishAt=LocalDateTime.now();
     }
+    public void rejectTrade()
+    {
+        this.finishAt=LocalDateTime.now();
+        this.od=OrderStatus.거절;
+    }
     public void confrimTrade()
     {
         this.finishAt=LocalDateTime.now();

@@ -122,6 +122,19 @@ public class RefundRequestService {
         return true;
     }
 
+    public boolean rejectTrade(RefundRequestController.ConfirmRefundRequest confirmRefundRequest)
+    {
+        long userOrderId = confirmRefundRequest.getUserOrderId();
+        Optional<UserOrder> byId = userOrderRepository.findById(userOrderId);
+        UserOrder userOrder = byId.get();
+        userOrder.rejectRefund();
+        RefundRequest refundRequest = refundRequestRepository.findById(confirmRefundRequest.getRefundId()).get();
+        refundRequest.rejectTrade();
+        return true;
+
+
+    }
+
     public boolean confirmTrade(RefundRequestController.ConfirmRefundRequest confirmRefundRequest)
     {
         long userOrderId = confirmRefundRequest.getUserOrderId();

@@ -70,6 +70,9 @@ public class AdminContorller {
 
         return ResponseEntity.ok(new PandaListDTO(true,page));
     }
+
+
+    //완료된 판다 정산목록보기
     @RequestMapping(value = "/api/admin/completepandaSettleList", method = RequestMethod.GET)
     public ResponseEntity<?> settlePandaCompleteList(@CurrentSecurityContext(expression = "authentication")
                                                              Authentication authentication, Pageable pageable) throws Exception {
@@ -81,6 +84,7 @@ public class AdminContorller {
     }
 
 
+    //정산해야될 샵 리스트
     @RequestMapping(value = "/api/admin/shopSettleList", method = RequestMethod.GET)
     public ResponseEntity<?> settleShop(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication, Pageable pageable) throws Exception {
@@ -93,7 +97,7 @@ public class AdminContorller {
 
 
 
-
+    //완료된 샵 정산목록 보기
     @RequestMapping(value = "/api/admin/completeshopSettleList", method = RequestMethod.GET)
     public ResponseEntity<?> settleShopCompleteList(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, Pageable pageable) throws Exception {

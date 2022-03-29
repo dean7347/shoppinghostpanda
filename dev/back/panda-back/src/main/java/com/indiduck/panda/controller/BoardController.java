@@ -9,6 +9,7 @@ import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class BoardController {
 
     @Autowired
@@ -46,11 +48,12 @@ public class BoardController {
         Board board = boardService.qnaNewBoard(username, qnaboard.title, qnaboard.contents, 00, qnaboard.productId);
         if(board != null)
         {
+            log.info(authentication.getName()+"의 게시글 작성 성공");
             return ResponseEntity.ok(new TFMessageDto(true,"success"));
 
         }
 
-
+        log.warn(authentication.getName()+"의 게시글 작성 실패");
         return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));
     }
 
@@ -64,14 +67,16 @@ public class BoardController {
         Board board = boardService.qnaNewBoard(username, qnaboard.title, qnaboard.contents, 00, qnaboard.productId);
         if(board != null)
         {
+            log.info(authentication.getName()+"의 답변작성 성공");
             return ResponseEntity.ok(new TFMessageDto(true,"success"));
 
         }
 
-
+        log.error(authentication.getName()+"의 게시글 작성 실패");
         return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));
     }
 
+    //qna 게시글 가져오기
     @RequestMapping(value = "/api/getqna", method = RequestMethod.GET)
     public ResponseEntity<?> getqna(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,Pageable pageable,@RequestParam("pid") long pid) throws Exception {

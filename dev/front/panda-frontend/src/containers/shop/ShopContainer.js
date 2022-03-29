@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Redirect } from "react-router";
 import axios from "../../api/axiosDefaults";
 import Shop from "../../components/common/Shop";
-import AdminShop from "../../containers/shop/AdminShop";
 import { useHistory } from "react-router-dom";
 
 const ShopContainer = ({ location, match }) => {

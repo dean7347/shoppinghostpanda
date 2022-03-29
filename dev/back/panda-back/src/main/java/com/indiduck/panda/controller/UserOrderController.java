@@ -8,10 +8,12 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.Service.OrderDetailService;
 import com.indiduck.panda.Service.RefundRequestService;
 import com.indiduck.panda.Service.UserOrderService;
+import com.indiduck.panda.Service.VerifyService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +31,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-
+@Slf4j
 public class UserOrderController {
     @Autowired
     private final UserOrderService userOrderService;
@@ -45,30 +47,47 @@ public class UserOrderController {
     private final OrderDetailRepository orderDetailRepository;
     @Autowired
     private final OrderDetailService orderDetailService;
+    @Autowired
+    private final VerifyService verifyService;
 
     //유저가 최초로 환불 신청을 한다
     @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
     public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
                                                          Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+        log.info(authentication.getName()+"의 환불 신청"+refundReq.getUserOrderId()+"");
+        boolean b = verifyService.userOrderVerifyForuser(authentication.getName(), refundReq.getUserOrderId());
+        if(!b)
+        {
+            return ResponseEntity.ok(new TFMessageDto(false, "상태변경 완료"));
 
+        }
+        try{
+            String name = authentication.getName();
+            Optional<User> byEmail = userRepository.findByEmail(name);
+            Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
+            List<RefundList> refundList = refundReq.refundList;
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            for (RefundList list : refundList) {
+                long optionId = list.optionId;
+                Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+                OrderDetail orderDetail = byId1.get();
+                orderDetail.reqRefund(list.optionCount);
+                orderDetails.add(orderDetail);
+            }
+            refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
+            log.info(authentication.getName()+"의"+refundReq.getUserOrderId()+"번 주문"+"환불신청작성 성공");
+            return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
+        }catch (Exception e)
+        {
+            log.error(authentication.getName()+"의"+refundReq.getUserOrderId()+"번 주문"+"환불신청작성 실패");
 
-        String name = authentication.getName();
-        Optional<User> byEmail = userRepository.findByEmail(name);
-        Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
-        List<RefundList> refundList = refundReq.refundList;
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        for (RefundList list : refundList) {
-            long optionId = list.optionId;
-            Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
-            OrderDetail orderDetail = byId1.get();
-            orderDetail.reqRefund(list.optionCount);
-            orderDetails.add(orderDetail);
+            return ResponseEntity.ok(new TFMessageDto(false, "환불신청 싪패"));
 
         }
 
+
         //리펀드 리퀘스트 생성
-        refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
-        return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
+
 
 
     }
@@ -77,8 +96,19 @@ public class UserOrderController {
     @RequestMapping(value = "/api/partialCancel", method = RequestMethod.POST)
     public ResponseEntity<?> partialCancel(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
+        log.info(authentication.getName()+"의 부분취소 요청");
+        boolean b1 = verifyService.orderForShop(authentication.getName(), refundReq.userOrderId);
+        if(!b1)
+        {
+            log.error(authentication.getName()+"의 부분취소 요청 실패");
+
+            return ResponseEntity.ok(new TFMessageDto(false, "상태변경 완료 실패했습니다"));
+
+        }
+            
+
+
         try {
-            System.out.println("refundReq = " + refundReq);
             List<RefundList> refundList = refundReq.refundList;
             List<OrderDetail> orderDetails = new ArrayList<>();
             int refundMoney = 0;
@@ -98,21 +128,26 @@ public class UserOrderController {
             }
             if (result) {
                 boolean b = orderDetailService.refundOrder(refundReq.getUserOrderId(), refundMoney);
-                System.out.println("b가이게맞나 = " + b);
                 if (b) {
+                    log.info(authentication.getName()+"의 부분취소 요청 성공");
+
                     return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
                 } else {
-                    System.out.println(" 엘즈 ");
+                    log.error(authentication.getName()+"의 부분취소 요청성공했으나 환불신청에는 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
+
                     return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 성공했으니 환불에 실패했습니다  고객센터로 문의주세요(필수사항)"));
 
                 }
 
             }
         } catch (Exception e) {
+            log.error(authentication.getName()+"의 부분취소 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
+
             return ResponseEntity.ok(new TFMessageDto(false, "문자오류로 인해 상태변경에 실패했습니다"));
 
         }
+        log.error(authentication.getName()+"의 부분취소 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
 
 
         return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 실패했습니다"));
@@ -127,9 +162,11 @@ public class UserOrderController {
 
         UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
         if (userOrder != null) {
+            log.info(authentication.getName()+"의 상태변경 요청 성공"+changeAction.userOrderId+changeAction.state+ changeAction.courier+ changeAction.waybill);
             return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
         }
+        log.error(authentication.getName() + "의 상태변경 실패");
 
         return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 실패했습니다"));
 
@@ -142,29 +179,41 @@ public class UserOrderController {
 
         boolean b = userOrderService.extendConfirm(sdbf.orderId);
         if (b) {
+            log.info(authentication.getName() + "의 구매기간 연장신청");
             return ResponseEntity.ok(new TFMessageDto(true, "구매기간 연장 성공"));
 
         }
-
+        log.error(authentication.getName()+"의 구매기간 연장 실패");
         return ResponseEntity.ok(new TFMessageDto(false, "3번이상 연장을 했거나 연장할 수 있는 상태가 아닙니다"));
 
     }
 
-    @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
+
+    //여러 주문들의 스테이터스를 바꿈
+   @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
     public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
                                                         Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
 
         System.out.println("changeAction = " + changeAction.userOrderId);
         long num = 0;
         for (long l : changeAction.userOrderId) {
+            boolean b = verifyService.userOrderForShopOrUser(authentication.getName(), l);
+            if(!b)
+            {
+                log.error(authentication.getName()+"이 스테이터스를 바꾸려고 했으나"+l+"번주문에 이상이 생겼습니다");
+                return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+
+            }
             UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
             if (userOrder == null) {
                 num = l;
+                log.error(authentication.getName()+"이 스테이터스를 바꾸려고 했으나"+l+"번주문에 이상이 생겼습니다");
 
                 return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
 
             }
+            log.info(authentication.getName()+"이 스테이터스를 바꿈");
 
 
         }

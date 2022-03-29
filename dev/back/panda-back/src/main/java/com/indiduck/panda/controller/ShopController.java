@@ -10,6 +10,7 @@ import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.ResultDto;
 import com.indiduck.panda.jwt.JwtTokenProvider;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ import java.util.*;
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class ShopController {
 
     @Autowired
@@ -42,7 +44,7 @@ public class ShopController {
     @Autowired
     UserOrderRepository userOrderRepository;
 
-
+    //샵 신청 확인하기
     @RequestMapping(value = "/api/admin/confirmregshop", method = RequestMethod.POST)
     public ResponseEntity<?> confirmregshop(@CurrentSecurityContext(expression = "authentication")
                                                   Authentication authentication, @RequestBody RegShopID regID) throws Exception {
@@ -72,13 +74,15 @@ public class ShopController {
                 createShopDAO.returnaddress,createShopDAO.candate,createShopDAO.noreturn,
                 createShopDAO.tagree,createShopDAO.iagree,createShopDAO.comaddress,createShopDAO.avdtime);
             if (newShop!=null){
+                log.info(authentication.getName()+"샵등록성공");
                 return ResponseEntity.ok(new shopControllerResultDto(true,"샵등록 성공"));
             }
         }catch (Exception e){
+            log.error(authentication.getName()+e+"상점 등록 실패");
             return ResponseEntity.ok(new shopControllerResultDto(false,"샵등록 실패 "));
         }
 
-
+        log.error(authentication.getName()+"샵 등록 실패");
         return ResponseEntity.ok(new shopControllerResultDto(false,"샵등록 실패 "));
 
     }
@@ -93,12 +97,13 @@ public class ShopController {
         Shop result = shopService.editShop(editShopDAO.target, editShopDAO.values, shop);
         if(result==null)
         {
+            log.error(authentication.getName() + "의 상점정보 변경 실패");
             return ResponseEntity.ok(new shopControllerResultDto(false,"변경실패 "));
 
         }
         
 
-
+        log.info(authentication.getName()+"의 상점정보 변경 성공");
         return ResponseEntity.ok(new shopControllerResultDto(true,"변경성공 "));
 
     }
@@ -209,22 +214,22 @@ public class ShopController {
 
 
     //주문확인
-    @RequestMapping(value = "/api/shop/confirm", method = RequestMethod.POST)
-    public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")
-                                               Authentication authentication, @RequestBody ShopDashBoardDto shopDashBoardDto) throws Exception{
-        
-        try{
-            
-        }catch(Exception E){
-
-            return ResponseEntity.ok(new TFMessageDto(false,"오류가 발생했습니다"));
-
-        }
-
-        return ResponseEntity.ok(new shopControllerResultDto(false,"상태변경에 실패했습니다"));
-
-
-    }
+//    @RequestMapping(value = "/api/shop/confirm", method = RequestMethod.POST)
+//    public ResponseEntity<?> dashboard(@CurrentSecurityContext(expression = "authentication")
+//                                               Authentication authentication, @RequestBody ShopDashBoardDto shopDashBoardDto) throws Exception{
+//
+//        try{
+//
+//        }catch(Exception E){
+//
+//            return ResponseEntity.ok(new TFMessageDto(false,"오류가 발생했습니다"));
+//
+//        }
+//
+//        return ResponseEntity.ok(new shopControllerResultDto(false,"상태변경에 실패했습니다"));
+//
+//
+//    }
 
 
     //샵 대시보드 메인 V2

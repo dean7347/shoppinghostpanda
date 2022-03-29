@@ -369,6 +369,21 @@ public class UserOrder {
 
 
     }
+    
+    //교환환불 거절
+    public void rejectRefund()
+    {
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소&&orderDetail.getOrderStatus()!=OrderStatus.구매확정)
+            {
+                orderDetail.setOrderStatus(OrderStatus.발송중);
+            }
+        }
+        this.refundMessage="환불/교환 거절";
+        this.orderStatus=OrderStatus.발송중;
+        this.standardfinishAt=LocalDateTime.now().minusDays(7);
+        this.refundAt=LocalDateTime.now();
+    }
     public void setEnrollRefundShop(boolean tf,SettleShop shop)
     {
         this.enrollSettleShop=tf;
