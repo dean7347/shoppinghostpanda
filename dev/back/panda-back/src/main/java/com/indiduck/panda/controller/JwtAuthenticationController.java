@@ -248,9 +248,11 @@ private final JwtTokenProvider jwtTokenProvider;
 //        }
         boolean b = userDetailsService.logoutV2(atToken);
         if (b) {
+            log.info("로그아웃성공");
             return ResponseEntity.ok(new TFMessageDto(b, "로그아웃 성공"));
 
         }
+        log.error("로그아웃 실패");
         return ResponseEntity.ok(new TFMessageDto(b, "로그아웃 실패"));
 
 
