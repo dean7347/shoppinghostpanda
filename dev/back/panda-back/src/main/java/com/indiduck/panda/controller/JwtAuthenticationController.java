@@ -234,7 +234,15 @@ private final JwtTokenProvider jwtTokenProvider;
 //                atToken=c.getValue();
 //            }
 //        }
-        String atToken = req.getHeader("accessToken");
+        String atCookie="";
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies) {
+
+            if (cookie.getName().equals("accessToken"))
+                atCookie = cookie.getValue();
+        }
+        String atToken = atCookie;
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
@@ -320,7 +328,7 @@ private final JwtTokenProvider jwtTokenProvider;
             if (cookie.getName().equals("accessToken"))
                 atCookie = cookie.getValue();
         }
-        System.out.println("기존쿡히"+atCookie);
+//        System.out.println("기존쿡히"+atCookie);
 
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
