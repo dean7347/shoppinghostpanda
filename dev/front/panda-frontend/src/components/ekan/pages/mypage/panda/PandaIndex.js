@@ -8,11 +8,11 @@ import Redirect from "react-router-dom/es/Redirect";
 import {useAuthStore} from "../../../../../store/authHooks";
 
 const PandaIndex = () => {
-    const user = useAuthStore(state => state.user)
+    const {panda} = useAuthStore(state => state.user)
 
     return (
         <Route render={(props) => (
-            user?.panda ?
+            panda ?
                 <div className={`layout theme-mode-light theme-color-red`}>
                     <Sidebar sidebarItems={pandaSidebarItems} {...props}/>
                     <div className="layout__content">

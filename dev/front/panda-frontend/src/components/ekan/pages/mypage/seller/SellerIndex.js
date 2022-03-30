@@ -8,13 +8,14 @@ import MyPageRoutes from "../MyPageRoutes";
 import Sidebar from "../../../sections/Sidebar";
 import {getCookie} from "../../../../../store/Cookie";
 import Redirect from "react-router-dom/es/Redirect";
+import {useAuthStore} from "../../../../../store/authHooks";
 
 const SellerIndex = () => {
-    const [seller] = useState(getCookie('seller'))
-
+    const {seller} = useAuthStore(state => state.user)
+    console.log('셀러: ',seller)
     return (
         <Route render={(props) => (
-            seller === 'true' ?
+            seller ?
                 <div className={`layout theme-mode-light theme-color-blue`}>
                     <Sidebar sidebarItems={sellerSidebarItems} {...props}/>
                     <div className="layout__content">
