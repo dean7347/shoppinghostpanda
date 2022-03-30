@@ -12,7 +12,7 @@ import {useAuthStore} from "../../../../../store/authHooks";
 
 const SellerIndex = () => {
     const {seller} = useAuthStore(state => state.user)
-
+    console.log('셀러: ',seller)
     return (
         <Route render={(props) => (
             seller ?

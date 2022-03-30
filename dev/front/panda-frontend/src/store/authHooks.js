@@ -15,6 +15,7 @@ export const useAuthStore = create(set => ({
 
       const {data} = await axios.post('/api/loginv2', form)
       if (data) {
+        console.log('로그인데이타: ', data)
         set({user: data})
         useWindowStore.setState({
           loading: false
@@ -50,6 +51,7 @@ export const onTokenRefresh = async () => {
     console.log('리프래시중임')
     const {data} = await axios.post('/api/reissuev2')
     if (data) {
+      console.log('리프레시데이타: ', data)
       useAuthStore.setState({
         user: data
       })

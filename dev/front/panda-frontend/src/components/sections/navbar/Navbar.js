@@ -19,8 +19,6 @@ const Navbar = () => {
     const user = useAuthStore(state => state.user)
     const signOut = useAuthStore(state => state.signOut)
 
-    console.log('유저데이타: ', location)
-
     const renderUserToggle = useCallback(() => (
         <div className="topnav__right-user">
             <div className="topnav__right-user__image">
