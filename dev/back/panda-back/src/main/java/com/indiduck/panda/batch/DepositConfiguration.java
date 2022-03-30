@@ -83,7 +83,7 @@ public class DepositConfiguration {
     @StepScope
     public ItemProcessor<Shop, Shop> Depositprocessor() throws Exception {
 
-        System.out.println(" =프로세서입장 " );
+//        System.out.println(" =프로세서입장 " );
 
         return new ItemProcessor<Shop, Shop>() {
             @Override

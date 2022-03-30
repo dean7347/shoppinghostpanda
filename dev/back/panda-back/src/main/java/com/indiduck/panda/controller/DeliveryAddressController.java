@@ -42,7 +42,7 @@ public class DeliveryAddressController {
                                                 Authentication authentication, @RequestBody AddAddressDAO addaddressDAO) throws Exception {
 
 
-        System.out.println(addaddressDAO);
+//        System.out.println(addaddressDAO);
         DeliverAddress deliverAddress = deliverAddressService.newAddress(authentication.getName(), addaddressDAO.receiver, addaddressDAO.addressName, addaddressDAO.phonenumb
                 , addaddressDAO.phonenummiddle, addaddressDAO.phonenumlast, addaddressDAO.subphonenum, addaddressDAO.subphonenummiddle, addaddressDAO.subphonenumlast,
                 addaddressDAO.zonecode, addaddressDAO.fulladdress, addaddressDAO.addressdetail);

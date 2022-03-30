@@ -103,7 +103,7 @@ public class ProductService {
     public void addFileProduct(Long file, Long product, String type) {
         Optional<File> byId1 = fileRepository.findById(file);
         Optional<Product> byId = productRepository.findById(product);
-        System.out.println(type);
+//        System.out.println(type);
         if (type.equals("thumb")) {
             byId.get().setThumbImage(byId1.get());
 

@@ -141,7 +141,7 @@ public class User implements UserDetails {
     public User deleteAll()
     {
 
-        System.out.println(" =회원 탈퇴로직 시작 ");
+//        System.out.println(" =회원 탈퇴로직 시작 ");
         for (UserOrder userOrder : userOrders) {
             userOrder.resignUser();
         }

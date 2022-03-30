@@ -35,9 +35,9 @@ public class RefundRequestController {
     @RequestMapping(value = "/api/readRefundRequest", method = RequestMethod.POST)
     public ResponseEntity<?> readRefundRequest(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody UserOrderId userOrderId) throws Exception {
-        System.out.println("userOrderId = " + userOrderId);
+//        System.out.println("userOrderId = " + userOrderId);
         Optional<UserOrder> byId = userOrderRepository.findById(userOrderId.uoid);
-        System.out.println("byId = " + byId);
+//        System.out.println("byId = " + byId);
         RefundRequest refundRequests=null;
         if(byId.get().getRefundRequest().size() !=0)
         {

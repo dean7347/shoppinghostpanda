@@ -90,7 +90,7 @@ public class ResignConfiguration {
         return new ItemProcessor<User, User>() {
             @Override
             public User process(User user) throws Exception {
-                System.out.println("탈퇴할 유저는? " + user.getEmail());
+//                System.out.println("탈퇴할 유저는? " + user.getEmail());
                 userService.deleteUser(user);
 
                 return user;

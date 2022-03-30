@@ -61,7 +61,7 @@ public class ShopController {
                                                 Authentication authentication, @RequestBody CreateShopDAO createShopDAO) throws Exception{
         String name = authentication.getName();
 
-        System.out.println("createShopDAO = " + createShopDAO);
+//        System.out.println("createShopDAO = " + createShopDAO);
 
         try{ Shop newShop = shopService.createNewShop(
                 name,
@@ -118,10 +118,10 @@ public class ShopController {
         if(usernameFromToken !=null)
         {
             Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
-            System.out.println("byEmail = " + byEmail.get().getEmail());
+//            System.out.println("byEmail = " + byEmail.get().getEmail());
 
             Optional<Shop> byUser = shopRepository.findByUserId(byEmail.get().getId());
-            System.out.println("byUser = " + byUser);
+//            System.out.println("byUser = " + byUser);
 
             if(byUser.isEmpty())
             {

@@ -11,6 +11,7 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class OrderDetailService {
 
     @Autowired
@@ -134,12 +136,12 @@ public class OrderDetailService {
     public void paymentOrderDetail(Payment info)
     {
 
-        System.out.println(info.getAmount());
-        System.out.println(info.getCustomData());
-        System.out.println(info.getBuyerAddr());
-        System.out.println(info.getBuyerPostcode());
-        System.out.println(info.getPayMethod());
-        System.out.println(info.getPaidAt());
+//        System.out.println(info.getAmount());
+//        System.out.println(info.getCustomData());
+//        System.out.println(info.getBuyerAddr());
+//        System.out.println(info.getBuyerPostcode());
+//        System.out.println(info.getPayMethod());
+//        System.out.println(info.getPaidAt());
 
 
         String customData = info.getCustomData();
@@ -179,7 +181,7 @@ public class OrderDetailService {
     public boolean newUserOrder(User user,OrderDetailController.DetailedCart myCart,String mid,
                                 String name,String phoneNumber,String zipCode,String Address,String rec,String memo) {
 
-        System.out.println("오더서비스 겟네임"+name);
+//        System.out.println("오더서비스 겟네임"+name);
         for (OrderDetailController.DetailedShop d : myCart.getDs()) {
             Optional<Shop> byId = shopRepository.findById(d.getShopId());
             UserOrder uo= UserOrder.newUserOrder(user,byId.get(),mid,name,phoneNumber,zipCode,Address,rec,memo);
@@ -228,16 +230,16 @@ public class OrderDetailService {
             userOrder.setReceiptUrl(receiptUrl);
 
         } catch (IamportResponseException e) {
-            System.out.println(e.getMessage());
-
+            log.error(e.getMessage()+"리펀드오더");
+      
             switch(e.getHttpStatusCode()) {
                 case 401 :
                     //TODO
-                    System.out.println("e = " + e);
+                    log.error("리펀드오더"+e);
                     return false;
                 case 500 :
                     //TODO
-                    System.out.println("e = " + e);
+                    log.error("리펀드오더 = " + e);
 
                     return false;
 
@@ -249,7 +251,7 @@ public class OrderDetailService {
 
         } catch (Exception e)
         {
-            System.out.println(" 부분환불이 불가능합니다 ");
+            log.error(" 부분환불이 불가능합니다 리펀드오더"+e);
             return false;
         }
         userOrder.setCancelMoney(money);

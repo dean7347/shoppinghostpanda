@@ -8,6 +8,7 @@ import com.indiduck.panda.Service.FileService;
 import com.indiduck.panda.Service.ProductService;
 
 import com.indiduck.panda.Service.S3Uploader;
+import com.indiduck.panda.Service.VerifyService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.FileDao;
@@ -15,6 +16,7 @@ import com.indiduck.panda.domain.dto.FileDao;
 import com.indiduck.panda.util.MD5Generator;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
 
@@ -54,12 +57,15 @@ public class ProductController {
     @Autowired
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
+    @Autowired
+    private final VerifyService verifyService;
 
 
     @RequestMapping(value = "/api/amzonefile", method = RequestMethod.POST)
     public ResponseEntity<?> createFileAmazon(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestPart("file") MultipartFile files) throws Exception{
 //
+        log.info(authentication.getName() + "의 파일 생성");
         try{
 
         String origFilename = files.getOriginalFilename();
@@ -70,7 +76,7 @@ public class ProductController {
 
         String aStatic = s3Uploader.upload(authentication.getName(),files);
 
-            System.out.println("aStatic = " + aStatic);
+//            System.out.println("aStatic = " + aStatic);
 
 
         FileDao fileDao = new FileDao();
@@ -86,6 +92,9 @@ public class ProductController {
         }
         catch (Exception e)
         {
+
+            log.error(authentication.getName() + "의 파일 생성실패 :"+e);
+
             return  ResponseEntity.ok(new ResultDtoM(false,"익셉션"+e.toString()));
 
         }
@@ -104,8 +113,15 @@ public class ProductController {
     public ResponseEntity<?> createFileAmazon(@CurrentSecurityContext(expression = "authentication")
                                                       Authentication authentication, @RequestBody FileDelDao fileDelDao) throws Exception{
 //
-        try{
+        boolean b = verifyService.verifyShopForFile(authentication.getName(), fileDelDao.filepath);
+        if(!b)
+        {
+            log.error(authentication.getName()+"의 파일 삭제 검증 실패");
+            return  ResponseEntity.ok(new ResultDto(false));
 
+        }
+        try{
+            log.info(authentication.getName()+"의 파일 삭제 시도 ");
             s3Uploader.delete(fileDelDao.filepath);
             fileService.delFile(fileDelDao.filepath);
             return  ResponseEntity.ok(new ResultDto(true));
@@ -113,6 +129,8 @@ public class ProductController {
         }
         catch (Exception e)
         {
+            log.error(authentication.getName()+"의 파일 삭제 시도 실패");
+
             return  ResponseEntity.ok(new ResultDto(false));
 
         }
@@ -149,47 +167,47 @@ public class ProductController {
 
 
 
-    //상품사진 등록
-    @RequestMapping(value = "/api/createFile2", method = RequestMethod.POST)
-    public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
-                                                Authentication authentication, @RequestPart("file") MultipartFile files) throws Exception{
-        try {
-            String origFilename = files.getOriginalFilename();
-            String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
-            String filename = new MD5Generator(origFilename).toString()+System.currentTimeMillis();
-            /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-            String savePath = System.getProperty("user.dir") + "\\files"+"\\"+authentication.getName();
-            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
-            if (!new java.io.File(savePath).exists()) {
-                try{
-                    new java.io.File(savePath).mkdirs();
-                }
-                catch(Exception e){
-                    e.getStackTrace();
-                }
-            }
-
-            String filePath = savePath + "\\" + filename;
-            files.transferTo(new java.io.File(filePath+"."+etx));
-
-            FileDao fileDao = new FileDao();
-            fileDao.setOrigFilename(origFilename);
-            fileDao.setFilename(filename+"."+etx);
-            fileDao.setFilePath(filePath+"."+etx);
-            Long fileId = fileService.saveFile(fileDao);
-
-            return  ResponseEntity.ok(new FileDto(true,fileDao.getFilePath(),fileDao.getFilename()));
-
-
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품사진 업로드 실패");
-        }
-
-
-
-    }
+//    //상품사진 등록
+//    @RequestMapping(value = "/api/createFile2", method = RequestMethod.POST)
+//    public ResponseEntity<?> createFile(@CurrentSecurityContext(expression = "authentication")
+//                                                Authentication authentication, @RequestPart("file") MultipartFile files) throws Exception{
+//        try {
+//            String origFilename = files.getOriginalFilename();
+//            String etx=origFilename.substring(origFilename.lastIndexOf(".") + 1);
+//            String filename = new MD5Generator(origFilename).toString()+System.currentTimeMillis();
+//            /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+//            String savePath = System.getProperty("user.dir") + "\\files"+"\\"+authentication.getName();
+//            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+//            if (!new java.io.File(savePath).exists()) {
+//                try{
+//                    new java.io.File(savePath).mkdirs();
+//                }
+//                catch(Exception e){
+//                    e.getStackTrace();
+//                }
+//            }
+//
+//            String filePath = savePath + "\\" + filename;
+//            files.transferTo(new java.io.File(filePath+"."+etx));
+//
+//            FileDao fileDao = new FileDao();
+//            fileDao.setOrigFilename(origFilename);
+//            fileDao.setFilename(filename+"."+etx);
+//            fileDao.setFilePath(filePath+"."+etx);
+//            Long fileId = fileService.saveFile(fileDao);
+//
+//            return  ResponseEntity.ok(new FileDto(true,fileDao.getFilePath(),fileDao.getFilename()));
+//
+//
+//
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품사진 업로드 실패");
+//        }
+//
+//
+//
+//    }
 
 
     @RequestMapping(value = "/api/fileedit", method = RequestMethod.POST)
@@ -197,10 +215,8 @@ public class ProductController {
                                                       Authentication authentication, @RequestPart("file") MultipartFile files,
                                             @RequestPart("proId") String proId,@RequestPart("type") String type
                                             ) throws Exception{
-        System.out.println("files = " + files);
-        System.out.println("body = " + proId);
-        System.out.println("body = " + type);
 
+        log.info(authentication.getName() + "의 파일 수정 시도");
         try{
 
             String origFilename = files.getOriginalFilename();
@@ -211,7 +227,7 @@ public class ProductController {
 
             String aStatic = s3Uploader.upload(authentication.getName(),files);
 
-            System.out.println("aStatic = " + aStatic);
+
 
 
             FileDao fileDao = new FileDao();
@@ -228,22 +244,17 @@ public class ProductController {
         }
         catch (Exception e)
         {
+            log.error(authentication.getName() + "의 파일 수정 시도 실패"+ e);
+
             return  ResponseEntity.ok(new ResultDtoM(false,"익셉션"+e.toString()));
 
         }
-//            return  ResponseEntity.ok(new ResultDtoM(false,files.getOriginalFilename()));
-//
-////        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품사진 업로드 실패");
-
-//            return  ResponseEntity.ok(new ResultDto(true));
-
-
 
     }
     @RequestMapping(value = "/api/edittextproduct", method = RequestMethod.POST)
     public ResponseEntity<?> editTextProduct(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody EditTextDao editTextDao) throws Exception {
-
+        log.info(authentication.getName() + "의 에딧 텍스트 프로덕트 시도");
         productService.editText(editTextDao.proId, editTextDao.type, editTextDao.param);
         return ResponseEntity.ok(new ResultDto(true));
     }
@@ -252,13 +263,13 @@ public class ProductController {
     @RequestMapping(value = "/api/regnewproduct", method = RequestMethod.POST)
     public ResponseEntity<?> createnewProduct(@CurrentSecurityContext(expression = "authentication")
                                                       Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
-        System.out.println("createProductDAO = " + createProductDAO);
+
         List<String> notice = createProductDAO.notice;
         String s = notice.toString();
-        System.out.println("s = " + s);
+
         List<String> list = Arrays.asList(s.substring(1, s.length() - 1).split(", "));
-        System.out.println("list = " + list);
-        System.out.println("list.get(0) = " + list.get(0));
+
+
         Product product= productService.createNewProduct(
                 authentication.getName(),
                 createProductDAO.thumb,
@@ -277,19 +288,23 @@ public class ProductController {
             return ResponseEntity.ok(new ResultDto(false));
 
         }
+        log.info(authentication.getName()+"의 새상품 등록"+product.getId());
         return ResponseEntity.ok(new ResultDto(true));
     }
 
     @RequestMapping(value = "/api/editlaw", method = RequestMethod.POST)
     public ResponseEntity<?> editProductLaw(@CurrentSecurityContext(expression = "authentication")
                                                       Authentication authentication, @RequestBody LawDAO lawDAO) throws Exception {
-        System.out.println("createProductDAO = " + lawDAO);
+
         try{
+            log.info(authentication.getName() + "의 에딧 로우 실행 ");
             productService.editLow(lawDAO.productId, lawDAO.type, lawDAO.notice.toString(), lawDAO.noticeValue.toString());
             return ResponseEntity.ok(new ResultDto(true));
 
         }catch (Exception e)
         {
+            log.error(authentication.getName() + "의 에딧 로우 실행 실패"+e);
+
             return ResponseEntity.ok(new ResultDto(false));
 
         }
@@ -301,12 +316,16 @@ public class ProductController {
     @RequestMapping(value = "/api/product/changeprostatus", method = RequestMethod.POST)
     public ResponseEntity<?> delProdcut(@CurrentSecurityContext(expression = "authentication")
                                                     Authentication authentication, @RequestBody EditDao psc) throws Exception {
+
+        log.info(authentication.getName() + "의 체인지 오더 시도" + psc.proId + "를 " + psc.type + "로 변경");
         try{
             productService.editStatus(psc.proId,psc.type);
             return ResponseEntity.ok(new ResultDto(true));
 
         }catch (Exception e)
         {
+            log.error(authentication.getName() + "의 체인지 오더 시도" + psc.proId + "를 " + psc.type + "로 변경 실패");
+
             return ResponseEntity.ok(new ResultDto(false));
 
         }
@@ -317,28 +336,28 @@ public class ProductController {
 
 
 
-    @RequestMapping(value = "/api/editinfomation", method = RequestMethod.POST)
-    public ResponseEntity<?> infomationProduct(@CurrentSecurityContext(expression = "authentication")
-                                                      Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
-        System.out.println("createProductDAO = " + createProductDAO);
-
-//        Product product=productService.createNewProduct(
-//                authentication.getName(),
-//                createProductDAO.thumb,
-//                createProductDAO.title,
-//                createProductDAO.description,
-//                createProductDAO.images,
-//                createProductDAO.Options,
-//                createProductDAO.type
-//                createProductDAO.lowform
+//    @RequestMapping(value = "/api/editinfomation", method = RequestMethod.POST)
+//    public ResponseEntity<?> infomationProduct(@CurrentSecurityContext(expression = "authentication")
+//                                                      Authentication authentication, @RequestBody CreateProductDAO createProductDAO) throws Exception {
+//        System.out.println("createProductDAO = " + createProductDAO);
 //
-//        );
-
-//        if(product==null){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
-//        }
-        return ResponseEntity.ok(new ResultDto(true));
-    }
+////        Product product=productService.createNewProduct(
+////                authentication.getName(),
+////                createProductDAO.thumb,
+////                createProductDAO.title,
+////                createProductDAO.description,
+////                createProductDAO.images,
+////                createProductDAO.Options,
+////                createProductDAO.type
+////                createProductDAO.lowform
+////
+////        );
+//
+////        if(product==null){
+////            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상품생성 실패");
+////        }
+//        return ResponseEntity.ok(new ResultDto(true));
+//    }
      //상품 수정
     //상품 삭제
     //상품 조회

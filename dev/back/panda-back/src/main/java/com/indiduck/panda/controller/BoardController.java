@@ -84,8 +84,8 @@ public class BoardController {
 //        String username = byEmail.get().getUsername();
         Optional<Product> byId = productRepository.findById(pid);
         Page<Board> byProduct = boardRepository.findByProduct(pageable, byId.get());
-        System.out.println("byProduct = " + byProduct);
-        System.out.println("byProduct = " + pageable);
+//        System.out.println("byProduct = " + byProduct);
+//        System.out.println("byProduct = " + pageable);
 
 //        return ResponseEntity.ok(byProduct);
 

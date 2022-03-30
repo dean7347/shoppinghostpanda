@@ -7,6 +7,7 @@ import com.indiduck.panda.domain.Product;
 import com.indiduck.panda.domain.ProductOption;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class ProductOptionController {
 
     @Autowired
@@ -30,10 +32,12 @@ public class ProductOptionController {
     public ResponseEntity<?> viewSearch(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody OptionDao optiondao) throws Exception {
         try {
-            System.out.println("optiondao = " + optiondao);
+            log.info(authentication.getName() + "의 옵션 수정 시도");      
             productOptionService.delOption(optiondao.optionId);
         }catch (Exception e)
         {
+            log.error(authentication.getName() + "의 옵션 수정 시도 실패");
+
             return ResponseEntity.ok(new OptionSuccessDto(false));
 
 
@@ -63,14 +67,19 @@ public class ProductOptionController {
     public ResponseEntity<?> editOption(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication, @RequestBody OptionEditDao optionEditDao) throws Exception {
 
-        System.out.println("optionEditDao = " + optionEditDao);
+
         try {
+            log.info(authentication.getName() + "의 에딧 프로덕트 옵션 시도");
             productOptionService.editOption(optionEditDao.OptionName, optionEditDao.optionCount, optionEditDao.optionPrice, optionEditDao.OptionId);
         }catch (Exception e)
         {
+            log.error(authentication.getName() + "의 에딧 프로덕트 옵션 시도 실패");
+
             return ResponseEntity.ok(new OptionSuccessDto(false));
 
         }
+        log.info(authentication.getName() + "의 에딧 프로덕트 옵션 성공");
+
         return ResponseEntity.ok(new OptionSuccessDto(true));
 
     }

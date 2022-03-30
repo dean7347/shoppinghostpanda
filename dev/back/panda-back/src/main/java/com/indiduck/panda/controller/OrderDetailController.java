@@ -17,6 +17,7 @@ import com.siot.IamportRestClient.response.Payment;
 import lombok.Data;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.*;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class OrderDetailController {
     @Autowired
     OrderDetailService orderDetailService;
@@ -247,7 +249,7 @@ public class OrderDetailController {
     @RequestMapping(value = "/api/authentication", method = RequestMethod.POST)
     public ResponseEntity<?> selfAuthentication(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication,@RequestBody String muid) throws Exception {
-
+        log.info(authentication.getName() + "의 인증요청");
         IamportClient client;
         String test_api_key = apiKey.getRESTAPIKEY();
         String test_api_secret = apiKey.getRESTAPISECRET();
@@ -308,7 +310,7 @@ public class OrderDetailController {
     @RequestMapping(value = "/api/payment/after", method = RequestMethod.POST)
     public ResponseEntity<?> afterConfirm(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication,@RequestBody AfterConfirm afterConfirm) throws Exception {
-        System.out.println("afterConfirm = " + afterConfirm);
+
         for (long l : afterConfirm.dataList) {
             Optional<OrderDetail> byId = orderDetailRepository.findById(l);
             int optionStock = byId.get().getOptions().getOptionStock();
@@ -585,36 +587,26 @@ public class OrderDetailController {
                                                 Authentication authentication, @RequestBody removeDetailDAO removeDetailDAO) throws Exception {
 
         try {
+            log.info(authentication.getName() + "의 옵션삭제 시도");
             boolean delete = orderDetailService.delete(removeDetailDAO.orderDetailId);
             if(delete) {
                 return ResponseEntity.ok(new ResultDto(true, "성공적으로 삭제했습니다"));
             }else
             {
+                log.error(authentication.getName() + "의 옵션삭제 시도 실패");
+
                 return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
 
             }
         }catch (Exception e)
         {
+            log.error(authentication.getName() + "의 옵션삭제 시도 실패");
+
             return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
         }
         
     }
 
-    //카트에서 삭제
-    @RequestMapping(value = "/api/cart/removecart", method = RequestMethod.POST)
-    public ResponseEntity<?> removecart(@CurrentSecurityContext(expression = "authentication")
-                                                  Authentication authentication, @RequestBody removeDetailDAO removeDetailDAO) throws Exception {
-
-
-        try {
-            return ResponseEntity.ok(new ResultDto(true,"성공적으로 삭제했습니다"));
-
-        }catch (Exception e)
-        {
-            return ResponseEntity.ok(new ResultDto(false,"삭제실패"));
-        }
-
-    }
 
 
     ///////////

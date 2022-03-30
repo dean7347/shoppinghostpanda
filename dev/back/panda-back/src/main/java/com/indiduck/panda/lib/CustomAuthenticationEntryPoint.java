@@ -36,7 +36,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String exception = (String)request.getAttribute("exception");
         ErrorType errorType;
-        System.out.println(" =access재생성로직 시작 ");
+//        System.out.println(" =access재생성로직 시작 ");
 
 //        /**
 //         * 토큰이 없는 경우 예외처리
@@ -44,7 +44,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         if(exception == null) {
             errorType = ErrorType.UNAUTHORIZEDException;
             setResponse(response, errorType);
-            System.out.println("토큰이 없습니다");
+//            System.out.println("토큰이 없습니다");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 

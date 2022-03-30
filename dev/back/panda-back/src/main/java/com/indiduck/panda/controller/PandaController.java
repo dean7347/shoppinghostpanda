@@ -50,7 +50,7 @@ public class PandaController {
                                              Authentication authentication) {
 
         String usernameFromToken = authentication.getName();
-        System.out.println("usernameFromToken = " + usernameFromToken);
+//        System.out.println("usernameFromToken = " + usernameFromToken);
         if (usernameFromToken != null) {
             Optional<User> byEmail = userRepository.findByEmail(usernameFromToken);
 
@@ -117,9 +117,9 @@ public class PandaController {
         LocalDateTime endDay = LocalDateTime.of(pandaDashBoardDto.endYear, pandaDashBoardDto.endMonth + 1, pandaDashBoardDto.endDay
                 , 23, 59, 59, 999999999);
 
-        System.out.println("startDay = " + startDay);
-        System.out.println("endDay = " + endDay);
-        System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
+//        System.out.println("startDay = " + startDay);
+//        System.out.println("endDay = " + endDay);
+//        System.out.println("pandaDashBoardDto = " + pandaDashBoardDto.startDay);
         try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
@@ -129,7 +129,7 @@ public class PandaController {
 
 
             if (pandaDashBoardDto.status.equals("all")) {
-                System.out.println("전체");
+//                System.out.println("전체");
                 Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
                 Optional<List<OrderDetail>> two = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급완료, startDay, endDay);
                 Optional<List<OrderDetail>> three = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급대기, startDay, endDay);
@@ -144,7 +144,7 @@ public class PandaController {
                 }
 
             } else if (pandaDashBoardDto.status.equals("지급완료")) {
-                System.out.println("정산완료");
+//                System.out.println("정산완료");
                 Optional<List<OrderDetail>> one = orderDetailRepository.findByPandaAndPaymentStatusAndFinishedAtBetween(panda, PaymentStatus.지급예정, startDay, endDay);
                 if (!one.isEmpty()) {
                     odList.addAll(one.get());

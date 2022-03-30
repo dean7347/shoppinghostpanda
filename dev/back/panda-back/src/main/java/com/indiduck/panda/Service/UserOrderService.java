@@ -79,7 +79,7 @@ public class UserOrderService {
             case "주문취소":
                 boolean b = refundRequestService.allCancelForSeller(userOrder.getMid(), byId.get());
                 if (b == false) {
-                    System.out.println(" 널을리턴합니다");
+
                     return null;
                 } else {
                     userOrder.cancelOrder();

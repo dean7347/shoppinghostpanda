@@ -313,7 +313,7 @@ public class OrderDetail {
 
 
         }
-        System.out.println("productCount = " + productCount);
+//        System.out.println("productCount = " + productCount);
 
     }
     public void tradeConfirm(int count)

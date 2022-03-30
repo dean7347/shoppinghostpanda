@@ -8,6 +8,7 @@ import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class CommentController {
     @Autowired
     private final UserRepository userRepository;
@@ -33,9 +35,11 @@ public class CommentController {
         Comment comment = commentService.newComment(username, commentCreateor.getContents(), commentCreateor.boardId);
         if(comment != null)
         {
+            log.info(authentication.getName() + "의 코멘트 등록 성공");
             return ResponseEntity.ok(new TFMessageDto(true,"success"));
 
         }
+        log.error(authentication.getName() + "의 코멘트 등록 실패");
 
 
         return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));

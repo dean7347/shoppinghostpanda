@@ -1,10 +1,12 @@
 package com.indiduck.panda.Service;
 
 
+import com.indiduck.panda.Repository.FileRepository;
 import com.indiduck.panda.Repository.PandaToProductRepository;
 import com.indiduck.panda.Repository.UserOrderRepository;
 import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.controller.PandaToProductController;
+import com.indiduck.panda.domain.File;
 import com.indiduck.panda.domain.PandaToProduct;
 import com.indiduck.panda.domain.User;
 import com.indiduck.panda.domain.UserOrder;
@@ -29,6 +31,8 @@ public class VerifyService {
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final PandaToProductRepository pandaToProductRepository;
+    @Autowired
+    private final FileRepository fileRepository;
 
     //판다인지 검증합니다
     public boolean verifyPanda(Authentication authentication)
@@ -101,5 +105,18 @@ public class VerifyService {
             return true;
         }
         return false;
+    }
+
+
+
+    public boolean verifyShopForFile(String name, String filePath) {
+        User user = userRepository.findByEmail(name).get();
+        File myqueryfind = fileRepository.myqueryfind(filePath);
+        if(user.getId()==myqueryfind.getProduct().getShop().getUser().getId())
+        {
+            return true;
+        }
+        return false;
+
     }
 }

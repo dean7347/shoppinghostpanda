@@ -132,27 +132,13 @@ private final JwtTokenProvider jwtTokenProvider;
     @PostMapping("/api/loginv2")
     public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletRequest req, HttpServletResponse res, Errors errors) {
         // validation check
+        log.info(login.getEmail()+"의 로그인 시도");
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = login.toAuthentication();
         String name = usernamePasswordAuthenticationToken.getName();
-
-        System.out.println("name = " + name);
-        //만약 존재하면
-//        String rtCookie = "";
-//        String aCookie="";
-//        Cookie[] cookies = req.getCookies();
-//        if (cookies != null){
-//            for (Cookie cookie : cookies) {
-//                if (cookie.getName().equals("refreshToken"))
-//                    rtCookie = cookie.getValue();
-//
-//                if (cookie.getName().equals("accessToken"))
-//                    aCookie = cookie.getValue();
-//            }
-//        }
         Cookie refreshToken = new Cookie("refreshToken", null);
         refreshToken.setMaxAge(0);
         refreshToken.setPath("/");
@@ -183,7 +169,7 @@ private final JwtTokenProvider jwtTokenProvider;
     //회원가입
     @PostMapping("/api/signup")
     public ResponseEntity<?> signup(@RequestBody UserDto infoDto) { // 회원 추가
-        System.out.println("infoDto = " + infoDto.getEmail());
+//        System.out.println("infoDto = " + infoDto.getEmail());
 
 
         try {
@@ -213,7 +199,7 @@ private final JwtTokenProvider jwtTokenProvider;
     //비밀번호 변경
     @PostMapping("/api/changepw")
     public ResponseEntity<?> changepw(@RequestBody ChangePw changePw) throws IamportResponseException, IOException { // 회원 추가
-
+        log.info(changePw.code+"의 비밀번호 변경 요청");
         userDetailsService.changePw(changePw.code, changePw.pw);
         return ResponseEntity.ok(new TFMessageDto(true, "비밀번호 변경 성공"));
     }
@@ -283,7 +269,7 @@ private final JwtTokenProvider jwtTokenProvider;
     public ResponseEntity<?> shopDashBoardForOrderNumber(@CurrentSecurityContext(expression = "authentication")
                                                                  Authentication authentication) throws Exception {
 
-        System.out.println("authentication = " + authentication);
+        log.info(authentication + "의 유저 어스 요청");
         try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
@@ -323,6 +309,7 @@ private final JwtTokenProvider jwtTokenProvider;
     public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")Authentication authentication,
                                                    HttpServletRequest req, HttpServletResponse res) {
 
+        log.info(authentication.getName() + "의 리이슈 신청");
         String rtCookie = "";
         String atCookie="";
         Cookie[] cookies = req.getCookies();

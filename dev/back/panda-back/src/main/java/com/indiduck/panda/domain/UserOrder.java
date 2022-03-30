@@ -128,7 +128,7 @@ public class UserOrder {
     public static UserOrder newUserOrder(User user,Shop shop,String mid,
                                          String name,String phoneNumber,String zipCode,String Address,String receipt,String memo)
     {
-        System.out.println("생성메서드 네임"+name);
+//        System.out.println("생성메서드 네임"+name);
         UserOrder uo = new UserOrder();
         uo.setUser(user);
         uo.setShop(shop);

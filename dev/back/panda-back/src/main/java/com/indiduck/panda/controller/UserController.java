@@ -1,15 +1,13 @@
 package com.indiduck.panda.controller;
 
 import com.indiduck.panda.Repository.*;
-import com.indiduck.panda.Service.JwtUserDetailsService;
-import com.indiduck.panda.Service.OrderDetailService;
-import com.indiduck.panda.Service.RefundRequestService;
-import com.indiduck.panda.Service.UserOrderService;
+import com.indiduck.panda.Service.*;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
 import com.indiduck.panda.domain.dto.UserDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +31,7 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     @Autowired
     private final UserRepository userRepository;
@@ -44,14 +43,13 @@ public class UserController {
     private final UserOrderRepository userOrderRepository;
     @Autowired
     private final UserOrderService userOrderService;
-    @Autowired
-    private final ShopRepository shopRepository;
-    @Autowired
-    private final  PandaRespository pandaRespository;
+
     @Autowired
     private final ProductRepository productRepository;
     @Autowired
     private final PandaToProductRepository pandaToProductRepository;
+    @Autowired
+    private final VerifyService verifyService;
 
     @GetMapping("/api/userresign")
     public ResponseEntity<?> userResign(@CurrentSecurityContext(expression = "authentication")
@@ -75,7 +73,7 @@ public class UserController {
         //판다 샵이없을경우
         //주문상태가 모두 완료되어야 한다
         if (ispanda == true) {
-            System.out.println("판다가 있는회원입니다");
+//            System.out.println("판다가 있는회원입니다");
             Optional<List<PandaToProduct>> byPandaAndIsDel = pandaToProductRepository.findByPandaAndIsDel(panda, true);
             if(byPandaAndIsDel.isEmpty())
             {
@@ -92,7 +90,7 @@ public class UserController {
             Optional<Product> byShopAndDeleted = productRepository.findByShopAndDeleted(shop, false);
             if(!byShopAndDeleted.isEmpty())
             {
-                System.out.println("byShopAndDeleted = " + byShopAndDeleted);
+//                System.out.println("byShopAndDeleted = " + byShopAndDeleted);
                 return ResponseEntity.ok(new TFMessageDto(false, "모든 상품을 삭제후 탈퇴 가능합니다"));
 
             }
@@ -104,7 +102,7 @@ public class UserController {
             {
                 return ResponseEntity.ok(new TFMessageDto(false, "결제완료, 준비중인, 발송중인 상태의 상품이 있습니다. 모든 처리가 완료 된 후 탈퇴가 가능합니다"));
             }
-            System.out.println("샵이 있는 회원입니다");
+//            System.out.println("샵이 있는 회원입니다");
 
         }
 
@@ -154,8 +152,8 @@ public class UserController {
         User user = byEmail.get();
         Shop shop = byEmail.get().getShop();
         Panda panda = byEmail.get().getPanda();
-        System.out.println("panda = " + panda);
-        System.out.println("shop = " + shop);
+//        System.out.println("panda = " + panda);
+//        System.out.println("shop = " + shop);
         boolean isshop = false;
         boolean ispanda = false;
         if (shop != null) {
@@ -165,6 +163,7 @@ public class UserController {
             ispanda = true;
         }
 
+        log.info(authentication.getName() + "의 에딧요청");
         return ResponseEntity.ok(new UserEditDTO(true, isshop, ispanda, user.getRegAt(), user.getEmail(), user.getUserRName(), shop, panda));
         //판다여부
     }
@@ -215,14 +214,25 @@ public class UserController {
     @PostMapping("/api/userordercancel")
     public ResponseEntity<?> cancelOrder(@CurrentSecurityContext(expression = "authentication")
                                                  Authentication authentication, @RequestBody SituationDto situationDto) {
+
+        boolean b = verifyService.userOrderForShopOrUser(authentication.getName(), situationDto.detailId);
+        if(!b)
+        {
+            log.error(authentication.getName()+"의 userOrdercancel요청  조건부 실패");
+            return ResponseEntity.ok(new TFMessageDto(false, "취소할 수 없는주문입니다"));
+
+        }
         UserOrder userOrder = userOrderService.cancelOrder(situationDto.detailId);
-        System.out.println("situationDto = " + situationDto);
+//        System.out.println("situationDto = " + situationDto);
         if (userOrder != null) {
 
+            log.info(authentication.getName()+"의 요청 성공");
 
             return ResponseEntity.ok(new TFMessageDto(true, "변경성공"));
 
         }
+        log.error(authentication.getName()+"의 userOrdercancel요청 실패");
+
         return ResponseEntity.ok(new TFMessageDto(false, "취소할 수 없는주문입니다"));
 
 
@@ -233,14 +243,14 @@ public class UserController {
     public ResponseEntity<?> recentSituation(@CurrentSecurityContext(expression = "authentication")
                                                      Authentication authentication, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         String name = authentication.getName();
-        System.out.println("name = " + name);
+//        System.out.println("name = " + name);
         Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication1.getName() = " + authentication1.getName());
+//        System.out.println("authentication1.getName() = " + authentication1.getName());
         Optional<User> byEmail = userRepository.findByEmail(name);
         Page<UserOrder> allByUserId = userOrderRepository.findAllByUserId(byEmail.get(), pageable);
-        System.out.println("allByUserId = " + allByUserId.get());
+//        System.out.println("allByUserId = " + allByUserId.get());
         List<recentSituation> pageList = new ArrayList<>();
-        System.out.println("allByUserId = " + allByUserId.get());
+//        System.out.println("allByUserId = " + allByUserId.get());
 //        for (UserOrder userOrder : allByUserId) {
 //            System.out.println("userOrder = " + userOrder.getReveiverName());
 //        }

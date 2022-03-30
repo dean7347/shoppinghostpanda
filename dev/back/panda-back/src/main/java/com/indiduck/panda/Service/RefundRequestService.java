@@ -13,6 +13,7 @@ import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class RefundRequestService {
     @Autowired
     private final RefundRequestRepository refundRequestRepository;
@@ -36,7 +38,7 @@ public class RefundRequestService {
     private ApiKey apiKey;
 
     public RefundRequest newRefundRequest(UserOrder uo, List<OrderDetail> orderDetails, String message, User user) {
-        System.out.println("orderDetails서비스꺼 = " + orderDetails);
+//        System.out.println("orderDetails서비스꺼 = " + orderDetails);
         RefundRequest rr = RefundRequest.newRefundRequest(uo, message, user);
 
         refundRequestRepository.save(rr);
@@ -60,67 +62,35 @@ public class RefundRequestService {
             userOrder.setReceiptUrl(receiptUrl);
 
         } catch (IamportResponseException e) {
-            System.out.println(e.getMessage());
+            log.error("올캔슬 폴 셀러"+e.getMessage());
             switch (e.getHttpStatusCode()) {
                 case 401:
                     //TODO
-                    System.out.println("e = " + e);
+                    log.error("올캔슬 포셀러e = " + e);
                     return false;
                 case 500:
                     //TODO
-                    System.out.println("e = " + e);
+                    log.error("올켄슬 포 셀러e = " + e);
                     return false;
 
             }
             return false;
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            log.error("올켄슬 포 셀러e = " + e);
 
             e.printStackTrace();
             return false;
 
         } catch (Exception e) {
+            log.error("올켄슬 포 셀러e = " + e);
+
             return false;
         }
         return true;
     }
 
-    //환불로인한 캔슬
-    public boolean allCancel(String mind, UserOrder userOrder) {
-//        String test_api_key = apiKey.getRESTAPIKEY();
-//        String test_api_secret = apiKey.getRESTAPISECRET();
-//        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
-//        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
-//
-//        try {
-//            userOrder.getRefundRequest().setOrderStatus(OrderStatus.환불완료);
-//            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
-//            String receiptUrl = payment_response.getResponse().getReceiptUrl();
-//            userOrder.setReceiptUrl(receiptUrl);
-//
-//        } catch (IamportResponseException e) {
-//            System.out.println(e.getMessage());
-//
-//            switch(e.getHttpStatusCode()) {
-//                case 401 :
-//                    //TODO
-//                    System.out.println("e = " + e);
-//                    return false;
-//                case 500 :
-//                    //TODO
-//                    System.out.println("e = " + e);
-//
-//                    return false;
-//
-//            }
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//            return false;
-//
-//        }
-        return true;
-    }
+
 
     public boolean rejectTrade(RefundRequestController.ConfirmRefundRequest confirmRefundRequest)
     {
@@ -143,11 +113,11 @@ public class RefundRequestService {
 
         List<RefundRequestController.RefundArray> refundArray = confirmRefundRequest.getRefundArray();
         for (RefundRequestController.RefundArray array : refundArray) {
-            System.out.println("오디아이디array = " + array);
+//            System.out.println("오디아이디array = " + array);
             Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
             if(odid.get().getProductCount()-array.getRefundConfrimOrder() <0)
             {
-                System.out.println("여기걸림");
+                log.error("confirmTrade 에서 0원보다 작은 요청이 감지되었습니다");
                 return false;
             }
             odid.get().tradeConfirm(array.getRefundConfrimOrder());
@@ -174,7 +144,7 @@ public class RefundRequestService {
         //가격검증
         long comMoney=0;
         for (RefundRequestController.RefundArray array : refundArray) {
-            System.out.println("오디아이디array = " + array);
+//            System.out.println("오디아이디array = " + array);
             Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
             if(array.isIssale()==true)
             {
@@ -185,10 +155,10 @@ public class RefundRequestService {
 
             }
         }
-        System.out.println("comMoney = " + comMoney);
+//        System.out.println("comMoney = " + comMoney);
         if(refundMoney!=comMoney)
         {
-            System.out.println("검증안된금액");
+//            System.out.println("검증안된금액");
             return false;
         }
 
@@ -199,12 +169,12 @@ public class RefundRequestService {
 
         try {
             IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
-            System.out.println("payment_response = " + payment_response.getResponse());
+//            System.out.println("payment_response = " + payment_response.getResponse());
             Payment response = payment_response.getResponse();// 이미 취소된 거래는 response가 null이다
-            System.out.println("페이먼트메시지" + payment_response.getMessage());
+//            System.out.println("페이먼트메시지" + payment_response.getMessage());
             if (response == null) {
-                System.out.println("환불할 수 없는 상품입니다");
-                System.out.println(" 유저오더 아이디 ");
+//                System.out.println("환불할 수 없는 상품입니다");
+//                System.out.println(" 유저오더 아이디 ");
 //                환불로직
 
                 return false;
@@ -215,22 +185,28 @@ public class RefundRequestService {
 
             }
         } catch (IamportResponseException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage()+"컨펌리펀트");
 
             switch (e.getHttpStatusCode()) {
                 case 401:
                     //TODO
+                    log.error(e+"컨펌리펀트");
+
                     break;
                 case 500:
+                    log.error(e+"컨펌리펀트");
+
                     //TODO
                     break;
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
+            log.error(e+"컨펌리펀트");
+
             e.printStackTrace();
         } catch (Exception e) {
+            log.error(e+"컨펌리펀트");
 
-            System.out.println("환불요청 최종 실패 = " + e.getMessage());
             return false;
         }
         //유저오더에서 금액 빼고, 상태수정하기( 배송일까지)
@@ -240,7 +216,7 @@ public class RefundRequestService {
 //        userOrder.getRefundRequest().setRefundMoney(refundMoney);
 //        userOrder.confirmRefundMoney(refundMoney);
         for (RefundRequestController.RefundArray array : refundArray) {
-            System.out.println("오디아이디array = " + array);
+//            System.out.println("오디아이디array = " + array);
             Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
             if(odid.get().getProductCount()-array.getRefundConfrimOrder() <=0)
             {
@@ -251,7 +227,7 @@ public class RefundRequestService {
         userOrder.confirmRefundMoney(comMoney);
         RefundRequest refundRequest = refundRequestRepository.findById(confirmRefundRequest.getRefundId()).get();
         refundRequest.confirmRefund(comMoney);
-        System.out.println(" 성공");
+//        System.out.println(" 성공");
         return true;
     }
 }

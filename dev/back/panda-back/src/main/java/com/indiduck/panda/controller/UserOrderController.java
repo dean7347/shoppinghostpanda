@@ -194,7 +194,7 @@ public class UserOrderController {
     public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
                                                         Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
 
-        System.out.println("changeAction = " + changeAction.userOrderId);
+//        System.out.println("changeAction = " + changeAction.userOrderId);
         long num = 0;
         for (long l : changeAction.userOrderId) {
             boolean b = verifyService.userOrderForShopOrUser(authentication.getName(), l);
@@ -235,7 +235,7 @@ public class UserOrderController {
             //신규주문
             case "recent":
                 byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.결제완료);
-                System.out.println("최근주문조회");
+//                System.out.println("최근주문조회");
                 break;
             //준비중인주문
             case "ready":
@@ -262,7 +262,7 @@ public class UserOrderController {
                 byShopAndOrderStatus = userOrderRepository.findByShopAndOrderStatus(pageable, byEmail.get().getShop(), OrderStatus.환불대기);
                 break;
             default:
-                System.out.println("없는 주문요청입니다");
+                log.error("없는 주문요청입니다");
                 break;
 
         }
@@ -285,11 +285,11 @@ public class UserOrderController {
             }
         }
 
-        System.out.println("dashs = " + byShopAndOrderStatus);
-        System.out.println("dashs = " + type);
+//        System.out.println("dashs = " + byShopAndOrderStatus);
+//        System.out.println("dashs = " + type);
 
 
-        System.out.println("dashs = " + dashs);
+//        System.out.println("dashs = " + dashs);
 
 
         return ResponseEntity.ok(new pageDto(true, byShopAndOrderStatus.getTotalPages(), byShopAndOrderStatus.getTotalElements(), dashs));
@@ -300,7 +300,7 @@ public class UserOrderController {
     public ResponseEntity<?> shopDashBoard(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication, @RequestBody ShopDashBoard shopDashBoard) throws Exception {
 
-        System.out.println("shopDashBoard = " + shopDashBoard);
+//        System.out.println("shopDashBoard = " + shopDashBoard);
         try {
             LocalDateTime startDay = LocalDateTime.of(shopDashBoard.startYear, shopDashBoard.startMonth + 1, shopDashBoard.startDay
                     , 0, 0, 0, 0);

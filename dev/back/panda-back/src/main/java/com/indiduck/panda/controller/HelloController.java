@@ -38,8 +38,8 @@ public class HelloController {
     public void createShop(@RequestParam("data")String data, @RequestBody String test) throws Exception{
 //        @RequestParam(value = "file",defaultValue = nu) MultipartFile files,
 //        System.out.println("files = " + files);
-        System.out.println("data = " + data);
-        System.out.println("test = " + test);
+//        System.out.println("data = " + data);
+//        System.out.println("test = " + test);
 
     }
 //    @RequestMapping(value = "/**/{[path:[^\\.]*}")
