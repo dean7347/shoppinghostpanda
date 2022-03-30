@@ -447,7 +447,7 @@ private final JwtTokenProvider jwtTokenProvider;
         String accessToken;
         String userName="";
         boolean panda=false;
-        boolean shop=false;
+        boolean seller=false;
         boolean user=false;
 
         public TokenLoginVTAO(boolean success, String accessToken, User user) {
@@ -458,14 +458,14 @@ private final JwtTokenProvider jwtTokenProvider;
             {
                 this.user=false;
                 this.panda=false;
-                this.shop=false;
+                this.seller=false;
             }else
             {
                 this.user=true;
             }
             if(user.getShop()!=null)
             {
-                shop=true;
+                seller=true;
             }
             if(user.getPanda()!=null)
             {
