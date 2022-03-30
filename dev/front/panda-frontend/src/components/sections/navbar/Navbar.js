@@ -52,14 +52,14 @@ const Navbar = () => {
         </div>
     ), [signOut, user])
 
-    const renderAuthMenu = useCallback((panda, seller) => {
-        if (panda && seller) {
+    const renderAuthMenu = useCallback((panda, shop) => {
+        if (panda && shop) {
             return user_menu
         }
         if (panda) {
             return panda_menu
         }
-        if (seller) {
+        if (shop) {
             return seller_menu
         }
         return user_menu
@@ -82,7 +82,7 @@ const Navbar = () => {
                         <span className="mr-3">
                             <Dropdown
                                 customToggle={() => renderUserToggle()}
-                                contentData={renderAuthMenu(user.panda, user.shop)}
+                                contentData={renderAuthMenu(user.panda, user.seller)}
                                 renderItems={(item, index) => renderUserMenu(item, index)}
                             />
                         </span>
