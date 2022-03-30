@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import React  from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import {useAuthStore} from "../../store/authHooks";
 
 const PrivateRoute= ({ component: Component, ...rest }) => {
-    const { loggedIn } = useSelector((state) => state.auth);
+    const user = useAuthStore(state => state.user)
 
     return(
-        <Route {...rest} render={props => loggedIn ? <Component {...props} /> :
+        <Route {...rest} render={props => user ? <Component {...props} /> :
             <Redirect to={{pathname:"/signin", state: { next: props.location.pathname } }} />} />
     );
 }

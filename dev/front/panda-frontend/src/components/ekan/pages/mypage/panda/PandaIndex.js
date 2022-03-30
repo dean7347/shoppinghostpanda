@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../buyer/buyerIndex.css'
 import MyPageRoutes from "../MyPageRoutes";
 import {Route} from "react-router-dom";
 import {pandaSidebarItems} from "./pandaTypes";
 import Sidebar from "../../../sections/Sidebar";
-import {getCookie} from "../../../../../store/Cookie";
 import Redirect from "react-router-dom/es/Redirect";
+import {useAuthStore} from "../../../../../store/authHooks";
 
 const PandaIndex = () => {
-    const [panda] = useState(getCookie('panda'))
+    const user = useAuthStore(state => state.user)
 
     return (
         <Route render={(props) => (
-            panda === 'true' ?
+            user?.panda ?
                 <div className={`layout theme-mode-light theme-color-red`}>
                     <Sidebar sidebarItems={pandaSidebarItems} {...props}/>
                     <div className="layout__content">
