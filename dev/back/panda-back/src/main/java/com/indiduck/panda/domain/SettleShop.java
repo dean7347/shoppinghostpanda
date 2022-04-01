@@ -37,17 +37,23 @@ public class SettleShop {
         SettleShop settle= new SettleShop();
         settle.enrollSettle=LocalDateTime.now();
         int depoistmoney=0;
+        settle.userOrder=us;
         for (UserOrder u : us) {
             depoistmoney+=u.getShopMoney();
             u.setEnrollRefundShop(true,settle);
+            u.confirmOrder();
         }
         settle.shop=shop;
         settle.depoist=depoistmoney;
-        settle.userOrder=us;
         settle.isDeposit=false;
         return settle;
 
     }
+    public void setDepositMoney(int money)
+    {
+        this.depoist=money;
+    }
+
     public void depoist()
     {
         this.isDeposit=true;
