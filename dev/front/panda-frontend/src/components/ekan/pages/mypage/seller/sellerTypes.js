@@ -39,11 +39,11 @@ export const sellerSidebarItems = [
     route: "/seller/product",
     icon: "bx bx-store",
   },
-  {
-    display_name: "판매 관리",
-    route: "/seller/",
-    icon: "bx bx bx-purchase-tag",
-  },
+  // {
+  //   display_name: "판매 관리",
+  //   route: "/seller/",
+  //   icon: "bx bx bx-purchase-tag",
+  // },
   {
     display_name: "정산 관리",
     route: "/seller/settlement",

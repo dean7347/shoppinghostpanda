@@ -567,6 +567,8 @@ function DetailProductPage(props) {
                 </table>
                 <h2>주의사항</h2>
                 <div style={{ fontSize: "5px" }}>
+                  *판매자가 배송을 시작한 후 14일 이후 자동 구매확정됩니다.
+                  <br />
                   *전자상거래 등에서의 소비자보호에 관한 법률에 의한 반품규정이
                   판매자가 지정한 반품조건보다 우선합니다
                   <br />

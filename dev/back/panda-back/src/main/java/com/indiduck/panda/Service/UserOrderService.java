@@ -63,20 +63,29 @@ public class UserOrderService {
         UserOrder userOrder = byId.get();
         switch (status) {
             case "준비중":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
                 userOrder.readyOrder();
                 break;
             //cur = couriercom /waybillnumber
             case "발송중":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                    return null;
+                }
                 userOrder.sendOutOrder(cur, wayb);
 
                 break;
             case "구매확정":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                    return null;
+                }
                 userOrder.confirmOrder();
                 break;
             case "주문취소":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                    return null;
+                }
                 boolean b = refundRequestService.allCancelForSeller(userOrder.getMid(), byId.get());
                 if (b == false) {
 
@@ -87,9 +96,15 @@ public class UserOrderService {
                 }
                 break;
             case "환불신청":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                    return null;
+                }
                 userOrder.refundOrder(cur);
                 break;
             case "상점확인중":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                    return null;
+                }
                 userOrder.checkRefund();
         }
         return userOrder;

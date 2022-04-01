@@ -63,11 +63,11 @@ public class DepositConfiguration {
     @Bean
     @StepScope
     public JpaPagingItemReader<Shop> Depositreader() throws Exception {
-
+        log.info("정산로직 선정 스케쥴링 시작");
         Map<String,Object> parameterValues = new HashMap<>();
         parameterValues.put("Estatus", false);
 //        parameterValues.put("od", OrderStatus.구매확정);
-        parameterValues.put("ps", PaymentStatus.지급대기);
+        parameterValues.put("ps", PaymentStatus.지급예정);
         return new JpaPagingItemReaderBuilder<Shop>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
@@ -88,7 +88,7 @@ public class DepositConfiguration {
         return new ItemProcessor<Shop, Shop>() {
             @Override
             public Shop process(Shop shop) throws Exception {
-                System.out.println("청구서결제의us = " + shop.getShopName());
+                log.info(shop.getShopName() + "정산로직 시작");
                 SettleShop settleShop = shopService.SettleLogic(shop);
 
 
@@ -101,7 +101,7 @@ public class DepositConfiguration {
     @Bean
     @StepScope
     public JpaItemWriter<Shop> Depositwriter(){
-        System.out.println("라이터실행");
+        log.info("정산 완료로직 라이터 시작");
         return new JpaItemWriterBuilder<Shop>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
