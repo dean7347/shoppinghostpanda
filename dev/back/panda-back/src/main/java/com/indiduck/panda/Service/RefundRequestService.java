@@ -136,42 +136,36 @@ public class RefundRequestService {
         String test_api_secret = apiKey.getRESTAPISECRET();
         IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
 //        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+        long comMoney=0;
+        long refundMoney = confirmRefundRequest.getRefundMoney();
+
         for (RefundRequestController.RefundArray array : refundArray) {
 //            System.out.println("오디아이디array = " + array);
             Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
+            comMoney+= Math.round(odid.get().getIndividualPrice())*array.getRefundConfrimOrder();
             if(odid.get().getProductCount()-array.getRefundConfrimOrder() <0)
             {
                 log.error(confirmRefundRequest.getUserOrderId()+"갯수초과환불");
 
                 return false;
             }
+            if(refundMoney!=comMoney)
+            {
+//            System.out.println("검증안된금액");
+
+                log.error(confirmRefundRequest.getUserOrderId()+"의 요청 실패 원인은 검증안된 금액"+refundMoney
+                +" //// "+comMoney+array);
+                return false;
+            }
             odid.get().partialRefund(array.getRefundConfrimOrder());
         }
-        long refundMoney = confirmRefundRequest.getRefundMoney();
         long userOrderId = confirmRefundRequest.getUserOrderId();
         Optional<UserOrder> byId = userOrderRepository.findById(userOrderId);
         UserOrder userOrder = byId.get();
         //가격검증
-        long comMoney=0;
-        for (RefundRequestController.RefundArray array : refundArray) {
-//            System.out.println("오디아이디array = " + array);
-            Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
-            if(array.isIssale()==true)
-            {
-               comMoney+= Math.round(odid.get().getIndividualPrice()*0.95)*array.getRefundConfrimOrder();
-            }else
-            {
-                comMoney+= Math.round(odid.get().getIndividualPrice())*array.getRefundConfrimOrder();
 
-            }
-        }
 //        System.out.println("comMoney = " + comMoney);
-        if(refundMoney!=comMoney)
-        {
-//            System.out.println("검증안된금액");
-            log.error(confirmRefundRequest.getUserOrderId()+"의 요청 실패 원인은 검증안된 금액");
-            return false;
-        }
+
 
         //환불
         String test_already_cancelled_imp_uid = byId.get().getMid();

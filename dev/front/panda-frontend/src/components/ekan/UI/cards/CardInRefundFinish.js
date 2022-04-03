@@ -153,7 +153,7 @@ function CardInRefundFinish(props) {
       refundArray: reFundList,
       refundMoney: expectMoney,
     };
-    console.log(body);
+    console.log("환불신청바디", body);
     axios.post("/api/confirmRefundRequest", body).then((response) => {
       if (response.data.success) {
         alert("환불요청처리에 성공했습니다");
@@ -399,7 +399,7 @@ function CardInRefundFinish(props) {
     reFundList.forEach((el) => {
       console.log(el.issale);
       if (el.issale) {
-        money += Math.round(el.individualPrice * el.refundConfrimOrder * 0.95);
+        money += Math.round(el.individualPrice * el.refundConfrimOrder);
       } else {
         money += el.individualPrice * el.refundConfrimOrder;
       }
@@ -533,7 +533,7 @@ function CardInRefundFinish(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price * 0.95);
+              price = Math.round(price);
             }
             return (
               <Menu.Item
@@ -547,10 +547,7 @@ function CardInRefundFinish(props) {
                 key={op.odid}
               >
                 {" "}
-                <div style={{ float: "left" }}>
-                  {op.optionName}
-                  {op.odid}
-                </div>
+                <div style={{ float: "left" }}>{op.optionName}</div>
                 <div style={{ float: "right" }}>
                   {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                 </div>

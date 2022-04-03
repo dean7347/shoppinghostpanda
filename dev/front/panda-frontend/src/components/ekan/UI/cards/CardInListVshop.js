@@ -207,9 +207,7 @@ function CardInListVshop(props) {
                                 {option.discount ? (
                                   <div>
                                     {Math.round(
-                                      option.optionPrice *
-                                        option.optionCount *
-                                        0.95
+                                      option.optionPrice * option.optionCount
                                     )
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}

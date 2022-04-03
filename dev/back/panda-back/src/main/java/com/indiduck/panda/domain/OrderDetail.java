@@ -20,7 +20,7 @@ public class OrderDetail {
     @GeneratedValue
     private long id;
 
-    private int  productCount;
+    private int productCount;
     private int IndividualPrice;
     private int totalPrice;
     private LocalDateTime paymentAt;
@@ -34,19 +34,17 @@ public class OrderDetail {
 
     //환불신청에 관한칼럼
     //환불신청 갯수
-    private int reqRefund=0;
+    private int reqRefund = 0;
     //최종 환불완료된 갯수
-    private int confirmRefund=0;
+    private int confirmRefund = 0;
     //최종 교환된 갯수
-    private int confirmTrade=0;
+    private int confirmTrade = 0;
 
     //판매자가 취소한 갯수수
-   private int reqCancel=0;
-   //취소이유
+    private int reqCancel = 0;
+    //취소이유
     private String cancelReson;
-   private LocalDateTime PartialCancelDate;
-
-
+    private LocalDateTime PartialCancelDate;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +53,7 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product products;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    private UserOrder userOrder;
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductOption options;
@@ -82,193 +80,182 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SettlePanda settlePanda;
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    private PartialCancellation partialCancellation;
-   //12%
-    private int pandaMoney=0;
+    //10%
+    private int pandaMoney = 0;
 
 
     //==생성메서드==//
-    public static OrderDetail newOrderDetail(User user,Product product, ProductOption productOption,int optionCount,Panda panda){
+    public static OrderDetail newOrderDetail(User user, Product product, ProductOption productOption, int optionCount, Panda panda) {
         OrderDetail od = new OrderDetail();
         od.setUser(user);
         od.setProduct(product);
         od.setProductOption(productOption);
-        od.IndividualPrice=productOption.getOptionPrice();
-        od.totalPrice=productOption.getOptionPrice()*optionCount;
-        od.productCount=optionCount;
+        od.IndividualPrice = (int) Math.round(productOption.getOptionPrice() * 0.95);
+        od.totalPrice = productOption.getOptionPrice() * optionCount;
+        od.productCount = optionCount;
         od.setPanda(panda);
         od.orderStatus = OrderStatus.결제대기;
-        od.createdAt=LocalDateTime.now();
+        od.createdAt = LocalDateTime.now();
         od.setShop(product.getShop());
-        od.paymentStatus=PaymentStatus.지급예정;
-        int mo = (int) Math.floor(od.totalPrice*0.95);
-        od.pandaMoney= (int) Math.floor(mo*0.10);
-        od.reqRefund=0;
-        od.confirmRefund=0;
-        od.enrollSettle=false;
+        od.paymentStatus = PaymentStatus.지급예정;
+        int mo = (int) Math.floor(od.totalPrice * 0.95);
+        od.pandaMoney = (int) Math.floor(mo * 0.10);
+        od.reqRefund = 0;
+        od.confirmRefund = 0;
+        od.enrollSettle = false;
 
         return od;
 
     }
+
     //판다가 없을때
-    public static OrderDetail newOrderDetail(User user,Product product, ProductOption productOption,int optionCount){
+    public static OrderDetail newOrderDetail(User user, Product product, ProductOption productOption, int optionCount) {
         OrderDetail od = new OrderDetail();
         od.setUser(user);
         od.setProduct(product);
         od.setProductOption(productOption);
-        od.IndividualPrice=productOption.getOptionPrice();
-        od.totalPrice=productOption.getOptionPrice()*optionCount;
-        od.productCount=optionCount;
+        od.IndividualPrice = productOption.getOptionPrice();
+        od.totalPrice = productOption.getOptionPrice() * optionCount;
+        od.productCount = optionCount;
         od.orderStatus = OrderStatus.결제대기;
-        od.createdAt=LocalDateTime.now();
+        od.createdAt = LocalDateTime.now();
         od.setShop(product.getShop());
-        od.pandaMoney=0;
-        od.reqRefund=0;
-        od.confirmRefund=0;
-        od.enrollSettle=false;
+        od.pandaMoney = 0;
+        od.reqRefund = 0;
+        od.confirmRefund = 0;
+        od.enrollSettle = false;
 
 
         return od;
 
     }
+
     //==연관관계매서드==//
-    public void setUser(User user)
-    {
-        this.user=user;
+    public void setUser(User user) {
+        this.user = user;
         user.getOrders().add(this);
 
     }
-    private void setProduct(Product product)
-    {
-        this.products=product;
+
+    private void setProduct(Product product) {
+        this.products = product;
         product.getOrderDetails().add(this);
     }
-    private void setProductOption(ProductOption productOption)
-    {
-        this.options=productOption;
+
+    private void setProductOption(ProductOption productOption) {
+        this.options = productOption;
         productOption.getOrderDetail().add(this);
 
     }
 
-    public void deletePanda(Panda panda)
-    {
+    public void deletePanda(Panda panda) {
         panda.deleteOrderdetail(this);
 
     }
-    
+
     //판다수정
-    public void setPanda(Panda panda)
-    {
-        if(panda!=null)
-        {
+    public void setPanda(Panda panda) {
+        if (panda != null) {
             panda.deleteOrderdetail(this);
         }
 
-        this.panda=panda;
+        this.panda = panda;
         panda.getOrderDetailPandas().add(this);
-        int mo = (int) Math.floor(this.totalPrice*0.95);
-        this.pandaMoney= (int) Math.floor(mo*0.10);
+        int mo = (int) Math.floor(this.totalPrice * 0.95);
+        this.pandaMoney = (int) Math.floor(mo * 0.10);
     }
-    public void setShop(Shop shop)
-    {
-        this.shop=shop;
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
         shop.getDetails().add(this);
     }
-    public void setUserOrder(UserOrder userOrder)
-    {
-        this.userOrder=userOrder;
-        this.orderStatus=OrderStatus.결제완료;
-        this.paymentAt=LocalDateTime.now();
+
+    public void setUserOrder(UserOrder userOrder) {
+        this.userOrder = userOrder;
+        this.orderStatus = OrderStatus.결제완료;
+        this.paymentAt = LocalDateTime.now();
     }
-    public void setRefundRequest(RefundRequest refundRequest)
-    {
-        this.refundRequest=refundRequest;
+
+    public void setRefundRequest(RefundRequest refundRequest) {
+        this.refundRequest = refundRequest;
     }
-    public void setPaymentM(PaymentStatus paymentStatus)
-    {
-        this.paymentStatus=paymentStatus;
+
+    public void setPaymentM(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     //=비즈니스 매서드=//
     //숫자변경
-    public void plusCount(int count)
-    {
-        this.productCount+=count;
-        this.totalPrice=this.getIndividualPrice()*this.productCount;
-        if(panda!=null)
-        {
-            int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.10);
+    public void plusCount(int count) {
+        this.productCount += count;
+        this.totalPrice = this.getIndividualPrice() * this.productCount;
+        if (panda != null) {
+            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            this.pandaMoney = (int) Math.floor(mo * 0.10);
         }
     }
-    public void refundCount()
-    {
-        this.totalPrice=this.getIndividualPrice()*(this.productCount-this.confirmRefund);
-        if(panda!=null)
-        {
-            int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.10);
+
+    public void refundCount() {
+        this.totalPrice = this.getIndividualPrice() * (this.productCount - this.confirmRefund);
+        if (panda != null) {
+            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            this.pandaMoney = (int) Math.floor(mo * 0.10);
         }
     }
 
     //가격이 변경될경우
-    public void update(int count)
-    {
-        this.productCount=count;
-        this.totalPrice=this.getIndividualPrice()*this.productCount;
-        if(panda!=null)
-        {
-            int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.10);
+    public void update(int count) {
+        this.productCount = count;
+        this.totalPrice = this.getIndividualPrice() * this.productCount;
+        if (panda != null) {
+            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            this.pandaMoney = (int) Math.floor(mo * 0.10);
         }
 
 
     }
-    public void setOrderStatus(OrderStatus status)
-    {
+
+    public void setOrderStatus(OrderStatus status) {
         //주문취소//준비중//발송중//구매확정
-        this.orderStatus=status;
-        if(status==OrderStatus.주문취소)
-        {
+        this.orderStatus = status;
+        if (status == OrderStatus.주문취소) {
 
         }
-        if(status==OrderStatus.준비중)
-        {
-            this.checkedAt=LocalDateTime.now();
+        if (status == OrderStatus.준비중) {
+            this.checkedAt = LocalDateTime.now();
 
         }
-        if(status==OrderStatus.발송중)
-        {
-            this.shippingAt=LocalDateTime.now();
+        if (status == OrderStatus.발송중) {
+            this.shippingAt = LocalDateTime.now();
         }
-        if(status==OrderStatus.구매확정)
-        {
-            this.finishedAt=LocalDateTime.now();
-            if(this.orderStatus!=OrderStatus.주문취소) {
+        if (status == OrderStatus.구매확정) {
+            this.finishedAt = LocalDateTime.now();
+            if (this.orderStatus != OrderStatus.주문취소) {
                 this.paymentStatus = PaymentStatus.지급예정;
             }
 
         }
     }
 
-    public void setOrderready(OrderStatus status)
-    {
-        this.orderStatus=status;
-        this.checkedAt=LocalDateTime.now();
+    public void setOrderready(OrderStatus status) {
+        this.orderStatus = status;
+        this.checkedAt = LocalDateTime.now();
     }
-    public void editOption()
-    {
-        this.IndividualPrice=this.getOptions().getOptionPrice();
-        this.totalPrice=this.getIndividualPrice()*this.productCount;
+
+    public void editOption() {
+        this.IndividualPrice = this.getOptions().getOptionPrice();
+        this.totalPrice = this.getIndividualPrice() * this.productCount;
 
     }
-    public void reqRefund(int num)
-    {
-        this.reqRefund=num;
-        this.orderStatus=OrderStatus.환불대기;
+
+    public void reqRefund(int num) {
+        this.reqRefund = num;
+        this.orderStatus = OrderStatus.환불대기;
     }
-//    public void confrimRefund(int number)
+
+    //    public void confrimRefund(int number)
 //    {
 //        this.confirmRefund=number;
 //        if(panda!=null)
@@ -278,69 +265,55 @@ public class OrderDetail {
 //        }
 //        this.orderStatus=OrderStatus.환불완료;
 //    }
-    public void setEnrollRefundPanda(boolean tf,SettlePanda panda)
-    {
-        this.paymentStatus=PaymentStatus.지급대기;
-        this.enrollSettle=tf;
-        this.settlePanda=panda;
+    public void setEnrollRefundPanda(boolean tf, SettlePanda panda) {
+        this.paymentStatus = PaymentStatus.지급대기;
+        this.enrollSettle = tf;
+        this.settlePanda = panda;
     }
+
     //부분취소
-    public void setPartialCancelAction(int count)
-    {
+    public void setPartialCancelAction(int count) {
 
     }
 
 
-    public void finishSettler()
-    {
-        this.paymentStatus=PaymentStatus.지급완료;
+    public void finishSettler() {
+        this.paymentStatus = PaymentStatus.지급완료;
     }
 
-    public void partialCancel(int count,String message)
-    {
-        this.reqCancel=count;
-        this.productCount-=reqCancel;
-        this.cancelReson=message;
-        this.PartialCancelDate=LocalDateTime.now();
-        if(this.panda!=null)
-        {
-            this.userOrder.refundAndCancelMinusPrice(true,this.IndividualPrice,count);
-            this.totalPrice=this.IndividualPrice*productCount;
+    public void partialCancel(int count, String message) {
+        this.reqCancel = count;
+        this.productCount -= count;
+        this.cancelReson = message;
+        this.PartialCancelDate = LocalDateTime.now();
 
-        }else
-        {
-            this.userOrder.refundAndCancelMinusPrice(false,this.IndividualPrice,count);
-            this.totalPrice=(int) Math.round(this.IndividualPrice*productCount*0.95);
+        this.userOrder.refundAndCancelMinusPrice(true, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
+        this.totalPrice = this.IndividualPrice * productCount;
 
-
-        }
 //        System.out.println("productCount = " + productCount);
 
     }
-    public void tradeConfirm(int count)
-    {
-        this.confirmTrade+=count;
+
+    public void tradeConfirm(int count) {
+        this.confirmTrade += count;
     }
 
 
-    public void partialRefund(int count)
-    {
+    public void partialRefund(int count) {
 
-        this.confirmRefund+=count;
-        this.productCount-=confirmRefund;
-        if(this.panda==null)
-        {
-            this.userOrder.refundAndCancelMinusPrice(true,this.IndividualPrice,count);
-            this.totalPrice=this.IndividualPrice*productCount;
+        this.confirmRefund += count;
+        this.productCount -= count;
+        if (this.panda == null) {
+            this.userOrder.refundAndCancelMinusPrice(false, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
+            this.totalPrice = this.IndividualPrice * productCount;
 
-        }else
-        {
-            this.userOrder.refundAndCancelMinusPrice(false,this.IndividualPrice,count);
-            this.totalPrice=(int) Math.round(this.IndividualPrice*productCount*0.95);
+        } else {
+            this.userOrder.refundAndCancelMinusPrice(true, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
+            this.totalPrice = (int) Math.round(this.IndividualPrice * productCount);
 
 
         }
-        this.orderStatus=OrderStatus.환불완료;
+        this.orderStatus = OrderStatus.환불완료;
 
     }
 

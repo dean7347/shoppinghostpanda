@@ -393,7 +393,7 @@ function CardInList(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price * 0.95);
+              price = price;
             }
             return (
               <Menu.Item
@@ -410,7 +410,7 @@ function CardInList(props) {
                 {" "}
                 <div style={{ float: "left" }}>
                   {op.optionName}
-                  {op.odid}
+                  {/* {op.odid} */}
                 </div>
                 <div style={{ float: "right" }}>
                   {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -515,9 +515,7 @@ function CardInList(props) {
                                 {option.discount ? (
                                   <div>
                                     {Math.round(
-                                      option.optionPrice *
-                                        option.optionCount *
-                                        0.95
+                                      option.optionPrice * option.optionCount
                                     )
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -598,7 +596,7 @@ function CardInList(props) {
               </dl>
               <dl className="col-5">
                 <dt>배송비</dt>
-                <dd>{isfree(props.situationDetail.price)}</dd>
+                <dd>{isfree(props.situationDetail.pureamount)}</dd>
               </dl>
               <dl className="col-1">
                 <i className="bx bx-chevron-right"></i>

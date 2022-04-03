@@ -68,13 +68,13 @@ public class DepositPandaConfiguration {
 
         Map<String,Object> parameterValues = new HashMap<>();
         parameterValues.put("Estatus", false);
-//        parameterValues.put("od", OrderStatus.구매확정);
+        parameterValues.put("od", OrderStatus.구매확정);
         parameterValues.put("ps", PaymentStatus.지급예정);
         return new JpaPagingItemReaderBuilder<Panda>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
                 //샵 userorder.
-                .queryString("Select p FROM Panda p where exists (Select odp from p.orderDetailPandas odp where odp.enrollSettle =: Estatus And odp.paymentStatus =: ps) ORDER BY id ASC")
+                .queryString("Select p FROM Panda p where exists (Select odp from p.orderDetailPandas odp where odp.enrollSettle =: Estatus And odp.paymentStatus =: ps And odp.orderStatus =: od) ORDER BY id ASC")
 //                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
                 .entityManagerFactory(entityManagerFactory)
                 .name("JpaPagingItemReader")

@@ -198,8 +198,8 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
             pandamoney+=orderDetail.getPandaMoney();
         }
-        this.hostMoney=(int) Math.floor((this.amount-this.finalRefundMoney)*0.25)-pandamoney;
-        this.shopMoney =(int) Math.floor((this.amount-this.finalRefundMoney)*0.75);
+        this.hostMoney=(int) Math.floor((this.PureAmount-this.finalRefundMoney)*0.25)-pandamoney-(this.PureAmount-this.amount);
+        this.shopMoney =(int) Math.floor((this.PureAmount-this.finalRefundMoney)*0.75);
         this.pandaMoney=(int) Math.floor(pandamoney);
         if(this.PureAmount < this.freeprice)
         {
@@ -251,6 +251,9 @@ public class UserOrder {
     public void batchConfirm(LocalDateTime ldt)
     {
         this.orderStatus=OrderStatus.구매확정;
+        for (OrderDetail orderDetail : detail) {
+            orderDetail.setOrderStatus(OrderStatus.구매확정);
+        }
         this.finishAt=ldt;
     }
 
@@ -405,8 +408,8 @@ public class UserOrder {
             if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
                 pandamoney+=orderDetail.getPandaMoney();
         }
-        this.hostMoney=(int) Math.floor((this.amount)*0.25)-pandamoney;
-        this.shopMoney =(int) Math.floor((this.amount)*0.75);
+        this.hostMoney=(int) Math.floor((this.PureAmount)*0.25)-pandamoney-(this.PureAmount-this.amount);
+        this.shopMoney =(int) Math.floor((this.PureAmount)*0.75);
         this.pandaMoney=(int) Math.floor(pandamoney);
 //        if(this.PureAmount <this.freeprice)
 //        {
@@ -448,7 +451,7 @@ public class UserOrder {
     }
 
     //환불  취소시 전체 금액에서 빼주는 로직
-    public void refundAndCancelMinusPrice(boolean isPanda,int originPrice,int count)
+    public void refundAndCancelMinusPrice(boolean isPanda,int controlPrice,int originPrice,int count,int productCount)
     {
 
         //택배비가 포함된 금액을 말합니다
@@ -461,15 +464,15 @@ public class UserOrder {
 //        퓨어어마운트,어마운트,풀푸라이스
         if(isPanda)
         {
-            this.fullprice-=originPrice*count;
-            this.amount -=originPrice*count;
-            this.PureAmount-=originPrice*count;
+            this.fullprice-=controlPrice*count;
+            this.amount -=controlPrice*count;
         }else
         {
-            this.fullprice-=Math.round(originPrice*count*0.95);
-            this.amount -=Math.round(originPrice*count*0.95);
-            this.PureAmount-=originPrice*count;
+            this.fullprice-=Math.round(controlPrice*count*0.95);
+            this.amount -=Math.round(controlPrice*count*0.95);
         }
+        this.PureAmount=originPrice*productCount;
+
 
     }
 //    @ManyToOne(fetch = FetchType.LAZY)
