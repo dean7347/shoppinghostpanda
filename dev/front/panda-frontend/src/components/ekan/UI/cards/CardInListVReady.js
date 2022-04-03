@@ -391,7 +391,7 @@ function CardInListVReady(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price * 0.95);
+              price = Math.round(price);
             }
             return (
               <Menu.Item
@@ -406,10 +406,7 @@ function CardInListVReady(props) {
                 key={op.odid}
               >
                 {" "}
-                <div style={{ float: "left" }}>
-                  {op.optionName}
-                  {op.odid}
-                </div>
+                <div style={{ float: "left" }}>{op.optionName}</div>
                 <div style={{ float: "right" }}>
                   {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                 </div>
@@ -512,9 +509,7 @@ function CardInListVReady(props) {
                                 {option.discount ? (
                                   <div>
                                     {Math.round(
-                                      option.optionPrice *
-                                        option.optionCount *
-                                        0.95
+                                      option.optionPrice * option.optionCount
                                     )
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}

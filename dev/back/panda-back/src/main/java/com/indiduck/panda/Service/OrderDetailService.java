@@ -208,8 +208,10 @@ public class OrderDetailService {
 
     }
 
+    //판매자 측에서 취소했을때
     public void partialCancelation(OrderDetail od,int cancel,String message) {
         od.partialCancel(cancel,message);
+
     }
 
     //부분취소 환불
@@ -254,14 +256,10 @@ public class OrderDetailService {
             log.error(" 부분환불이 불가능합니다 리펀드오더"+e);
             return false;
         }
-        userOrder.setCancelMoney(money);
+        userOrder.confirmCancelMoney(money);
+
 
         return true;
     }
 
-    @Data
-    class temList{
-        //상점이름
-        //프로덕트
-    }
 }

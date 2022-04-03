@@ -19,10 +19,14 @@ public class OrderDetail {
     @Id
     @GeneratedValue
     private long id;
-
+    //상품갯수
     private int productCount;
+    //이 상품이 담길때의 가격
     private int IndividualPrice;
+    //이상품의 현재 총 가격
     private int totalPrice;
+    //오더 디테일 생성 당시의  개당 옵션 가격
+    private int createAtPrice;
     private LocalDateTime paymentAt;
     private LocalDateTime createdAt;
     private LocalDateTime checkedAt;
@@ -105,6 +109,7 @@ public class OrderDetail {
         od.reqRefund = 0;
         od.confirmRefund = 0;
         od.enrollSettle = false;
+        od.createAtPrice= productOption.getOptionPrice();
 
         return od;
 
@@ -126,6 +131,7 @@ public class OrderDetail {
         od.reqRefund = 0;
         od.confirmRefund = 0;
         od.enrollSettle = false;
+        od.createAtPrice= productOption.getOptionPrice();
 
 
         return od;
@@ -276,25 +282,24 @@ public class OrderDetail {
         this.settlePanda = panda;
     }
 
-    //부분취소
-    public void setPartialCancelAction(int count) {
 
-    }
 
 
     public void finishSettler() {
         this.paymentStatus = PaymentStatus.지급완료;
     }
 
+    
+    //부분취소시 uo에서 가격을 빼주는 로직
     public void partialCancel(int count, String message) {
-        this.reqCancel = count;
+        this.reqCancel += count;
         this.productCount -= count;
         this.cancelReson = message;
         this.PartialCancelDate = LocalDateTime.now();
 
-        this.userOrder.refundAndCancelMinusPrice(this.options.getOptionPrice()*count,count*this.getIndividualPrice());
-        this.totalPrice = this.options.getOptionPrice() * productCount;
-
+        this.userOrder.refundAndCancelMinusPrice(this.createAtPrice*count,count*this.getIndividualPrice());
+//        this.userOrder.confirmRefundMoney(this.getIndividualPrice() * count);
+        this.totalPrice =this.createAtPrice * productCount;
 //        System.out.println("productCount = " + productCount);
 
     }
@@ -308,10 +313,10 @@ public class OrderDetail {
 
         this.confirmRefund += count;
         this.productCount -= count;
-        this.totalPrice = this.options.getOptionPrice() * productCount;
+        this.totalPrice = this.createAtPrice * productCount;
         this.pandaMoney=(int) Math.floor(this.totalPrice*0.1);
         //이것으로 환불된 퓨어 어마운트 금액
-        this.userOrder.refundAndCancelMinusPrice(this.options.getOptionPrice()*count,count*this.getIndividualPrice());
+        this.userOrder.refundAndCancelMinusPrice(this.createAtPrice*count,count*this.getIndividualPrice());
 
         this.orderStatus = OrderStatus.환불완료;
 
@@ -320,6 +325,6 @@ public class OrderDetail {
 
     public int getOriginOrderMoney() {
 
-        return this.options.getOptionPrice()*(this.confirmRefund+productCount);
+        return this.createAtPrice*(this.confirmRefund+this.reqCancel+productCount);
     }
 }

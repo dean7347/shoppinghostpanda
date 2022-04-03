@@ -90,8 +90,23 @@ public class UserOrderService {
 
                 userOrder.confirmOrder();
                 break;
-            case "주문취소":
+            case "주문취소(유저)":
                 if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정||userOrder.getOrderStatus() == OrderStatus.준비중 ) {
+                    return null;
+                }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
+                boolean bo = refundRequestService.allCancelForSeller(userOrder.getMid(), byId.get());
+                if (bo == false) {
+
+                    return null;
+                } else {
+                    userOrder.cancelOrder();
+
+                }
+                break;
+            case "주문취소":
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정 ) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");

@@ -149,9 +149,7 @@ public class UserOrder {
     }
 
     //==연관관계 메서드 ==//
-    public void setCancelMoney(int money) {
-        this.cancelMoney += money;
-    }
+
 
     public void setUser(User user) {
         this.userId = user;
@@ -184,23 +182,23 @@ public class UserOrder {
     // 상품가격75%+택배비를 샵머니에 넣고
     // 호스트 머니에는 상품가격의 25%에서 판다가격을 뺀 가격을 넣는다
 
-    public void settle() {
-        int pandamoney = 0;
-        for (OrderDetail orderDetail : detail) {
-            if (orderDetail.getOrderStatus() != OrderStatus.주문취소)
-                pandamoney += orderDetail.getPandaMoney();
-        }
-        this.hostMoney = (int) Math.floor((this.PureAmount - this.finalRefundMoney) * 0.25) - pandamoney - (this.PureAmount - this.amount);
-        this.shopMoney = (int) Math.floor((this.PureAmount - this.finalRefundMoney) * 0.75);
-        this.pandaMoney = (int) Math.floor(pandamoney);
-        if (this.PureAmount < this.freeprice) {
-            this.shopMoney += this.shipPrice;
-        }
-
-        this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
-
-
-    }
+//    public void settle() {
+//        int pandamoney = 0;
+//        for (OrderDetail orderDetail : detail) {
+//            if (orderDetail.getOrderStatus() != OrderStatus.주문취소)
+//                pandamoney += orderDetail.getPandaMoney();
+//        }
+//        this.hostMoney = (int) Math.floor((this.PureAmount  * 0.25) - pandamoney - (this.PureAmount - this.amount));
+//        this.shopMoney = (int) Math.floor((this.PureAmount ) * 0.75);
+//        this.pandaMoney = (int) Math.floor(pandamoney);
+//        if (this.PureAmount < this.freeprice) {
+//            this.shopMoney += this.shipPrice;
+//        }
+//
+//        this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
+//
+//
+//    }
 
     public void setReceiptUrl(String url) {
         this.receiptUrl = url;
@@ -260,16 +258,6 @@ public class UserOrder {
 
     }
 
-    public void changeStatuspaymentfinishtoready() {
-        if (this.orderStatus == OrderStatus.결제완료) {
-            this.orderStatus = OrderStatus.준비중;
-//           this.detail
-            for (OrderDetail orderDetail : this.detail) {
-                orderDetail.setOrderready(OrderStatus.준비중);
-            }
-        }
-
-    }
 
     //스테이터스의 변경과 작업
     //주문취소
@@ -278,7 +266,6 @@ public class UserOrder {
             orderDetail.setOrderStatus(OrderStatus.주문취소);
         }
         this.orderStatus = OrderStatus.주문취소;
-        //TODO: 환불로직
     }
 
     //결제완료 -> 준비중
@@ -292,7 +279,7 @@ public class UserOrder {
         this.checkedAt = LocalDateTime.now();
         this.orderStatus = OrderStatus.준비중;
         this.paymentStatus = PaymentStatus.결제완료;
-        this.settle();
+//        this.settle();
     }
 
     //준비중 -> 발송중
@@ -372,8 +359,39 @@ public class UserOrder {
         this.enrollSettleShop = tf;
         this.settleShop = shop;
     }
+    //취소이후
+    public void confirmCancelMoney(int money) {
+        this.finalRefundMoney += (int) money;
+        int pandamoney = 0;
+        int isfreemoney = 0;
+        for (OrderDetail orderDetail : detail) {
+            if (orderDetail.getOrderStatus() != OrderStatus.주문취소)
+                pandamoney += orderDetail.getPandaMoney();
+            isfreemoney += orderDetail.getOriginOrderMoney();
+        }
+        this.hostMoney = (int) Math.floor((this.PureAmount) * 0.25) - pandamoney - (this.PureAmount - this.amount);
+        this.shopMoney = (int) Math.floor((this.PureAmount) * 0.75);
+        this.pandaMoney = (int) Math.floor(pandamoney);
+//        if(this.PureAmount <this.freeprice)
+//        {
+//            this.shopMoney+=this.shipPrice;
+//        }
+        //유료배송의경우
+        if (isfreemoney < this.freeprice) {
+            this.shopMoney += this.shipPrice;
+
+            this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
+
+        } else {
+            this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
+
+        }
+
+        this.orderStatus = OrderStatus.준비중;
+    }
 
     //환불이후
+
     public void confirmRefundMoney(long money) {
         this.finalRefundMoney += (int) money;
         int pandamoney = 0;
@@ -435,6 +453,8 @@ public class UserOrder {
 
 
     }
+
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private OrderDetail orderDetails;
 }
