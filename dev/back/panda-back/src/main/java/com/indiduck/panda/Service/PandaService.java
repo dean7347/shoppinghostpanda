@@ -69,7 +69,7 @@ public class PandaService {
 
     public SettlePanda SettleLogic(Panda panda) {
 //        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByPandaAndPaymentStatusAndEnrollSettlePanda(panda, PaymentStatus.지급대기, false);
-        Optional<List<OrderDetail>> byPandaAndPaymentStatusAndEnrollSettle = orderDetailRepository.findByPandaAndPaymentStatusAndEnrollSettle(panda, PaymentStatus.지급대기, false);
+        Optional<List<OrderDetail>> byPandaAndPaymentStatusAndEnrollSettle = orderDetailRepository.findByPandaAndPaymentStatusAndEnrollSettle(panda, PaymentStatus.지급예정, false);
         List<OrderDetail> orderDetails = byPandaAndPaymentStatusAndEnrollSettle.get();
         SettlePanda settlePanda = SettlePanda.createSettlePanda(orderDetails, panda);
         settlePandaRepository.save(settlePanda);

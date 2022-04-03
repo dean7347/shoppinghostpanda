@@ -6,6 +6,7 @@ import com.indiduck.panda.Repository.UserRepository;
 import com.indiduck.panda.controller.UserOrderController;
 import com.indiduck.panda.domain.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserOrderService {
 
 
@@ -66,6 +68,8 @@ public class UserOrderService {
                 if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 userOrder.readyOrder();
                 break;
             //cur = couriercom /waybillnumber
@@ -73,6 +77,8 @@ public class UserOrderService {
                 if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 userOrder.sendOutOrder(cur, wayb);
 
                 break;
@@ -80,12 +86,16 @@ public class UserOrderService {
                 if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 userOrder.confirmOrder();
                 break;
             case "주문취소":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정&&userOrder.getOrderStatus() == OrderStatus.준비중 ) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 boolean b = refundRequestService.allCancelForSeller(userOrder.getMid(), byId.get());
                 if (b == false) {
 
@@ -96,15 +106,20 @@ public class UserOrderService {
                 }
                 break;
             case "환불신청":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정  
+                        &&userOrder.getOrderStatus() == OrderStatus.준비중 ) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 userOrder.refundOrder(cur);
                 break;
             case "상점확인중":
                 if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
+                log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
+
                 userOrder.checkRefund();
         }
         return userOrder;

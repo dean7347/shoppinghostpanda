@@ -305,7 +305,7 @@ public class UserOrder {
         }
         this.checkedAt=LocalDateTime.now();
         this.orderStatus= OrderStatus.준비중;
-        this.paymentStatus=PaymentStatus.지급예정;
+        this.paymentStatus=PaymentStatus.결제완료;
         this.settle();
     }
     //준비중 -> 발송중
@@ -336,9 +336,9 @@ public class UserOrder {
             }
         }
         this.finishAt=LocalDateTime.now();
-        this.paymentStatus=PaymentStatus.지급대기;
-        this.settle();
-        this.settleShop.setDepositMoney(this.shopMoney);
+        this.paymentStatus=PaymentStatus.지급예정;
+//        this.settle();
+//        this.settleShop.setDepositMoney(this.shopMoney);
         this.orderStatus= OrderStatus.구매확정;
     }
     // xxx -> 결제취소 ?
@@ -382,6 +382,8 @@ public class UserOrder {
         }
         this.refundMessage="환불/교환 거절";
         this.orderStatus=OrderStatus.발송중;
+        this.paymentStatus=PaymentStatus.지급예정;
+
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
         this.refundAt=LocalDateTime.now();
     }
@@ -395,7 +397,21 @@ public class UserOrder {
     public void confirmRefundMoney(long money)
     {
         this.finalRefundMoney=(int) money;
+        int pandamoney = 0;
+        for (OrderDetail orderDetail : detail) {
+            if(orderDetail.getOrderStatus()!=OrderStatus.주문취소)
+                pandamoney+=orderDetail.getPandaMoney();
+        }
+        this.hostMoney=(int) Math.floor((this.amount)*0.25)-pandamoney;
+        this.shopMoney =(int) Math.floor((this.amount)*0.75);
+        this.pandaMoney=(int) Math.floor(pandamoney);
+        if(this.PureAmount <this.freeprice)
+        {
+            this.shopMoney+=this.shipPrice;
+        }
+        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
         this.orderStatus=OrderStatus.발송중;
+        this.paymentStatus=PaymentStatus.지급예정;
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 // 회원 탈퇴/ 기록 삭제시시 바꿔줄것
@@ -411,6 +427,8 @@ public class UserOrder {
     public void confirmUserOrderTrade()
     {
         this.orderStatus=OrderStatus.발송중;
+        this.paymentStatus=PaymentStatus.지급예정;
+
         this.standardfinishAt=LocalDateTime.now().minusDays(7);
     }
 

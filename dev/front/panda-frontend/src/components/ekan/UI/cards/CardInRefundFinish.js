@@ -345,23 +345,23 @@ function CardInRefundFinish(props) {
     });
   };
 
-  const onTestCheck = (p, s, c, w) => {
-    console.log(p + s);
-    const body = {
-      userOrderId: p,
-      state: s,
-      //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
-      courier: c,
-      waybill: w,
-    };
-    axios.post("/api/editstatus", body).then((response) => {
-      if (response.data.success) {
-        console.log("스테이터스변경성공");
-      } else {
-        console.log("스테이터스실패");
-      }
-    });
-  };
+  // const onTestCheck = (p, s, c, w) => {
+  //   console.log(p + s);
+  //   const body = {
+  //     userOrderId: p,
+  //     state: s,
+  //     //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
+  //     courier: c,
+  //     waybill: w,
+  //   };
+  //   axios.post("/api/editstatus", body).then((response) => {
+  //     if (response.data.success) {
+  //       console.log("스테이터스변경성공");
+  //     } else {
+  //       console.log("스테이터스실패");
+  //     }
+  //   });
+  // };
   const onRefundOrder = (p) => {
     if (
       window.confirm(

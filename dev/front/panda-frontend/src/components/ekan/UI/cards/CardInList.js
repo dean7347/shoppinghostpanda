@@ -815,7 +815,8 @@ function CardInList(props) {
         {props.situationDetail.status === "결제완료" ||
         props.situationDetail.status === "주문취소" ||
         props.situationDetail.status === "환불대기" ||
-        props.situationDetail.status === "상점확인중" ? (
+        props.situationDetail.status === "상점확인중" ||
+        props.situationDetail.status === "준비중" ? (
           <div></div>
         ) : (
           <div>

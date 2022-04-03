@@ -65,6 +65,11 @@ public class UserOrderController {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
+            if(!(byId.get().getOrderStatus()==OrderStatus.발송중))
+            {            return ResponseEntity.ok(new TFMessageDto(false, "환불신청 실패"));
+
+
+            }
             List<RefundList> refundList = refundReq.refundList;
             List<OrderDetail> orderDetails = new ArrayList<>();
             for (RefundList list : refundList) {
@@ -81,7 +86,7 @@ public class UserOrderController {
         {
             log.error(authentication.getName()+"의"+refundReq.getUserOrderId()+"번 주문"+"환불신청작성 실패");
 
-            return ResponseEntity.ok(new TFMessageDto(false, "환불신청 싪패"));
+            return ResponseEntity.ok(new TFMessageDto(false, "환불신청 실패"));
 
         }
 

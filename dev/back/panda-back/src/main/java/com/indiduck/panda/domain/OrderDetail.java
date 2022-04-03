@@ -103,7 +103,7 @@ public class OrderDetail {
         od.setShop(product.getShop());
         od.paymentStatus=PaymentStatus.지급예정;
         int mo = (int) Math.floor(od.totalPrice*0.95);
-        od.pandaMoney= (int) Math.floor(mo*0.12);
+        od.pandaMoney= (int) Math.floor(mo*0.10);
         od.reqRefund=0;
         od.confirmRefund=0;
         od.enrollSettle=false;
@@ -168,7 +168,7 @@ public class OrderDetail {
         this.panda=panda;
         panda.getOrderDetailPandas().add(this);
         int mo = (int) Math.floor(this.totalPrice*0.95);
-        this.pandaMoney= (int) Math.floor(mo*0.12);
+        this.pandaMoney= (int) Math.floor(mo*0.10);
     }
     public void setShop(Shop shop)
     {
@@ -199,7 +199,7 @@ public class OrderDetail {
         if(panda!=null)
         {
             int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.12);
+            this.pandaMoney= (int) Math.floor(mo*0.10);
         }
     }
     public void refundCount()
@@ -208,7 +208,7 @@ public class OrderDetail {
         if(panda!=null)
         {
             int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.12);
+            this.pandaMoney= (int) Math.floor(mo*0.10);
         }
     }
 
@@ -220,7 +220,7 @@ public class OrderDetail {
         if(panda!=null)
         {
             int mo = (int) Math.floor(this.totalPrice*0.95);
-            this.pandaMoney= (int) Math.floor(mo*0.12);
+            this.pandaMoney= (int) Math.floor(mo*0.10);
         }
 
 
@@ -280,6 +280,7 @@ public class OrderDetail {
 //    }
     public void setEnrollRefundPanda(boolean tf,SettlePanda panda)
     {
+        this.paymentStatus=PaymentStatus.지급대기;
         this.enrollSettle=tf;
         this.settlePanda=panda;
     }

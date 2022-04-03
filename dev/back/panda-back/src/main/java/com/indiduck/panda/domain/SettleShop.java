@@ -39,9 +39,9 @@ public class SettleShop {
         int depoistmoney=0;
         settle.userOrder=us;
         for (UserOrder u : us) {
-            depoistmoney+=u.getShopMoney();
             u.setEnrollRefundShop(true,settle);
             u.confirmOrder();
+            depoistmoney+=u.getShopMoney();
         }
         settle.shop=shop;
         settle.depoist=depoistmoney;

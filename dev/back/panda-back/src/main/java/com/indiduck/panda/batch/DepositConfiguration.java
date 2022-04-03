@@ -66,13 +66,13 @@ public class DepositConfiguration {
         log.info("정산로직 선정 스케쥴링 시작");
         Map<String,Object> parameterValues = new HashMap<>();
         parameterValues.put("Estatus", false);
-//        parameterValues.put("od", OrderStatus.구매확정);
+        parameterValues.put("od", OrderStatus.구매확정);
         parameterValues.put("ps", PaymentStatus.지급예정);
         return new JpaPagingItemReaderBuilder<Shop>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
                 //샵 userorder.
-                .queryString("Select s FROM Shop s where exists (Select uo from s.userOrders uo where uo.enrollSettleShop =: Estatus And uo.paymentStatus =: ps) ORDER BY id ASC")
+                .queryString("Select s FROM Shop s where exists (Select uo from s.userOrders uo where uo.enrollSettleShop =: Estatus And uo.paymentStatus =: ps And uo.orderStatus =: od) ORDER BY id ASC")
 //                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
                 .entityManagerFactory(entityManagerFactory)
                 .name("JpaPagingItemReader")
