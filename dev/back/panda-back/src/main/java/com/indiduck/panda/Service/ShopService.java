@@ -73,7 +73,7 @@ public class ShopService {
 
     //샵에서 계산서를 생성하는 로직
     public SettleShop SettleLogic(Shop shop) {
-        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShopAndStandardfinishAtBefore(shop, PaymentStatus.지급예정, false, LocalDateTime.now().minusDays(14));
+        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShopAndOrderStatus(shop, PaymentStatus.지급예정, false,OrderStatus.구매확정);
         List<UserOrder> userOrders = byShopAndPaymentStatusAndEnrollSettle.get();
         SettleShop settleShop = SettleShop.createSettleShop(userOrders, shop);
         settleShopRepository.save(settleShop);

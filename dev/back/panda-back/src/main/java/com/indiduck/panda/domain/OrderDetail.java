@@ -219,19 +219,24 @@ public class OrderDetail {
 
     public void setOrderStatus(OrderStatus status) {
         //주문취소//준비중//발송중//구매확정
-        this.orderStatus = status;
         if (status == OrderStatus.주문취소) {
+            this.orderStatus=orderStatus.주문취소;
 
         }
         if (status == OrderStatus.준비중) {
+            this.orderStatus=orderStatus.준비중;
+
             this.checkedAt = LocalDateTime.now();
 
         }
         if (status == OrderStatus.발송중) {
+            this.orderStatus=orderStatus.발송중;
+
             this.shippingAt = LocalDateTime.now();
         }
         if (status == OrderStatus.구매확정) {
             this.finishedAt = LocalDateTime.now();
+            this.orderStatus=orderStatus.구매확정;
             if (this.orderStatus != OrderStatus.주문취소) {
                 this.paymentStatus = PaymentStatus.지급예정;
             }
