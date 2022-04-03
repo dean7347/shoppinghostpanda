@@ -494,6 +494,8 @@ public class UserController {
         int allamount;
         //무료배송금액
         int freeprice;
+        //처음에 주문했던 가격
+        int originPrice;
         //받는사람
         String receiver;
         //주소
@@ -567,6 +569,7 @@ public class UserController {
                         }
 
                     }
+                    this.originPrice=orderDetail.getOriginOrderMoney();
                 }
             }
 

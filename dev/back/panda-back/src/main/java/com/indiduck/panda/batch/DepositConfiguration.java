@@ -89,7 +89,11 @@ public class DepositConfiguration {
             @Override
             public Shop process(Shop shop) throws Exception {
                 log.info(shop.getShopName() + "정산로직 시작");
-                SettleShop settleShop = shopService.SettleLogic(shop);
+                if(shop!=null)
+                {
+                    SettleShop settleShop = shopService.SettleLogic(shop);
+
+                }
 
 
                 return shop;

@@ -203,6 +203,7 @@ const SellerCancelReturnOrderPage = () => {
         `/api/shop/shoporderlist?type=change&size=10&page=${page}`
       );
       const data = response.data;
+      console.log("데이타보자", data);
       setLoading(false);
       data.pageList.forEach((data) => {
         data.orderAt = dateFormatter(data.orderAt);

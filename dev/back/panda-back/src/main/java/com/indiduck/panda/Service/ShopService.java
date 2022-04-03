@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +73,7 @@ public class ShopService {
 
     //샵에서 계산서를 생성하는 로직
     public SettleShop SettleLogic(Shop shop) {
-        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShop(shop, PaymentStatus.지급예정, false);
+        Optional<List<UserOrder>> byShopAndPaymentStatusAndEnrollSettle = userOrderRepository.findByShopAndPaymentStatusAndEnrollSettleShopAndStandardfinishAtBefore(shop, PaymentStatus.지급예정, false, LocalDateTime.now().minusDays(14));
         List<UserOrder> userOrders = byShopAndPaymentStatusAndEnrollSettle.get();
         SettleShop settleShop = SettleShop.createSettleShop(userOrders, shop);
         settleShopRepository.save(settleShop);

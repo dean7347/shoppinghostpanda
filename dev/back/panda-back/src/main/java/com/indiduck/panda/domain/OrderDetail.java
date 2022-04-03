@@ -287,8 +287,8 @@ public class OrderDetail {
         this.cancelReson = message;
         this.PartialCancelDate = LocalDateTime.now();
 
-        this.userOrder.refundAndCancelMinusPrice(true, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
-        this.totalPrice = this.IndividualPrice * productCount;
+        this.userOrder.refundAndCancelMinusPrice(this.options.getOptionPrice()*count,count*this.getIndividualPrice());
+        this.totalPrice = this.options.getOptionPrice() * productCount;
 
 //        System.out.println("productCount = " + productCount);
 
@@ -303,19 +303,18 @@ public class OrderDetail {
 
         this.confirmRefund += count;
         this.productCount -= count;
-        if (this.panda == null) {
-            this.userOrder.refundAndCancelMinusPrice(false, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
-            this.totalPrice = this.IndividualPrice * productCount;
+        this.totalPrice = this.options.getOptionPrice() * productCount;
+        this.pandaMoney=(int) Math.floor(this.totalPrice*0.1);
+        //이것으로 환불된 퓨어 어마운트 금액
+        this.userOrder.refundAndCancelMinusPrice(this.options.getOptionPrice()*count,count*this.getIndividualPrice());
 
-        } else {
-            this.userOrder.refundAndCancelMinusPrice(true, this.IndividualPrice,this.options.getOptionPrice(), count,this.productCount);
-            this.totalPrice = (int) Math.round(this.IndividualPrice * productCount);
-
-
-        }
         this.orderStatus = OrderStatus.환불완료;
 
     }
 
 
+    public int getOriginOrderMoney() {
+
+        return this.options.getOptionPrice()*(this.confirmRefund+productCount);
+    }
 }

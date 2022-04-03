@@ -276,11 +276,16 @@ public class UserOrderController {
             for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
                 List<OrderDetail> detail = shopAndOrderStatus.getDetail();
                 HashSet<String> productName = new HashSet<>();
+                int originMoney=0;
                 for (OrderDetail orderDetail : detail) {
                     productName.add(orderDetail.getProducts().getProductName());
+                    originMoney+=orderDetail.getOriginOrderMoney();
                 }
+
+                //택배금액을 포함하여야 하는가
                 int redundancy = 0;
-                if (shopAndOrderStatus.getPureAmount() < shopAndOrderStatus.getFreeprice()) {
+
+                if (originMoney < shopAndOrderStatus.getFreeprice()) {
                     redundancy += shopAndOrderStatus.getShipPrice();
                 }
 

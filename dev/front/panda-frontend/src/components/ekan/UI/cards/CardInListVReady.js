@@ -595,7 +595,7 @@ function CardInListVReady(props) {
               </dl>
               <dl className="col-5">
                 <dt>배송비</dt>
-                <dd>{isfree(props.situationDetail.price)}</dd>
+                <dd>{isfree(props.situationDetail.originPrice)}</dd>
               </dl>
               <dl className="col-1">
                 <i className="bx bx-chevron-right"></i>
