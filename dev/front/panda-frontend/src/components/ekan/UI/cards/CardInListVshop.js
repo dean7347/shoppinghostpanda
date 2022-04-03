@@ -226,7 +226,12 @@ function CardInListVshop(props) {
                                   </div>
                                 )}
                               </Col>
-                              <Col span={12}>{option.orderStatus}</Col>
+                              <Col span={12}>환불 갯수 :</Col>
+
+                              <Col span={12}>{option.completeRefund}</Col>
+                              <Col span={12}>취소 갯수 :</Col>
+
+                              <Col span={12}>{option.completeCancel}</Col>
 
                               {/* <Col span={12}>
                                 {option.orderStatus !== "결제완료" ? (
@@ -339,12 +344,10 @@ function CardInListVshop(props) {
 
   return (
     <>
-      {console.log("떳다")}
-      <div
-        id="print-button"
-        ref={componentRef}
-        style={{ width: "85%", margin: "3rem auto" }}
-      >
+      {console.log("떳다", props.situationDetail)}
+      {props.situationDetail.status === "구매확정" ? (
+        <Button onClick={handlePrint}>인쇄하기</Button>
+      ) : (
         <div>
           <Button onClick={handlePrint}>인쇄하기</Button>
           <Button
@@ -361,25 +364,13 @@ function CardInListVshop(props) {
           >
             주문취소
           </Button>
-          {/* 
-          <Button
-            onClick={() =>
-              onTestCheck(props.situationDetail.detailId, "발송중", "c", 123)
-            }
-          >
-            스테이트 발송중으로 변경
-          </Button> */}
-          {/* <Button
-            onClick={() =>
-              onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
-            }
-          >
-            스테이트 구매확정 변경
-          </Button>
-          <Button onClick={() => onTestPandaDashboard()}>
-            판다대시보드테스트
-          </Button> */}
         </div>
+      )}
+      <div
+        id="print-button"
+        ref={componentRef}
+        style={{ width: "85%", margin: "3rem auto" }}
+      >
         <Divider />
         <div ref={componentRef}>
           <div style={{ fontWeight: "bold", fontSize: "25px" }}>

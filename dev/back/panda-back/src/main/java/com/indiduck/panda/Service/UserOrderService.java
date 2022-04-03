@@ -65,7 +65,7 @@ public class UserOrderService {
         UserOrder userOrder = byId.get();
         switch (status) {
             case "준비중":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
@@ -74,7 +74,7 @@ public class UserOrderService {
                 break;
             //cur = couriercom /waybillnumber
             case "발송중":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
@@ -83,7 +83,7 @@ public class UserOrderService {
 
                 break;
             case "구매확정":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
@@ -91,7 +91,7 @@ public class UserOrderService {
                 userOrder.confirmOrder();
                 break;
             case "주문취소":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정&&userOrder.getOrderStatus() == OrderStatus.준비중 ) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정||userOrder.getOrderStatus() == OrderStatus.준비중 ) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
@@ -106,8 +106,8 @@ public class UserOrderService {
                 }
                 break;
             case "환불신청":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정  
-                        &&userOrder.getOrderStatus() == OrderStatus.준비중 ) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정
+                        ||userOrder.getOrderStatus() == OrderStatus.준비중 ) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");
@@ -115,7 +115,7 @@ public class UserOrderService {
                 userOrder.refundOrder(cur);
                 break;
             case "상점확인중":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 &&userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");

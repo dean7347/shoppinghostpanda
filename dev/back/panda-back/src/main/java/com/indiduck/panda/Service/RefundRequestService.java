@@ -136,7 +136,17 @@ public class RefundRequestService {
         String test_api_secret = apiKey.getRESTAPISECRET();
         IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
 //        System.out.println("confirmRefundRequest = " + confirmRefundRequest);
+        for (RefundRequestController.RefundArray array : refundArray) {
+//            System.out.println("오디아이디array = " + array);
+            Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
+            if(odid.get().getProductCount()-array.getRefundConfrimOrder() <0)
+            {
+                log.error(confirmRefundRequest.getUserOrderId()+"갯수초과환불");
 
+                return false;
+            }
+            odid.get().partialRefund(array.getRefundConfrimOrder());
+        }
         long refundMoney = confirmRefundRequest.getRefundMoney();
         long userOrderId = confirmRefundRequest.getUserOrderId();
         Optional<UserOrder> byId = userOrderRepository.findById(userOrderId);
@@ -159,6 +169,7 @@ public class RefundRequestService {
         if(refundMoney!=comMoney)
         {
 //            System.out.println("검증안된금액");
+            log.error(confirmRefundRequest.getUserOrderId()+"의 요청 실패 원인은 검증안된 금액");
             return false;
         }
 
@@ -176,6 +187,7 @@ public class RefundRequestService {
 //                System.out.println("환불할 수 없는 상품입니다");
 //                System.out.println(" 유저오더 아이디 ");
 //                환불로직
+                log.error(confirmRefundRequest.getUserOrderId()+"환불불가 상품");
 
                 return false;
 
@@ -215,15 +227,7 @@ public class RefundRequestService {
 
 //        userOrder.getRefundRequest().setRefundMoney(refundMoney);
 //        userOrder.confirmRefundMoney(refundMoney);
-        for (RefundRequestController.RefundArray array : refundArray) {
-//            System.out.println("오디아이디array = " + array);
-            Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
-            if(odid.get().getProductCount()-array.getRefundConfrimOrder() <=0)
-            {
-                return false;
-            }
-            odid.get().partialRefund(array.getRefundConfrimOrder());
-        }
+
         userOrder.confirmRefundMoney(comMoney);
         RefundRequest refundRequest = refundRequestRepository.findById(confirmRefundRequest.getRefundId()).get();
         refundRequest.confirmRefund(comMoney);

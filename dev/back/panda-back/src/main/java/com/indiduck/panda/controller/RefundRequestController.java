@@ -145,7 +145,7 @@ public class RefundRequestController {
             return ResponseEntity.ok(new TFMessageDto(true,"성공"));
 
         }
-        log.info(name+"환불신청실패");
+        log.error(name+"환불신청실패");
 
         return ResponseEntity.ok(new TFMessageDto(false,"요청에 실패했습니다 해당 현상이 계속될경우 문의해주세요"));
     }

@@ -201,11 +201,14 @@ public class UserOrder {
         this.hostMoney=(int) Math.floor((this.amount-this.finalRefundMoney)*0.25)-pandamoney;
         this.shopMoney =(int) Math.floor((this.amount-this.finalRefundMoney)*0.75);
         this.pandaMoney=(int) Math.floor(pandamoney);
-        if(this.PureAmount <this.freeprice)
+        if(this.PureAmount < this.freeprice)
         {
             this.shopMoney+=this.shipPrice;
         }
-        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney-finalRefundMoney;
+
+        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
+
 
     }
 
@@ -405,11 +408,23 @@ public class UserOrder {
         this.hostMoney=(int) Math.floor((this.amount)*0.25)-pandamoney;
         this.shopMoney =(int) Math.floor((this.amount)*0.75);
         this.pandaMoney=(int) Math.floor(pandamoney);
-        if(this.PureAmount <this.freeprice)
+//        if(this.PureAmount <this.freeprice)
+//        {
+//            this.shopMoney+=this.shipPrice;
+//        }
+        //유료배송의경우
+        if(this.PureAmount+this.finalRefundMoney <this.freeprice)
         {
             this.shopMoney+=this.shipPrice;
+
+            this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
+        }else
+        {
+            this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
         }
-        this.balance=this.fullprice -hostMoney-shopMoney-pandaMoney;
+
         this.orderStatus=OrderStatus.발송중;
         this.paymentStatus=PaymentStatus.지급예정;
         this.standardfinishAt=LocalDateTime.now().minusDays(7);

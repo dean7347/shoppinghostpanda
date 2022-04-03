@@ -238,9 +238,9 @@ function CardInList(props) {
     };
     axios.post("/api/editstatus", body).then((response) => {
       if (response.data.success) {
-        console.log("스테이터스변경성공");
+        alert("구매확정에 성공했습니다 감사합니다.");
       } else {
-        console.log("스테이터스실패");
+        alert("구매확정에 실패했습니다. 해당 현상이 계속된다면 꼭 문의주세요.");
       }
     });
   };

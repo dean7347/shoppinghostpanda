@@ -67,36 +67,7 @@ const SellerCompleteOrderPage = () => {
     { field: "name", headerName: "상품명", flex: 2 },
     { field: "price", headerName: "가격", flex: 0.7 },
     { field: "orderAt", headerName: "주문일자", flex: 1.1 },
-    {
-      field: "주문확인",
-      flex: 0.6,
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            text="주문확인"
-            className="is-primary"
-            onClick={(event) => {
-              confirmOrder(event, cellValues);
-            }}
-          ></Button>
-        );
-      },
-    },
-    {
-      field: "주문취소",
-      flex: 0.6,
-      renderCell: (cellValues) => {
-        return (
-          <Button
-            text="주문취소"
-            className="is-danger"
-            onClick={(event) => {
-              cancelOrder(event, cellValues);
-            }}
-          ></Button>
-        );
-      },
-    },
+
     {
       field: "주문상세",
       flex: 0.6,
@@ -338,7 +309,7 @@ const SellerCompleteOrderPage = () => {
       <div className="container">
         <div className="custom-card">
           <div className="card__header">
-            <Button
+            {/* <Button
               className="is-primary mr-3"
               disabled={selectedRows.length === 0}
               text="선택 주문 확인"
@@ -349,12 +320,12 @@ const SellerCompleteOrderPage = () => {
               disabled={selectedRows.length === 0}
               text="선택 주문 취소"
               onClick={cancelSelected}
-            />
-            <Button
+            /> */}
+            {/* <Button
               className="is-info float-end"
               text="주문서 인쇄(인쇄시 주문확인)"
               onClick={PrintList}
-            />
+            /> */}
           </div>
           <div style={{ width: "100%", height: "600px" }}>
             <DataGrid
