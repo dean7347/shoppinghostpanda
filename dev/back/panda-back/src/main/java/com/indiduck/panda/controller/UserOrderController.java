@@ -54,19 +54,18 @@ public class UserOrderController {
     @RequestMapping(value = "/api/refundactionforuser", method = RequestMethod.POST)
     public ResponseEntity<?> refundactionforuser(@CurrentSecurityContext(expression = "authentication")
                                                          Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
-        log.info(authentication.getName()+"의 환불 신청"+refundReq.getUserOrderId()+"");
+        log.info(authentication.getName() + "의 환불 신청" + refundReq.getUserOrderId() + "");
         boolean b = verifyService.userOrderVerifyForuser(authentication.getName(), refundReq.getUserOrderId());
-        if(!b)
-        {
+        if (!b) {
             return ResponseEntity.ok(new TFMessageDto(false, "상태변경 완료"));
 
         }
-        try{
+        try {
             String name = authentication.getName();
             Optional<User> byEmail = userRepository.findByEmail(name);
             Optional<UserOrder> byId = userOrderRepository.findById(refundReq.userOrderId);
-            if(!(byId.get().getOrderStatus()==OrderStatus.발송중))
-            {            return ResponseEntity.ok(new TFMessageDto(false, "환불신청 실패"));
+            if (!(byId.get().getOrderStatus() == OrderStatus.발송중)) {
+                return ResponseEntity.ok(new TFMessageDto(false, "환불신청 실패"));
 
 
             }
@@ -80,11 +79,10 @@ public class UserOrderController {
                 orderDetails.add(orderDetail);
             }
             refundRequestService.newRefundRequest(byId.get(), orderDetails, refundReq.refundMessage, byEmail.get());
-            log.info(authentication.getName()+"의"+refundReq.getUserOrderId()+"번 주문"+"환불신청작성 성공");
+            log.info(authentication.getName() + "의" + refundReq.getUserOrderId() + "번 주문" + "환불신청작성 성공");
             return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
-        }catch (Exception e)
-        {
-            log.error(authentication.getName()+"의"+refundReq.getUserOrderId()+"번 주문"+"환불신청작성 실패");
+        } catch (Exception e) {
+            log.error(authentication.getName() + "의" + refundReq.getUserOrderId() + "번 주문" + "환불신청작성 실패");
 
             return ResponseEntity.ok(new TFMessageDto(false, "환불신청 실패"));
 
@@ -94,23 +92,20 @@ public class UserOrderController {
         //리펀드 리퀘스트 생성
 
 
-
     }
 
     //부분취소
     @RequestMapping(value = "/api/partialCancel", method = RequestMethod.POST)
     public ResponseEntity<?> partialCancel(@CurrentSecurityContext(expression = "authentication")
                                                    Authentication authentication, @RequestBody RefundReq refundReq) throws Exception {
-        log.info(authentication.getName()+"의 부분취소 요청");
+        log.info(authentication.getName() + "의 부분취소 요청");
         boolean b1 = verifyService.orderForShop(authentication.getName(), refundReq.userOrderId);
-        if(!b1)
-        {
-            log.error(authentication.getName()+"의 부분취소 요청 실패");
+        if (!b1) {
+            log.error(authentication.getName() + "의 부분취소 요청 실패");
 
             return ResponseEntity.ok(new TFMessageDto(false, "상태변경 완료 실패했습니다"));
 
         }
-            
 
 
         try {
@@ -134,12 +129,12 @@ public class UserOrderController {
             if (result) {
                 boolean b = orderDetailService.refundOrder(refundReq.getUserOrderId(), refundMoney);
                 if (b) {
-                    log.info(authentication.getName()+"의 부분취소 요청 성공");
+                    log.info(authentication.getName() + "의 부분취소 요청 성공");
 
                     return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
                 } else {
-                    log.error(authentication.getName()+"의 부분취소 요청성공했으나 환불신청에는 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
+                    log.error(authentication.getName() + "의 부분취소 요청성공했으나 환불신청에는 실패함" + refundReq.getUserOrderId() + "번 주문 확인 요망");
 
                     return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 성공했으니 환불에 실패했습니다  고객센터로 문의주세요(필수사항)"));
 
@@ -147,12 +142,12 @@ public class UserOrderController {
 
             }
         } catch (Exception e) {
-            log.error(authentication.getName()+"의 부분취소 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
+            log.error(authentication.getName() + "의 부분취소 실패함" + refundReq.getUserOrderId() + "번 주문 확인 요망");
 
             return ResponseEntity.ok(new TFMessageDto(false, "문자오류로 인해 상태변경에 실패했습니다"));
 
         }
-        log.error(authentication.getName()+"의 부분취소 실패함"+refundReq.getUserOrderId()+"번 주문 확인 요망");
+        log.error(authentication.getName() + "의 부분취소 실패함" + refundReq.getUserOrderId() + "번 주문 확인 요망");
 
 
         return ResponseEntity.ok(new TFMessageDto(false, "상태변경에 실패했습니다"));
@@ -167,7 +162,7 @@ public class UserOrderController {
 
         UserOrder userOrder = userOrderService.ChangeOrder(changeAction.userOrderId, changeAction.state, changeAction.courier, changeAction.waybill);
         if (userOrder != null) {
-            log.info(authentication.getName()+"의 상태변경 요청 성공"+changeAction.userOrderId+changeAction.state+ changeAction.courier+ changeAction.waybill);
+            log.info(authentication.getName() + "의 상태변경 요청 성공" + changeAction.userOrderId + changeAction.state + changeAction.courier + changeAction.waybill);
             return ResponseEntity.ok(new TFMessageDto(true, "상태변경 완료"));
 
         }
@@ -188,14 +183,14 @@ public class UserOrderController {
             return ResponseEntity.ok(new TFMessageDto(true, "구매기간 연장 성공"));
 
         }
-        log.error(authentication.getName()+"의 구매기간 연장 실패");
+        log.error(authentication.getName() + "의 구매기간 연장 실패");
         return ResponseEntity.ok(new TFMessageDto(false, "3번이상 연장을 했거나 연장할 수 있는 상태가 아닙니다"));
 
     }
 
 
     //여러 주문들의 스테이터스를 바꿈
-   @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/selecteditstatus", method = RequestMethod.POST)
     public ResponseEntity<?> selectedEditStatus(@CurrentSecurityContext(expression = "authentication")
                                                         Authentication authentication, @RequestBody ChangeActions changeAction) throws Exception {
 
@@ -203,22 +198,21 @@ public class UserOrderController {
         long num = 0;
         for (long l : changeAction.userOrderId) {
             boolean b = verifyService.userOrderForShopOrUser(authentication.getName(), l);
-            if(!b)
-            {
-                log.error(authentication.getName()+"이 스테이터스를 바꾸려고 했으나"+l+"번주문에 이상이 생겼습니다");
+            if (!b) {
+                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다");
                 return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
             }
             UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
             if (userOrder == null) {
                 num = l;
-                log.error(authentication.getName()+"이 스테이터스를 바꾸려고 했으나"+l+"번주문에 이상이 생겼습니다");
+                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다");
 
                 return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
 
             }
-            log.info(authentication.getName()+"이 스테이터스를 바꿈");
+            log.info(authentication.getName() + "이 스테이터스를 바꿈");
 
 
         }
@@ -276,10 +270,10 @@ public class UserOrderController {
             for (UserOrder shopAndOrderStatus : byShopAndOrderStatus) {
                 List<OrderDetail> detail = shopAndOrderStatus.getDetail();
                 HashSet<String> productName = new HashSet<>();
-                int originMoney=0;
+                int originMoney = 0;
                 for (OrderDetail orderDetail : detail) {
                     productName.add(orderDetail.getProducts().getProductName());
-                    originMoney+=orderDetail.getOriginOrderMoney();
+                    originMoney += orderDetail.getOriginOrderMoney();
                 }
 
                 //택배금액을 포함하여야 하는가
@@ -460,15 +454,15 @@ public class UserOrderController {
         //주문번호
         Long id;
         //정가
-
-        //온전한 입금가격(정가)
         int beforeSalePrice;
 
-        //실제 판매가
+        //실제 판매가(택배비 제외)
         int realPrice;
-
-
-        //정산금액
+        //택배비
+        int shipPrice;
+        //샵이 받게될 정산액
+        int shopPrice;
+        //환불금액
         int settlePrice;
         //수수료
         int fees;
@@ -488,12 +482,10 @@ public class UserOrderController {
             this.id = uo.getId();
             this.realPrice = uo.getFullprice();
             //무료배송이 아닐경우
-            if (uo.getFreeprice() > uo.getPureAmount()) {
-                this.beforeSalePrice = uo.getPureAmount() + uo.getShipPrice();
-            } else {
-                this.beforeSalePrice = uo.getPureAmount();
-            }
-            this.settlePrice = uo.getShopMoney();
+            this.shipPrice=uo.shipPriceCalculation();
+            this.beforeSalePrice = uo.getPureAmount() - uo.getFinalRefundMoney();
+            this.shopPrice=uo.getShopMoney();
+            this.settlePrice = uo.getFinalRefundMoney();
             this.fees = uo.getPandaMoney() + uo.getHostMoney() + uo.getBalance();
             this.salesDate = uo.getCreatedAt();
             this.confirmDate = uo.getFinishAt();

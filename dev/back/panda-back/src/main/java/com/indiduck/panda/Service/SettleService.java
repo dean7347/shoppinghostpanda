@@ -5,6 +5,7 @@ import com.indiduck.panda.Repository.SettlePandaRepository;
 import com.indiduck.panda.Repository.SettleShopRepository;
 import com.indiduck.panda.domain.SettlePanda;
 import com.indiduck.panda.domain.SettleShop;
+import com.indiduck.panda.domain.UserOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class SettleService {
             Optional<SettleShop> byId = settleShopRepository.findById(id);
             SettleShop settleShop = byId.get();
             settleShop.depoist();
+            for (UserOrder userOrder : settleShop.getUserOrder()) {
+                userOrder.setDepoistCompleted();
+            }
             return "shop";
         }else if(type.equals("panda"))
         {

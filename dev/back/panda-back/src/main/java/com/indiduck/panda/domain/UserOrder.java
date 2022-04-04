@@ -303,14 +303,37 @@ public class UserOrder {
             if (orderDetail.getOrderStatus() != OrderStatus.주문취소) {
                 orderDetail.setOrderStatus(OrderStatus.구매확정);
                 orderDetail.setPaymentM(PaymentStatus.지급예정);
-
             }
         }
         this.finishAt = LocalDateTime.now();
         this.paymentStatus = PaymentStatus.지급예정;
-//        this.settle();
-//        this.settleShop.setDepositMoney(this.shopMoney);
         this.orderStatus = OrderStatus.구매확정;
+
+        int pandamoney = 0;
+        int isfreemoney = 0;
+        for (OrderDetail orderDetail : detail) {
+            if (orderDetail.getOrderStatus() != OrderStatus.주문취소)
+                pandamoney += orderDetail.getPandaMoney();
+            isfreemoney += orderDetail.getOriginOrderMoney();
+        }
+        this.hostMoney = (int) Math.floor((this.PureAmount) * 0.25) - pandamoney - (this.PureAmount - this.amount);
+        this.shopMoney = (int) Math.floor((this.PureAmount) * 0.75);
+        this.pandaMoney = (int) Math.floor(pandamoney);
+//        if(this.PureAmount <this.freeprice)
+//        {
+//            this.shopMoney+=this.shipPrice;
+//        }
+        //유료배송의경우
+        if (isfreemoney < this.freeprice) {
+            this.shopMoney += this.shipPrice;
+
+            this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
+
+        } else {
+            this.balance = this.fullprice - hostMoney - shopMoney - pandaMoney;
+
+        }
+
     }
     // xxx -> 결제취소 ?
 
@@ -452,6 +475,34 @@ public class UserOrder {
         this.amount -= realminusPrice;
 
 
+    }
+    public void setDepoistCompleted()
+    {
+        this.depositCompleted=LocalDateTime.now();
+    }
+
+    public void setExpectCalculate() {
+        LocalDateTime now= LocalDateTime.now();
+        //월요일 1 화요일 2 수요일 3 목요일 4 금요일 5 토요일 6 일요일 7
+        //오늘이 일요일이면 1 더하고 7+1
+        //오늘이 토요일이면 2더함 6+2
+        //8빼기 오늘
+        int value = now.getDayOfWeek().getValue();
+        LocalDateTime localDateTime = now.plusDays(8 - value);
+        this.expectCalculate=LocalDateTime.of(localDateTime.getYear(),localDateTime.getMonth(),localDateTime.getDayOfMonth(),0,0);
+    }
+
+    public int shipPriceCalculation()
+    {
+        int originMoney=0;
+        for (OrderDetail orderDetail : detail) {
+            originMoney+=orderDetail.getOriginOrderMoney();
+        }
+        if(this.shop.getFreePrice()>originMoney)
+        {
+            return this.shop.getNofree();
+        }
+        return 0;
     }
 
 

@@ -20,34 +20,43 @@ const SellerSettlementPage = () => {
 
   const renderBody = (item, index) => (
     <tr key={index}>
-      <td>USOD01{item.id} </td>
-      <td>{item.beforeSalePrice}</td>
+      {/* 주문번호 */}
+      <td>{item.id} </td>
+      {/* 판매금액 */}
+      {/* <td>{item.beforeSalePrice}</td> */}
+      {/* 판매금액(환불금 포함) */}
       <td>{item.realPrice}</td>
+      {/* 환불액 */}
       <td>{item.settlePrice}</td>
+      {/* 배송료 */}
+      <td>{item.shipPrice}</td>
+      {/* 실정산액 */}
+      <td>{item.shopPrice}</td>
+      {/* 수수료 */}
       <td>{item.fees}</td>
       {/* 판매일 */}
       {item.salesDate === null ? (
         <td>NODATA</td>
       ) : (
-        <td>{item.salesDate.slice(0, 10)}</td>
+        <td>{item.salesDate.slice(2, 10)}</td>
       )}
       {/* 구매확정일 */}
       {item.confirmDate === null ? (
         <td>NODATA</td>
       ) : (
-        <td>{item.confirmDate.slice(0, 10)}</td>
+        <td>{item.confirmDate.slice(2, 10)}</td>
       )}
       {/* 정산예장일 */}
       {item.expectDate === null ? (
         <td>NODATA</td>
       ) : (
-        <td>{item.depositCompleted.slice(0, 10)}</td>
+        <td>{item.expectDate.slice(2, 10)}</td>
       )}{" "}
       {/* 정산일 */}
       {item.depositCompleted === null ? (
-        <td>NODATA</td>
+        <td>정산예정</td>
       ) : (
-        <td>{item.expectDate.slice(0, 10)}</td>
+        <td>{item.depositCompleted.slice(2, 10)}</td>
       )}{" "}
       {/* <td>{item.expectDate.slice(0, 10)}</td> */}
       {/* <td>{item.depositCompleted.slice(0, 10)}</td> */}

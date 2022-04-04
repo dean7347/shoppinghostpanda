@@ -169,12 +169,18 @@ export const settlementSearchByStatus = [{ label: "전체", value: "all" }];
 
 export const sellerSettlementTable = {
   header: [
-    "입금액",
-    "정산금액",
+    "주문번호",
+    "판매금액",
+    // "판매금액(환불금포함)",
+    "환불액",
+    "배송료",
+    "실정산액",
     "수수료",
     "판매일",
     "구매확정일",
     "정산예상일",
+    "정산완료일",
+
     "정산상태",
   ],
 };

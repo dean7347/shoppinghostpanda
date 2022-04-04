@@ -83,7 +83,7 @@ public class UserOrderService {
 
                 break;
             case "구매확정":
-                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정) {
+                if (userOrder.getOrderStatus() == OrderStatus.주문취소 ||userOrder.getOrderStatus() == OrderStatus.구매확정 ||userOrder.getOrderStatus() == OrderStatus.준비중||userOrder.getOrderStatus() == OrderStatus.결제완료) {
                     return null;
                 }
                 log.info(id + "번 주문이" + status + "상태로 변경되었습니다");

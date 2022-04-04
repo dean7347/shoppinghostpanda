@@ -640,7 +640,10 @@ function CardInList(props) {
       <div style={{ width: "85%", margin: "3rem auto" }}>
         {props.situationDetail.status === "주문취소" ||
         props.situationDetail.status === "환불대기" ||
-        props.situationDetail.status === "상점확인중" ? (
+        props.situationDetail.status === "상점확인중" ||
+        props.situationDetail.status === "준비중" ||
+        props.situationDetail.status === "결제완료" ||
+        props.situationDetail.status === "구매확정" ? (
           <div></div>
         ) : (
           <Button

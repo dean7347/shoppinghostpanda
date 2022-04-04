@@ -42,6 +42,7 @@ public class SettleShop {
             u.setEnrollRefundShop(true,settle);
             u.confirmOrder();
             depoistmoney+=u.getShopMoney();
+            u.setExpectCalculate();
         }
         settle.shop=shop;
         settle.depoist=depoistmoney;
