@@ -776,6 +776,38 @@ function CardInList(props) {
             {props.situationDetail.status}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>택배사</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.courier}
+            {props.situationDetail.courier === null ? (
+              <div>등록 이전입니다</div>
+            ) : (
+              <div></div>
+            )}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>운송장번호</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+
+          <Col span={12}>
+            {props.situationDetail.wayBillNumber}
+            {props.situationDetail.wayBillNumber === null ? (
+              <div>등록 이전입니다</div>
+            ) : (
+              <div></div>
+            )}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
           <div>
             {/* <Button
               onClick={() => {

@@ -313,7 +313,8 @@ public class UserController {
         recentSituationDtoV2 rsd = new recentSituationDtoV2(true, byEmail.get().getUserRName(), userOrder.getId(), userOrder.getAmount(), userOrder.getShipPrice()
                 , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
                 , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
-                userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber());
+                userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber()
+                ,userOrder.getCourierCom(),userOrder.getWaybillNumber());
 
 
         return ResponseEntity.ok(rsd);
@@ -348,7 +349,8 @@ public class UserController {
             recentSituationDtoV2 rsd = new recentSituationDtoV2(true, byEmail.get().getUserRName(), userOrder.getId(), userOrder.getAmount(), userOrder.getShipPrice()
                     , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
                     , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
-                    userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber());
+                    userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber()
+            ,userOrder.getCourierCom(),userOrder.getWaybillNumber());
             printdatas.add(rsd);
 
 
@@ -518,11 +520,15 @@ public class UserController {
         //배송메모
         String shipmemo;
         String buyerName;
+        //택배사
+        String courier;
+        //운송장번호
+        String wayBillNumber;
 
 
         public recentSituationDtoV2(boolean su, String buyer, Long detailId, int price, int shipprice, int allamount,
                                     String receiver, String address, String receiverPhone, List<OrderDetail> dol, String pn, LocalDateTime oa,
-                                    String sn, String sp, OrderStatus os, int pa, int fp, String addressNum, String shipmemo, String bp) {
+                                    String sn, String sp, OrderStatus os, int pa, int fp, String addressNum, String shipmemo, String bp,String co,String wn) {
             this.proName = pn;
             this.buyerName = buyer;
             this.orderAt = oa;
@@ -542,6 +548,8 @@ public class UserController {
             this.receiverPhone = receiverPhone;
             this.pureamount = pa;
             this.freeprice = fp;
+            this.courier =co;
+            this.wayBillNumber=wn;
             for (OrderDetail orderDetail : dol) {
                 String img = null;
                 List<File> images = orderDetail.getProducts().getImages();
