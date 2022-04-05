@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { dashboardCard } from "./buyerTypes";
 import StatusCard from "../../../UI/cards/StatusCard";
 import MyPageTable from "../../../UI/table/MyPageTable";
@@ -8,13 +8,15 @@ import Modal from "../../../UI/modal/Modal";
 import { Link } from "react-router-dom";
 import Message from "../../../UI/Message";
 import {
-  useGetBuyerDashboard, useGetRecentSituationList,
+  useGetBuyerDashboard,
+  useGetRecentSituationList,
   useGetSituationDetail,
 } from "../../../../../api/queryHooks/mypageHooks/buyerMypageHooks";
 import LoadingComponent from "../../../UI/LoadingComponent";
 import CardInList from "../../../UI/cards/CardInList";
-import {Pagination} from "@mui/material";
-
+import { Pagination } from "@mui/material";
+import { Button } from "../../../../../../node_modules/antd/lib/index";
+import axios from "../../../../../api/axiosDefaults";
 const orderStatus = {
   결제완료: "primary",
   준비중: "primary",
@@ -32,13 +34,15 @@ const orderStatus = {
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const BuyerDashboard = () => {
-  const [showModal, setShowModal] = useState(false)
-  const [cardItems, setCardItems] = useState(dashboardCard)
-  const [detailId, setDetailId] = useState(0)
-  const [page, setPage] = useState(0)
-  const {data: buyerDashboard} = useGetBuyerDashboard();
-  const {data: buyerSituationDetail, isFetching: detailFetching} = useGetSituationDetail(detailId)
-  const {data: buyerSituationList, error: situationError} = useGetRecentSituationList(5, page);
+  const [showModal, setShowModal] = useState(false);
+  const [cardItems, setCardItems] = useState(dashboardCard);
+  const [detailId, setDetailId] = useState(0);
+  const [page, setPage] = useState(0);
+  const { data: buyerDashboard } = useGetBuyerDashboard();
+  const { data: buyerSituationDetail, isFetching: detailFetching } =
+    useGetSituationDetail(detailId);
+  const { data: buyerSituationList, error: situationError } =
+    useGetRecentSituationList(5, page);
 
   useEffect(() => {
     let copy = [...cardItems];
@@ -51,27 +55,111 @@ const BuyerDashboard = () => {
     }
   }, [buyerDashboard]);
 
-  const handleClick = useCallback(async (item) => {
-    await setDetailId(+item)
-    setShowModal(true)
-  },[detailId])
+  const handleClick = useCallback(
+    async (item) => {
+      await setDetailId(+item);
+      setShowModal(true);
+    },
+    [detailId]
+  );
+  const onTestCheck = (p, s, c, w) => {
+    if (s !== "구매확정") {
+      alert("올바른 요청이 아닙니다");
+      return;
+    }
 
-  const handlePageChange = useCallback((e) => {
-    e.preventDefault()
-    setPage(+e.target.textContent - 1)
-  },[page])
+    console.log(p + s);
+    const body = {
+      userOrderId: p,
+      state: s,
+      //발송중 항목에는 해당 항목을 넣어서 보낸다 없다면 ""을 담아서 보낸다
+      courier: c,
+      waybill: w,
+    };
+    axios.post("/api/editstatus", body).then((response) => {
+      if (response.data.success) {
+        alert("구매확정에 성공했습니다 감사합니다.");
+      } else {
+        alert("구매확정에 실패했습니다. 해당 현상이 계속된다면 꼭 문의주세요.");
+      }
+    });
+  };
+
+  const onCancelOrder = (p) => {
+    console.log("취소신청");
+    console.log(p);
+    const body = {
+      detailId: p,
+    };
+    axios.post("/api/userordercancel", body).then((response) => {
+      if (response.data.success) {
+        alert("해당 옵션을 취소했습니다");
+      } else {
+        alert(response.data.message);
+      }
+    });
+  };
+
+  const handlePageChange = useCallback(
+    (e) => {
+      e.preventDefault();
+      setPage(+e.target.textContent - 1);
+    },
+    [page]
+  );
+
+  const renderButton = (st, id) => {
+    if (st === "결제완료") {
+      return (
+        <td>
+          <Button onClick={() => onCancelOrder(id)} danger>
+            주문취소
+          </Button>
+        </td>
+      );
+    } else if (st === "발송중") {
+      return (
+        <td>
+          <Button
+            type="primary"
+            onClick={() => onTestCheck(id, "구매확정", "c", 123)}
+          >
+            구매확정
+          </Button>
+        </td>
+      );
+    } else if (st === "준비중") {
+      return <td> 준비중입니다</td>;
+    } else {
+      return <td> 감사합니다</td>;
+    }
+  };
 
   const renderBody = (item, index) => (
     <tr
       key={index}
-      onClick={() => {
-        handleClick(item.num);
-      }}
+      // onClick={() => {
+      //   handleClick(item.num);
+      // }}
     >
       <td>{item.num}</td>
       <td>{item.productName}</td>
       <td>{item.price} ₩</td>
       <td>{item.orderAt.slice(0, 10)}</td>
+      {renderButton(item.status, item.num)}
+
+      {/* <td>
+        <Button>구매확정</Button>
+      </td> */}
+      <td>
+        <Button
+          onClick={() => {
+            handleClick(item.num);
+          }}
+        >
+          상세보기
+        </Button>
+      </td>
       <td>
         <Badge type={orderStatus[item.status]} content={item.status} />
       </td>
@@ -143,10 +231,12 @@ const BuyerDashboard = () => {
                   />
                 ) : null}
               </div>
-              <div className='card__footer'>
-                <Pagination count={buyerSituationList?.totalpage} sx={{maxWidth: 350}}
-                            className='mx-auto'
-                            onChange={handlePageChange}
+              <div className="card__footer">
+                <Pagination
+                  count={buyerSituationList?.totalpage}
+                  sx={{ maxWidth: 350 }}
+                  className="mx-auto"
+                  onChange={handlePageChange}
                 />
               </div>
             </div>

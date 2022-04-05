@@ -176,25 +176,26 @@ public class UserController {
         List<UserOrder> byUserId = userOrderRepository.findByUserId(byEmail.get());
         Optional<List<OrderDetail>> byUserAndOrderStatus = orderDetailRepository.findByUserAndOrderStatus(byEmail.get(), OrderStatus.결제대기);
 //        Optional<List<OrderDetail>> orderDetailByUser = orderDetailRepository.findOrderDetailByUser(byEmail.get());
+        Optional<List<OrderDetail>> cartNum = orderDetailRepository.findByUserAndOrderStatusAndOptions_Sales(byEmail.get(), OrderStatus.결제대기,true);
 
         int ready = 0;
         int finish = 0;
         int cancel = 0;
-        int cart = 0;
+        int cart = cartNum.get().size();
         for (UserOrder userOrder : byUserId) {
             if ((userOrder.getOrderStatus() == (OrderStatus.발송중)) || (userOrder.getOrderStatus() == (OrderStatus.준비중)) || (userOrder.getOrderStatus() == (OrderStatus.결제완료))) {
                 ready++;
             }
 
             if ((userOrder.getOrderStatus() == (OrderStatus.배송완료)) || (userOrder.getOrderStatus() == (OrderStatus.구매확정))) {
-                ready++;
+                finish++;
             }
             if ((userOrder.getOrderStatus() == (OrderStatus.환불대기)) || (userOrder.getOrderStatus() == (OrderStatus.환불완료)) || (userOrder.getOrderStatus() == (OrderStatus.주문취소))) {
                 cancel++;
             }
-            if ((userOrder.getOrderStatus() == (OrderStatus.결제대기))) {
-                cart++;
-            }
+//            if ((userOrder.getOrderStatus() == (OrderStatus.결제대기))) {
+//                cart++;
+//            }
         }
         if (byUserAndOrderStatus.get().isEmpty()) {
             cart = 0;
