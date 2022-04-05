@@ -76,7 +76,7 @@ public class OrderCancelConfiguration {
                 //샵 userorder.
 //                .queryString("Select p FROM Panda p where exists (Select odp from p.orderDetailPandas odp where odp.enrollSettle =: Estatus And odp.paymentStatus =: ps And odp.orderStatus =: od) ORDER BY id ASC")
 //                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
-                .queryString("SELECT uo FROM UserOrder uo where uo.CreatedAt <: limitDay And uo.orderStatus =: od ORDER BY id ASC")
+                .queryString("SELECT uo FROM UserOrder uo where uo.createdAt <: limitDay And uo.orderStatus =: od ORDER BY id ASC")
                 .entityManagerFactory(entityManagerFactory)
                 .name("JpaPagingItemReader")
                 .build();
@@ -92,7 +92,10 @@ public class OrderCancelConfiguration {
             @Override
             public UserOrder process(UserOrder userOrder) throws Exception {
                 log.info("취소되는 주문은 = " + userOrder.getUserId());
-                userOrderService.cancelOrder(userOrder.getId());
+                userOrder.cancelOrder();
+                userOrder.cancelMoneyJob();
+
+                userOrderService.cancelOrderSystem(userOrder.getId());
 
                 return userOrder;
             }

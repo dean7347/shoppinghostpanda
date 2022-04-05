@@ -783,11 +783,10 @@ function CardInList(props) {
             <hr style={{ backgroundColor: "black" }} />
           </Col>
           <Col span={12}>
-            {props.situationDetail.courier}
             {props.situationDetail.courier === null ? (
               <div>등록 이전입니다</div>
             ) : (
-              <div></div>
+              <div> {props.situationDetail.courier}</div>
             )}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>
@@ -800,11 +799,34 @@ function CardInList(props) {
           </Col>
 
           <Col span={12}>
-            {props.situationDetail.wayBillNumber}
             {props.situationDetail.wayBillNumber === null ? (
               <div>등록 이전입니다</div>
             ) : (
-              <div></div>
+              <div> {props.situationDetail.wayBillNumber}</div>
+            )}
+            <hr style={{ backgroundColor: "blue" }} />
+          </Col>
+          <Col span={12}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              <h3>영수증</h3>
+            </div>
+            <hr style={{ backgroundColor: "black" }} />
+          </Col>
+          <Col span={12}>
+            {props.situationDetail.receiptUrl === null ? (
+              <div>등록 이전입니다</div>
+            ) : (
+              <button
+                onClick={() =>
+                  window.open(
+                    `${props.situationDetail.receiptUrl}`,
+                    "window_name",
+                    "width=430,height=500,location=no,status=no,scrollbars=yes"
+                  )
+                }
+              >
+                [영수증보기]
+              </button>
             )}
             <hr style={{ backgroundColor: "blue" }} />
           </Col>

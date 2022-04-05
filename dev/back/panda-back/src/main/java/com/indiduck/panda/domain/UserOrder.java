@@ -1,6 +1,7 @@
 package com.indiduck.panda.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 public class UserOrder {
     @Id
     @GeneratedValue
@@ -266,6 +268,7 @@ public class UserOrder {
             orderDetail.setOrderStatus(OrderStatus.주문취소);
         }
         this.orderStatus = OrderStatus.주문취소;
+
     }
 
     //결제완료 -> 준비중
@@ -503,6 +506,13 @@ public class UserOrder {
             return this.shop.getNofree();
         }
         return 0;
+    }
+
+    public void cancelMoneyJob() {
+        this.finalRefundMoney=this.fullprice;
+        this.fullprice=0;
+        this.PureAmount=0;
+        this.amount=0;
     }
 
 

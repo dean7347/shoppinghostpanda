@@ -90,6 +90,48 @@ public class RefundRequestService {
         return true;
     }
 
+    //시스템에의한 강제캔슬
+    public boolean allCancelForSystem(String mind, UserOrder userOrder) {
+        String test_api_key = apiKey.getRESTAPIKEY();
+        String test_api_secret = apiKey.getRESTAPISECRET();
+        IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
+        CancelData cancel_data = new CancelData(mind, true); //imp_uid를 통한 전액취소
+        userOrder.cancelOrder();
+        userOrder.cancelMoneyJob();
+        try {
+            IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+            String receiptUrl = payment_response.getResponse().getReceiptUrl();
+            userOrder.setReceiptUrl(receiptUrl);
+
+        } catch (IamportResponseException e) {
+            log.error("올캔슬 폴 셀러1"+e.getMessage());
+            switch (e.getHttpStatusCode()) {
+                case 401:
+                    //TODO
+                    log.error("올캔슬 포셀러2e = " + e);
+                    return false;
+                case 500:
+                    //TODO
+                    log.error("올켄슬 포 셀러3e = " + e);
+                    return false;
+
+            }
+            return false;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            log.error("올켄슬 포 셀러4e = " + e);
+
+            e.printStackTrace();
+            return false;
+
+        } catch (Exception e) {
+            log.error("취소로직 오류로 실패  = "+userOrder.getId()+"//" + e);
+
+            return false;
+        }
+        log.info("구매취소 로직 성공적ㅇ 실행");
+        return true;
+    }
 
 
     public boolean rejectTrade(RefundRequestController.ConfirmRefundRequest confirmRefundRequest)

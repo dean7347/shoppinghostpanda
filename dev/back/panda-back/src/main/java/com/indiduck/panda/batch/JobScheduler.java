@@ -28,6 +28,8 @@ public class JobScheduler {
     private DepositConfiguration depositConfiguration;
     @Autowired
     private DepositPandaConfiguration pandaConfiguration;
+    @Autowired
+    private OrderCancelConfiguration orderCancelConfiguration;
 
     @Autowired
     private ResignConfiguration resignConfiguration;
@@ -98,6 +100,25 @@ public class JobScheduler {
         try {
 
             jobLauncher.run(resignConfiguration.ResignJob(), jobParameters);
+
+        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
+
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Scheduled(cron = "50 * * * * ?")
+    public void cancelOrderJob() {
+        Map<String, JobParameter> confMap = new HashMap<>();
+        confMap.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameters = new JobParameters(confMap);
+        System.out.println("주문취소");
+        try {
+
+            jobLauncher.run(orderCancelConfiguration.OrderCancelJob(), jobParameters);
 
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {

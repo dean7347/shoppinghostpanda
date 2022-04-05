@@ -314,7 +314,7 @@ public class UserController {
                 , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
                 , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
                 userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber()
-                ,userOrder.getCourierCom(),userOrder.getWaybillNumber());
+                ,userOrder.getCourierCom(),userOrder.getWaybillNumber(),userOrder.getReceiptUrl());
 
 
         return ResponseEntity.ok(rsd);
@@ -350,7 +350,7 @@ public class UserController {
                     , userOrder.getFullprice(), userOrder.getReveiverName(), userOrder.getReceiverAddress(), userOrder.getReceiverPhone(), detail
                     , proname.toString(), detail.get(0).getPaymentAt(), detail.get(0).getShop().getShopName(), detail.get(0).getShop().getCsPhone(),
                     userOrder.getOrderStatus(), userOrder.getPureAmount(), userOrder.getFreeprice(), userOrder.getReceiverZipCode(), userOrder.getMemo(), userOrder.getUserId().getUserPhoneNumber()
-            ,userOrder.getCourierCom(),userOrder.getWaybillNumber());
+            ,userOrder.getCourierCom(),userOrder.getWaybillNumber(),userOrder.getReceiptUrl());
             printdatas.add(rsd);
 
 
@@ -524,11 +524,13 @@ public class UserController {
         String courier;
         //운송장번호
         String wayBillNumber;
+        //영수증
+        String receiptUrl;
 
 
         public recentSituationDtoV2(boolean su, String buyer, Long detailId, int price, int shipprice, int allamount,
                                     String receiver, String address, String receiverPhone, List<OrderDetail> dol, String pn, LocalDateTime oa,
-                                    String sn, String sp, OrderStatus os, int pa, int fp, String addressNum, String shipmemo, String bp,String co,String wn) {
+                                    String sn, String sp, OrderStatus os, int pa, int fp, String addressNum, String shipmemo, String bp,String co,String wn,String ru) {
             this.proName = pn;
             this.buyerName = buyer;
             this.orderAt = oa;
@@ -550,6 +552,7 @@ public class UserController {
             this.freeprice = fp;
             this.courier =co;
             this.wayBillNumber=wn;
+            this.receiptUrl=ru;
             for (OrderDetail orderDetail : dol) {
                 String img = null;
                 List<File> images = orderDetail.getProducts().getImages();

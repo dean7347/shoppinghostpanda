@@ -45,6 +45,27 @@ public class UserOrderService {
             return null;
         }
         byId.get().cancelOrder();
+        byId.get().cancelMoneyJob();
+        return byId.get();
+
+
+    }
+
+    public UserOrder cancelOrderSystem(long userorderId) {
+        log.info("미 확인 주문 취소 로직 실행");
+        Optional<UserOrder> byId = userOrderRepository.findById(userorderId);
+        System.out.println("byId = " + byId.get().getId());
+
+        String mid = byId.get().getMid();
+        boolean b = refundRequestService.allCancelForSystem(mid, byId.get());
+        if (!b) {
+            log.error("취소 실패로 인한 강제 취소 실행");
+
+            return byId.get();
+        }
+
+        log.info("미 확인 주문 취소 로직 종료");
+
         return byId.get();
 
 
