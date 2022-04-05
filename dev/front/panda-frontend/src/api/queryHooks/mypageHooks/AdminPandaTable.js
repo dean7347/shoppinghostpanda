@@ -6,9 +6,90 @@ import {
   useGetAdminPandaSettlementList,
 } from "./adminPageHooks";
 import axios from "../../axiosDefaults";
+import * as XLSX from "xlsx";
+
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
+}
+function onClickDown(all) {
+  console.log("다운", all);
+
+  var count = 0;
+  var settle = 0;
+  all.row.slofp.map((item, idx) => {
+    count += item.count;
+    settle += item.pandaMoney;
+  });
+
+  const ws = XLSX.utils.json_to_sheet(all.row.slofp);
+
+  var wscols = [
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 40 },
+  ];
+
+  ws["!cols"] = wscols;
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+  [
+    "주문번호",
+    "판매 상품명",
+    "갯수",
+    "판다 정산금",
+    "정산예정일",
+    "정산완료일",
+    "정산상태",
+  ].forEach((x, idx) => {
+    const cellAdd = XLSX.utils.encode_cell({ c: idx, r: 0 });
+    ws[cellAdd].v = x;
+    ws[cellAdd].s = {
+      // styling for all cells
+      font: {
+        sz: 60,
+        bold: true,
+        color: { rgb: "FFAA00" },
+      },
+    };
+  });
+
+  XLSX.utils.sheet_add_aoa(
+    ws,
+    [
+      ["---"],
+      [
+        "합계",
+        "",
+        count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        settle.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      ],
+      [
+        "실정산액",
+        (settle - Math.round(settle * 0.033))
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        "원천징수",
+        Math.round(settle * 0.033)
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      ],
+    ],
+
+    {
+      origin: -1,
+    }
+  );
+
+  XLSX.writeFile(
+    wb,
+    all.row.pandaname + "의 정산" + all.row.enrollSettle.slice(0, 10) + ".xlsx"
+  );
 }
 
 function confirmOrderPandaDepost(event, cellValues) {
@@ -43,6 +124,21 @@ const columns = [
           className="is-danger"
           onClick={(event) => {
             confirmOrderPandaDepost(event, cellValues);
+          }}
+        ></Button>
+      );
+    },
+  },
+  {
+    field: "정산다운로드",
+    flex: 0.8,
+    renderCell: (cellValues) => {
+      return (
+        <Button
+          text="다운로드"
+          className="is-danger"
+          onClick={(event, subject) => {
+            onClickDown(cellValues);
           }}
         ></Button>
       );

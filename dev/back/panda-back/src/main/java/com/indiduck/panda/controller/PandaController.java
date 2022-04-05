@@ -176,12 +176,12 @@ public class PandaController {
 
             }
 
-            return ResponseEntity.ok(new DashboardDto(true, pandaDashboardDtoList, finish, yet));
+            return ResponseEntity.ok(new DashboardDto(true, pandaDashboardDtoList, finish, yet,odList));
 
 
         } catch (Exception E) {
             System.out.println("E = " + E);
-            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0));
+            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0,null));
 
         }
 
@@ -264,20 +264,26 @@ public class PandaController {
 
 
     @Data
-    private static class DashboardDto {
+    private  class DashboardDto {
         boolean success;
-        List<PandaDashboardDtoType> pandaDashboardDtoList = null;
+        List<PandaDashboardDtoType> pandaDashboardDtoList = new ArrayList<>();
+        List<SettleListOrderDetailForPanda> pandaData = new ArrayList<>();
+
         int finMoney;
         int expectMoney;
 
 
-        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList, int f, int e) {
+        public DashboardDto(boolean success, List<PandaDashboardDtoType> pandaDashboardDtoList, int f, int e, List<OrderDetail> detailId) {
             this.success = success;
             this.pandaDashboardDtoList = pandaDashboardDtoList;
             this.finMoney = f;
             this.expectMoney = e;
+            for (OrderDetail orderDetail : detailId) {
+                pandaData.add(new SettleListOrderDetailForPanda(orderDetail));
+            }
         }
     }
+
 
     @Data
     private static class PandaDashboardDtoType {
@@ -343,5 +349,42 @@ public class PandaController {
     private static class EditPandaDAO {
         String target;
         String values;
+    }
+
+
+    @Data
+    public class SettleListOrderDetailForPanda
+    {
+        //주문번호
+        long id;
+        //판매 옵션
+        String productName;
+
+        //상품 판매 갯수
+        int count;
+        //판다머니
+        long pandaMoney;
+        //정산예정일
+        LocalDateTime expectDay;
+        //정산일자
+        LocalDateTime finishDay;
+        //정산상태
+        String state;
+
+        public SettleListOrderDetailForPanda(OrderDetail od) {
+            this.id = od.getId();
+            this.productName = od.getOptions().getProduct().getProductName();
+            this.count = od.getProductCount();
+            this.pandaMoney = od.getPandaMoney();
+            this.expectDay = od.getSettlePanda().getEnrollSettle();
+            this.finishDay = od.getSettlePanda().getDepositDate();
+            if(od.getSettlePanda().isDeposit())
+            {
+                this.state = "정산완료";
+            }else
+            {
+                this.state = "정산예정";
+            }
+        }
     }
 }

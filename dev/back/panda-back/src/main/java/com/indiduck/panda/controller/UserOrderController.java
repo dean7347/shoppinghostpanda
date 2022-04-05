@@ -334,7 +334,7 @@ public class UserOrderController {
                 uoList.addAll(data.get());
 
             } else {
-                return ResponseEntity.ok(new DashboardDto(true, null, 0, 0));
+                return ResponseEntity.ok(new DashboardDto(true, null, 0, 0,null,null,null,null));
 
             }
 
@@ -348,12 +348,12 @@ public class UserOrderController {
                 shopDashboardDtoTypeList.add(new ShopDashboardDtoType(userOrder));
             }
             System.out.println(" 나가는데이터= " + shopDashboardDtoTypeList);
-            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, finish, yet));
+            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, finish, yet,shopDashBoard.searchDateMode,startDay,endDay,shop.getShopName()));
 
         } catch (Exception e) {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new DashboardDto(true, null, 0, 0));
+            return ResponseEntity.ok(new DashboardDto(true, null, 0, 0,null,null,null,null));
 
 
         }
@@ -376,12 +376,12 @@ public class UserOrderController {
             shopDashboardDtoTypeList.add(new ShopDashboardDtoType(byId.get()));
 
 
-            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, 0, 0));
+            return ResponseEntity.ok(new DashboardDto(true, shopDashboardDtoTypeList, 0, 0,null,null,null,null));
 
         } catch (Exception e) {
             System.out.println("E = " + e);
 
-            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0));
+            return ResponseEntity.ok(new DashboardDto(false, null, 0, 0,null,null,null,null));
 
 
         }
@@ -439,13 +439,23 @@ public class UserOrderController {
         List<ShopDashboardDtoType> shopDashboardDtoTypeList = null;
         int finMoney;
         int expectMoney;
+        //조회기준
+        String standard;
+        LocalDateTime startDay;
+        LocalDateTime endDay;
+        //조회자
+        String name;
 
 
-        public DashboardDto(boolean success, List<ShopDashboardDtoType> spdl, int f, int e) {
+        public DashboardDto(boolean success, List<ShopDashboardDtoType> spdl, int f, int e,String standard,LocalDateTime sD,LocalDateTime endD,String name) {
             this.success = success;
             this.shopDashboardDtoTypeList = spdl;
             this.finMoney = f;
             this.expectMoney = e;
+            this.standard=standard;
+            this.startDay=sD;
+            this.endDay=endD;
+            this.name=name;
         }
     }
 

@@ -8,40 +8,45 @@ import {
 import axios from "../../../../../api/axiosDefaults";
 import CsvDownload from "react-json-to-csv";
 import * as XLSX from "xlsx";
-function confirmOrder(event, cellValues) {
-  event.stopPropagation();
-  console.log(cellValues);
-}
+// function confirmOrder(event, cellValues) {
+//   event.stopPropagation();
+//   console.log(cellValues);
+// }
 
-function download() {
-  // <CSVLink data={data} headers={headers}>
-  //   Download me
-  // </CSVLink>;
-}
-const mockData = [
-  {
-    id: 1,
-    "First Name": "Blanch",
-    "Last Name": "Elby",
-    Email: "belby0@bing.com",
-    Gender: "Female",
-    "IP Address": "112.81.107.207",
-    "IP Addressss": "112.81.107.207",
-    "IP Addresss": "112.81.107.207",
-  },
-  {
-    id: 2,
-    "First Name": "Gilli",
-    "Last Name": "Ebourne",
-    Email: "gebourne1@cornell.edu",
-    Gender: "Female",
-    "IP Address": "112.81.107.207",
-    "IP Addressss": "112.81.107.207",
-    "IP Addresss": "112.81.107.207",
-  },
-];
-function onClickDown(event) {
-  console.log(event);
+function onClickDown(all) {
+  console.log(all);
+  var event = all.row.shopDashboardDtoTypeList;
+  var subject =
+    all.row.shopName + "정산서 " + all.row.enrollSettle.slice(0, 10);
+  // var result = [];
+
+  // result.push([5, { 전체금액: 2000 }]);
+  // console.log(result);
+  // var finalcsv = JSON.parse(JSON.stringify(result));
+  // console.log(finalcsv);
+  // console.log(event);
+
+  //판매금액
+  var salesMoney = 0;
+  //상품금액
+  var productPrice = 0;
+  //배송비
+  var shipPrice = 0;
+  //상점정산금액
+  var shopSettle = 0;
+  //환불금액
+  var refundMoney = 0;
+  //수수료
+  var fee = 0;
+  event.map((va, indx) => {
+    console.log(va);
+    salesMoney += va.realPrice;
+    productPrice += va.beforeSalePrice;
+    shipPrice += va.shipPrice;
+    shopSettle += va.shopPrice;
+    refundMoney += va.settlePrice;
+    fee += va.fees;
+  });
 
   const ws = XLSX.utils.json_to_sheet(event);
   var wscols = [
@@ -80,10 +85,44 @@ function onClickDown(event) {
   ].forEach((x, idx) => {
     const cellAdd = XLSX.utils.encode_cell({ c: idx, r: 0 });
     ws[cellAdd].v = x;
+    ws[cellAdd].s = {
+      // styling for all cells
+      font: {
+        sz: 60,
+        bold: true,
+        color: { rgb: "FFAA00" },
+      },
+    };
   });
 
-  XLSX.writeFile(wb, "Test.xlsx");
+  XLSX.utils.sheet_add_aoa(
+    ws,
+    [
+      ["---"],
+      [
+        "합계",
+        salesMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        shipPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        shopSettle.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        refundMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+        fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      ],
+    ],
+    { origin: -1 }
+  );
+
+  ws["A1"].s = {
+    font: {
+      name: "Calibri",
+      sz: 90,
+      bold: true,
+      color: { rgb: "FFFFAA00" },
+    },
+  };
+  XLSX.writeFile(wb, subject + ".xlsx");
 }
+
 function confirmOrderShopDepost(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
@@ -99,18 +138,6 @@ function confirmOrderShopDepost(event, cellValues) {
     }
   });
 }
-
-const headers = [
-  { label: "First Name", key: "firstname" },
-  { label: "Last Name", key: "lastname" },
-  { label: "Email", key: "email" },
-];
-
-const data = [
-  { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
-  { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
-  { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
-];
 
 const columns = [
   { field: "id", headerName: "주문번호", flex: 0.5 },
@@ -137,38 +164,13 @@ const columns = [
     flex: 0.8,
     renderCell: (cellValues) => {
       return (
-        // <CsvDownload
-        //   data={cellValues.row.shopDashboardDtoTypeList}
-        //   filename="good_data.csv"
-        //   style={{
-        //     //pass other props, like styles
-        //     boxShadow: "inset 0px 1px 0px 0px #e184f3",
-        //     background: "linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
-        //     backgroundColor: "#c123de",
-        //     borderRadius: "6px",
-        //     border: "1px solid #a511c0",
-        //     display: "inline-block",
-        //     cursor: "pointer",
-        //     color: "#ffffff",
-        //     fontSize: "15px",
-        //     fontWeight: "bold",
-        //     padding: "6px 24px",
-        //     textDecoration: "none",
-        //     textShadow: "0px 1px 0px #9b14b3",
-        //   }}
-        // >
-        //   Good Data ✨
-        // </CsvDownload>
         <Button
           text="다운로드"
           className="is-danger"
-          onClick={(event) => {
-            onClickDown(cellValues.row.shopDashboardDtoTypeList);
+          onClick={(event, subject) => {
+            onClickDown(cellValues);
           }}
         ></Button>
-        // <CSVLink data={data} headers={headers}>
-        //   Download me
-        // </CSVLink>
       );
     },
   },

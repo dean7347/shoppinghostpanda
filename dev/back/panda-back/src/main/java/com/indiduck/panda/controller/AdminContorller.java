@@ -266,8 +266,7 @@ public class AdminContorller {
         //정산될 판다
         String pandaname;
         //정산될 OrderDetailId
-        List<Long> detailIds=new ArrayList<>();
-
+        List<SettleListUserOrderForPanda> slofp = new ArrayList<>();
         public SettlePandaDetail(long id, LocalDateTime enrollSettle, LocalDateTime depoistDate, int deposit, boolean isdeposit, String pandaname, List<OrderDetail> detailId) {
             this.id = id;
             this.enrollSettle = enrollSettle;
@@ -275,12 +274,48 @@ public class AdminContorller {
             this.deposit = deposit;
             this.isdeposit = isdeposit;
             this.pandaname = pandaname;
+
             for (OrderDetail orderDetail : detailId) {
-                this.detailIds.add(orderDetail.getId());
+                slofp.add(new SettleListUserOrderForPanda(orderDetail,enrollSettle,depoistDate,isdeposit));
             }
         }
 
 
+    }
+    @Data
+    public class SettleListUserOrderForPanda
+    {
+        //주문번호
+        long id;
+        //판매 옵션
+        String productName;
+
+        //상품 판매 갯수
+        int count;
+        //판다머니
+        long pandaMoney;
+        //정산예정일
+        LocalDateTime expectDay;
+        //정산일자
+        LocalDateTime finishDay;
+        //정산상태
+        String state;
+
+        public SettleListUserOrderForPanda(OrderDetail od,LocalDateTime ed, LocalDateTime fd, boolean state) {
+            this.id = od.getId();
+            this.productName = od.getOptions().getProduct().getProductName();
+            this.count = od.getProductCount();
+            this.pandaMoney = od.getPandaMoney();
+            this.expectDay = ed;
+            this.finishDay = fd;
+            if(state)
+            {
+                this.state = "정산완료";
+            }else
+            {
+                this.state = "정산예정";
+            }
+        }
     }
 
     @Data
