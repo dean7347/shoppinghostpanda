@@ -105,6 +105,9 @@ public class AdminContorller {
 
         Page<SettleShop> byIsDeposit = settleShopRepository.findByIsDeposit(true,pageable);
 
+        //액셀 시트
+
+
         return ResponseEntity.ok(new ShopListDTO(true,byIsDeposit));
 
     }
@@ -298,7 +301,11 @@ public class AdminContorller {
         //정산될 판다
         String shopName;
         //정산될 OrderDetailId
-        List<Long> detailIds=new ArrayList<>();
+//        List<Long> detailIds=new ArrayList<>();
+
+        List<UserOrderController.ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
+        List<UserOrder> uoList = new ArrayList<>();
+
 
         public SettleShopDetail(long id, LocalDateTime enrollSettle, LocalDateTime depoistDate, int deposit, boolean isdeposit, String shopName, List<UserOrder> detailId) {
             this.id = id;
@@ -308,7 +315,7 @@ public class AdminContorller {
             this.isdeposit = isdeposit;
             this.shopName = shopName;
             for (UserOrder us : detailId) {
-                this.detailIds.add(us.getId());
+                uoList.add(us);
             }
         }
 

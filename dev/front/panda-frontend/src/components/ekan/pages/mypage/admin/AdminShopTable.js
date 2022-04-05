@@ -6,9 +6,16 @@ import {
   useGetAdminShopSettlementList,
 } from "../../../../../api/queryHooks/mypageHooks/adminPageHooks";
 import axios from "../../../../../api/axiosDefaults";
+import { CSVLink } from "react-csv";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
+}
+
+function download() {
+  <CSVLink data={data} headers={headers}>
+    Download me
+  </CSVLink>;
 }
 function confirmOrderShopDepost(event, cellValues) {
   event.stopPropagation();
@@ -25,6 +32,18 @@ function confirmOrderShopDepost(event, cellValues) {
     }
   });
 }
+
+const headers = [
+  { label: "First Name", key: "firstname" },
+  { label: "Last Name", key: "lastname" },
+  { label: "Email", key: "email" },
+];
+
+const data = [
+  { firstname: "Ahmed", lastname: "Tomi", email: "ah@smthing.co.com" },
+  { firstname: "Raed", lastname: "Labes", email: "rl@smthing.co.com" },
+  { firstname: "Yezzi", lastname: "Min l3b", email: "ymin@cocococo.com" },
+];
 
 const columns = [
   { field: "id", headerName: "주문번호", flex: 0.5 },
@@ -43,6 +62,17 @@ const columns = [
             confirmOrderShopDepost(event, cellValues);
           }}
         ></Button>
+      );
+    },
+  },
+  {
+    field: "정산다운로드",
+    flex: 0.8,
+    renderCell: (cellValues) => {
+      return (
+        <CSVLink data={data} headers={headers}>
+          Download me
+        </CSVLink>
       );
     },
   },

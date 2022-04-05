@@ -450,7 +450,7 @@ public class UserOrderController {
     }
 
     @Data
-    private static class ShopDashboardDtoType {
+    public static class ShopDashboardDtoType {
         //주문번호
         Long id;
         //정가
