@@ -38,6 +38,25 @@ public class BoardController {
     @Autowired
     private final ProductRepository productRepository;
 
+
+    @RequestMapping(value = "/api/createreview", method = RequestMethod.POST)
+    public ResponseEntity<?> createreivew(@CurrentSecurityContext(expression = "authentication")
+                                               Authentication authentication,@RequestBody Qnaboard qnaboard) throws Exception {
+        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+        String username = byEmail.get().getUsername();
+//        username=username.replaceAll("(?<=.{5}).","*");
+
+        Board board = boardService.qnaNewBoard(username, qnaboard.title, qnaboard.contents, 01, qnaboard.productId);
+        if(board != null)
+        {
+            log.info(authentication.getName()+"의 게시글  후기작성 성공");
+            return ResponseEntity.ok(new TFMessageDto(true,"success"));
+
+        }
+
+        log.warn(authentication.getName()+"의 게시글 작성 실패");
+        return ResponseEntity.ok(new TFMessageDto(false,"게시글 작성에 실패했습니다"));
+    }
     @RequestMapping(value = "/api/createqna", method = RequestMethod.POST)
     public ResponseEntity<?> createqna(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,@RequestBody Qnaboard qnaboard) throws Exception {
@@ -83,7 +102,23 @@ public class BoardController {
 //        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
 //        String username = byEmail.get().getUsername();
         Optional<Product> byId = productRepository.findById(pid);
-        Page<Board> byProduct = boardRepository.findByProduct(pageable, byId.get());
+        Page<Board> byProduct = boardRepository.findByProductAndCategoryNumber(pageable, byId.get(),(int)00);
+//        System.out.println("byProduct = " + byProduct);
+//        System.out.println("byProduct = " + pageable);
+
+//        return ResponseEntity.ok(byProduct);
+
+        return ResponseEntity.ok(new qnaBoardDto(true,byProduct));
+    }
+
+    //상품후기 게시글 가져오기
+    @RequestMapping(value = "/api/getreview", method = RequestMethod.GET)
+    public ResponseEntity<?> getreview(@CurrentSecurityContext(expression = "authentication")
+                                            Authentication authentication,Pageable pageable,@RequestParam("pid") long pid) throws Exception {
+//        Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
+//        String username = byEmail.get().getUsername();
+        Optional<Product> byId = productRepository.findById(pid);
+        Page<Board> byProduct = boardRepository.findByProductAndCategoryNumber(pageable, byId.get(),(int)01);
 //        System.out.println("byProduct = " + byProduct);
 //        System.out.println("byProduct = " + pageable);
 

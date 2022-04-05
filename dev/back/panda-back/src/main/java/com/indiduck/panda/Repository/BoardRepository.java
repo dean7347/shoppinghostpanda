@@ -13,5 +13,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Repository
 public interface BoardRepository extends JpaRepository<Board,Long> {
-    Page<Board> findByProduct(Pageable pageable, Product product);
+    Page<Board> findByProductAndCategoryNumber(Pageable pageable, Product product, int i);
 }

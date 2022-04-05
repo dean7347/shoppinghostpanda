@@ -198,6 +198,61 @@ function DetailProductPage(props) {
     },
     [ViewCount, TotalCount]
   );
+
+  //후기작성
+  const [ReviewViewCount, setReviewViewCountPage] = useState([]);
+  const [ReviewTotalCount, setReviewTotalCountPage] = useState([]);
+  const [ReviewPage, setReviewPage] = useState(1);
+  const [Review, setReview] = useState();
+
+  const onReviewPageChanged = useCallback(
+    (page) => {
+      setReviewPage(page);
+
+      axios
+        .get(`/api/getreview?pid=${productId}&size=5&page=${page - 1}`)
+        .then((response) => {
+          if (response.data != null) {
+            console.log("데이터가져옴", response.data);
+            setReview(response.data.boardLists);
+            console.log(Review);
+            console.log(response.data.boardLists);
+            setReviewViewCountPage(5);
+            setReviewTotalCountPage(response.data.totalE);
+          } else {
+            console.log("상품들을 가져오는데 실패했습니다.");
+          }
+        });
+    },
+    [ReviewPage]
+  );
+
+  useEffect(
+    (ReviewPage) => {
+      axios
+        .get(`/api/getreview?pid=${productId}&size=5&page=${ReviewPage - 1}`)
+        .then((response) => {
+          if (response.data != null) {
+            console.log("데이타232");
+            console.log(response.data.boardLists);
+            setReview(response.data.boardLists);
+            //page, count, setPage
+            //현재 페이지
+            console.log("Page");
+            console.log(ReviewPage);
+            // // console.log(response.data.pageable.pageNumber);
+            //한페이지당 보여줄 리스트 아이템 갯수
+            setReviewViewCountPage(5);
+            //총 아이템의 갯수
+            setReviewTotalCountPage(response.data.totalE);
+          } else {
+            // console.log("상품들을 가져오는데 실패했습니다.");
+          }
+        });
+    },
+    [ReviewViewCount, ReviewTotalCount]
+  );
+
   const [qna, setQna] = useState({
     title: "",
     content: "",
@@ -217,9 +272,14 @@ function DetailProductPage(props) {
     console.log(param);
   };
   const [isqnaModalVisible, setIsqnaModalVisible] = useState(false);
+  const [isafterModalVisible, setIsafterModalVisible] = useState(false);
+
   const { Panel } = Collapse;
   const showModalqna = () => {
     setIsqnaModalVisible(true);
+  };
+  const showModalReview = () => {
+    setIsafterModalVisible(true);
   };
 
   const handleOk = () => {
@@ -247,8 +307,40 @@ function DetailProductPage(props) {
     });
   };
 
+  const handleOkReview = () => {
+    setIsafterModalVisible(false);
+    const body = {
+      productId: props.match.params.productId,
+      title: qna.title,
+      contents: qna.content,
+    };
+    console.log(body);
+
+    ///api/createqna
+    axios.post("/api/createreview", body).then((response) => {
+      if (response.data.success) {
+        alert("후기 작성에 성공했습니다");
+        window.location.reload();
+      } else {
+        alert("후기 작성에 실패 했습니다.");
+        window.location.reload();
+      }
+    });
+    setQna({
+      title: "",
+      content: "",
+    });
+  };
+
   const handleCancel = () => {
     setIsqnaModalVisible(false);
+    setQna({
+      title: "",
+      content: "",
+    });
+  };
+  const handleReviewCancel = () => {
+    setIsafterModalVisible(false);
     setQna({
       title: "",
       content: "",
@@ -273,6 +365,72 @@ function DetailProductPage(props) {
     var strArray = str.split("-");
     return strArray[0] + "/" + strArray[1] + "/" + strArray[2].substring(0, 2);
   }
+  const rederReview =
+    Review &&
+    Review.map((item, idx) => {
+      return (
+        <>
+          <Collapse onChange={baordClick}>
+            <Panel
+              header={
+                <div style={{ width: "100%" }}>
+                  <Row justify="center" gutter={24}>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.boardId}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.title}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {stringsplit(item.createdAt)}
+                    </Col>
+                    <Col lg={6} md={12} sm={12} xs={12}>
+                      {item.user.substring(0, 7)}
+                    </Col>
+                  </Row>
+                </div>
+              }
+              key={idx}
+            >
+              {item.content}
+              <hr backgroundColor={"red"} />
+              <Divider orientation="left">답글</Divider>
+              <Col span={24}>
+                <Row>
+                  <Col span={20}>
+                    <TextArea name="comment" onChange={onChangeQnA} rows={4} />
+                  </Col>
+                  <Col>
+                    <Button onClick={() => onClickQnaReply(item.boardId)}>
+                      답글등록
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+              <Divider />
+              <Col span={1}></Col>
+              {item.comments.map((co, i) => {
+                return (
+                  <>
+                    <Col span={4}>
+                      {co.username.substring(0, 7)} -{stringsplit(co.createAt)}
+                    </Col>
+                    <Col span={4}> </Col>
+
+                    <Col span={20}>{co.contents}</Col>
+                    <Col>
+                      <div>
+                        <hr />
+                      </div>
+                    </Col>
+                  </>
+                );
+              })}
+            </Panel>
+          </Collapse>
+        </>
+      );
+    });
   const rederqna =
     board &&
     board.map((item, idx) => {
@@ -342,6 +500,24 @@ function DetailProductPage(props) {
 
   return (
     <>
+      <Modal
+        title="상품후기"
+        visible={isafterModalVisible}
+        onOk={handleOkReview}
+        onCancel={handleReviewCancel}
+      >
+        <Row>
+          <Col span={4}>제목</Col>
+          <Col span={20}>
+            <Input onChange={onChangeQnA} name="title" />
+          </Col>
+          <Col span={24}>내용</Col>
+          <Col span={4}></Col>
+          <Col span={20}>
+            <TextArea name="content" onChange={onChangeQnA} rows={10} />
+          </Col>
+        </Row>
+      </Modal>
       <Modal
         title="상품 문의"
         visible={isqnaModalVisible}
@@ -618,6 +794,38 @@ function DetailProductPage(props) {
                         currentPage={Page}
                         ViewCount={ViewCount}
                         TotalCount={TotalCount}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </TabPane>
+              <TabPane tab="상품 후기" key="6">
+                <Button onClick={showModalReview}>후기작성하기</Button>
+                <Row justify="center">
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    no
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    제목
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    날짜
+                  </Col>
+                  <Col lg={6} md={12} sm={12} xs={12}>
+                    작성자
+                  </Col>
+                </Row>
+                {rederReview}
+
+                <div>
+                  <Row justify="center">
+                    <Col>
+                      <Paging
+                        //토탈레코드
+                        onPageChanged={onReviewPageChanged}
+                        currentPage={ReviewPage}
+                        ViewCount={ReviewViewCount}
+                        TotalCount={ReviewTotalCount}
                       />
                     </Col>
                   </Row>
