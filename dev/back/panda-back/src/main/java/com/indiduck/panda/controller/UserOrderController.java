@@ -453,11 +453,12 @@ public class UserOrderController {
     public static class ShopDashboardDtoType {
         //주문번호
         Long id;
-        //정가
-        int beforeSalePrice;
+
 
         //실제 판매가(택배비 제외)
         int realPrice;
+        //정가
+        int beforeSalePrice;
         //택배비
         int shipPrice;
         //샵이 받게될 정산액

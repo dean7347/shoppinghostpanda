@@ -6,16 +6,83 @@ import {
   useGetAdminShopSettlementList,
 } from "../../../../../api/queryHooks/mypageHooks/adminPageHooks";
 import axios from "../../../../../api/axiosDefaults";
-import { CSVLink } from "react-csv";
+import CsvDownload from "react-json-to-csv";
+import * as XLSX from "xlsx";
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
   console.log(cellValues);
 }
 
 function download() {
-  <CSVLink data={data} headers={headers}>
-    Download me
-  </CSVLink>;
+  // <CSVLink data={data} headers={headers}>
+  //   Download me
+  // </CSVLink>;
+}
+const mockData = [
+  {
+    id: 1,
+    "First Name": "Blanch",
+    "Last Name": "Elby",
+    Email: "belby0@bing.com",
+    Gender: "Female",
+    "IP Address": "112.81.107.207",
+    "IP Addressss": "112.81.107.207",
+    "IP Addresss": "112.81.107.207",
+  },
+  {
+    id: 2,
+    "First Name": "Gilli",
+    "Last Name": "Ebourne",
+    Email: "gebourne1@cornell.edu",
+    Gender: "Female",
+    "IP Address": "112.81.107.207",
+    "IP Addressss": "112.81.107.207",
+    "IP Addresss": "112.81.107.207",
+  },
+];
+function onClickDown(event) {
+  console.log(event);
+
+  const ws = XLSX.utils.json_to_sheet(event);
+  var wscols = [
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 20 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 40 },
+    { wch: 40 },
+  ];
+
+  ws["!cols"] = wscols;
+  const wb = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+  [
+    "주문번호",
+    "판매 금액",
+    "상품금액",
+    "배송비",
+    "상점 정산금액",
+    "환불 금액",
+    "수수료",
+    "판매일자",
+    "구매확정일자",
+    "정산예정일",
+    "정산일자",
+    "정산상태",
+  ].forEach((x, idx) => {
+    const cellAdd = XLSX.utils.encode_cell({ c: idx, r: 0 });
+    ws[cellAdd].v = x;
+  });
+
+  XLSX.writeFile(wb, "Test.xlsx");
 }
 function confirmOrderShopDepost(event, cellValues) {
   event.stopPropagation();
@@ -70,9 +137,38 @@ const columns = [
     flex: 0.8,
     renderCell: (cellValues) => {
       return (
-        <CSVLink data={data} headers={headers}>
-          Download me
-        </CSVLink>
+        // <CsvDownload
+        //   data={cellValues.row.shopDashboardDtoTypeList}
+        //   filename="good_data.csv"
+        //   style={{
+        //     //pass other props, like styles
+        //     boxShadow: "inset 0px 1px 0px 0px #e184f3",
+        //     background: "linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
+        //     backgroundColor: "#c123de",
+        //     borderRadius: "6px",
+        //     border: "1px solid #a511c0",
+        //     display: "inline-block",
+        //     cursor: "pointer",
+        //     color: "#ffffff",
+        //     fontSize: "15px",
+        //     fontWeight: "bold",
+        //     padding: "6px 24px",
+        //     textDecoration: "none",
+        //     textShadow: "0px 1px 0px #9b14b3",
+        //   }}
+        // >
+        //   Good Data ✨
+        // </CsvDownload>
+        <Button
+          text="다운로드"
+          className="is-danger"
+          onClick={(event) => {
+            onClickDown(cellValues.row.shopDashboardDtoTypeList);
+          }}
+        ></Button>
+        // <CSVLink data={data} headers={headers}>
+        //   Download me
+        // </CSVLink>
       );
     },
   },

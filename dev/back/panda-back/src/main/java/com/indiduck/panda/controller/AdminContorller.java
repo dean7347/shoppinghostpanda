@@ -1,10 +1,7 @@
 package com.indiduck.panda.controller;
 
 
-import com.indiduck.panda.Repository.PandaRespository;
-import com.indiduck.panda.Repository.SettlePandaRepository;
-import com.indiduck.panda.Repository.SettleShopRepository;
-import com.indiduck.panda.Repository.ShopRepository;
+import com.indiduck.panda.Repository.*;
 import com.indiduck.panda.Service.SettleService;
 import com.indiduck.panda.domain.*;
 import com.indiduck.panda.domain.dao.TFMessageDto;
@@ -36,7 +33,8 @@ public class AdminContorller {
     private final ShopRepository shopRepository;
     @Autowired
     private final PandaRespository pandaRepoSitory;
-
+    @Autowired
+    private final UserOrderRepository userOrderRepository;
     @Autowired
     private final SettleService settleService;
 
@@ -247,7 +245,7 @@ public class AdminContorller {
             for (SettleShop settleShop : settlePandaPage.getContent()) {
                 settleShopDetails.add(new SettleShopDetail(settleShop.getId(),settleShop.getEnrollSettle(),settleShop.getDepositDate(),
                         settleShop.getDepoist(),settleShop.isDeposit(),
-                        settleShop.getShop().getShopName(),settleShop.getUserOrder()));
+                        settleShop.getShop().getShopName(),settleShop.getUserOrder(),settleShop));
             }
         }
     }
@@ -304,19 +302,24 @@ public class AdminContorller {
 //        List<Long> detailIds=new ArrayList<>();
 
         List<UserOrderController.ShopDashboardDtoType> shopDashboardDtoTypeList = new ArrayList<>();
-        List<UserOrder> uoList = new ArrayList<>();
 
 
-        public SettleShopDetail(long id, LocalDateTime enrollSettle, LocalDateTime depoistDate, int deposit, boolean isdeposit, String shopName, List<UserOrder> detailId) {
+        public SettleShopDetail(long id, LocalDateTime enrollSettle, LocalDateTime depoistDate, int deposit, boolean isdeposit, String shopName, List<UserOrder> detailId,SettleShop ss) {
             this.id = id;
             this.enrollSettle = enrollSettle;
             this.depoistDate = depoistDate;
             this.deposit = deposit;
             this.isdeposit = isdeposit;
             this.shopName = shopName;
-            for (UserOrder us : detailId) {
-                uoList.add(us);
+            List<UserOrder> userOrders = userOrderRepository.findBySettleShop(ss).get();
+            System.out.println("ss = " + ss.getUserOrder());
+            System.out.println("userOrders = " + userOrders);
+            for (UserOrder userOrder : userOrders) {
+                System.out.println("userOrder = " + userOrder);
+                this.shopDashboardDtoTypeList.add(new UserOrderController.ShopDashboardDtoType(userOrder));
+
             }
+
         }
 
 

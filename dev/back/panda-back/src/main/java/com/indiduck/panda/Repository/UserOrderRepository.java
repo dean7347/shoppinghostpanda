@@ -48,4 +48,8 @@ public interface UserOrderRepository extends JpaRepository<UserOrder,Long> {
     //n일 이전에 배송중인 상품을 찾느낟
 //    Page<UserOrder> findOrderStatusAndShippedAtBefore(OrderStatus od,LocalDateTime ld);
 
+
+    //정산서에 포함된거 찾지
+    Optional<List<UserOrder>> findBySettleShop(SettleShop settleShop);
+
 }
