@@ -3,6 +3,7 @@ package com.indiduck.panda.Service;
 import com.indiduck.panda.Repository.*;
 import com.indiduck.panda.config.ApiKey;
 import com.indiduck.panda.controller.OrderDetailController;
+import com.indiduck.panda.controller.UserOrderController;
 import com.indiduck.panda.domain.*;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -216,7 +218,7 @@ public class OrderDetailService {
     }
 
     //부분취소 환불
-    public boolean refundOrder(long uo,int money)
+    public boolean refundOrder(long uo, int money, List<UserOrderController.RefundList> refundList,String message)
     {
         Optional<UserOrder> byId = userOrderRepository.findById(uo);
         UserOrder userOrder = byId.get();
@@ -225,9 +227,10 @@ public class OrderDetailService {
         IamportClient iamportClient = new IamportClient(test_api_key, test_api_secret);
         CancelData cancel_data = new CancelData(byId.get().getMid(), true, BigDecimal.valueOf(money)); //imp_uid를 통한 전액취소
 
-
         try {
             IamportResponse<Payment> payment_response = iamportClient.cancelPaymentByImpUid(cancel_data);
+            log.info(uo+"취소데이터"+payment_response);
+
             String receiptUrl = payment_response.getResponse().getReceiptUrl();
 
             userOrder.setReceiptUrl(receiptUrl);
@@ -256,6 +259,14 @@ public class OrderDetailService {
         {
             log.error(" 부분환불이 불가능합니다 리펀드오더"+e);
             return false;
+        }
+        for (UserOrderController.RefundList list : refundList) {
+            long optionId = list.getOptionId();
+            Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+
+            partialCancelation(byId1.get(), list.getOptionCount(),message);
+
+
         }
         userOrder.confirmCancelMoney(money);
 

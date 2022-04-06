@@ -112,22 +112,29 @@ public class UserOrderController {
             List<RefundList> refundList = refundReq.refundList;
             List<OrderDetail> orderDetails = new ArrayList<>();
             int refundMoney = 0;
+            int serverMoney =0;
             boolean result = true;
             for (RefundList list : refundList) {
                 long optionId = list.optionId;
                 Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
                 //현재갯수보다 작인지 체크
                 if (byId1.get().getProductCount() >= list.optionCount) {
-                    orderDetailService.partialCancelation(byId1.get(), list.optionCount, refundReq.refundMessage);
                     refundMoney += Integer.parseInt(list.optionPrice.replace(",", ""));
-
+                    serverMoney +=byId1.get().getIndividualPrice()*list.optionCount;
                 } else {
                     result = false;
                 }
+                //금액이 맞는지 체크
+
+
 
             }
+            if(refundMoney != serverMoney)
+            {
+                result= false;
+            }
             if (result) {
-                boolean b = orderDetailService.refundOrder(refundReq.getUserOrderId(), refundMoney);
+                boolean b = orderDetailService.refundOrder(refundReq.getUserOrderId(), refundMoney,refundList, refundReq.refundMessage);
                 if (b) {
                     log.info(authentication.getName() + "의 부분취소 요청 성공");
 
@@ -141,6 +148,16 @@ public class UserOrderController {
                 }
 
             }
+//            for (RefundList list : refundList) {
+//                long optionId = list.optionId;
+//                Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
+//
+//
+//                orderDetailService.partialCancelation(byId1.get(), list.optionCount, refundReq.refundMessage);
+//
+//
+//            }
+
         } catch (Exception e) {
             log.error(authentication.getName() + "의 부분취소 실패함" + refundReq.getUserOrderId() + "번 주문 확인 요망");
 
@@ -494,7 +511,7 @@ public class UserOrderController {
             this.realPrice = uo.getPureAmount()+uo.shipPriceCalculation();
             //무료배송이 아닐경우
             this.shipPrice=uo.shipPriceCalculation();
-            this.beforeSalePrice = uo.getPureAmount() - uo.getFinalRefundMoney();
+            this.beforeSalePrice = uo.getPureAmount();
             this.shopPrice=uo.getShopMoney();
             this.settlePrice = uo.getFinalRefundMoney();
             this.fees =(int) Math.round(uo.getPureAmount()*0.25);

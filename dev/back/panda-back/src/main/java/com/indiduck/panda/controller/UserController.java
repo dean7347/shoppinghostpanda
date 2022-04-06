@@ -581,7 +581,7 @@ public class UserController {
                         }
 
                     }
-                    this.originPrice=orderDetail.getOriginOrderMoney();
+                    this.originPrice+=orderDetail.getOriginOrderMoney();
                 }
             }
 
