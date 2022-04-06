@@ -128,8 +128,9 @@ public class OrderDetailService {
     public OrderDetail updateOrderDetail(OrderDetail order, int optionCount,Long panda) {
         Optional<Panda> getPanda = pandaRespository.findById(panda);
 
-        order.update(optionCount);
         order.setPanda(getPanda.get());
+        order.update(optionCount);
+
         return order;
     }
 

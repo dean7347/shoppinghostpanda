@@ -184,7 +184,7 @@ public class RefundRequestService {
         for (RefundRequestController.RefundArray array : refundArray) {
 //            System.out.println("오디아이디array = " + array);
             Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
-            comMoney+= Math.round(odid.get().getIndividualPrice())*array.getRefundConfrimOrder();
+            comMoney+= Math.floor(odid.get().getIndividualPrice())*array.getRefundConfrimOrder();
             if(odid.get().getProductCount()-array.getRefundConfrimOrder() <0)
             {
                 log.error(confirmRefundRequest.getUserOrderId()+"갯수초과환불");

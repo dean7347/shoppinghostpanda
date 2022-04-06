@@ -23,7 +23,7 @@ public class OrderDetail {
     private int productCount;
     //이 상품이 담길때의 가격
     private int IndividualPrice;
-    //이상품의 현재 총 가격
+    //이상품의 현재 총 가격(할인 전)
     private int totalPrice;
     //오더 디테일 생성 당시의  개당 옵션 가격
     private int createAtPrice;
@@ -96,7 +96,7 @@ public class OrderDetail {
         od.setUser(user);
         od.setProduct(product);
         od.setProductOption(productOption);
-        od.IndividualPrice = (int) Math.round(productOption.getOptionPrice() * 0.95);
+        od.IndividualPrice = (int) Math.floor(productOption.getOptionPrice() * 0.95);
         od.totalPrice = productOption.getOptionPrice() * optionCount;
         od.productCount = optionCount;
         od.setPanda(panda);
@@ -104,7 +104,7 @@ public class OrderDetail {
         od.createdAt = LocalDateTime.now();
         od.setShop(product.getShop());
         od.paymentStatus = PaymentStatus.지급예정;
-        int mo = (int) Math.floor(od.totalPrice * 0.95);
+        int mo = (int) Math.floor(od.totalPrice );
         od.pandaMoney = (int) Math.floor(mo * 0.10);
         od.reqRefund = 0;
         od.confirmRefund = 0;
@@ -163,14 +163,15 @@ public class OrderDetail {
 
     //판다수정
     public void setPanda(Panda panda) {
+        //판다가 기존에 있으면
         if (panda != null) {
             panda.deleteOrderdetail(this);
         }
 
         this.panda = panda;
         panda.getOrderDetailPandas().add(this);
-        int mo = (int) Math.floor(this.totalPrice * 0.95);
-        this.pandaMoney = (int) Math.floor(mo * 0.10);
+        this.IndividualPrice=(int) Math.floor(this.options.getOptionPrice()*0.95);
+        this.pandaMoney =(int) Math.floor(this.totalPrice * 0.1);
     }
 
     public void setShop(Shop shop) {
@@ -198,7 +199,7 @@ public class OrderDetail {
         this.productCount += count;
         this.totalPrice = this.getIndividualPrice() * this.productCount;
         if (panda != null) {
-            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            int mo = (int) Math.floor(this.totalPrice );
             this.pandaMoney = (int) Math.floor(mo * 0.10);
         }
     }
@@ -206,7 +207,7 @@ public class OrderDetail {
     public void refundCount() {
         this.totalPrice = this.getIndividualPrice() * (this.productCount - this.confirmRefund);
         if (panda != null) {
-            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            int mo = (int) Math.floor(this.totalPrice );
             this.pandaMoney = (int) Math.floor(mo * 0.10);
         }
     }
@@ -214,10 +215,10 @@ public class OrderDetail {
     //가격이 변경될경우
     public void update(int count) {
         this.productCount = count;
-        this.totalPrice = this.getIndividualPrice() * this.productCount;
+        this.totalPrice = this.getOptions().getOptionPrice() * this.productCount;
         if (panda != null) {
-            int mo = (int) Math.floor(this.totalPrice * 0.95);
-            this.pandaMoney = (int) Math.floor(mo * 0.10);
+//            int mo = (int) Math.floor(this.totalPrice * 0.95);
+            this.pandaMoney = (int) Math.floor(totalPrice*0.1);
         }
 
 
@@ -255,9 +256,26 @@ public class OrderDetail {
         this.checkedAt = LocalDateTime.now();
     }
 
+
+    //주문전에만 작동해야한다
     public void editOption() {
-        this.IndividualPrice = this.getOptions().getOptionPrice();
-        this.totalPrice = this.getIndividualPrice() * this.productCount;
+
+        //판다가 없으면
+        if(this.panda ==null)
+        {
+            this.IndividualPrice = this.getOptions().getOptionPrice();
+            this.pandaMoney=0;
+        }
+        else
+        {
+            this.IndividualPrice =(int) Math.floor(this.getOptions().getOptionPrice()*0.95);
+            this.pandaMoney=(int) Math.floor(this.getOptions().getOptionPrice()*0.1)*this.productCount;
+
+        }
+
+        this.createAtPrice=this.getOptions().getOptionPrice();
+        this.totalPrice = this.createAtPrice* this.productCount;
+
 
     }
 

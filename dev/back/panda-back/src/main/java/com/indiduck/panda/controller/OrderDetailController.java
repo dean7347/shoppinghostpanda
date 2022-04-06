@@ -109,6 +109,7 @@ public class OrderDetailController {
     public ResponseEntity<?> updatecart(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication, @RequestBody CreateOrderDetailDAO createProductDAO) throws Exception {
 
+        log.info((authentication.getName()+"의 카트업데이트"));
         System.out.println("createProductDAO = " + createProductDAO.selectpanda);
         for (detailOptionDAO detailOptionDAO : createProductDAO.cart) {
             System.out.println("detailOptionDAO = " + detailOptionDAO);
@@ -140,6 +141,7 @@ public class OrderDetailController {
 
 
 
+                //기존상품
             }else
             {
                 Optional<OrderDetail> byId = orderDetailRepository.findById(detailOptionDAO.detailedId);
@@ -349,19 +351,10 @@ public class OrderDetailController {
     public ResponseEntity<?> finishpayment(@CurrentSecurityContext(expression = "authentication")
                                                Authentication authentication,@RequestBody finishPaymentDAO finishpaymentDAO) throws Exception {
 
-        //endTODO:여기 상품 검증 실패면 취소로직해줘야댐
-//                Optional<ProductOption> byId = productOptionRepository.findById(detailOptionDAO.optionId);
-//                int i = byId.get().getOptionStock();
-//                int k = detailOptionDAO.optionCount;
-//                int j= i-k;
-//                String message= byId.get().getOptionName()+"의 수량을 "+ byId.get().getOptionStock()+"개 보다 적게 선택해주세요";
 
         Payment tokentoInfo = getTokentoInfo(finishpaymentDAO.impuid);
-//        tokentoInfo.getReceiptUrl()
-//        orderDetailService.paymentOrderDetail(tokentoInfo);
         String customData = tokentoInfo.getCustomData();
         JSONObject jsonObject=new JSONObject(customData);
-        //디테일배열
         Optional<User> byEmail = userRepository.findByEmail(authentication.getName());
         JSONArray detail =jsonObject.getJSONArray("detaildId");
 //        TODO:오류일으키기 메모없어도 오류가 뜬다
@@ -403,17 +396,11 @@ public class OrderDetailController {
             for (OrderDetail order : orders) {
                 if(order.getShop().getId()== verification.shopId)
                 {
-                    if(order.getPanda() ==null)
-                    {
-                        verification.amount+=Math.round(order.getTotalPrice());
-                        verification.pure+=Math.round(order.getTotalPrice());
 
-                    }else
-                    {
-                        verification.amount+=(Math.round(order.getTotalPrice()*0.95));
-                        verification.pure+=Math.round(order.getTotalPrice());
+                        verification.amount+=Math.floor(order.getIndividualPrice()*order.getProductCount());
+                        verification.pure+=Math.floor(order.getTotalPrice());
 
-                    }
+
 
                 }
             }
@@ -434,10 +421,7 @@ public class OrderDetailController {
 
         BigDecimal amount = tokentoInfo.getAmount();
 
-        System.out.println("검증중");
-        System.out.println("allamount = " + allamount);
-        System.out.println("amount.intValue() = " + amount.intValue());
-        System.out.println(allamount+amount.intValue());
+
         if(allamount==amount.intValue())
         {
             System.out.println("검증성공");
@@ -469,12 +453,20 @@ public class OrderDetailController {
 
             }else
             {
+                log.error(authentication.getName()+"검증실패 이슈 발생");
+                log.error("결제해야할 금액 = " + allamount);
+                log.error("실제 결제된 금액 " + amount.intValue());
+                paymentAlreadyCancelled(finishpaymentDAO.impuid);
                 paymentAlreadyCancelled(finishpaymentDAO.impuid);
                 return ResponseEntity.ok(new tfResultDto(false));
             }
 
         }else
         {
+
+            log.error("검증실패 이슈 발생");
+            log.error("결제해야할 금액 = " + allamount);
+            log.error("실제 결제된 금액 " + amount.intValue());
             paymentAlreadyCancelled(finishpaymentDAO.impuid);
             return ResponseEntity.ok(new tfResultDto(false));
 

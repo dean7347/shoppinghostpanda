@@ -491,13 +491,13 @@ public class UserOrderController {
 
         public ShopDashboardDtoType(UserOrder uo) {
             this.id = uo.getId();
-            this.realPrice = uo.getFullprice();
+            this.realPrice = uo.getPureAmount()+uo.shipPriceCalculation();
             //무료배송이 아닐경우
             this.shipPrice=uo.shipPriceCalculation();
             this.beforeSalePrice = uo.getPureAmount() - uo.getFinalRefundMoney();
             this.shopPrice=uo.getShopMoney();
             this.settlePrice = uo.getFinalRefundMoney();
-            this.fees = uo.getPandaMoney() + uo.getHostMoney() + uo.getBalance();
+            this.fees =(int) Math.round(uo.getPureAmount()*0.25);
             this.salesDate = uo.getCreatedAt();
             this.confirmDate = uo.getFinishAt();
             //정산예정일
