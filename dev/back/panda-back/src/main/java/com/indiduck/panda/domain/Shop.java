@@ -78,6 +78,10 @@ public class Shop {
     //평균배송기간
     private String AVDtime;
 
+    //취급상품
+    @Lob
+    private String descriptionProduct;
+
 
 
 
@@ -114,7 +118,7 @@ public class Shop {
     public static Shop createShop(User user,String shopName, String representative,String crn, String telnum, int freepee, int nofree,
                                   String priPhone, String csPhone, String csTime, String toPanda, String reship,
                                   int returnpee, int tradepee, String returnaddress, String candate,
-                                  String noreturn, boolean Termsagree, boolean Infoagree,String comaddress,String avdtime){
+                                  String noreturn, boolean Termsagree, boolean Infoagree,String comaddress,String avdtime,String descriptionProduct){
         Shop shop = new Shop();
         shop.setUser(user);
         shop.shopName=shopName;
@@ -139,6 +143,7 @@ public class Shop {
         shop.isOpen=false;
         shop.comaddress=comaddress;
         shop.AVDtime=avdtime;
+        shop.descriptionProduct=descriptionProduct;
 
         return shop;
     }

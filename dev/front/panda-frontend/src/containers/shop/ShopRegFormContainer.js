@@ -35,6 +35,7 @@ const ShopRegFormContainer = ({ history }) => {
     noreturn: "",
     comaddress: "",
     avdtime: "",
+    descriptionProduct: "",
   });
   const {
     shopName,
@@ -55,6 +56,7 @@ const ShopRegFormContainer = ({ history }) => {
     noreturn,
     comaddress,
     avdtime,
+    descriptionProduct,
   } = form;
 
   const onChangeF = (e) => {
@@ -88,6 +90,7 @@ const ShopRegFormContainer = ({ history }) => {
         iagree: e.Infoagree,
         comaddress: comaddress,
         avdtime: avdtime,
+        descriptionProduct: descriptionProduct,
       };
       // console.log("체크크크크");
       // console.log(body);
@@ -110,7 +113,8 @@ const ShopRegFormContainer = ({ history }) => {
         !candate ||
         !noreturn ||
         !comaddress ||
-        !avdtime
+        !avdtime ||
+        !descriptionProduct
       ) {
         alert("모든정보를 입력해 주세요");
         return;
@@ -690,6 +694,27 @@ const ShopRegFormContainer = ({ history }) => {
             showCount
             maxLength={250}
             name="toPanda"
+            onChange={onChangeF}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="descriptionProduct"
+          onChange={onChangeF}
+          label="주요 상품 설명"
+          rules={[
+            {
+              required: true,
+              message:
+                "어떤 상품을 판매 계획이신지 알려주세요 상점 심사시 참고됩니다",
+            },
+          ]}
+        >
+          <Input.TextArea
+            showCount
+            maxLength={500}
+            placeholder="어떤 상품을 판매 계획이신지 알려주세요 상점 심사시 참고됩니다"
+            name="descriptionProduct"
             onChange={onChangeF}
           />
         </Form.Item>

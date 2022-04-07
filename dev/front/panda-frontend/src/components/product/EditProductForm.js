@@ -168,6 +168,10 @@ function EditProductForm(props) {
         optionPrice,
         optionStock,
       };
+      if (optionStock <= 0 || optionStock >= 3000) {
+        alert("재고는 0 ~ 3000까지 가능합니다");
+        return;
+      }
 
       const body = {
         productId: props.productId,

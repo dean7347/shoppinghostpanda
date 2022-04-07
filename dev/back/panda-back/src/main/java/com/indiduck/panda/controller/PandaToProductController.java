@@ -68,6 +68,7 @@ public class PandaToProductController {
         if (!byProduct.isEmpty()) {
             return ResponseEntity.ok(new PandasDto(true, byProduct));
         }
+
         return ResponseEntity.ok(new PandasDto(false, null));
 
     }
@@ -131,6 +132,10 @@ public class PandaToProductController {
 
         public PandasDto(boolean t, List<PandaToProduct> ptp) {
             success = t;
+            if(ptp==null)
+            {
+                return;
+            }
             for (PandaToProduct pandaToProduct : ptp) {
                 details.add(new PandasDetail(pandaToProduct.getLink(), pandaToProduct.getPanda().getPandaName(),
                         pandaToProduct.getPanda().getId(), pandaToProduct.getId()));

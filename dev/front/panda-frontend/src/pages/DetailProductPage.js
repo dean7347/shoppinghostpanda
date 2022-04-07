@@ -832,7 +832,7 @@ function DetailProductPage(props) {
                 </div>
               </TabPane>
               {approvePanda && (
-                <TabPane tab="판다등록" key="6">
+                <TabPane tab="판다등록" key="7">
                   <div>
                     <h2>판매자정보</h2>
                     <table>

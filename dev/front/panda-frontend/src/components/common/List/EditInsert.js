@@ -32,6 +32,11 @@ const EditInsert = ({ onInsert, editoption, complete }) => {
       optionCount: optionStock,
       optionPrice: optionPrice,
     };
+
+    if (optionStock <= 0 || optionStock >= 3000) {
+      alert("재고는 0 ~ 3000까지 가능합니다");
+      return;
+    }
     axios.post("/api/editproductoption", body).then((response) => {
       if (response.data.success) {
         alert("옵션수정에 성공했습니다");
@@ -71,6 +76,8 @@ const EditInsert = ({ onInsert, editoption, complete }) => {
               placeholder="옵션명을 입력하세요"
               value={optionName}
               onChange={onChange}
+              min={0}
+              max={3000}
               style={{ width: "100%" }}
             />
           </div>
@@ -98,6 +105,8 @@ const EditInsert = ({ onInsert, editoption, complete }) => {
               type="number"
               name="optionStock"
               value={optionStock}
+              min={0}
+              max={3000}
               onChange={onChange}
               style={{ width: "100%" }}
             />

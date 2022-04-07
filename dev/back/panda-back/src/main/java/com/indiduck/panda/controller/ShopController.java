@@ -72,7 +72,8 @@ public class ShopController {
                 createShopDAO.csPhone,createShopDAO.csTime,createShopDAO.toPanda,
                 createShopDAO.reship,createShopDAO.returnpee,createShopDAO.tradepee,
                 createShopDAO.returnaddress,createShopDAO.candate,createShopDAO.noreturn,
-                createShopDAO.tagree,createShopDAO.iagree,createShopDAO.comaddress,createShopDAO.avdtime);
+
+                createShopDAO.tagree,createShopDAO.iagree,createShopDAO.comaddress,createShopDAO.avdtime,  createShopDAO.descriptionProduct);
             if (newShop!=null){
                 log.info(authentication.getName()+"샵등록성공");
                 return ResponseEntity.ok(new shopControllerResultDto(true,"샵등록 성공"));
@@ -500,6 +501,7 @@ public class ShopController {
         private boolean iagree;
         private String comaddress;
         private String avdtime;
+        private String descriptionProduct;
 
     }
 

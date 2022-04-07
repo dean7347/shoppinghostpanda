@@ -433,7 +433,7 @@ function ProductInfo(props) {
                 Submit
               </Button>
             </Form.Item>
-            <ReactTinyLink
+            {/* <ReactTinyLink
               cardSize="large"
               showGraphic={true}
               maxLine={2}
@@ -442,7 +442,7 @@ function ProductInfo(props) {
               proxyUrl={`api/proxy?url=`}
               description={true}
               url={`${Link}`}
-            />
+            /> */}
           </Form>
         </div>
       ) : (
@@ -544,7 +544,7 @@ function ProductInfo(props) {
                   Submit
                 </Button>
               </Form.Item>
-              <ReactTinyLink
+              {/* <ReactTinyLink
                 cardSize="large"
                 showGraphic={true}
                 maxLine={2}
@@ -553,7 +553,7 @@ function ProductInfo(props) {
                 proxyUrl={`api/proxy?url=`}
                 description={true}
                 url={`${Link}`}
-              />
+              /> */}
             </Form>
           </div>
           <div
@@ -666,7 +666,7 @@ function ProductInfo(props) {
                     Submit
                   </Button>
                 </Form.Item>
-                <ReactTinyLink
+                {/* <ReactTinyLink
                   cardSize="large"
                   showGraphic={true}
                   maxLine={2}
@@ -675,7 +675,7 @@ function ProductInfo(props) {
                   proxyUrl={`api/proxy?url=`}
                   description={true}
                   url={`${Link}`}
-                />
+                /> */}
               </Form>
             </div>
           </div>

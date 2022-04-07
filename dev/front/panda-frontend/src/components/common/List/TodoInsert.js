@@ -10,6 +10,10 @@ const TodoInsert = ({ onInsert }) => {
   });
 
   const onSubmit = useCallback(() => {
+    if (inputs.optionStock <= 0 || inputs.optionStock >= 3000) {
+      alert("재고수량은 0~3000까지 가능합니다");
+      return;
+    }
     onInsert(inputs.optionName, inputs.optionPrice, inputs.optionStock);
 
     setInputs({ optionName: "", optionPrice: "", optionStock: "" });
@@ -47,6 +51,8 @@ const TodoInsert = ({ onInsert }) => {
           placeholder="재고"
           type="number"
           name="optionStock"
+          min={0}
+          max={3000}
           value={optionStock}
           onChange={onChange}
           style={{ width: "10%" }}
