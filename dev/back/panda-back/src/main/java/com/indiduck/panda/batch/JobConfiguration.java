@@ -45,7 +45,7 @@ public class JobConfiguration {
     @JobScope
     public Step Step() throws Exception {
         return stepBuilderFactory.get("Step")
-                .<UserOrder,UserOrder>chunk(1)
+                .<UserOrder,UserOrder>chunk(100)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -68,21 +68,21 @@ public class JobConfiguration {
                 return 0;
             }
         };
-//        reader.setParameterValues();
-//        reader.setQueryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC");
-//        reader.setPageSize(1);
-//        reader.setEntityManagerFactory(entityManagerFactory);
-//        reader.setName("confirmOrderReader");
-//
-//        return reader;
+        reader.setParameterValues(parameterValues);
+        reader.setQueryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC");
+        reader.setPageSize(100);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setName("JpaPagingItemReader");
 
-        return new JpaPagingItemReaderBuilder<UserOrder>()
-                .pageSize(15)
-                .parameterValues(parameterValues)
-                .queryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC")
-                .entityManagerFactory(entityManagerFactory)
-                .name("JpaPagingItemReader")
-                .build();
+        return reader;
+
+//        return new JpaPagingItemReaderBuilder<UserOrder>()
+//                .pageSize(15)
+//                .parameterValues(parameterValues)
+//                .queryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC")
+//                .entityManagerFactory(entityManagerFactory)
+//                .name("JpaPagingItemReader")
+//                .build();
     }
 
     @Bean

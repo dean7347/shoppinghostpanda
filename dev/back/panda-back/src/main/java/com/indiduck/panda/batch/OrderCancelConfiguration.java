@@ -55,7 +55,7 @@ public class OrderCancelConfiguration {
     public Step OrderCancelStep() throws Exception {
 
         return stepBuilderFactory.get("OrderCancelStep")
-                .<UserOrder,UserOrder>chunk(10)
+                .<UserOrder,UserOrder>chunk(100)
                 .reader(OrderCancelreader())
                 .processor(OrderCancelprocessor())
                 .writer(OrderCancelwriter())
@@ -70,16 +70,31 @@ public class OrderCancelConfiguration {
 //        parameterValues.put("Estatus", false);
         parameterValues.put("od", OrderStatus.결제완료);
         parameterValues.put("limitDay", LocalDateTime.now().minusDays(5));
-        return new JpaPagingItemReaderBuilder<UserOrder>()
-                .pageSize(10)
-                .parameterValues(parameterValues)
-                //샵 userorder.
-//                .queryString("Select p FROM Panda p where exists (Select odp from p.orderDetailPandas odp where odp.enrollSettle =: Estatus And odp.paymentStatus =: ps And odp.orderStatus =: od) ORDER BY id ASC")
-//                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
-                .queryString("SELECT uo FROM UserOrder uo where uo.createdAt <: limitDay And uo.orderStatus =: od ORDER BY id ASC")
-                .entityManagerFactory(entityManagerFactory)
-                .name("JpaPagingItemReader")
-                .build();
+
+
+        JpaPagingItemReader<UserOrder> reader = new JpaPagingItemReader<UserOrder>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+        reader.setParameterValues(parameterValues);
+        reader.setQueryString("SELECT uo FROM UserOrder uo where uo.createdAt <: limitDay And uo.orderStatus =: od ORDER BY id ASC");
+        reader.setPageSize(100);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setName("JpaPagingItemReader");
+
+        return reader;
+//        return new JpaPagingItemReaderBuilder<UserOrder>()
+//                .pageSize(10)
+//                .parameterValues(parameterValues)
+//                //샵 userorder.
+////                .queryString("Select p FROM Panda p where exists (Select odp from p.orderDetailPandas odp where odp.enrollSettle =: Estatus And odp.paymentStatus =: ps And odp.orderStatus =: od) ORDER BY id ASC")
+////                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
+//                .queryString("SELECT uo FROM UserOrder uo where uo.createdAt <: limitDay And uo.orderStatus =: od ORDER BY id ASC")
+//                .entityManagerFactory(entityManagerFactory)
+//                .name("JpaPagingItemReader")
+//                .build();
     }
 
     @Bean

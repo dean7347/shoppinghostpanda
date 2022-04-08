@@ -53,7 +53,7 @@ public class DepositConfiguration {
     public Step DepositStep() throws Exception {
 
         return stepBuilderFactory.get("DepositStep")
-                .<Shop,Shop>chunk(10)
+                .<Shop,Shop>chunk(100)
                 .reader(Depositreader())
                 .processor(Depositprocessor())
                 .writer(Depositwriter())
@@ -68,15 +68,32 @@ public class DepositConfiguration {
         parameterValues.put("Estatus", false);
         parameterValues.put("od", OrderStatus.구매확정);
         parameterValues.put("ps", PaymentStatus.지급예정);
-        return new JpaPagingItemReaderBuilder<Shop>()
-                .pageSize(10)
-                .parameterValues(parameterValues)
-                //샵 userorder.
-                .queryString("Select s FROM Shop s where exists (Select uo from s.userOrders uo where uo.enrollSettleShop =: Estatus And uo.paymentStatus =: ps And uo.orderStatus =: od) ORDER BY id ASC")
-//                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
-                .entityManagerFactory(entityManagerFactory)
-                .name("JpaPagingItemReader")
-                .build();
+
+
+        JpaPagingItemReader<Shop> reader = new JpaPagingItemReader<Shop>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+        reader.setParameterValues(parameterValues);
+        reader.setQueryString("Select s FROM Shop s where exists (Select uo from s.userOrders uo where uo.enrollSettleShop =: Estatus And uo.paymentStatus =: ps And uo.orderStatus =: od) ORDER BY id ASC");
+        reader.setPageSize(100);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setName("JpaPagingItemReader");
+
+        return reader;
+
+
+//        return new JpaPagingItemReaderBuilder<Shop>()
+//                .pageSize(10)
+//                .parameterValues(parameterValues)
+//                //샵 userorder.
+//                .queryString("Select s FROM Shop s where exists (Select uo from s.userOrders uo where uo.enrollSettleShop =: Estatus And uo.paymentStatus =: ps And uo.orderStatus =: od) ORDER BY id ASC")
+////                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
+//                .entityManagerFactory(entityManagerFactory)
+//                .name("JpaPagingItemReader")
+//                .build();
     }
 
     @Bean
