@@ -33,12 +33,11 @@ public class JobScheduler {
 
     @Autowired
     private ResignConfiguration resignConfiguration;
-    @Scheduled(cron = "30 * * * * ?")
+    @Scheduled(cron = "1 * * * * ?")
     public void runConfirmJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(confMap);
-        System.out.println("구매확정스케쥴링시작");
         try {
 
             jobLauncher.run(jobConfiguration.ConfirmJob(), jobParameters);

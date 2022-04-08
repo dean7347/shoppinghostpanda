@@ -12,6 +12,7 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,6 @@ public class JobConfiguration {
 
     @Bean
     public Job ConfirmJob() throws Exception {
-        log.info("구매확정 스케쥴링 시작");
         Job exampleJob = jobBuilderFactory.get("ConfirmJob")
                 .start(Step())
                 .build();
@@ -45,7 +45,7 @@ public class JobConfiguration {
     @JobScope
     public Step Step() throws Exception {
         return stepBuilderFactory.get("Step")
-                .<UserOrder,UserOrder>chunk(10)
+                .<UserOrder,UserOrder>chunk(1)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -60,10 +60,24 @@ public class JobConfiguration {
         parameterValues.put("beforeDay", LocalDateTime.now().minusDays(14));
         parameterValues.put("od", OrderStatus.발송중);
 
-        log.info("구매확정 쿼리 시작");
+
+
+        JpaPagingItemReader<UserOrder> reader = new JpaPagingItemReader<UserOrder>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+//        reader.setParameterValues();
+//        reader.setQueryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC");
+//        reader.setPageSize(1);
+//        reader.setEntityManagerFactory(entityManagerFactory);
+//        reader.setName("confirmOrderReader");
+//
+//        return reader;
 
         return new JpaPagingItemReaderBuilder<UserOrder>()
-                .pageSize(10)
+                .pageSize(15)
                 .parameterValues(parameterValues)
                 .queryString("SELECT uo FROM UserOrder uo where uo.standardfinishAt <: beforeDay And uo.orderStatus =: od ORDER BY id ASC")
                 .entityManagerFactory(entityManagerFactory)
@@ -76,9 +90,10 @@ public class JobConfiguration {
     public ItemProcessor<UserOrder, UserOrder> processor(){
 
         return new ItemProcessor<UserOrder, UserOrder>() {
+
             @Override
             public UserOrder process(UserOrder us) throws Exception {
-                System.out.println("us = " + us.getId());
+                log.info("us 컨펌실행" + us.getId());
              us.batchConfirm(LocalDateTime.now());
 
                 return us;
