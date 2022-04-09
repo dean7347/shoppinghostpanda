@@ -27,10 +27,10 @@ const Navbar = () => {
                 {/*<img src={user.image} alt=""/>*/}
             </div>
             <div className="topnav__right-user__name">
-                {'안녕하세요'}
+                {user?.userName}
             </div>
         </div>
-    ), [])
+    ), [user])
 
     const renderUserMenu = useCallback((item, index) => (
         <div key={index}>
