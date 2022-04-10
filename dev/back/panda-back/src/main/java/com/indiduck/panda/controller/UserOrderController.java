@@ -72,9 +72,23 @@ public class UserOrderController {
             List<RefundList> refundList = refundReq.refundList;
             List<OrderDetail> orderDetails = new ArrayList<>();
             for (RefundList list : refundList) {
+                Optional<OrderDetail> byId1 = orderDetailRepository.findById(list.optionId);
+                if(byId1.get().getProductCount() < list.optionCount)
+                {
+                    return ResponseEntity.ok(new TFMessageDto(false, "남은 수량보다 적은 상품입니다"));
+
+                }
+                if(list.optionCount <=0)
+               {
+                   return ResponseEntity.ok(new TFMessageDto(false, "0개는 입력할 수 없습니다"));
+
+               }
+            }
+            for (RefundList list : refundList) {
                 long optionId = list.optionId;
                 Optional<OrderDetail> byId1 = orderDetailRepository.findById(optionId);
                 OrderDetail orderDetail = byId1.get();
+                
                 orderDetail.reqRefund(list.optionCount);
                 orderDetails.add(orderDetail);
             }
@@ -216,16 +230,16 @@ public class UserOrderController {
         for (long l : changeAction.userOrderId) {
             boolean b = verifyService.userOrderForShopOrUser(authentication.getName(), l);
             if (!b) {
-                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다");
-                return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다1");
+                return ResponseEntity.ok(new TFMessageDto(false, l + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
             }
             UserOrder userOrder = userOrderService.ChangeOrder(l, changeAction.state, changeAction.courier, changeAction.waybill);
             if (userOrder == null) {
                 num = l;
-                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다");
+                log.error(authentication.getName() + "이 스테이터스를 바꾸려고 했으나" + l + "번주문에 이상이 생겼습니다2");
 
-                return ResponseEntity.ok(new TFMessageDto(false, num + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
+                return ResponseEntity.ok(new TFMessageDto(false, l + "번 주문이 이미 취소되었거나 확인에 실패했습니다"));
 
 
             }
@@ -514,7 +528,7 @@ public class UserOrderController {
             this.beforeSalePrice = uo.getPureAmount();
             this.shopPrice=uo.getShopMoney();
             this.settlePrice = uo.getFinalRefundMoney();
-            this.fees =(int) Math.round(uo.getPureAmount()*0.25);
+            this.fees = uo.getPandaMoney()+uo.getHostMoney()+uo.getBalance();
             this.salesDate = uo.getCreatedAt();
             this.confirmDate = uo.getFinishAt();
             //정산예정일

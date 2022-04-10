@@ -399,7 +399,7 @@ function CardInRefundFinish(props) {
     reFundList.forEach((el) => {
       console.log(el.issale);
       if (el.issale) {
-        money += Math.round(el.individualPrice * el.refundConfrimOrder);
+        money += Math.floor(el.individualPrice * el.refundConfrimOrder);
       } else {
         money += el.individualPrice * el.refundConfrimOrder;
       }
@@ -533,7 +533,7 @@ function CardInRefundFinish(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price);
+              price = Math.floor(price);
             }
             return (
               <Menu.Item

@@ -167,11 +167,11 @@ public class UserOrder {
         this.detail.add(orderDetail);
         orderDetail.setUserOrder(this);
         if (orderDetail.getPanda() != null) {
-            this.amount += Math.floor(orderDetail.getTotalPrice() * 0.95);
+            this.amount += orderDetail.getIndividualPrice()*orderDetail.getProductCount();
             this.PureAmount += orderDetail.getTotalPrice();
 
         } else {
-            this.amount += orderDetail.getTotalPrice();
+            this.amount += orderDetail.getIndividualPrice()*orderDetail.getProductCount();
             this.PureAmount += orderDetail.getTotalPrice();
         }
 

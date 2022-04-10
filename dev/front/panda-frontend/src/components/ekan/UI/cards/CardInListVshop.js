@@ -206,7 +206,7 @@ function CardInListVshop(props) {
                               <Col span={24}>
                                 {option.discount ? (
                                   <div>
-                                    {Math.round(
+                                    {Math.floor(
                                       option.optionPrice * option.optionCount
                                     )
                                       .toString()

@@ -391,7 +391,7 @@ function CardInListVReady(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price);
+              price = Math.floor(price);
             }
             return (
               <Menu.Item
@@ -508,7 +508,7 @@ function CardInListVReady(props) {
                               <Col span={24}>
                                 {option.discount ? (
                                   <div>
-                                    {Math.round(
+                                    {Math.floor(
                                       option.optionPrice * option.optionCount
                                     )
                                       .toString()

@@ -527,7 +527,7 @@ const ShopRegFormContainer = ({ history }) => {
           whiteSpace: "pre-wrap",
         }}
       >
-        <Collapse defaultActiveKey={["1"]} onChange={callback}>
+        <Collapse onChange={callback}>
           <Panel header="약관" key="1">
             <p>{termText}</p>
           </Panel>

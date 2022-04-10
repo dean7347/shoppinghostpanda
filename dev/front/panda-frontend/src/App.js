@@ -1,4 +1,4 @@
-import React, {Suspense, useLayoutEffect} from "react";
+import React, { Suspense, useLayoutEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,8 +9,8 @@ import Footer from "./components/common/Footer";
 import Loader from "./components/ekan/UI/Loader";
 import { useSelector } from "react-redux";
 import AdminIndex from "./components/ekan/pages/mypage/admin/AdminIndex";
-import {useAuthStore} from "./store/authHooks";
-import {useWindowStore} from "./store/windowHooks";
+import { useAuthStore } from "./store/authHooks";
+import { useWindowStore } from "./store/windowHooks";
 
 const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const WritePage = React.lazy(() => import("./pages/WritePage"));
@@ -47,12 +47,12 @@ const TestPage = React.lazy(() => import("./pages/TestPage"));
 const FindIdPage = React.lazy(() => import("./pages/FindIdPage"));
 
 const App = () => {
-  const loading = useWindowStore(state => state.loading)
-  const reIssue = useAuthStore(state => state.reIssue)
+  const loading = useWindowStore((state) => state.loading);
+  const reIssue = useAuthStore((state) => state.reIssue);
 
   useLayoutEffect(() => {
-    reIssue()
-  },[])
+    reIssue();
+  }, []);
 
   if (loading) {
     return <Loader />;
@@ -112,7 +112,7 @@ const App = () => {
             <PrivateRoute path="/buyer" component={BuyerIndex} />
             <PrivateRoute path="/panda" component={PandaIndex} />
             <PrivateRoute path="/seller" component={SellerIndex} />
-            <PrivateRoute path="/admin" component={AdminIndex} />
+            <PrivateRoute path="/ekjd/admin" component={AdminIndex} />
             {/* //api테스트용 짬통페이지 */}
             <Route path="/testpage" component={TestPage} />
           </Switch>

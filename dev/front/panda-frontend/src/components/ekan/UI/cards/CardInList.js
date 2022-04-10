@@ -356,7 +356,7 @@ function CardInList(props) {
         <>
           {console.log(key)}
           <InputNumber
-            min={1}
+            min={0}
             max={key.max}
             defaultValue={1}
             onChange={onChange(title, key)}
@@ -514,7 +514,7 @@ function CardInList(props) {
                               <Col span={24}>
                                 {option.discount ? (
                                   <div>
-                                    {Math.round(
+                                    {Math.floor(
                                       option.optionPrice * option.optionCount
                                     )
                                       .toString()

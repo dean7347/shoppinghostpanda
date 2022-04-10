@@ -522,10 +522,10 @@ const RegisterPageV2 = ({ history }) => {
         alert("패스워드가 일치하지 않습니다!");
         return;
       }
-      // if (certifiNum === "") {
-      //   alert("본인인증을 완료해야합니다");
-      //   return;
-      // }
+      if (certifiNum === "") {
+        alert("본인인증을 완료해야합니다");
+        return;
+      }
 
       const body = {
         adult: e.adult,
@@ -535,7 +535,7 @@ const RegisterPageV2 = ({ history }) => {
         password: e.password,
         phone: certifiNum,
       };
-      axios.post("/api/signup", body).then((response) => {
+      axios.post("/api/register", body).then((response) => {
         if (response.data.success) {
           alert("회원가입에 성공했습니다 ");
           window.location.replace("/");

@@ -382,7 +382,7 @@ function CardInRefund(props) {
             options.push(op);
             let price = op.optionPrice;
             if (op.discount) {
-              price = Math.round(price * 0.95);
+              price = Math.floor(price * 0.95);
             }
             return (
               <Menu.Item

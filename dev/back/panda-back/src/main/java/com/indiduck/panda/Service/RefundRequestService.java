@@ -191,14 +191,20 @@ public class RefundRequestService {
 
                 return false;
             }
-            if(refundMoney!=comMoney)
-            {
+
+        }
+
+        if(refundMoney!=comMoney)
+        {
 //            System.out.println("검증안된금액");
 
-                log.error(confirmRefundRequest.getUserOrderId()+"의 요청 실패 원인은 검증안된 금액"+refundMoney
-                +" //// "+comMoney+array);
-                return false;
-            }
+            log.error(confirmRefundRequest.getUserOrderId()+"의 요청 실패 원인은 검증안된 금액"+refundMoney
+                    +" //// "+comMoney);
+            return false;
+        }
+        for (RefundRequestController.RefundArray array : refundArray) {
+//            System.out.println("오디아이디array = " + array);
+            Optional<OrderDetail> odid = orderDetailRepository.findById(array.getOdid());
             odid.get().partialRefund(array.getRefundConfrimOrder());
         }
         long userOrderId = confirmRefundRequest.getUserOrderId();

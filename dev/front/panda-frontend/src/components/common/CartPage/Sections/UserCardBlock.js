@@ -260,11 +260,9 @@ function UserCardBlock(props) {
                                             원)
                                             {option.discount
                                               ? pricePlus(
-                                                  Math.round(
-                                                    option.originPrice *
-                                                      option.optionCount *
-                                                      0.95
-                                                  ),
+                                                  Math.floor(
+                                                    option.originPrice * 0.95
+                                                  ) * option.optionCount,
                                                   option.originPrice *
                                                     option.optionCount
                                                 )
@@ -281,16 +279,17 @@ function UserCardBlock(props) {
                                                 <Col span={16}>
                                                   {option.discount ? (
                                                     <div>
-                                                      {Math.round(
+                                                      {Math.floor(
                                                         option.originPrice *
-                                                          option.optionCount *
                                                           0.95
-                                                      )
-                                                        .toString()
-                                                        .replace(
-                                                          /\B(?=(\d{3})+(?!\d))/g,
-                                                          ","
-                                                        )}
+                                                      ) *
+                                                        option.optionCount
+
+                                                          .toString()
+                                                          .replace(
+                                                            /\B(?=(\d{3})+(?!\d))/g,
+                                                            ","
+                                                          )}
                                                       <br />
                                                       (판다 할인 : 5% )
                                                     </div>
@@ -562,7 +561,7 @@ function UserCardBlock(props) {
                                             원)
                                             {option.discount
                                               ? pricePlus(
-                                                  Math.round(
+                                                  Math.floor(
                                                     option.originPrice *
                                                       option.optionCount *
                                                       0.95
@@ -583,7 +582,7 @@ function UserCardBlock(props) {
                                                 <Col span={16}>
                                                   {option.discount ? (
                                                     <div>
-                                                      {Math.round(
+                                                      {Math.floor(
                                                         option.originPrice *
                                                           option.optionCount *
                                                           0.95
@@ -729,11 +728,10 @@ function UserCardBlock(props) {
           item.dp.map((product, index) => {
             product.do.map((options, index) => {
               if (options.pandaName) {
-                total += Math.round(
-                  options.originPrice * options.optionCount * 0.95
-                );
+                total +=
+                  Math.floor(options.originPrice * 0.95) * options.optionCount;
               } else {
-                total += Math.round(options.originPrice * options.optionCount);
+                total += Math.floor(options.originPrice * options.optionCount);
               }
               shopPrice += options.originPrice * options.optionCount;
             });

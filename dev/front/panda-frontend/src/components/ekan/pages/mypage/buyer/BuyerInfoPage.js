@@ -719,6 +719,7 @@ const BuyerInfoPage = () => {
                 <div className="mb-4 mt-4">
                   <h4 className="mb-3">
                     <i className="bx bxl-gmail mr-2"></i>유료 배송비용
+                    (유료배송시 택배비용)
                   </h4>
                   <div className="mr-2 ml-3">
                     <Badge type={"info"} content={shop.NOFREE} />

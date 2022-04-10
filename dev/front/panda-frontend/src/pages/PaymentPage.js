@@ -775,11 +775,10 @@ function PaymentPage(gprops) {
                                           원)
                                           {option.discount
                                             ? pricePlus(
-                                                Math.round(
-                                                  option.originPrice *
-                                                    option.optionCount *
-                                                    0.95
-                                                ),
+                                                Math.floor(
+                                                  option.originPrice * 0.95
+                                                ) * option.optionCount,
+
                                                 option.originPrice *
                                                   option.optionCount
                                               )
@@ -796,7 +795,7 @@ function PaymentPage(gprops) {
                                               <Col span={24}>
                                                 {option.discount ? (
                                                   <div>
-                                                    {Math.round(
+                                                    {Math.floor(
                                                       option.originPrice *
                                                         option.optionCount *
                                                         0.95
@@ -1027,7 +1026,7 @@ function PaymentPage(gprops) {
                                         원)
                                         {option.discount
                                           ? pricePlus(
-                                              Math.round(
+                                              Math.floor(
                                                 option.originPrice *
                                                   option.optionCount *
                                                   0.95
@@ -1046,7 +1045,7 @@ function PaymentPage(gprops) {
                                             <Col span={16}>
                                               {option.discount ? (
                                                 <div>
-                                                  {Math.round(
+                                                  {Math.floor(
                                                     option.originPrice *
                                                       option.optionCount *
                                                       0.95

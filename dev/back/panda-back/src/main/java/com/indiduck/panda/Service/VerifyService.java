@@ -100,7 +100,7 @@ public class VerifyService {
     public boolean userOrderForShopOrUser(String name, long userOrderId) {
         User user = userRepository.findByEmail(name).get();
         UserOrder userOrder = userOrderRepository.findById(userOrderId).get();
-        if(user.getId()==userOrder.getUserId().getId() || user.getId()==userOrder.getShop().getId())
+        if(user.getId()==userOrder.getUserId().getId() || user.getShop().getId()==userOrder.getShop().getId())
         {
             return true;
         }

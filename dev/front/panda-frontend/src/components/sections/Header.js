@@ -37,7 +37,7 @@ const Header = () => {
               <div className="buttons">
                 <Button
                   text="회원가입"
-                  onClick={() => history.push("/signup")}
+                  onClick={() => history.push("/register")}
                   className="is-primary"
                 />
                 <Button text="로그인" onClick={() => history.push("/signin")} />

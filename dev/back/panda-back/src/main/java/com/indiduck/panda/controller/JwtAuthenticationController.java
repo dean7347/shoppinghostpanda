@@ -173,7 +173,7 @@ private final JwtTokenProvider jwtTokenProvider;
 
 
         try {
-            String save = userDetailsService.saveTEST(infoDto);
+            String save = userDetailsService.save(infoDto);
             if (!save.equals("회원가입성공")) {
                 return ResponseEntity.ok(new signupDto(false, save));
 

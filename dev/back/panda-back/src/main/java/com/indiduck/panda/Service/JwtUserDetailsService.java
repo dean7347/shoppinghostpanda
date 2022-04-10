@@ -255,7 +255,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                         .ci("testCICICI")
                         .regAt(LocalDateTime.now())
                         .password(infoDto.getPassword())
-                        .roles(Collections.singletonList(UserType.ROLE_ADMIN.toString())).build()).getId();
+                        .roles(Collections.singletonList(UserType.ROLE_USER.toString())).build()).getId();
                 return "회원가입성공";
 
             }
