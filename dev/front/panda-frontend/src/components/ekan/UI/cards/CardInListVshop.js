@@ -29,13 +29,13 @@ import {
 import HeaderContainer from "../../../../containers/common/HeaderContainer";
 import axios from "../../../../api/axiosDefaults";
 function CardInListVshop(props) {
-  console.log("카인리");
-  console.log(props);
+  //console.log("카인리");
+  //console.log(props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
-    console.log("취소신청");
-    console.log(p);
+    //console.log("취소신청");
+    //console.log(p);
     const body = {
       detailId: p,
     };
@@ -57,20 +57,20 @@ function CardInListVshop(props) {
   //   };
   //   axios.post("/api/pandadashboard", body).then((response) => {
   //     if (response.data.success) {
-  //       console.log("스테이터스변경성공");
-  //       console.log(response.data);
+  //       //console.log("스테이터스변경성공");
+  //       //console.log(response.data);
   //     } else {
-  //       console.log("스테이터스실패");
-  //       console.log(response.data);
+  //       //console.log("스테이터스실패");
+  //       //console.log(response.data);
   //     }
   //   });
   // };
   const onPrint = () => {
-    console.log("주문서출력");
+    //console.log("주문서출력");
     window.print();
   };
   const onTestCheck = (p, s, c, w) => {
-    console.log(p + s);
+    //console.log(p + s);
     if (!(s === "준비중" || s === "주문취소")) {
       alert("잘못된 접근입니다!");
       return;
@@ -105,7 +105,7 @@ function CardInListVshop(props) {
       //   }
       // });
     } else {
-      console.log("취소");
+      //console.log("취소");
     }
   };
   function isfree(getpurePrice) {
@@ -146,7 +146,7 @@ function CardInListVshop(props) {
 
         {props &&
           props.situationDetail.products.map((pd, idx) => {
-            console.log("pd: ", pd);
+            //console.log("pd: ", pd);
             var allPrice = 0;
             var purePrice = 0;
             function pricePlus(getprice, getpureprice) {
@@ -335,14 +335,14 @@ function CardInListVshop(props) {
   // useEffect(() => {
   //   // document.getElementById("print-button").click();
 
-  //   console.log("클릭댔음");
-  //   console.log(componentRef);
+  //   //console.log("클릭댔음");
+  //   //console.log(componentRef);
   //   handlePrint();
   // });
 
   return (
     <>
-      {console.log("떳다", props.situationDetail)}
+      {/* {//console.log("떳다", props.situationDetail)} */}
       {props.situationDetail.status === "구매확정" ? (
         <Button onClick={handlePrint}>인쇄하기</Button>
       ) : (

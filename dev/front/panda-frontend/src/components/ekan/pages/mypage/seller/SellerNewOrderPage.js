@@ -22,7 +22,7 @@ const SellerNewOrderPage = () => {
   const componentRef = useRef();
   function confirmOrder(event, cellValues) {
     event.stopPropagation();
-    console.log(cellValues);
+    //console.log(cellValues);
     //진동API작업
     const body = {
       userOrderId: cellValues.id,
@@ -42,7 +42,7 @@ const SellerNewOrderPage = () => {
   }
   function cancelOrder(event, cellValues) {
     event.stopPropagation();
-    console.log(cellValues);
+    //console.log(cellValues);
     //진동API작업
     const body = {
       userOrderId: cellValues.id,
@@ -118,18 +118,18 @@ const SellerNewOrderPage = () => {
     event.stopPropagation();
     dispatch(fetchSituationDetail(cellValues.id));
     setShowModal(true);
-    console.log(situationDetail);
+    //console.log(situationDetail);
   };
 
   const confirmSelected = (event) => {
     event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
+    //console.log("선택된 주문 확인", selectedRows);
     //진동 API작업
     var ids = [];
     for (var i = 0; i < selectedRows.length; i++) {
       ids.push(selectedRows[i].id);
     }
-    console.log(ids);
+    //console.log(ids);
     //진동API작업
     const body = {
       userOrderId: ids,
@@ -149,13 +149,13 @@ const SellerNewOrderPage = () => {
 
   const cancelSelected = (event) => {
     event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
+    //console.log("선택된 주문 확인", selectedRows);
     //진동 API작업
     var ids = [];
     for (var i = 0; i < selectedRows.length; i++) {
       ids.push(selectedRows[i].id);
     }
-    console.log(ids);
+    //console.log(ids);
     //진동API작업
     const body = {
       userOrderId: ids,
@@ -176,7 +176,7 @@ const SellerNewOrderPage = () => {
 
   const PrintList = (event) => {
     event.preventDefault();
-    console.log("선택된 주문 확인", selectedRows);
+    //console.log("선택된 주문 확인", selectedRows);
     var ids = [];
     for (var i = 0; i < selectedRows.length; i++) {
       ids.push(selectedRows[i].id);
@@ -210,7 +210,7 @@ const SellerNewOrderPage = () => {
       setRows(data.pageList);
       setTotalElement(data.totalElement);
     } catch (err) {
-      console.log("테이블 요청 오류");
+      //console.log("테이블 요청 오류");
     }
   }, [page]);
 
@@ -219,12 +219,12 @@ const SellerNewOrderPage = () => {
   }, [page]);
 
   // function printPage(e) {
-  //   // console.log(e);
+  //   // //console.log(e);
   //   const s = <div dangerouslySetInnerHTML={t}>zz</div>;
 
-  //   console.log(t);
+  //   //console.log(t);
   //   <div id="tt">아이디</div>;
-  //   console.log("프린트페이지 실행");
+  //   //console.log("프린트페이지 실행");
   //   var initBody;
   //   window.onbeforeprint = function () {
   //     initBody = document.body.innerHTML;
@@ -257,16 +257,16 @@ const SellerNewOrderPage = () => {
   }
 
   useEffect(() => {
-    console.log("유즈이펙트");
-    console.log("유즈이펙트PLD");
-    console.log(PLD);
+    //console.log("유즈이펙트");
+    //console.log("유즈이펙트PLD");
+    //console.log(PLD);
     function createMarkup() {
       return { __html: "First &middot; Second" };
     }
 
     if (PLD && PLD.length > 0) {
-      console.log("인쇄실행");
-      console.log(PLD);
+      //console.log("인쇄실행");
+      //console.log(PLD);
       PLD.map((data, idx) => {
         var pro = `<hr/> `;
         var option;
@@ -318,7 +318,7 @@ const SellerNewOrderPage = () => {
   //       <button onClick={handlePrintt}>Print this out!</button>;
   //       <div>zz{PLD && PLD.length}</div>
   //       <div ref={componentRef}>
-  //         {PLD && console.log(PLD + "zzz")}
+  //         {PLD && //console.log(PLD + "zzz")}
   //         {PLD &&
   //           PLD.map((data, idx) => {
   //             return (

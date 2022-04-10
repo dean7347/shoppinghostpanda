@@ -71,11 +71,11 @@ function PaymentPage(gprops) {
     var month = ("0" + (1 + date.getMonth())).slice(-2);
     var day = ("0" + date.getDate()).slice(-2);
     var tname = year + month + day;
-    // console.log("결제하기!!!!!");
-    // console.log(defaultInfo);
-    // console.log(paymentForm);
-    console.log("결제전 커스텀");
-    console.log(customData);
+    // //console.log("결제하기!!!!!");
+    // //console.log(defaultInfo);
+    // //console.log(paymentForm);
+    //console.log("결제전 커스텀");
+    //console.log(customData);
     if (value === 1) {
       SetPayMentForm({
         merchant_uid: uid, // 결제 요청시 가맹점에서 아임포트로 전달한 가맹점 고유 주문번호
@@ -161,8 +161,8 @@ function PaymentPage(gprops) {
     });
   };
 
-  //   // console.log(props.location.state.amount);
-  //   // console.log(props.location.state.selectShopId);
+  //   // //console.log(props.location.state.amount);
+  //   // //console.log(props.location.state.selectShopId);
   const [componentSize, setComponentSize] = useState("default");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddrModalVisible, setIsAddrModalVisible] = useState(false);
@@ -256,8 +256,8 @@ function PaymentPage(gprops) {
       const response = await axios.get("/api/myaddress");
       setPosts(response.data);
       setLoading(false);
-      // console.log("리스트 로딩완료");
-      // console.log(response.data);
+      // //console.log("리스트 로딩완료");
+      // //console.log(response.data);
       SetDefaultInfo({
         ...defaultInfo,
         userName: response.data.name,
@@ -278,7 +278,7 @@ function PaymentPage(gprops) {
       } else if (response.data && response.data.list) {
         for (const pa of response.data.list) {
           if (pa.id === response.data.recent) {
-            // console.log(pa);
+            // //console.log(pa);
             SetRecentShip({
               recentreceiver: pa.receiver,
               recentaddressName: pa.addressName,
@@ -451,8 +451,8 @@ function PaymentPage(gprops) {
     const body = {
       deleteid: pa,
     };
-    // console.log("아이디");
-    // console.log(pa);
+    // //console.log("아이디");
+    // //console.log(pa);
     axios.post("/api/deleteaddr", body).then((response) => {
       if (response.data.success) {
         setRerender(rerender + 1);
@@ -472,7 +472,7 @@ function PaymentPage(gprops) {
   const paymentClick = () => {
     if (value === 2) {
       if (addaddress === true) {
-        // console.log("신규배송지이고 주소록에 추가합니다");
+        // //console.log("신규배송지이고 주소록에 추가합니다");
         const body = {
           receiver: form.receiver,
           addressName: form.addressName,
@@ -501,16 +501,16 @@ function PaymentPage(gprops) {
         }
         axios.post("/api/addaddress", body).then((response) => {
           if (response.data.success) {
-            // console.log("전송 성공");
+            // //console.log("전송 성공");
           } else {
             alert("주소록 저장에 오류가 발생했습니다.");
           }
         });
       } else {
-        console.log("신규배송지이고 주수록에 추가 안합니다");
+        //console.log("신규배송지이고 주수록에 추가 안합니다");
       }
     } else {
-      console.log("최근배송지입니다");
+      //console.log("최근배송지입니다");
 
       if (
         !recentreceiver ||
@@ -520,36 +520,20 @@ function PaymentPage(gprops) {
         !recentfulladdr ||
         !recentaddressdetail
       ) {
-        console.log(
-          !recentreceiver +
-            "," +
-            !recentaddressName +
-            "," +
-            !recentphonenumb +
-            "," +
-            !phonenummiddle +
-            "," +
-            !recentzone +
-            "," +
-            !recentfulladdr +
-            "," +
-            !recentaddressdetail +
-            ","
-        );
         return alert("배송지를 정확히 입력해주세요");
       }
     }
 
     //결제창 오픈
     //사전검증
-    console.log("메모검증");
-    console.log(memo);
+    //console.log("메모검증");
+    //console.log(memo);
     const body = {
       dataList: customData.detaildId,
     };
     axios.post("/api/payment/after", body).then((response) => {
       if (response.data.success) {
-        console.log(response.data.success);
+        //console.log(response.data.success);
         onClickPayment(response.data.success);
         setReadyPay(true);
       } else {
@@ -566,12 +550,12 @@ function PaymentPage(gprops) {
   const [value, setValue] = useState(1);
 
   const onChange = (e) => {
-    // console.log("radio checked", e.target.value);
+    // //console.log("radio checked", e.target.value);
     setValue(e.target.value);
   };
 
   const onChangeaddaddress = (e) => {
-    // console.log("radio checked", e.target.checked);
+    // //console.log("radio checked", e.target.checked);
     Setaddaddress(e.target.checked);
   };
 
@@ -615,7 +599,7 @@ function PaymentPage(gprops) {
   });
 
   useEffect(() => {
-    // console.log(paymentForm);
+    // //console.log(paymentForm);
     if (Pbutton === true && readyPay === true) {
       const { IMP } = window;
       // TODO : 식별코드 숨기기
@@ -641,9 +625,9 @@ function PaymentPage(gprops) {
     };
     axios.post("/api/payment", body).then((response) => {
       if (response.data.success) {
-        // console.log("내부데이터 검증");
+        // //console.log("내부데이터 검증");
 
-        // console.log(response.data.dots);
+        // //console.log(response.data.dots);
         SetPaydata(response.data.dtos);
 
         response.data.dtos.ds.map((item, index) => {
@@ -660,8 +644,8 @@ function PaymentPage(gprops) {
           detaildId: resultDetail,
           memo: "배송메모없음",
         });
-        console.log("커스템데이터");
-        console.log(customData);
+        //console.log("커스템데이터");
+        //console.log(customData);
       } else {
         alert("다시 시도해주세요");
       }

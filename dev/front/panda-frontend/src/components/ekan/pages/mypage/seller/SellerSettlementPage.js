@@ -18,8 +18,8 @@ const SellerSettlementPage = () => {
     지급대기: "success",
   };
   function onClickDown(all) {
-    console.log(all);
-    console.log("셀세", sellerSettlementList);
+    //console.log(all);
+    //console.log("셀세", sellerSettlementList);
     var event = all.shopDashboardDtoTypeList;
     var subject =
       sellerSettlementList.name +
@@ -33,10 +33,10 @@ const SellerSettlementPage = () => {
     // var result = [];
 
     // result.push([5, { 전체금액: 2000 }]);
-    // console.log(result);
+    // //console.log(result);
     // var finalcsv = JSON.parse(JSON.stringify(result));
-    // console.log(finalcsv);
-    // console.log(event);
+    // //console.log(finalcsv);
+    // //console.log(event);
 
     //판매금액
     var salesMoney = 0;
@@ -51,7 +51,7 @@ const SellerSettlementPage = () => {
     //수수료
     var fee = 0;
     event.map((va, indx) => {
-      console.log(va);
+      //console.log(va);
       salesMoney += va.realPrice;
       productPrice += va.beforeSalePrice;
       shipPrice += va.shipPrice;

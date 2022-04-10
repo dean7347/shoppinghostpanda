@@ -32,7 +32,7 @@ function EditProductForm(props) {
   const [NoticeValue, setNoticeValue] = useState([]);
   const [noticeInitiateValue, setNoticeInitiateValue] = useState([]);
   const onFinish = (values) => {
-    console.log(values);
+    //console.log(values);
     let first = [];
     let last = [];
     values.notice.map((it, idx) => {
@@ -79,7 +79,7 @@ function EditProductForm(props) {
         if (response.data.success) {
           // setProduct(response.data);
 
-          console.log(response.data);
+          //console.log(response.data);
           setTitle(response.data.productName);
           setDescription(response.data.productDesc);
           setPandaDescription(response.data.pandaMessage);
@@ -114,7 +114,7 @@ function EditProductForm(props) {
             );
           });
 
-          console.log("노티스밸류", noticeInitiateValue);
+          //console.log("노티스밸류", noticeInitiateValue);
         } else {
           alert("상세정보 가져오기를 실패했습니다");
         }
@@ -136,8 +136,8 @@ function EditProductForm(props) {
   const onClickForm = async (e) => {
     const tostringform = JSON.stringify(lowdata);
 
-    // console.log(lowdata);
-    // console.log(Low);
+    // //console.log(lowdata);
+    // //console.log(Low);
 
     const body = {
       lowform: tostringform,
@@ -157,7 +157,7 @@ function EditProductForm(props) {
   //고유값으로 사용될 id ref사용하여 번수담기
   const nextId = useRef(1);
   function handleChange(value) {
-    // // console.log(`selected ${value}`);
+    // // //console.log(`selected ${value}`);
     setLow(value);
   }
   const onInsert = useCallback(
@@ -228,8 +228,8 @@ function EditProductForm(props) {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    // console.log(event);
-    // // console.log("등록시작");
+    // //console.log(event);
+    // // //console.log("등록시작");
 
     // if (!Title || !Description || !Images || !Options || !Thumb) {
     //   return alert("모든 값을 넣어주셔야 합니다");
@@ -269,13 +269,13 @@ function EditProductForm(props) {
   };
 
   // const conRere = () => {
-  //   console.log("zz");
+  //   //console.log("zz");
   //   setLow(Low + 1);
-  //   console.log(Low);
+  //   //console.log(Low);
   // };
   // const onclicktest = () => {
-  //   console.log("zz");
-  //   console.log(form);
+  //   //console.log("zz");
+  //   //console.log(form);
   // };
 
   const renderOption = (param, form) => {
@@ -447,7 +447,7 @@ function EditProductForm(props) {
           <Form.List in name="notice" initialValue={noticeInitiateValue}>
             {(fields, { add, remove }) => (
               <>
-                {console.log()}
+                {/* {//console.log()} */}
                 {/* <Form.Item
                   name="notice"
                   label="Area"

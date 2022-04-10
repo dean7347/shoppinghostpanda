@@ -139,7 +139,7 @@ const BuyerInfoPage = () => {
             //교환비용
             tradeFee: response.data.ifShop.tradeFee,
           });
-          console.log(response.data);
+          //console.log(response.data);
         }
       }
     });
@@ -173,10 +173,10 @@ const BuyerInfoPage = () => {
     ) {
       axios.get("/api/userresign").then((response) => {
         if (response.data.success) {
-          console.log(response);
+          //console.log(response);
           alert(response.data.message);
         } else {
-          console.log(response);
+          //console.log(response);
           alert(response.data.message);
         }
       });
@@ -194,9 +194,9 @@ const BuyerInfoPage = () => {
       alert("빈값은 입력할 수 없습니다");
       return;
     }
-    console.log(body);
+    //console.log(body);
     axios.post("/api/editShop", body).then((response) => {
-      console.log(response);
+      //console.log(response);
       if (response.data.success) {
         alert("성공적으로 변경되었습니다.");
         SetLoader(loader + 1);
@@ -216,9 +216,9 @@ const BuyerInfoPage = () => {
       alert("빈값은 입력할 수 없습니다");
       return;
     }
-    console.log(body);
+    //console.log(body);
     axios.post("/api/editPanda", body).then((response) => {
-      console.log(response);
+      //console.log(response);
       if (response.data.success) {
         alert("성공적으로 변경되었습니다.");
         SetLoader(loader + 1);
@@ -229,7 +229,7 @@ const BuyerInfoPage = () => {
   };
 
   const onFinishFailed = () => {
-    console.log("Submit failed!");
+    //console.log("Submit failed!");
   };
 
   const [shopEditor, SetShopEditor] = useState(false);

@@ -4,7 +4,7 @@ import "./videocard.css";
 import axios from "../../../../api/axiosDefaults";
 function deleteBtnAction(e, id) {
   e.preventDefault();
-  console.log("삭제하기");
+  //console.log("삭제하기");
   const body = {
     id: id,
     editUrl: "",
@@ -42,7 +42,7 @@ const VideoCard = ({ link, panda, footer, pandaToProductId }) => {
     axios
       .get(fullUrl)
       .then((result) => {
-        // console.log(result.data)
+        // //console.log(result.data)
         setVideoInfo(result.data);
         return result.data;
       })
@@ -51,17 +51,17 @@ const VideoCard = ({ link, panda, footer, pandaToProductId }) => {
 
   const completeEditAction = useCallback(
     (e, id) => {
-      console.log(e);
-      console.log(id);
+      //console.log(e);
+      //console.log(id);
       e.preventDefault();
-      console.log("수정완료");
-      console.log("링크값: ", linkProps);
-      console.log("ajwl", id);
+      //console.log("수정완료");
+      //console.log("링크값: ", linkProps);
+      //console.log("ajwl", id);
       const body = {
         id: id,
         editUrl: linkProps,
       };
-      console.log("바디", body);
+      //console.log("바디", body);
       axios.post("/api/pandamovieedit", body).then((response) => {
         if (response.data.success) {
           alert("변경에 성공했습니다");
@@ -78,7 +78,7 @@ const VideoCard = ({ link, panda, footer, pandaToProductId }) => {
     (e) => {
       e.preventDefault();
       setShowEdit(true);
-      console.log("수정하기");
+      //console.log("수정하기");
     },
     [showEdit]
   );
@@ -87,7 +87,7 @@ const VideoCard = ({ link, panda, footer, pandaToProductId }) => {
     (e) => {
       e.preventDefault();
       setShowEdit(false);
-      console.log("수정취소");
+      //console.log("수정취소");
     },
     [showEdit]
   );

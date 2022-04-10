@@ -28,7 +28,7 @@ const FindIdPage = ({ history }) => {
 
   const onClick = async (e) => {
     try {
-      console.log(inputs);
+      //console.log(inputs);
       if (inputs.pass === "") {
         alert("비밀번호 항목은 공백일 수 없습니다");
         return;
@@ -60,8 +60,8 @@ const FindIdPage = ({ history }) => {
 
   ///본인인증
   const onTest = () => {
-    console.log("테스트를위한");
-    console.log(certifiNum);
+    //console.log("테스트를위한");
+    //console.log(certifiNum);
 
     const body = {
       muid: certifiNum,
@@ -74,7 +74,7 @@ const FindIdPage = ({ history }) => {
     });
   };
   const onClcikPhone = () => {
-    console.log("온크릭");
+    //console.log("온크릭");
     var IMP = window.IMP; // 생략 가능
     IMP.init("imp16473466"); // 예: imp00000000
     IMP.certification(
@@ -88,7 +88,7 @@ const FindIdPage = ({ history }) => {
         // callback
         if (rsp.success) {
           // 인증 성공 시 로직,
-          console.log("인증성공");
+          //console.log("인증성공");
           setCertifiNum(rsp.imp_uid);
           const body = {
             code: rsp.imp_uid,
@@ -103,7 +103,7 @@ const FindIdPage = ({ history }) => {
           });
         } else {
           // 인증 실패 시 로직,
-          console.log("인증실패");
+          //console.log("인증실패");
           console.alert("인증에 실패했습니다 다시 시도해주세요");
         }
       }
@@ -134,7 +134,7 @@ const FindIdPage = ({ history }) => {
       ...inputs, // 기존의 input 객체를 복사한 뒤
       [name]: value, // name 키를 가진 값을 value 로 설정
     });
-    console.log(inputs);
+    //console.log(inputs);
   };
   ////
   return (
@@ -282,7 +282,7 @@ const FindIdPage = ({ history }) => {
                 <div style={{ width: "50%" }}>
                   <IButton
                     text="회원가입"
-                    onClick={() => history.push("/signup")}
+                    onClick={() => history.push("/register")}
                     className="is-primary"
                   />
                 </div>

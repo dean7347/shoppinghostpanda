@@ -9,12 +9,12 @@ import axios from "../../../../../api/axiosDefaults";
 
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
+  //console.log(cellValues);
 }
 
 function confirmShop(event, cellValues) {
   event.stopPropagation();
-  console.log("컨펌샵", cellValues.id);
+  //console.log("컨펌샵", cellValues.id);
   const body = { regid: cellValues.id, result: "confirm" };
   axios.post("/api/admin/confirmregshop", body).then((response) => {
     if (response.data) {
@@ -27,7 +27,7 @@ function confirmShop(event, cellValues) {
 
 function rejectShop(event, cellValues) {
   event.stopPropagation();
-  console.log("리젝트샵", cellValues.id);
+  //console.log("리젝트샵", cellValues.id);
 
   const body = { regid: cellValues.id, result: "reject" };
   axios.post("/api/admin/confirmregshop", body).then((response) => {
@@ -41,7 +41,7 @@ function rejectShop(event, cellValues) {
 
 function confirmPanda(event, cellValues) {
   event.stopPropagation();
-  console.log("컨펌판다", cellValues.id);
+  //console.log("컨펌판다", cellValues.id);
   const body = { regid: cellValues.id, result: "confirm" };
   axios.post("/api/admin/confirmregpanda", body).then((response) => {
     if (response.data) {
@@ -54,7 +54,7 @@ function confirmPanda(event, cellValues) {
 
 function rejectPanda(event, cellValues) {
   event.stopPropagation();
-  console.log("리젝트판다", cellValues.id);
+  //console.log("리젝트판다", cellValues.id);
   const body = { regid: cellValues.id, result: "reject" };
   axios.post("/api/admin/confirmregpanda", body).then((response) => {
     if (response.data) {
@@ -179,14 +179,14 @@ const AdminApplyTable = ({ selectedMode }) => {
   const confirmSelected = useCallback(
     (event) => {
       event.preventDefault();
-      console.log("선택된 주문 확인", selectedRows);
+      //console.log("선택된 주문 확인", selectedRows);
     },
     [selectedRows]
   );
 
   const printList = useCallback((event) => {
     event.preventDefault();
-    console.log("인쇄하기");
+    //console.log("인쇄하기");
   }, []);
 
   return (

@@ -24,7 +24,7 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const signOut = useAuthStore((state) => state.signOut);
 
-  console.log("회원: ", user);
+  //console.log("회원: ", user);
 
   const renderUserToggle = useCallback(
     () => (

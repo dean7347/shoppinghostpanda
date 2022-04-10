@@ -20,9 +20,9 @@ const ShopContainer = ({ location, match }) => {
   const [haveshop, sethaveshop] = useState({ shop: "", isapprove: "" });
   useEffect(() => {
     axios.get("/api/haveshop").then((response) => {
-      // console.log("헤브샵");
+      // //console.log("헤브샵");
 
-      // console.log(response);
+      // //console.log(response);
       if (response.data.success) {
         sethaveshop({
           shop: response.data.shop,

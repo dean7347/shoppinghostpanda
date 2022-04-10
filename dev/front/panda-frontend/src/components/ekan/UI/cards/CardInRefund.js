@@ -35,26 +35,26 @@ import axios from "../../../../api/axiosDefaults";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInRefund(props) {
-  console.log("카인리");
-  console.log(props);
+  //console.log("카인리");
+  //console.log(props);
   const [refundData, SetRefundData] = useState();
   useEffect(() => {
     const body = {
       uoid: props.situationDetail.detailId,
     };
     axios.post("/api/readRefundRequest", body).then((response) => {
-      console.log("레스폰스");
-      console.log(response);
+      //console.log("레스폰스");
+      //console.log(response);
       if (response.data.success) {
-        console.log("이거 리펀드요청임");
+        //console.log("이거 리펀드요청임");
         SetRefundData(response.data);
-        console.log(response.data);
+        //console.log(response.data);
       }
     });
   }, []);
   const confirmReqRefund = (reqnum) => {
-    console.log("환불신청확인");
-    console.log(props);
+    //console.log("환불신청확인");
+    //console.log(props);
     const body = {
       userOrderId: props.situationDetail.detailId,
       state: "상점확인중",
@@ -83,7 +83,7 @@ function CardInRefund(props) {
           <div>환불신청사유</div>
           {refundData && <div>{refundData.refundMessage}</div>}
         </div>
-        {console.log("리판드데이터", refundData)}
+        {/* {//console.log("리판드데이터", refundData)} */}
         {refundData &&
           refundData.refundListList.map((rr, idx) => {
             return (
@@ -152,8 +152,8 @@ function CardInRefund(props) {
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
-    console.log("취소신청");
-    console.log(p);
+    //console.log("취소신청");
+    //console.log(p);
     const body = {
       detailId: p,
     };
@@ -178,11 +178,11 @@ function CardInRefund(props) {
     };
     axios.post("/api/pandadashboard", body).then((response) => {
       if (response.data.success) {
-        console.log("스테이터스변경성공");
-        console.log(response.data);
+        //console.log("스테이터스변경성공");
+        //console.log(response.data);
       } else {
-        console.log("스테이터스실패");
-        console.log(response.data);
+        //console.log("스테이터스실패");
+        //console.log(response.data);
       }
     });
   };
@@ -192,14 +192,14 @@ function CardInRefund(props) {
       refundMessage: refundText,
       refundList: Oplist.array,
     };
-    console.log(body);
+    //console.log(body);
 
     axios.post("/api/refundactionforuser", body).then((response) => {
       if (response.data.success) {
         alert("환불/교환 요청을 완료했습니다");
       }
     });
-    // console.log(options);
+    // //console.log(options);
     // const body = {
     //   userOrderId: id,
     //   state: "환불신청",
@@ -216,7 +216,7 @@ function CardInRefund(props) {
   };
 
   const onTestCheck = (p, s, c, w) => {
-    console.log(p + s);
+    //console.log(p + s);
     const body = {
       userOrderId: p,
       state: s,
@@ -226,9 +226,9 @@ function CardInRefund(props) {
     };
     axios.post("/api/editstatus", body).then((response) => {
       if (response.data.success) {
-        console.log("스테이터스변경성공");
+        //console.log("스테이터스변경성공");
       } else {
-        console.log("스테이터스실패");
+        //console.log("스테이터스실패");
       }
     });
   };
@@ -247,7 +247,7 @@ function CardInRefund(props) {
       //   }
       // });
     } else {
-      console.log("취소");
+      //console.log("취소");
     }
   };
   function isfree(getpurePrice) {
@@ -265,8 +265,8 @@ function CardInRefund(props) {
     array: [],
   });
   const onChange = (title, key) => (event) => {
-    console.log("체인지키");
-    console.log(key);
+    //console.log("체인지키");
+    //console.log(key);
     setOpList(
       produce(Oplist, (draft) => {
         let price =
@@ -284,8 +284,8 @@ function CardInRefund(props) {
   };
   const onDelete = (title, key) => (event) => {
     Oplist.array.find((x, id) => {
-      console.log("파인드키");
-      console.log(x.optionId);
+      //console.log("파인드키");
+      //console.log(x.optionId);
       if (x.optionId == key.optionId) {
         setOpList(
           produce(Oplist, (draft) => {
@@ -296,16 +296,16 @@ function CardInRefund(props) {
     });
   };
   const handleClick = (e) => {
-    console.log("ops");
-    console.log(e.item.props);
+    //console.log("ops");
+    //console.log(e.item.props);
 
-    console.log(options);
+    //console.log(options);
     if (Oplist.array.find((x) => x.optionId == e.key) !== undefined) {
       alert("이미 존재하는 상품입니다");
       return;
     } else {
-      console.log("옾션즈");
-      console.log(e);
+      //console.log("옾션즈");
+      //console.log(e);
       const info = {
         key: nextOPKey,
         optionId: e.item.props.inherenceKey,
@@ -343,7 +343,7 @@ function CardInRefund(props) {
 
       render: (title, key) => (
         <>
-          {console.log(key)}
+          {/* {//console.log(key)} */}
           <InputNumber
             min={1}
             max={key.max}

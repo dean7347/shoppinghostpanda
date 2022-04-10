@@ -35,12 +35,12 @@ import axios from "../../../../api/axiosDefaults";
 import { setWeekYear } from "date-fns";
 import { options } from "../../../../../node_modules/jest-runtime/build/cli/args";
 function CardInListVReady(props) {
-  console.log("카인리", props);
+  //console.log("카인리", props);
   var freePrice = props.situationDetail.freeprice;
   var shipPrice = props.situationDetail.shipprice;
   const onCancelOrder = (p) => {
-    console.log("취소신청");
-    console.log(p);
+    //console.log("취소신청");
+    //console.log(p);
     const body = {
       detailId: p,
     };
@@ -65,11 +65,11 @@ function CardInListVReady(props) {
   //   };
   //   axios.post("/api/pandadashboard", body).then((response) => {
   //     if (response.data.success) {
-  //       console.log("스테이터스변경성공");
-  //       console.log(response.data);
+  //       //console.log("스테이터스변경성공");
+  //       //console.log(response.data);
   //     } else {
-  //       console.log("스테이터스실패");
-  //       console.log(response.data);
+  //       //console.log("스테이터스실패");
+  //       //console.log(response.data);
   //     }
   //   });
   // };
@@ -79,7 +79,7 @@ function CardInListVReady(props) {
       refundMessage: refundText,
       refundList: Oplist.array,
     };
-    console.log(body);
+    //console.log(body);
 
     axios.post("/api/partialCancel", body).then((response) => {
       if (response.data.success) {
@@ -87,10 +87,10 @@ function CardInListVReady(props) {
         window.location.reload();
       } else {
         alert(response.data.message);
-        console.log(response.data.message);
+        //console.log(response.data.message);
       }
     });
-    // console.log(options);
+    // //console.log(options);
     // const body = {
     //   userOrderId: id,
     //   state: "환불신청",
@@ -107,16 +107,16 @@ function CardInListVReady(props) {
   };
   // const onAdmin = () => {
   //   // axios.get("/api/admin/pandaSettleList?size=10&page=0").then((response) => {
-  //   //   console.log(response);
+  //   //   //console.log(response);
   //   // });
   //   axios.get("/api/userprivateedit").then((response) => {
-  //     console.log(response);
+  //     //console.log(response);
   //   });
   // };
   // const copyClick = () => {
-  //   console.log("상품카피로직실행");
+  //   //console.log("상품카피로직실행");
   //   axios.post("/api/copyproduct").then((response) => {
-  //     console.log(response);
+  //     //console.log(response);
   //   });
   // };
   const [refundData, SetRefundData] = useState();
@@ -125,10 +125,10 @@ function CardInListVReady(props) {
       uoid: props.situationDetail.detailId,
     };
     axios.post("/api/readRefundRequest", body).then((response) => {
-      console.log(response);
+      //console.log(response);
       if (response.data.success) {
         SetRefundData(response.data);
-        console.log("리펀드데이터", response.data);
+        //console.log("리펀드데이터", response.data);
       }
     });
   }, [props]);
@@ -148,7 +148,7 @@ function CardInListVReady(props) {
               refundData.refundListList.map((rr, idx) => {
                 return (
                   <>
-                    {console.log("리펀트데이터", refundData)}
+                    {/* {//console.log("리펀트데이터", refundData)} */}
                     <div
                       style={{
                         alignItems: "center",
@@ -226,7 +226,7 @@ function CardInListVReady(props) {
       return;
     }
 
-    console.log(p + s);
+    //console.log(p + s);
     const body = {
       userOrderId: p,
       state: s,
@@ -236,9 +236,9 @@ function CardInListVReady(props) {
     };
     axios.post("/api/editstatus", body).then((response) => {
       if (response.data.success) {
-        console.log("스테이터스변경성공");
+        //console.log("스테이터스변경성공");
       } else {
-        console.log("스테이터스실패");
+        //console.log("스테이터스실패");
       }
     });
   };
@@ -257,7 +257,7 @@ function CardInListVReady(props) {
       //   }
       // });
     } else {
-      console.log("취소");
+      //console.log("취소");
     }
   };
   function isfree(getpurePrice) {
@@ -275,8 +275,8 @@ function CardInListVReady(props) {
     array: [],
   });
   const onChange = (title, key) => (event) => {
-    console.log("체인지키");
-    console.log(key);
+    //console.log("체인지키");
+    //console.log(key);
     setOpList(
       produce(Oplist, (draft) => {
         let price =
@@ -294,8 +294,8 @@ function CardInListVReady(props) {
   };
   const onDelete = (title, key) => (event) => {
     Oplist.array.find((x, id) => {
-      console.log("파인드키");
-      console.log(x.optionId);
+      //console.log("파인드키");
+      //console.log(x.optionId);
       if (x.optionId == key.optionId) {
         setOpList(
           produce(Oplist, (draft) => {
@@ -306,15 +306,15 @@ function CardInListVReady(props) {
     });
   };
   const handleClick = (e) => {
-    console.log("ops");
-    console.log(e.item.props);
+    //console.log("ops");
+    //console.log(e.item.props);
 
-    console.log(options);
+    //console.log(options);
     if (Oplist.array.find((x) => x.optionId == e.key) !== undefined) {
       alert("이미 존재하는 상품입니다");
       return;
     } else {
-      console.log("옾션즈", e);
+      //console.log("옾션즈", e);
       const info = {
         key: nextOPKey,
         optionId: e.item.props.inherenceKey,
@@ -352,7 +352,7 @@ function CardInListVReady(props) {
 
       render: (title, key) => (
         <>
-          {console.log(key)}
+          {/* {//console.log(key)} */}
           <InputNumber
             min={1}
             max={key.max}

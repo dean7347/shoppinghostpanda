@@ -3,7 +3,7 @@ import Button from "./Button";
 import ShopRegFormContainer from "../../containers/shop/ShopRegFormContainer";
 
 const Shop = ({ shop }) => {
-  // console.log("shop" + shop);
+  // //console.log("shop" + shop);
   return (
     <>
       <div style={{ textAlign: "center" }}>

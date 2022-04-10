@@ -35,7 +35,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // //         store.dispatch(tempSetUser(JSON.parse(user)));
 // //         store.dispatch(check());
 // //     } catch (e) {
-// //         // console.log("localStorage is not working");
+// //         // //console.log("localStorage is not working");
 // //     }
 // // }
 // // sagaMiddleware.run(rootSaga);
@@ -43,23 +43,23 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // //되는거시작
 // axios.interceptors.request.use(
 //   (config) => {
-//     // console.log("나가는데이터");
-//     // console.log(config.url.toString().includes("noembed"));
+//     // //console.log("나가는데이터");
+//     // //console.log(config.url.toString().includes("noembed"));
 //     if (config.url.toString().includes("noembed.com")) {
 //       return config;
 //     }
 //     if (config.url === "/api/reissuev2") {
-//       console.log("재발급요청입니다");
+//       //console.log("재발급요청입니다");
 
 //       // const rtoken = window.localStorage.getItem("refreshToken");
 //       // if (rtoken) {
 //       //   config.headers["refreshToken"] = rtoken;
 //       // }
-//       // console.log("콘피그", config);
+//       // //console.log("콘피그", config);
 //     }
 //     const token = window.localStorage.getItem("accessToken");
-//     // console.log("토큰");
-//     // console.log(token);
+//     // //console.log("토큰");
+//     // //console.log(token);
 //     if (token) {
 //       config.headers["accessToken"] = token;
 //     }
@@ -76,35 +76,35 @@ import { QueryClient, QueryClientProvider } from "react-query";
 //             응답 성공 직전 호출됩니다.
 //             .then() 으로 이어집니다.
 //         */
-//     console.log(response.status);
+//     //console.log(response.status);
 //     if (response.status === 202) {
-//       // console.log(response);
+//       // //console.log(response);
 //       // axios.request(response.config);
-//       // console.log("여기서 재 갱신을 해야하지않을까?");
+//       // //console.log("여기서 재 갱신을 해야하지않을까?");
 //       // axios.post("/api/reissue").then((response) => {
-//       //   console.log(response.data.success);
+//       //   //console.log(response.data.success);
 //       //   if (response.data.success) {
 //       //     originalRequest._retry = true;
-//       //     console.log(error.config);
-//       //     console.log(response);
-//       //     console.log("재요청로직을실행합니다");
+//       //     //console.log(error.config);
+//       //     //console.log(response);
+//       //     //console.log("재요청로직을실행합니다");
 //       //     return response;
 //     }
-//     // console.log("200받음");
+//     // //console.log("200받음");
 //     return response;
 //   },
 //   async function (error) {
 //     const originalRequest = error.config;
-//     // console.log("에라");
-//     console.log(error);
-//     console.log(error.response.status);
+//     // //console.log("에라");
+//     //console.log(error);
+//     //console.log(error.response.status);
 //     if (error.response.status === 406) {
-//       // console.log("만료된토큰입니다");
+//       // //console.log("만료된토큰입니다");
 //       // axios.config.headers["refreshToken"] = rtoken;
-//       // console.log("리이슈");
+//       // //console.log("리이슈");
 //       axios.post("/api/reissuev2").then((response) => {
-//         console.log("리이슈하면?", response.data);
-//         console.log();
+//         //console.log("리이슈하면?", response.data);
+//         //console.log();
 //         window.localStorage.setItem("accessToken", response.data.accessToken);
 //         // window.localStorage.setItem(
 //         //   "refreshToken",
@@ -125,7 +125,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 //       return axios(originalRequest);
 //     }
 //     if (error.response.status === 401) {
-//       console.log("로그인이 필요한서비스입니다");
+//       //console.log("로그인이 필요한서비스입니다");
 //       if (
 //         window.confirm(
 //           "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
@@ -149,7 +149,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 //       removeCookie("userId");
 //       removeCookie("panda");
 //       removeCookie("seller");
-//       console.log("에라2");
+//       //console.log("에라2");
 //       if (
 //         window.confirm(
 //           "로그인이 필요한 서비스입니다 로그인페이지로 이동하시겠습니까?"
@@ -190,14 +190,14 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // // );
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: false,
-            retry: false,
-            staleTime: 60000
-        }
-    }
-})
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: 60000,
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
@@ -213,6 +213,6 @@ ReactDOM.render(
 );
 
 // If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(// console.log))
+// to log results (for example: reportWebVitals(// //console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

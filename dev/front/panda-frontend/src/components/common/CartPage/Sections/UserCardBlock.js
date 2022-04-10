@@ -19,15 +19,15 @@ function UserCardBlock(props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
-  console.log("프롭스!!");
-  console.log(props);
+  //console.log("프롭스!!");
+  //console.log(props);
 
   useEffect(() => {
     setCheckedList(defaultCheckedList);
   }, [props]);
   const onChanges = (e, mo) => {
-    // console.log(`checked = ${e.target.checked}`);
-    // console.log(mo);
+    // //console.log(`checked = ${e.target.checked}`);
+    // //console.log(mo);
   };
   const onChange = (list) => {
     setCheckedList(list);
@@ -42,7 +42,7 @@ function UserCardBlock(props) {
   };
 
   const onClick = (params, e) => {
-    // console.log(params); // error
+    // //console.log(params); // error
     e.preventDefault();
     const body = {
       orderDetailId: params,
@@ -83,11 +83,11 @@ function UserCardBlock(props) {
   const handleSelectDelete = () => {
     const set = new Set(checkedList);
     const uniqueArr = [...set];
-    // console.log(uniqueArr);
+    // //console.log(uniqueArr);
     props.products.ds.map((de, index) => {
       if (uniqueArr.includes(de.shopId)) {
-        console.log("포함");
-        console.log(de);
+        //console.log("포함");
+        //console.log(de);
 
         de.dp.map((deleteOption, index) => {
           deleteOption.do.map((deleteThis, index) => {
@@ -106,7 +106,7 @@ function UserCardBlock(props) {
         });
         alert("삭제가 완료되었습니다");
       } else {
-        console.log("불포함");
+        //console.log("불포함");
       }
     });
   };
@@ -164,9 +164,9 @@ function UserCardBlock(props) {
             {/* 바디영역 */}
 
             <div>
-              {console.log("프롭스확인")}
+              {/* {//console.log("프롭스확인")} */}
 
-              {console.log(props)}
+              {/* {//console.log(props)} */}
               {props.products.ds &&
                 props.products.ds.map((item, index) => {
                   var allPrice = 0;
@@ -465,9 +465,9 @@ function UserCardBlock(props) {
             {/* 바디영역 */}
 
             <div>
-              {console.log("프롭스확인")}
+              {/* {//console.log("프롭스확인")} */}
 
-              {console.log(props)}
+              {/* {//console.log(props)} */}
               {props.products.ds &&
                 props.products.ds.map((item, index) => {
                   var allPrice = 0;
@@ -723,8 +723,8 @@ function UserCardBlock(props) {
       props.products.ds.map((item, index) => {
         shopPrice = 0;
         if (!(checkedList.indexOf(item.shopId) === -1)) {
-          // console.log("들어옴");
-          // console.log(item.shopId);
+          // //console.log("들어옴");
+          // //console.log(item.shopId);
           item.dp.map((product, index) => {
             product.do.map((options, index) => {
               if (options.pandaName) {

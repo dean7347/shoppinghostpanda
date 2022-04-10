@@ -14,7 +14,7 @@ const CancelListPage = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  console.log("페이지데이타: ", pagedData);
+  //console.log("페이지데이타: ", pagedData);
 
   useEffect(() => {
     if (error) {
@@ -50,22 +50,22 @@ const CancelListPage = () => {
     axios
       .get(`/api/cancelsituation?size=${5}&page=${currPage}`)
       .then((result) => {
-        console.log(result.data);
+        //console.log(result.data);
         if (pagedData && result) {
           setPagedData([...pagedData, ...result.data.pageList]);
         }
         setLoading(false);
       })
       .catch(() => {
-        console.log("더보기 실패");
+        //console.log("더보기 실패");
         setLoading(false);
       });
 
-    console.log("결과: ", pagedData);
-    console.log("길이: ", pagedData?.length);
+    //console.log("결과: ", pagedData);
+    //console.log("길이: ", pagedData?.length);
 
     setCurrPage(currPage + 1);
-    console.log(currPage);
+    //console.log(currPage);
   }
 
   return (

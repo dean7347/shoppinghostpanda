@@ -21,11 +21,11 @@ const PandaSettlementPage = () => {
     };
   });
   function onClickDown(all) {
-    console.log(all.pandaData);
+    //console.log(all.pandaData);
     var count = 0;
     var settle = 0;
     all.pandaData.map((item, idx) => {
-      console.log(item);
+      //console.log(item);
       count += item.count;
       settle += item.pandaMoney;
     });

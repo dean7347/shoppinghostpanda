@@ -25,7 +25,7 @@ const EditTodoListItem = ({ Option, onRemove }) => {
   const { id, optionName, optionPrice, optionStock } = Option;
 
   const onClickEdit = () => {
-    console.log("수정");
+    //console.log("수정");
     setIsModalVisible(true);
   };
 
@@ -35,11 +35,11 @@ const EditTodoListItem = ({ Option, onRemove }) => {
         "옵션항목에서 완전히 삭제되며 되돌릴 수 없습니다. 그래도 삭제하시곘습니까?"
       )
     ) {
-      console.log(e);
+      //console.log(e);
       const body = {
         optionId: e,
       };
-      console.log(body);
+      //console.log(body);
 
       axios.post("/api/editoption", body).then((response) => {
         if (response.data.success) {
@@ -51,7 +51,7 @@ const EditTodoListItem = ({ Option, onRemove }) => {
         }
       });
     } else {
-      console.log("삭제취소");
+      //console.log("삭제취소");
     }
   };
   return (

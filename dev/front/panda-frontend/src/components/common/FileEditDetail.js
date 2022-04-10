@@ -6,16 +6,16 @@ import axios from "../../api/axiosDefaults";
 function FileEditDetail(props) {
   const [Images, setImages] = useState([]);
   const [check, setCheck] = useState(false);
-  console.log(props);
+  //console.log(props);
   // useEffect(() => {
   //   axios
   //     .get(`/api/product/products_by_id?id=${props.proId}`)
   //     .then((response) => {
   //       if (response.data.success) {
   //         // setProduct(response.data);
-  //         console.log("가져온기라");
+  //         //console.log("가져온기라");
 
-  //         console.log(response.data);
+  //         //console.log(response.data);
   //         if (props.type === "thumb") {
   //           response.data.thumbs.map((i, idx) => {
   //             Images.push(i.filepath);
@@ -27,8 +27,8 @@ function FileEditDetail(props) {
   //           });
   //         }
 
-  //         console.log("셋팅완료");
-  //         console.log(Images);
+  //         //console.log("셋팅완료");
+  //         //console.log(Images);
   //       } else {
   //         alert("상세정보 가져오기를 실패했습니다");
   //       }
@@ -37,20 +37,20 @@ function FileEditDetail(props) {
 
   useEffect(() => {
     if (props.type === "detail") {
-      console.log("디테일");
-      console.log(props.imgarrayDetail);
+      //console.log("디테일");
+      //console.log(props.imgarrayDetail);
       props.imgarrayDetail.map((k, idx) => {
-        console.log(k.filepath);
+        //console.log(k.filepath);
         Images.push(k.filepath);
       });
     }
   }, []);
 
   const dropHandler = (files) => {
-    // console.log(files);
-    // console.log(files.length);
-    console.log("파일타입체크");
-    console.log(files[0].type);
+    // //console.log(files);
+    // //console.log(files.length);
+    //console.log("파일타입체크");
+    //console.log(files[0].type);
     const filetype = files[0].type;
 
     if (
@@ -79,9 +79,9 @@ function FileEditDetail(props) {
     };
 
     image.onload = async function () {
-      // console.log("어싱크펑션");
+      // //console.log("어싱크펑션");
 
-      // console.log(fr);
+      // //console.log(fr);
       //상세이미지
       if (props.type === "detail") {
         if (image.width > 860) {
@@ -97,8 +97,8 @@ function FileEditDetail(props) {
               setImages([...Images, response.data.filePath]);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
-              console.log("파일저장실패");
-              console.log(response.data);
+              //console.log("파일저장실패");
+              //console.log(response.data);
               alert("파일 저장 실패");
             }
           });
@@ -156,7 +156,7 @@ function FileEditDetail(props) {
 
   const deleteHandler = (image) => {
     const currentIndex = Images.indexOf(image);
-    // console.log("currentIndex" + currentIndex);
+    // //console.log("currentIndex" + currentIndex);
 
     let newImages = [...Images];
     newImages.splice(currentIndex, 1);

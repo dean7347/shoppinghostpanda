@@ -45,7 +45,7 @@ const EditInsert = ({ onInsert, editoption, complete }) => {
       }
       complete();
     });
-    console.log(editoption);
+    //console.log(editoption);
   };
   return (
     <>

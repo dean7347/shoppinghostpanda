@@ -26,7 +26,7 @@ function checkFailureSaga() {
   try {
     localStorage.removeItem("user");
   } catch (e) {
-    // console.log("local storage is not working");
+    // //console.log("local storage is not working");
   }
 }
 function* logoutSaga() {
@@ -34,10 +34,10 @@ function* logoutSaga() {
     yield call(authAPI.logout);
     localStorage.removeItem("user");
     window.location.replace("/");
-    // console.log("로그아웃 완료 다음에 뵙겠습니다");
+    // //console.log("로그아웃 완료 다음에 뵙겠습니다");
   } catch (e) {
-    // console.log("로그아웃실패");
-    // console.log(e);
+    // //console.log("로그아웃실패");
+    // //console.log(e);
   }
 }
 

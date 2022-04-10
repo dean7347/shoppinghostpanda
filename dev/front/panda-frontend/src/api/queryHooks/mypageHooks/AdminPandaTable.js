@@ -10,10 +10,10 @@ import * as XLSX from "xlsx";
 
 function confirmOrder(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
+  //console.log(cellValues);
 }
 function onClickDown(all) {
-  console.log("다운", all);
+  //console.log("다운", all);
 
   var count = 0;
   var settle = 0;
@@ -94,7 +94,7 @@ function onClickDown(all) {
 
 function confirmOrderPandaDepost(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
+  //console.log(cellValues);
   const body = {
     id: cellValues.id,
     type: "panda",
@@ -159,7 +159,7 @@ const AdminPandaTable = ({ selectedMode }) => {
   const { data: pandaSettlementCompleteList, refetch: refetchComplete } =
     useGetAdminPandaSettlementCompleteList(page);
 
-  console.log(pandaSettlementList);
+  //console.log(pandaSettlementList);
 
   useEffect(() => {
     if (selectedMode === "정산필요") {
@@ -188,14 +188,14 @@ const AdminPandaTable = ({ selectedMode }) => {
   const confirmSelected = useCallback(
     (event) => {
       event.preventDefault();
-      console.log("선택된 주문 확인", selectedRows);
+      //console.log("선택된 주문 확인", selectedRows);
     },
     [selectedRows]
   );
 
   const printList = useCallback((event) => {
     event.preventDefault();
-    console.log("인쇄하기");
+    //console.log("인쇄하기");
   }, []);
 
   return (

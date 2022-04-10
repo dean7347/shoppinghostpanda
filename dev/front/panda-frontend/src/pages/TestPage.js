@@ -7,23 +7,23 @@ import { propTypes } from "../../node_modules/react-bootstrap/esm/Image";
 function TestPage() {
   const onClickRe = () => {
     axios.post("/api/reissue").then((response) => {
-      console.log(response);
+      //console.log(response);
     });
   };
   // useEffect(() => {
   //   // axios.get("/api/dashboard").then((response) => {
   //   //   if (response.data.success) {
-  //   //     console.log(response.data);
+  //   //     //console.log(response.data);
 
   //   //   } else {
-  //   //     // console.log("로딩실패");
+  //   //     // //console.log("로딩실패");
   //   //   }
   //   // });
 
   //   // axios.get("/api/recentsituation?size=1&page=3").then((response) => {
-  //   //   console.log(response.data);
+  //   //   //console.log(response.data);
   //   //   if (response.data.success) {
-  //   //     console.log(response.data);
+  //   //     //console.log(response.data);
   //   //   } else {
   //   //   }
   //   // });
@@ -32,11 +32,11 @@ function TestPage() {
   //   //   detailId: 183,
   //   // };
   //   axios.post("/api/situationdetail", body).then((response) => {
-  //     console.log(response.data);
+  //     //console.log(response.data);
   //     if (response.data.success) {
-  //       console.log("짬통");
+  //       //console.log("짬통");
 
-  //       console.log(response.data);
+  //       //console.log(response.data);
   //     } else {
   //     }
   //   });

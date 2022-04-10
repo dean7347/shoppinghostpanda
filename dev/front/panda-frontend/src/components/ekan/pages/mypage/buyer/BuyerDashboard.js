@@ -68,7 +68,7 @@ const BuyerDashboard = () => {
       return;
     }
 
-    console.log(p + s);
+    //console.log(p + s);
     const body = {
       userOrderId: p,
       state: s,
@@ -86,8 +86,8 @@ const BuyerDashboard = () => {
   };
 
   const onCancelOrder = (p) => {
-    console.log("취소신청");
-    console.log(p);
+    //console.log("취소신청");
+    //console.log(p);
     const body = {
       detailId: p,
     };

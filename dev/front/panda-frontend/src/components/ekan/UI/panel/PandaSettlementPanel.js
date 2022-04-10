@@ -24,9 +24,9 @@ const PandaSettlementPanel = () => {
   const [endY, setEndY] = useState();
   const [endM, setEndM] = useState();
 
-  //   console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
-  //   console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
-  console.log(` 상태모드: ${searchStatus}`);
+  //   //console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
+  //   //console.log("시작날짜 : ,", startDate, "끝나는 날짜 : ", endDate);
+  //console.log(` 상태모드: ${searchStatus}`);
 
   useEffect(() => {
     if (pandaSettlementList) {
@@ -40,7 +40,11 @@ const PandaSettlementPanel = () => {
       dispatch(setError(""));
     }
     setLoading(true);
-    dispatch(fetchPandaSettlementList({ startDate, endDate, searchStatus }, () => setLoading(false)));
+    dispatch(
+      fetchPandaSettlementList({ startDate, endDate, searchStatus }, () =>
+        setLoading(false)
+      )
+    );
   };
 
   const clickHandler = (e) => {
@@ -51,7 +55,7 @@ const PandaSettlementPanel = () => {
   };
 
   const clickHandlerStartD = (e) => {
-    console.log(e);
+    //console.log(e);
   };
 
   return (

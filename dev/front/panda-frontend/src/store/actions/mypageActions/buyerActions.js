@@ -15,14 +15,14 @@ export const fetchDashBoard = () => {
 
       if (res.data) {
         const dashBoardData = res.data;
-        console.log("대쉬보드 박스: ", dashBoardData);
+        //console.log("대쉬보드 박스: ", dashBoardData);
         dispatch({
           type: FETCH_BUYER_DASHBOARD,
           payload: dashBoardData,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("마이페이지 통신 이상"));
     }
   };
@@ -35,14 +35,14 @@ export const fetchSituationList = () => {
 
       if (res.data) {
         const list = res.data;
-        console.log("최근주문: ", list);
+        //console.log("최근주문: ", list);
         dispatch({
           type: FETCH_BUYER_SITUATION_LIST,
           payload: list,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("최근 주문 통신 이상"));
     }
   };
@@ -57,16 +57,16 @@ export const fetchSituationWithPage = (size, page) => {
 
       if (res.data) {
         const list = res.data;
-        console.log("리스트 출력");
+        //console.log("리스트 출력");
 
-        console.log(list);
+        //console.log(list);
         dispatch({
           type: FETCH_BUYER_SITUATION_LIST,
           payload: list,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("최근 주문 통신 이상"));
     }
   };
@@ -81,14 +81,14 @@ export const fetchSituationDetail = (detailId) => {
 
       if (res.data) {
         const detail = res.data;
-        console.log("주문디테일: ", detail);
+        //console.log("주문디테일: ", detail);
         dispatch({
           type: FETCH_BUYER_SITUATION,
           payload: detail,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("주문 상세보기 통신 이상"));
     }
   };
@@ -103,16 +103,16 @@ export const fetchCancelSituationWithPage = (size, page) => {
 
       if (res.data) {
         const list = res.data;
-        console.log("취소 리스트 출력");
+        //console.log("취소 리스트 출력");
 
-        console.log(list);
+        //console.log(list);
         dispatch({
           type: FETCH_CANCEL_SITUATION_LIST,
           payload: list,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("취소 주문 통신 이상"));
     }
   };
@@ -127,14 +127,14 @@ export const fetchCancelSituationDetail = (detailId) => {
 
       if (res.data) {
         const detail = res.data;
-        console.log("취소디테일: ", detail);
+        //console.log("취소디테일: ", detail);
         dispatch({
           type: FETCH_CANCEL_SITUATION_DETAIL,
           payload: detail,
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       dispatch(setError("취소 상세보기 통신 이상"));
     }
   };

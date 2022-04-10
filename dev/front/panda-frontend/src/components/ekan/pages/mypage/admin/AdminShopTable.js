@@ -10,21 +10,21 @@ import CsvDownload from "react-json-to-csv";
 import * as XLSX from "xlsx";
 // function confirmOrder(event, cellValues) {
 //   event.stopPropagation();
-//   console.log(cellValues);
+//   //console.log(cellValues);
 // }
 
 function onClickDown(all) {
-  console.log(all);
+  //console.log(all);
   var event = all.row.shopDashboardDtoTypeList;
   var subject =
     all.row.shopName + "정산서 " + all.row.enrollSettle.slice(0, 10);
   // var result = [];
 
   // result.push([5, { 전체금액: 2000 }]);
-  // console.log(result);
+  // //console.log(result);
   // var finalcsv = JSON.parse(JSON.stringify(result));
-  // console.log(finalcsv);
-  // console.log(event);
+  // //console.log(finalcsv);
+  // //console.log(event);
 
   //판매금액
   var salesMoney = 0;
@@ -39,7 +39,7 @@ function onClickDown(all) {
   //수수료
   var fee = 0;
   event.map((va, indx) => {
-    console.log(va);
+    //console.log(va);
     salesMoney += va.realPrice;
     productPrice += va.beforeSalePrice;
     shipPrice += va.shipPrice;
@@ -125,7 +125,7 @@ function onClickDown(all) {
 
 function confirmOrderShopDepost(event, cellValues) {
   event.stopPropagation();
-  console.log(cellValues);
+  //console.log(cellValues);
   const body = {
     id: cellValues.id,
     type: "shop",
@@ -216,14 +216,14 @@ const AdminShopTable = ({ selectedMode }) => {
   const confirmSelected = useCallback(
     (event) => {
       event.preventDefault();
-      console.log("선택된 주문 확인", selectedRows);
+      //console.log("선택된 주문 확인", selectedRows);
     },
     [selectedRows]
   );
 
   const printList = useCallback((event) => {
     event.preventDefault();
-    console.log("인쇄하기");
+    //console.log("인쇄하기");
   }, []);
 
   return (

@@ -13,11 +13,11 @@ const PandaRegFormContainer = () => {
   const [componentSize, setComponentSize] = useState("default");
   const { Panel } = Collapse;
   function callback(key) {
-    // console.log(key);
+    // //console.log(key);
   }
 
   const onSubmit = (e) => {
-    // console.log("w");
+    // //console.log("w");
     // const { shopName, crn, freePrice, address, number } = form;
     // dispatch(shopRegister({ shopName, crn, freePrice, address, number }));
     if ([PandaName, MainChName, intCategory].includes("")) {
@@ -36,7 +36,7 @@ const PandaRegFormContainer = () => {
     };
 
     axios.post("/api/regpanda", body).then((response) => {
-      // console.log(response.data);
+      // //console.log(response.data);
       if (response.data.success) {
         alert(
           "판다가입신청이 완료되었습니다 승인이후 판다로 활동할 수 있습니다"

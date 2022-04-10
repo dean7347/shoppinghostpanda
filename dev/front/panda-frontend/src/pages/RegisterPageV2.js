@@ -550,8 +550,8 @@ const RegisterPageV2 = ({ history }) => {
 
   ///본인인증
   const onTest = () => {
-    console.log("테스트를위한");
-    console.log(certifiNum);
+    //console.log("테스트를위한");
+    //console.log(certifiNum);
 
     const body = {
       muid: certifiNum,
@@ -564,7 +564,7 @@ const RegisterPageV2 = ({ history }) => {
     });
   };
   const onClcikPhone = () => {
-    console.log("온크릭");
+    //console.log("온크릭");
     var IMP = window.IMP; // 생략 가능
     IMP.init("imp16473466"); // 예: imp00000000
     IMP.certification(
@@ -578,12 +578,12 @@ const RegisterPageV2 = ({ history }) => {
         // callback
         if (rsp.success) {
           // 인증 성공 시 로직,
-          console.log("인증성공");
+          //console.log("인증성공");
           setCertifiNum(rsp.imp_uid);
-          console.log(rsp);
+          //console.log(rsp);
         } else {
           // 인증 실패 시 로직,
-          console.log("인증실패");
+          //console.log("인증실패");
           console.alert("인증에 실패했습니다 다시 시도해주세요");
         }
       }

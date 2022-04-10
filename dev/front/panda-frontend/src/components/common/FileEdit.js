@@ -12,9 +12,9 @@ function FileEdit(props) {
   //     .then((response) => {
   //       if (response.data.success) {
   //         // setProduct(response.data);
-  //         console.log("가져온기라");
+  //         //console.log("가져온기라");
 
-  //         console.log(response.data);
+  //         //console.log(response.data);
   //         if (props.type === "thumb") {
   //           response.data.thumbs.map((i, idx) => {
   //             Images.push(i.filepath);
@@ -26,8 +26,8 @@ function FileEdit(props) {
   //           });
   //         }
 
-  //         console.log("셋팅완료");
-  //         console.log(Images);
+  //         //console.log("셋팅완료");
+  //         //console.log(Images);
   //       } else {
   //         alert("상세정보 가져오기를 실패했습니다");
   //       }
@@ -36,8 +36,8 @@ function FileEdit(props) {
 
   useEffect(() => {
     // if (props.type === "thumb") {
-    // console.log("썸");
-    // console.log(props.imgarray);
+    // //console.log("썸");
+    // //console.log(props.imgarray);
     props.imgarray.map((i, idx) => {
       Images.push(i.filepath);
       props.refreshFunction([...Images, i.filePath]);
@@ -52,8 +52,8 @@ function FileEdit(props) {
   }, [props.imgarray]);
 
   const dropHandler = (files) => {
-    // console.log(files);
-    // console.log(files.length);
+    // //console.log(files);
+    // //console.log(files.length);
     const filetype = files[0].type;
 
     if (
@@ -82,9 +82,9 @@ function FileEdit(props) {
     };
 
     image.onload = async function () {
-      // console.log("어싱크펑션");
+      // //console.log("어싱크펑션");
 
-      // console.log(fr);
+      // //console.log(fr);
       //상세이미지
       if (props.type === "detail") {
         if (image.width > 860) {
@@ -101,8 +101,8 @@ function FileEdit(props) {
               setImages([...Images, response.data.filePath]);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
-              console.log("파일저장실패");
-              console.log(response.data);
+              //console.log("파일저장실패");
+              //console.log(response.data);
               alert("파일 저장 실패");
             }
           });
@@ -165,7 +165,7 @@ function FileEdit(props) {
   };
 
   const deleteHandler = (image) => {
-    console.log(image);
+    //console.log(image);
     const body = {
       filepath: image,
     };
@@ -183,7 +183,7 @@ function FileEdit(props) {
         alert("파일 저장 실패");
       }
     });
-    // // console.log("currentIndex" + currentIndex);
+    // // //console.log("currentIndex" + currentIndex);
   };
 
   return (

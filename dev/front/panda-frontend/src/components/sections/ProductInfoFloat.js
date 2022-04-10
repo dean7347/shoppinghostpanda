@@ -30,7 +30,7 @@ function ProductInfoFlot(props) {
       if (response.data.success) {
         SetPandas(response.data.details);
       } else {
-        // console.log("판다스 정보를 가져오지 못했습니다");
+        // //console.log("판다스 정보를 가져오지 못했습니다");
       }
     });
   }, []);
@@ -48,7 +48,7 @@ function ProductInfoFlot(props) {
   }, []);
 
   function handleChange(value) {
-    // console.log(`selected ${value}`);
+    // //console.log(`selected ${value}`);
     setSelectPanda(value);
   }
 
@@ -192,7 +192,7 @@ function ProductInfoFlot(props) {
     if (Product) {
       setOptions(Product.poptions);
     } else {
-      // console.log("빈상품정보 로딩");
+      // //console.log("빈상품정보 로딩");
     }
   }, [Product]);
 
@@ -228,7 +228,7 @@ function ProductInfoFlot(props) {
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
-    // console.log("카트전달정보");
+    // //console.log("카트전달정보");
 
     const body = {
       productid: props.proId,
@@ -242,7 +242,7 @@ function ProductInfoFlot(props) {
         props.onCancel();
       } else {
         alert("장바구니 수정에 실패했습니다");
-        // console.log(response.data);
+        // //console.log(response.data);
       }
     });
   };

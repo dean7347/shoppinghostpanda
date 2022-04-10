@@ -7,10 +7,10 @@ function FileUpload(props) {
   const [check, setCheck] = useState(false);
 
   const dropHandler = (files) => {
-    // console.log(files);
-    // console.log(files.length);
-    console.log("파일타입체크");
-    console.log(files[0].type);
+    // //console.log(files);
+    // //console.log(files.length);
+    //console.log("파일타입체크");
+    //console.log(files[0].type);
     const filetype = files[0].type;
 
     if (
@@ -39,9 +39,9 @@ function FileUpload(props) {
     };
 
     image.onload = async function () {
-      // console.log("어싱크펑션");
+      // //console.log("어싱크펑션");
 
-      // console.log(fr);
+      // //console.log(fr);
       //상세이미지
       if (props.type === "detail") {
         if (image.width > 860) {
@@ -57,8 +57,8 @@ function FileUpload(props) {
               setImages([...Images, response.data.filePath]);
               props.refreshFunction([...Images, response.data.filePath]);
             } else {
-              console.log("파일저장실패");
-              console.log(response.data);
+              //console.log("파일저장실패");
+              //console.log(response.data);
               alert("파일 저장 실패");
             }
           });
@@ -116,7 +116,7 @@ function FileUpload(props) {
 
   const deleteHandler = (image) => {
     const currentIndex = Images.indexOf(image);
-    // console.log("currentIndex" + currentIndex);
+    // //console.log("currentIndex" + currentIndex);
 
     let newImages = [...Images];
     newImages.splice(currentIndex, 1);

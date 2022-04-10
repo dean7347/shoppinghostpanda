@@ -6,7 +6,7 @@ import { Row, Col, Button } from "antd";
 function PagementCompletePage(props) {
   let history = useHistory();
 
-  // console.log(props);
+  // //console.log(props);
   if (props.location.state === undefined) {
     alert("잘못된 접근입니다");
     history.goBack();

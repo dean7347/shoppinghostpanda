@@ -13,7 +13,7 @@ export const fetchSellerDashboard = (year, onError) => {
       });
       if (res.data) {
         const dashboardData = res.data;
-        console.log("대쉬보드 :", dashboardData);
+        //console.log("대쉬보드 :", dashboardData);
         dispatch({
           type: FETCH_SELLER_DASHBOARD,
           payload: dashboardData,
@@ -42,7 +42,7 @@ export const fetchSellerSettlementList = (data, onError) => {
       });
       if (res.data) {
         const list = res.data;
-        console.log("셀러 정산 목록: ", list);
+        //console.log("셀러 정산 목록: ", list);
         dispatch({
           type: FETCH_SELLER_SETTLEMENT_LIST,
           payload: list,
@@ -64,7 +64,7 @@ export const fetchSellerSettlementListWithOrderNum = (data, onError) => {
       });
       if (res.data) {
         const list = res.data;
-        console.log("셀러 정산 목록: ", list);
+        //console.log("셀러 정산 목록: ", list);
         dispatch({
           type: FETCH_SELLER_SETTLEMENT_LIST,
           payload: list,

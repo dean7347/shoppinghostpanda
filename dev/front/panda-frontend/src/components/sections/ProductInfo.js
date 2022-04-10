@@ -25,7 +25,7 @@ function ProductInfo(props) {
   const [SelectPanda, setSelectPanda] = useState("");
 
   function handleChange(value) {
-    // console.log(`selected ${value}`);
+    // //console.log(`selected ${value}`);
     setSelectPanda(value);
   }
   const [Link, SetLink] = useState("http://localhost:3000/");
@@ -47,7 +47,7 @@ function ProductInfo(props) {
       link: Link,
     };
     axios.post("/api/addpropanda", body).then((response) => {
-      // console.log(response.data);
+      // //console.log(response.data);
       if (response.data.success) {
         alert("판다링크 생성 완료");
       } else {
@@ -153,10 +153,10 @@ function ProductInfo(props) {
     );
   };
   const onDelete = (title, key) => (event) => {
-    console.log(key.optionId);
+    //console.log(key.optionId);
     cart.array.find((x, id) => {
-      console.log("파인드키");
-      console.log(x.optionId);
+      //console.log("파인드키");
+      //console.log(x.optionId);
       if (x.optionId == key.optionId) {
         setCart(
           produce(cart, (draft) => {
@@ -177,15 +177,15 @@ function ProductInfo(props) {
   };
 
   const handleClick = (e) => {
-    // console.log("클릭");
-    // console.log(e);
-    // console.log(options[e.key]);
-    // console.log(options);
-    // console.log("카트");
-    // console.log(cart.array);
-    // console.log("함수");
-    // console.log(cart.array.find((x) => x.optionId == options[e.key].optionId));
-    // // console.log(cart.array.find((x) => x.key == e.key).optionId);
+    // //console.log("클릭");
+    // //console.log(e);
+    // //console.log(options[e.key]);
+    // //console.log(options);
+    // //console.log("카트");
+    // //console.log(cart.array);
+    // //console.log("함수");
+    // //console.log(cart.array.find((x) => x.optionId == options[e.key].optionId));
+    // // //console.log(cart.array.find((x) => x.key == e.key).optionId);
 
     if (
       cart.array.find((x) => x.optionId == options[e.key].optionId) !==
@@ -217,11 +217,11 @@ function ProductInfo(props) {
   useEffect(() => {
     if (props) {
       setOptions(props.detail.poptions);
-      // console.log("props");
+      // //console.log("props");
 
-      // console.log(props);
+      // //console.log(props);
     } else {
-      // console.log("빈상품정보 로딩");
+      // //console.log("빈상품정보 로딩");
     }
   }, [props]);
 
@@ -244,8 +244,8 @@ function ProductInfo(props) {
     return prev;
   }, []);
 
-  // console.log("변경된정보");
-  // console.log(unique_user);
+  // //console.log("변경된정보");
+  // //console.log(unique_user);
   const renderPanda =
     unique_user &&
     unique_user.map((panda, index) => {
@@ -260,9 +260,9 @@ function ProductInfo(props) {
 
   useEffect(() => {
     axios.get("/api/ispanda").then((response) => {
-      // console.log("판다스데이터확인");
+      // //console.log("판다스데이터확인");
 
-      // console.log(response.data);
+      // //console.log(response.data);
       setIspanda(response.data.ispanda);
       setapprovePanda(response.data.approve);
     });
@@ -270,7 +270,7 @@ function ProductInfo(props) {
 
   const clickHandler = () => {
     //필요한 정보를 cart 필드에다가 넣어준다
-    // console.log("카트전달정보");
+    // //console.log("카트전달정보");
 
     const body = {
       productid: props.proId,
@@ -282,19 +282,19 @@ function ProductInfo(props) {
       .then((response) => {
         if (response.data.success) {
           alert("상품을 장바구니에 성공적으로 담았습니다");
-          console.log("장바구니담기");
+          //console.log("장바구니담기");
         } else {
           alert(response.data.message);
-          console.log("장바구니엘즈");
+          //console.log("장바구니엘즈");
 
-          console.log(response.data);
+          //console.log(response.data);
         }
       })
       .catch(() => {
-        console.log("켓치실행");
+        //console.log("켓치실행");
       });
 
-    // console.log(body);
+    // //console.log(body);
   };
 
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -312,7 +312,7 @@ function ProductInfo(props) {
   const handleScroll = () => {
     const position = window.pageYOffset;
     if (position > 1200) {
-      console.log(window.innerWidth);
+      //console.log(window.innerWidth);
       setFloatb(true);
     }
     if (position < 1201) {
@@ -321,8 +321,8 @@ function ProductInfo(props) {
   };
 
   const cartHandler = () => {
-    console.log("클릭");
-    console.log(displayCart);
+    //console.log("클릭");
+    //console.log(displayCart);
     if (displayCart === "none") {
       setDisplayCart("flex");
       setcartMessage("닫기");

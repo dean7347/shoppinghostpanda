@@ -8,7 +8,7 @@ export const signup = (data, onError) => {
   return async (dispatch) => {
     try {
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       onError();
       dispatch(setError(err.message));
     }
@@ -25,10 +25,10 @@ export const signin = (data, onError) => {
       form.append("password", data.password);
 
       const res = await axios.post("/api/loginv2", form);
-      console.log("res정보");
-      console.log(res.data);
-      // console.log(res.data.data.refreshToken);
-      // console.log(res.data.data.refreshTokenExpirationTime);
+      //console.log("res정보");
+      //console.log(res.data);
+      // //console.log(res.data.data.refreshToken);
+      // //console.log(res.data.data.refreshTokenExpirationTime);
       window.localStorage.setItem("accessToken", res.data.accessToken);
       // window.localStorage.setItem("refreshToken", res.data.data.refreshToken);
       // setCookie("at", res.data.data.accessToken, { path: "/" });
@@ -36,8 +36,8 @@ export const signin = (data, onError) => {
       const auth = await axios.post("/api/userauth");
       if (res.data) {
         const userData = res.data;
-        console.log(userData);
-        console.log("어스 :", auth.data);
+        //console.log(userData);
+        //console.log("어스 :", auth.data);
         dispatch({
           type: SET_USER,
           payload: userData,
@@ -50,8 +50,8 @@ export const signin = (data, onError) => {
         dispatch(setLoading(false));
       }
     } catch (err) {
-      console.log("d어스에러");
-      console.log(err);
+      //console.log("d어스에러");
+      //console.log(err);
       onError();
       dispatch(setError("아이디나 비밀번호를 확인해 주십시오"));
       dispatch(setLoading(false));
@@ -64,7 +64,7 @@ export const signout = () => {
   return async (dispatch) => {
     try {
       dispatch(setLoading(true));
-      console.log("로그아웃 요청 성공");
+      //console.log("로그아웃 요청 성공");
       await axios.post("/api/user/logoutv2");
       setCookie("loggedIn", "false", { path: "/" });
       setCookie("userId", "", { path: "/" });
@@ -79,8 +79,8 @@ export const signout = () => {
         type: SIGN_OUT,
       });
     } catch (err) {
-      console.log(err);
-      console.log("로그아웃실패");
+      //console.log(err);
+      //console.log("로그아웃실패");
       dispatch(setLoading(false));
     }
     dispatch(setLoading(false));

@@ -52,7 +52,7 @@ function DetailProductPage(props) {
       link: Link,
     };
     axios.post("/api/addpropanda", body).then((response) => {
-      // console.log(response.data);
+      // //console.log(response.data);
       if (response.data.success) {
         alert("판다링크 생성 완료");
       } else {
@@ -85,23 +85,23 @@ function DetailProductPage(props) {
 
   useEffect(() => {
     axios.get("/api/ispanda").then((response) => {
-      // console.log("판다스데이터확인");
+      // //console.log("판다스데이터확인");
 
-      // console.log(response.data);
+      // //console.log(response.data);
       setIspanda(response.data.ispanda);
       setapprovePanda(response.data.approve);
-      console.log("어프룹판다", response.data);
+      //console.log("어프룹판다", response.data);
     });
   }, []);
   useEffect(() => {
     axios.get(`/api/getpandas_by_id?id=${productId}`).then((response) => {
       if (response.data.success) {
-        console.log("디테일받아오기", response);
+        //console.log("디테일받아오기", response);
         SetPandas(response.data.details);
-        // console.log("판다스정보");
-        // console.log(response.data.details);
+        // //console.log("판다스정보");
+        // //console.log(response.data.details);
       } else {
-        // console.log("판다스 정보를 가져오지 못했습니다");
+        // //console.log("판다스 정보를 가져오지 못했습니다");
       }
     });
   }, []);
@@ -111,15 +111,15 @@ function DetailProductPage(props) {
       .get(`/api/product/products_by_id?id=${productId}`)
       .then((response) => {
         if (response.data.success) {
-          // console.log("디테일정보");
-          // console.log(response.data);
-          console.log("프로덕트", response.data);
+          // //console.log("디테일정보");
+          // //console.log(response.data);
+          //console.log("프로덕트", response.data);
           setProduct(response.data);
           let temp = JSON.parse(response.data.lowform);
           setSto(temp);
-          // console.log("콘솔템프정보");
+          // //console.log("콘솔템프정보");
 
-          // console.log(response.data);
+          // //console.log(response.data);
           setDetailImage(response.data.detailImages);
         } else {
           alert("상세정보 가져오기를 실패했습니다");
@@ -150,20 +150,20 @@ function DetailProductPage(props) {
   const onPageChanged = useCallback(
     (page) => {
       setPage(page);
-      console.log("호출");
+      //console.log("호출");
 
       axios
         .get(`/api/getqna?pid=${productId}&size=5&page=${page - 1}`)
         .then((response) => {
           if (response.data != null) {
-            console.log("데이터가져옴", response.data);
+            //console.log("데이터가져옴", response.data);
             setBoard(response.data.boardLists);
-            console.log(board);
-            console.log(response.data.boardLists);
+            //console.log(board);
+            //console.log(response.data.boardLists);
             setViewCountPage(5);
             setTotalCountPage(response.data.totalE);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            //console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -176,23 +176,23 @@ function DetailProductPage(props) {
         .get(`/api/getqna?pid=${productId}&size=5&page=${Page - 1}`)
         .then((response) => {
           if (response.data != null) {
-            console.log("데이타");
+            //console.log("데이타");
 
-            console.log(response.data);
+            //console.log(response.data);
             setBoard(response.data.boardLists);
 
             //page, count, setPage
             //현재 페이지
-            console.log("Page");
+            //console.log("Page");
 
-            console.log(Page);
-            // // console.log(response.data.pageable.pageNumber);
+            //console.log(Page);
+            // // //console.log(response.data.pageable.pageNumber);
             //한페이지당 보여줄 리스트 아이템 갯수
             setViewCountPage(5);
             //총 아이템의 갯수
             setTotalCountPage(response.data.totalE);
           } else {
-            // console.log("상품들을 가져오는데 실패했습니다.");
+            // //console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -213,14 +213,14 @@ function DetailProductPage(props) {
         .get(`/api/getreview?pid=${productId}&size=5&page=${page - 1}`)
         .then((response) => {
           if (response.data != null) {
-            console.log("데이터가져옴", response.data);
+            //console.log("데이터가져옴", response.data);
             setReview(response.data.boardLists);
-            console.log(Review);
-            console.log(response.data.boardLists);
+            //console.log(Review);
+            //console.log(response.data.boardLists);
             setReviewViewCountPage(5);
             setReviewTotalCountPage(response.data.totalE);
           } else {
-            console.log("상품들을 가져오는데 실패했습니다.");
+            //console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -233,20 +233,20 @@ function DetailProductPage(props) {
         .get(`/api/getreview?pid=${productId}&size=5&page=${ReviewPage - 1}`)
         .then((response) => {
           if (response.data != null) {
-            console.log("데이타232");
-            console.log(response.data.boardLists);
+            //console.log("데이타232");
+            //console.log(response.data.boardLists);
             setReview(response.data.boardLists);
             //page, count, setPage
             //현재 페이지
-            console.log("Page");
-            console.log(ReviewPage);
-            // // console.log(response.data.pageable.pageNumber);
+            //console.log("Page");
+            //console.log(ReviewPage);
+            // // //console.log(response.data.pageable.pageNumber);
             //한페이지당 보여줄 리스트 아이템 갯수
             setReviewViewCountPage(5);
             //총 아이템의 갯수
             setReviewTotalCountPage(response.data.totalE);
           } else {
-            // console.log("상품들을 가져오는데 실패했습니다.");
+            // //console.log("상품들을 가져오는데 실패했습니다.");
           }
         });
     },
@@ -263,13 +263,13 @@ function DetailProductPage(props) {
       ...qna,
       [e.target.name]: e.target.value,
     };
-    console.log(e.target.value);
+    //console.log(e.target.value);
 
     setQna(nextForm);
   };
   const baordClick = (param) => {
-    console.log("보드클릭");
-    console.log(param);
+    //console.log("보드클릭");
+    //console.log(param);
   };
   const [isqnaModalVisible, setIsqnaModalVisible] = useState(false);
   const [isafterModalVisible, setIsafterModalVisible] = useState(false);
@@ -289,7 +289,7 @@ function DetailProductPage(props) {
       title: qna.title,
       contents: qna.content,
     };
-    console.log(body);
+    //console.log(body);
 
     ///api/createqna
     axios.post("/api/createqna", body).then((response) => {
@@ -314,7 +314,7 @@ function DetailProductPage(props) {
       title: qna.title,
       contents: qna.content,
     };
-    console.log(body);
+    //console.log(body);
 
     ///api/createqna
     axios.post("/api/createreview", body).then((response) => {
@@ -594,7 +594,7 @@ function DetailProductPage(props) {
               </TabPane>
               <TabPane tab="상품정보" key="3">
                 {/* {sto && lowOption(`${Product.type}`)} */}
-                {console.log("상품정보", Product.notice)}
+                {/* {//console.log("상품정보", Product.notice)} */}
                 <div style={{ textAlign: "center" }}>
                   <h2>상품정보고시</h2>
                   <table>
