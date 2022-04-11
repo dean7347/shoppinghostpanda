@@ -26,7 +26,9 @@ axios.interceptors.response.use(
     } = error;
     if (status === 406) {
       try {
-        await onTokenRefresh();
+        console.log("ontoken refresh", onTokenRefresh());
+        // await onTokenRefresh();
+        console.log(onTokenRefresh());
         return axios(config);
       } catch (err) {
         console.error("재발급 실패", err);

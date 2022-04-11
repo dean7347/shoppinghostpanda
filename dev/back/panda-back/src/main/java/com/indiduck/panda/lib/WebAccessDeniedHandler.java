@@ -20,7 +20,7 @@ public class WebAccessDeniedHandler implements AccessDeniedHandler {
 
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("utf-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         JSONObject json = new JSONObject();
         json.put("code", errorType.getCode());

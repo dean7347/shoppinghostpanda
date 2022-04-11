@@ -144,10 +144,10 @@ private final JwtTokenProvider jwtTokenProvider;
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = login.toAuthentication();
         String name = usernamePasswordAuthenticationToken.getName();
         Cookie refreshToken = new Cookie("refreshToken", null);
-        refreshToken.setMaxAge(0);
+        refreshToken.setMaxAge(2147483647);
         refreshToken.setPath("/");
         Cookie newAccessToken = new Cookie("accessToken", null);
-        newAccessToken.setMaxAge(0);
+        newAccessToken.setMaxAge(2147483647);
         newAccessToken.setPath("/");
 
         Optional<User> byEmail = userRepository.findByEmail(name);
@@ -155,12 +155,16 @@ private final JwtTokenProvider jwtTokenProvider;
         String aToken = tokenInfo.getAccessToken();
         Cookie rfreshToken = new Cookie("refreshToken", rToken);
         rfreshToken.setHttpOnly(true);
+        rfreshToken.setMaxAge(2147483647);
+
         rfreshToken.setPath("/");
         res.addCookie(rfreshToken);
 
         Cookie AccessToken = new Cookie("accessToken", aToken);
         AccessToken.setHttpOnly(true);
         AccessToken.setPath("/");
+        AccessToken.setMaxAge(2147483647);
+
         res.addCookie(AccessToken);
 
 
@@ -324,6 +328,12 @@ private final JwtTokenProvider jwtTokenProvider;
                                                    HttpServletRequest req, HttpServletResponse res) {
 
         log.info(authentication.getName() + "의 리이슈 신청");
+        if(authentication.getName().equals("anonymousUser"))
+        {
+            System.out.println(" 리이슈 실패 " );
+            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패"));
+
+        }
         String rtCookie = "";
         String atCookie="";
         Cookie[] cookies = req.getCookies();
@@ -338,7 +348,8 @@ private final JwtTokenProvider jwtTokenProvider;
 
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
-            return ResponseEntity.badRequest().body(new TFMessageDto(false, "재발급 실패"));
+            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패"));
+
         }
 
         //
@@ -349,19 +360,21 @@ private final JwtTokenProvider jwtTokenProvider;
         String rToken = tokenInfo.getRefreshToken();
         String aToken = tokenInfo.getAccessToken();
         Cookie refreshToken = new Cookie("refreshToken", null);
-        refreshToken.setMaxAge(0);
         refreshToken.setPath("/");
         Cookie newAccessToken = new Cookie("accessToken", null);
-        newAccessToken.setMaxAge(0);
         newAccessToken.setPath("/");
 
         //새로운쿡히
         refreshToken = new Cookie("refreshToken", rToken);
         refreshToken.setHttpOnly(true);
+        refreshToken.setMaxAge(2147483647);
+
         refreshToken.setPath("/");
 
         newAccessToken = new Cookie("accessToken", aToken);
         newAccessToken.setHttpOnly(true);
+        newAccessToken.setMaxAge(2147483647);
+
         newAccessToken.setPath("/");
         res.addCookie(refreshToken);
         res.addCookie(newAccessToken);
