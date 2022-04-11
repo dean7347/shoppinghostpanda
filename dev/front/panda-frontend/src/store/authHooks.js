@@ -46,20 +46,21 @@ export const useAuthStore = create((set) => ({
 // 토큰 재발급 함수
 export const onTokenRefresh = async () => {
   try {
-    //console.log('리프래시중임')
+    console.log("리프래시중임");
     const { data } = await axios.post("/api/reissuev2");
-
+    console.log(data);
     if (data.success) {
       console.log("리프레시데이타: ", data);
 
       useAuthStore.setState({
         user: data,
       });
-      return true;
     } else {
-      return false;
+      throw new Error("리이슈 실패");
     }
   } catch (err) {
+    throw new Error("리이슈 실패");
+
     console.error("토큰 재발급 실패", err);
     // 실패 처리
   }

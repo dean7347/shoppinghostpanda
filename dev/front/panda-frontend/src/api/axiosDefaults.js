@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getConfigFileParsingDiagnostics } from "../../node_modules/typescript/lib/typescript";
 import { onTokenRefresh } from "../store/authHooks";
 // 타임아웃
 axios.defaults.timeout = 2500;
@@ -26,13 +27,21 @@ axios.interceptors.response.use(
     } = error;
     if (status === 406) {
       try {
-        console.log("ontoken refresh", onTokenRefresh());
-        // await onTokenRefresh();
-        console.log(onTokenRefresh());
+        console.log("ontoken refresh", config);
+        if (config.url === "/api/reissuev2") {
+          if (
+            window.confirm("로그인이 필요한 서비스입니다. 이동하시겠습니까?")
+          ) {
+            window.location.replace("/signin");
+          }
+          return;
+        }
+        await onTokenRefresh();
+        // console.log(onTokenRefresh());
         return axios(config);
       } catch (err) {
         console.error("재발급 실패", err);
-        if (window.confirm("로그인이 필요한 서비스입니다. 이동하실래요?")) {
+        if (window.confirm("로그인이 필요한 서비스입니다. 이동하시겠습니까?")) {
           window.location.replace("/signin");
         }
       }

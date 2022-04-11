@@ -331,7 +331,7 @@ private final JwtTokenProvider jwtTokenProvider;
         if(authentication.getName().equals("anonymousUser"))
         {
             System.out.println(" 리이슈 실패 " );
-            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패"));
+            return ResponseEntity.ok().body(new TFMessageDto(false, "재발급 실패1"));
 
         }
         String rtCookie = "";
@@ -348,7 +348,7 @@ private final JwtTokenProvider jwtTokenProvider;
 
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
-            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패"));
+            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패2"));
 
         }
 
