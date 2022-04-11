@@ -57,7 +57,7 @@ public class ResignConfiguration {
     public Step ResignStep() throws Exception {
 
         return stepBuilderFactory.get("ResignStep")
-                .<User,User>chunk(10)
+                .<User,User>chunk(100)
                 .reader(Resignreader())
                 .processor(Resignprocessor())
                 .writer(Resignwriter())
@@ -68,18 +68,33 @@ public class ResignConfiguration {
     @StepScope
     public JpaPagingItemReader<User> Resignreader() throws Exception {
 
-        Map<String,Object> parameterValues = new HashMap<>();
+        Map<String, Object> parameterValues = new HashMap<>();
         parameterValues.put("beforeDay", LocalDateTime.now().minusDays(7));
-        return new JpaPagingItemReaderBuilder<User>()
-                .pageSize(10)
-                .parameterValues(parameterValues)
-                //샵 userorder.
-                .queryString("SELECT u FROM User u where u.leaveAt <: beforeDay  ORDER BY id ASC")
-//                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
-                .entityManagerFactory(entityManagerFactory)
-                .name("JpaPagingItemReader")
-                .build();
+
+        JpaPagingItemReader<User> reader = new JpaPagingItemReader<User>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+        reader.setParameterValues(parameterValues);
+        reader.setQueryString("SELECT u FROM User u where u.leaveAt <: beforeDay  ORDER BY id ASC");
+        reader.setPageSize(100);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setName("JpaPagingItemReader");
+
+        return reader;
     }
+//        return new JpaPagingItemReaderBuilder<User>()
+//                .pageSize(10)
+//                .parameterValues(parameterValues)
+//                //샵 userorder.
+//                .queryString("SELECT u FROM User u where u.leaveAt <: beforeDay  ORDER BY id ASC")
+////                .queryString("SELECT uo FROM UserOrder uo where uo.enrollSettle =: Estatus And uo.orderStatus =: od And uo.paymentStatus =: ps ORDER BY id ASC")
+//                .entityManagerFactory(entityManagerFactory)
+//                .name("JpaPagingItemReader")
+//                .build();
+//    }
 
     @Bean
     @StepScope

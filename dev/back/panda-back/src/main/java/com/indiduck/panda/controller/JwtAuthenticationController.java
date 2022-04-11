@@ -130,13 +130,17 @@ private final JwtTokenProvider jwtTokenProvider;
     }
 
     @PostMapping("/api/loginv2")
-    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletRequest req, HttpServletResponse res, Errors errors) {
+    public ResponseEntity<?> loginV2(@Validated UserRequestDto.Login login,HttpServletRequest req, HttpServletResponse res, Errors errors) throws Exception {
         // validation check
         log.info(login.getEmail()+"의 로그인 시도");
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.loginV2(login);
+        if(tokenInfo==null)
+        {
+            return ResponseEntity.ok(new TFMessageDto(false,"로그인에 실패했습니다"));
+        }
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = login.toAuthentication();
         String name = usernamePasswordAuthenticationToken.getName();
         Cookie refreshToken = new Cookie("refreshToken", null);

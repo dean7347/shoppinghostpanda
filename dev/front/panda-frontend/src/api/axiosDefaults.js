@@ -37,6 +37,7 @@ axios.interceptors.response.use(
     }
     if (status === 401) {
       // 추후에 401 필요하면 추가
+      alert("권한이 없는 요청입니다");
     }
     if (status === 404) {
       alert(

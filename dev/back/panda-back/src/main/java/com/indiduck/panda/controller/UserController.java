@@ -21,6 +21,7 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class UserController {
     @GetMapping("/api/userresign")
     public ResponseEntity<?> userResign(@CurrentSecurityContext(expression = "authentication")
                                                 Authentication authentication,HttpServletRequest req) {
+        log.info(authentication.getName()+"의 탈퇴 요청");
         //상점여부
         String name = authentication.getName();
         Optional<User> byEmail = userRepository.findByEmail(name);
@@ -125,13 +127,24 @@ public class UserController {
         //유저를 삭제한다
         //배치시에 실행할 로직
         userService.deleteTempSet(user);
+//        user.setLeaveAt();
+        log.info(user + "의 탈퇴요청");
 
-        String atToken = req.getHeader("accessToken");
+        String atCookie="";
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies) {
+
+            if (cookie.getName().equals("accessToken"))
+                atCookie = cookie.getValue();
+        }
+        String atToken = atCookie;
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
         boolean b = userService.logoutV2(atToken);
         if (b) {
+
             return ResponseEntity.ok(new TFMessageDto(true, "회원 탈퇴요청이 성공적으로 입력되었습니다 7일이후 계정정보는 완전히 삭제됩니다 "));
 
 

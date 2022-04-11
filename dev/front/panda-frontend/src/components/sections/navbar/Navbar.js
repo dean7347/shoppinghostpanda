@@ -104,7 +104,7 @@ const Navbar = () => {
 
       {user ? (
         <div className="navbar-end">
-          <div className="navbar-menu">
+          <div>
             <span className="mr-3">
               <Dropdown
                 customToggle={() => renderUserToggle()}
@@ -125,7 +125,7 @@ const Navbar = () => {
         </div>
       ) : (
         <div className="navbar-end">
-          <div className="navbar-menu">
+          <div>
             <div className="buttons">
               <Button
                 text="회원가입"

@@ -29,10 +29,14 @@ const SignIn = (props) => {
       location: { state },
     } = props;
     if (user) {
-      if (state && state.next) {
-        history.push(state.next);
+      if (user.success) {
+        if (state && state.next) {
+          history.push(state.next);
+        } else {
+          history.push("/");
+        }
       } else {
-        history.push("/");
+        setError(user.message);
       }
     }
   }, [user, props]);
@@ -69,7 +73,7 @@ const SignIn = (props) => {
             label="Password"
           />
           <p>
-            <Link to="/forgot-password">Forgot password ?</Link>
+            <Link to="/find_id_pw">ID/PW찾기</Link>
           </p>
           <Button
             text={loading ? "Loading..." : "Sign In"}

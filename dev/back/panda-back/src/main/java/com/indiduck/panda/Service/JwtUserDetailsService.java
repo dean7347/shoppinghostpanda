@@ -70,6 +70,7 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class JwtUserDetailsService implements UserDetailsService {
 
     //	@Override
@@ -131,7 +132,10 @@ public class JwtUserDetailsService implements UserDetailsService {
         String passwordEncode = user.getPassword();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         boolean matches = encoder.matches(password, passwordEncode);
-
+        if(user.getLeaveAt()!=null)
+        {
+            return null;
+        }
         if (matches) {
             return user;
         }
@@ -171,6 +175,14 @@ public class JwtUserDetailsService implements UserDetailsService {
             LocalDate parsedBirthDate = LocalDate.parse(format1, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
             int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear(); // (1)
+
+            //중복 ci
+            Optional<User> byCi = userRepository.findByCi(certification_response.getResponse().getUniqueKey());
+
+            if(byCi.isPresent())
+            {
+                return "이미 가입된 회원 ID가 있습니다";
+            }
             if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
                 americanAge = americanAge - 1;
             }
@@ -331,8 +343,14 @@ public class JwtUserDetailsService implements UserDetailsService {
         return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
     }
 
-    public UserResponseDto.TokenInfo loginV2(UserRequestDto.Login login) {
+    public UserResponseDto.TokenInfo loginV2(UserRequestDto.Login login) throws Exception {
 
+        User user = userDetailsService.loginUser(login.getEmail(), login.getPassword());
+        if(user ==null)
+        {
+            return null;
+
+        }
         if (userRepository.findByEmail(login.getEmail()).orElse(null) == null) {
             return null;
         }
@@ -475,7 +493,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     public void deleteTempSet(User user)
     {
-        user.setLeaveAt(LocalDateTime.now());
+        user.setLeaveAt();
 
     }
 

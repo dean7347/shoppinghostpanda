@@ -17,7 +17,7 @@ function SearchFeature(props) {
 
   return (
     <div>
-      <Input
+      {/* <Input
         placeholder="상품명 검색"
         style={{ width: 200 }}
         onChange={searchHandler}
@@ -25,7 +25,7 @@ function SearchFeature(props) {
       />
       <Link to={`/product/search/${SearchTerm}`}>
         <Button type="primary" icon={<SearchOutlined />} />
-      </Link>
+      </Link> */}
     </div>
   );
 }

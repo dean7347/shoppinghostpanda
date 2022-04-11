@@ -137,7 +137,9 @@ public class User implements UserDetails {
     {
         this.panda=null;
     }
-
+    public void setLeaveAt(){
+        this.leaveAt=LocalDateTime.now();
+    }
     public User deleteAll()
     {
 

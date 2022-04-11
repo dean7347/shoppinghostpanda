@@ -535,7 +535,7 @@ const RegisterPageV2 = ({ history }) => {
         password: e.password,
         phone: certifiNum,
       };
-      axios.post("/api/register", body).then((response) => {
+      axios.post("/api/signup", body).then((response) => {
         if (response.data.success) {
           alert("회원가입에 성공했습니다 ");
           window.location.replace("/");
