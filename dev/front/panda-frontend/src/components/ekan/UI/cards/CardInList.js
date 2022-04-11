@@ -244,6 +244,22 @@ function CardInList(props) {
       }
     });
   };
+
+  const onTestCheckextend = (p, s, c, w) => {
+    //console.log(p + s);
+    const body = {
+      orderId: p,
+    };
+    axios.post("/api/extendconfirm", body).then((response) => {
+      if (response.data.success) {
+        alert("구매확정기간 연장에 성공했습니다 감사합니다.");
+      } else {
+        alert(
+          "구매확정기간 연장에 실패했습니다. 해당 현상이 계속된다면 꼭 문의주세요."
+        );
+      }
+    });
+  };
   const onRefundOrder = (p) => {
     if (
       window.confirm(
@@ -646,13 +662,32 @@ function CardInList(props) {
         props.situationDetail.status === "구매확정" ? (
           <div></div>
         ) : (
-          <Button
-            onClick={() =>
-              onTestCheck(props.situationDetail.detailId, "구매확정", "c", 123)
-            }
-          >
-            구매확정
-          </Button>
+          <div>
+            <Button
+              onClick={() =>
+                onTestCheck(
+                  props.situationDetail.detailId,
+                  "구매확정",
+                  "c",
+                  123
+                )
+              }
+            >
+              구매확정
+            </Button>
+            <Button
+              onClick={() =>
+                onTestCheckextend(
+                  props.situationDetail.detailId,
+                  "구매확정",
+                  "c",
+                  123
+                )
+              }
+            >
+              구매확정기간 연장
+            </Button>
+          </div>
         )}
 
         {props.situationDetail.status === "결제완료" ? (

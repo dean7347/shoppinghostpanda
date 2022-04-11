@@ -42,7 +42,15 @@ const VideoCard = ({ link, panda, footer, pandaToProductId }) => {
     axios
       .get(fullUrl)
       .then((result) => {
-        // //console.log(result.data)
+        console.log(result.data);
+        if (result.data.error) {
+          setVideoInfo({
+            title: "잘못된 영상입니다",
+            author_url: "https://www.youtube.com/watch?v=2KoFNfqMZ-Y",
+            author_name: "영상 오류",
+          });
+          return;
+        }
         setVideoInfo(result.data);
         return result.data;
       })

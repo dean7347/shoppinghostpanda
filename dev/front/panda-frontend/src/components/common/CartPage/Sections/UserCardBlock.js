@@ -600,7 +600,7 @@ function UserCardBlock(props) {
                                                         option.originPrice *
                                                           0.95
                                                       ) *
-                                                        option.optionCoun
+                                                        option.optionCount
                                                           .toString()
                                                           .replace(
                                                             /\B(?=(\d{3})+(?!\d))/g,

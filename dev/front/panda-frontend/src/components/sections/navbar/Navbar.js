@@ -6,6 +6,7 @@ import {
   user_menu,
   panda_menu,
   seller_menu,
+  pandaSeller_menu,
 } from "./navbarTypes";
 import { useAuthStore } from "../../../store/authHooks";
 import Dropdown from "../../ekan/UI/dropdown/Dropdown";
@@ -69,7 +70,7 @@ const Navbar = () => {
   const renderAuthMenu = useCallback(
     (panda, seller) => {
       if (panda && seller) {
-        return user_menu;
+        return pandaSeller_menu;
       }
       if (panda) {
         return panda_menu;

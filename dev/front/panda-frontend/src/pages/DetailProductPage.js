@@ -38,7 +38,23 @@ function DetailProductPage(props) {
     return url.protocol === "http:" || url.protocol === "https:";
   }
   const [Link, SetLink] = useState("");
+  const [step, setStep] = useState(true);
   const onSubmit = (e) => {
+    const fullUrl = `https://noembed.com/embed?url=${e.link}}`;
+    axios
+      .get(fullUrl)
+      .then((result) => {
+        console.log(result.data);
+        if (result.data.error) {
+          setStep(false);
+          return;
+        }
+      })
+      .then(setStep(true));
+    if (step) {
+      alert("올바른 URL가 아닙니다");
+      return;
+    }
     if (!isValidHttpUrl(e.Link)) {
       alert("올바른 URL가 아닙니다");
       return;

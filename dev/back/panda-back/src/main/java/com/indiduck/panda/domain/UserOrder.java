@@ -212,7 +212,8 @@ public class UserOrder {
 
     //구매확정기간 연장
     public boolean extendConfirm() {
-        if (this.canExtend <= 0 && this.orderStatus != OrderStatus.발송중) {
+        if (this.canExtend <= 0 || this.orderStatus != OrderStatus.발송중) {
+
             return false;
         } else {
             this.standardfinishAt = standardfinishAt.plusDays(7);

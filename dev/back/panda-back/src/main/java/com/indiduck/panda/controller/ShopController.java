@@ -259,7 +259,7 @@ public class ShopController {
             Optional<List<UserOrder>> ready2 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.발송중);
             Optional<List<UserOrder>> ready3 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.배송완료);
 
-            Optional<List<UserOrder>> cancelReturn = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.교환대기);
+            Optional<List<UserOrder>> cancelReturn = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.상점확인중);
             Optional<List<UserOrder>> cancelReturn2 = userOrderRepository.findByShopAndOrderStatus(shop, OrderStatus.환불대기);
 
             Optional<List<UserOrder>> finish1 = userOrderRepository.findByShopAndOrderStatusAndCreatedAtBetween(shop, OrderStatus.구매확정,startDay,endDay);
@@ -316,7 +316,7 @@ public class ShopController {
 
 
 
-            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(true,newOrderSize,readyOrder,cROrder,finOrder,money,quantity,day));
+            return ResponseEntity.ok(new ShopDashBoardMainV2Dto(true,newOrderSize,readyOrder,finOrder,cROrder,money,quantity,day));
 
         } catch (Exception e)
         {

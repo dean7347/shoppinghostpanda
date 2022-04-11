@@ -33,7 +33,10 @@ public class JobScheduler {
 
     @Autowired
     private ResignConfiguration resignConfiguration;
-    @Scheduled(cron = "1 * * * * ?")
+
+
+    //구매확정은 매일 새벽 03시에 실행한다
+    @Scheduled(cron = "0 0 3 ? * *")
     public void runConfirmJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
@@ -51,7 +54,8 @@ public class JobScheduler {
         }
     }
 
-    @Scheduled(cron = "35 * * * * ?")
+    //상점 정산서는 매주 일요일 04시에 실행한다
+    @Scheduled(cron = "0 0 4 ? * SUN ")
     public void runDepositJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
@@ -69,8 +73,8 @@ public class JobScheduler {
             e.printStackTrace();
         }
     }
-
-    @Scheduled(cron = "40 * * * * ?")
+    //판다 청구서는 매주 일요일 05시 30에 실행한다
+    @Scheduled(cron = "0 30 5 ? * SUN ")
     public void runDepositPandaJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
@@ -89,8 +93,8 @@ public class JobScheduler {
         }
     }
 
-
-    @Scheduled(cron = "45 * * * * ?")
+    //회원탈퇴는 매일 새벽 04시 30에 실행한다
+    @Scheduled(cron = "0 30 4 ? * *")
     public void runResignJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
@@ -108,8 +112,8 @@ public class JobScheduler {
             e.printStackTrace();
         }
     }
-
-    @Scheduled(cron = "50 * * * * ?")
+    //회원탈퇴는 매일 새벽 04시 40에 실행한다
+    @Scheduled(cron = "0 40 4 ? * *")
     public void cancelOrderJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
