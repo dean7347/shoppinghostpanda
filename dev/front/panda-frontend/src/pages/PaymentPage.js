@@ -780,15 +780,14 @@ function PaymentPage(gprops) {
                                                 {option.discount ? (
                                                   <div>
                                                     {Math.floor(
-                                                      option.originPrice *
-                                                        option.optionCount *
-                                                        0.95
-                                                    )
-                                                      .toString()
-                                                      .replace(
-                                                        /\B(?=(\d{3})+(?!\d))/g,
-                                                        ","
-                                                      )}
+                                                      option.originPrice * 0.95
+                                                    ) *
+                                                      option.optionCount
+                                                        .toString()
+                                                        .replace(
+                                                          /\B(?=(\d{3})+(?!\d))/g,
+                                                          ","
+                                                        )}
                                                     <br />
                                                     (판다 할인 : 5% )
                                                   </div>
@@ -959,7 +958,7 @@ function PaymentPage(gprops) {
                     }}
                   >
                     <Row align={"middle"} style={{}}>
-                      <Col lg={4} md={12} sm={12} xs={4}>
+                      <Col lg={4} md={12} sm={12} xs={24}>
                         {item.shopName}{" "}
                         {item.dp.map((product, index) => (
                           <>
@@ -967,7 +966,7 @@ function PaymentPage(gprops) {
                           </>
                         ))}
                       </Col>
-                      <Col lg={12} md={12} sm={12} xs={20}>
+                      <Col lg={12} md={12} sm={12} xs={24}>
                         <div style={{}}>
                           {item.dp.map((product, index) => (
                             <>
@@ -995,7 +994,7 @@ function PaymentPage(gprops) {
                                     <Col span={24}></Col>
                                   </Row>
                                 </Col>
-                                <Col span={18}>
+                                <Col span={24}>
                                   {product.do.map((option, index) => (
                                     <>
                                       <div style={{ background: "#FFDBC1" }}>
@@ -1011,10 +1010,8 @@ function PaymentPage(gprops) {
                                         {option.discount
                                           ? pricePlus(
                                               Math.floor(
-                                                option.originPrice *
-                                                  option.optionCount *
-                                                  0.95
-                                              ),
+                                                option.originPrice * 0.95
+                                              ) * option.optionCount,
                                               option.originPrice *
                                                 option.optionCount
                                             )
@@ -1026,24 +1023,33 @@ function PaymentPage(gprops) {
                                             )}
                                         <div style={{ background: "#FFEAD0" }}>
                                           <Row>
-                                            <Col span={16}>
+                                            <Col span={24}>
                                               {option.discount ? (
-                                                <div>
+                                                <div
+                                                  style={{
+                                                    textAlign: "center",
+                                                  }}
+                                                >
                                                   {Math.floor(
-                                                    option.originPrice *
-                                                      option.optionCount *
-                                                      0.95
-                                                  )
-                                                    .toString()
-                                                    .replace(
-                                                      /\B(?=(\d{3})+(?!\d))/g,
-                                                      ","
-                                                    )}
+                                                    option.originPrice * 0.95
+                                                  ) *
+                                                    option.optionCount
+                                                      .toString()
+                                                      .replace(
+                                                        /\B(?=(\d{3})+(?!\d))/g,
+                                                        ","
+                                                      )}
                                                   <br />
                                                   (판다 할인 : 5% )
                                                 </div>
                                               ) : (
-                                                <div>
+                                                <div
+                                                  style={{
+                                                    textAlign: "center",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                  }}
+                                                >
                                                   {(
                                                     option.originPrice *
                                                     option.optionCount

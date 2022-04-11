@@ -491,10 +491,14 @@ function UserCardBlock(props) {
                       <div
                         style={{
                           textAlign: "center",
+                          alignItems: "center",
+                          justifyContent: "center",
+
+                          width: "100%",
                         }}
                       >
-                        <Row align={"middle"} style={{}}>
-                          <Col lg={4} md={12} sm={12} xs={4}>
+                        <Row align={"middle"} style={{ width: "100%" }}>
+                          <Col lg={4} md={12} sm={12} xs={24}>
                             {item.shopName}{" "}
                             <Checkbox
                               onChange={(e) => onChanges(e, allPrice)}
@@ -506,13 +510,25 @@ function UserCardBlock(props) {
                               </>
                             ))}
                           </Col>
-                          <Col lg={12} md={12} sm={12} xs={20}>
-                            <div style={{}}>
+                          <Col
+                            style={{ width: "100%" }}
+                            lg={12}
+                            md={12}
+                            sm={12}
+                            xs={24}
+                          >
+                            <div
+                              style={{
+                                width: "100%",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
                               {item.dp.map((product, index) => (
                                 <>
                                   {/* 상품상세박스 */}
                                   <Row align={"middle"}>
-                                    <Col lg={6} md={6} sm={12} xs={12}>
+                                    <Col lg={6} md={6} sm={12} xs={24}>
                                       <Row>
                                         <Col span={24}>
                                           <img
@@ -543,7 +559,7 @@ function UserCardBlock(props) {
                                         </Col>
                                       </Row>
                                     </Col>
-                                    <Col span={18}>
+                                    <Col span={24}>
                                       {product.do.map((option, index) => (
                                         <>
                                           <div
@@ -562,10 +578,8 @@ function UserCardBlock(props) {
                                             {option.discount
                                               ? pricePlus(
                                                   Math.floor(
-                                                    option.originPrice *
-                                                      option.optionCount *
-                                                      0.95
-                                                  ),
+                                                    option.originPrice * 0.95
+                                                  ) * option.optionCount,
                                                   option.originPrice *
                                                     option.optionCount
                                                 )
@@ -584,14 +598,14 @@ function UserCardBlock(props) {
                                                     <div>
                                                       {Math.floor(
                                                         option.originPrice *
-                                                          option.optionCount *
                                                           0.95
-                                                      )
-                                                        .toString()
-                                                        .replace(
-                                                          /\B(?=(\d{3})+(?!\d))/g,
-                                                          ","
-                                                        )}
+                                                      ) *
+                                                        option.optionCoun
+                                                          .toString()
+                                                          .replace(
+                                                            /\B(?=(\d{3})+(?!\d))/g,
+                                                            ","
+                                                          )}
                                                       <br />
                                                       (판다 할인 : 5% )
                                                     </div>
@@ -678,7 +692,7 @@ function UserCardBlock(props) {
                     </span>
                   </dd>
                 </dl>
-                <dl className="col-1">
+                <dl className="col-5">
                   <i className="bx bx-plus-circle"></i>
                 </dl>
                 <dl className="col-5">
@@ -692,7 +706,7 @@ function UserCardBlock(props) {
                   </dd>
                 </dl>
 
-                <dl className="col-4">
+                <dl className="col-5">
                   <i className="bx bx-chevron-right" />
                 </dl>
                 <dl className="col-8">

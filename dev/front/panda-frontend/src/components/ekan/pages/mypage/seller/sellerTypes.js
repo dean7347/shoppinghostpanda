@@ -58,25 +58,25 @@ export const sellerSidebarItems = [
 
 export const sellerDashboardCard = [
   {
-    link: "/seller/video",
+    link: "/seller/newOrder",
     icon: "bx bx-shopping-bag",
     count: 0,
     title: "신규주문",
   },
   {
-    link: "/seller/settlement",
+    link: "/seller/ReadyOrder",
     icon: "bx bx-package",
     count: 0,
     title: "배송/준비",
   },
   {
-    link: "/seller/settlement",
+    link: "/seller/CancelReturnOrderPage",
     icon: "bx bx-error-alt",
     count: 0,
     title: "취소 / 반품",
   },
   {
-    link: "/seller/settlement",
+    link: "/seller/CompleteOrder",
     icon: "bx bxs-package",
     count: 0,
     title: "완료주문",
