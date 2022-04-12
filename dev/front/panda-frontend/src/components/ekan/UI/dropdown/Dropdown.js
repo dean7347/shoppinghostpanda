@@ -3,6 +3,7 @@ import './dropdown.css'
 
 const clickOutsideRef = (content_ref, toggle_ref) => {
     document.addEventListener('mousedown', (e) => {
+        e.preventDefault()
         // user click toggle
         if (toggle_ref.current && toggle_ref.current.contains(e.target)) {
             content_ref.current.classList.toggle('active')
