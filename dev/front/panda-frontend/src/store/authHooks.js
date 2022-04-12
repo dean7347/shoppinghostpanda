@@ -56,10 +56,11 @@ export const onTokenRefresh = async () => {
         user: data,
       });
     } else {
-      throw new Error("리이슈 실패");
+      return Promise.reject();
     }
   } catch (err) {
-    throw new Error("리이슈 실패");
+    // throw new Error("리이슈 실패");
+    return Promise.reject(err);
 
     console.error("토큰 재발급 실패", err);
     // 실패 처리
