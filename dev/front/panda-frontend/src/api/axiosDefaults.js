@@ -27,15 +27,6 @@ axios.interceptors.response.use(
     } = error;
     if (status === 406) {
       try {
-        console.log("ontoken refresh", config);
-        if (config.url === "/api/reissuev2") {
-          if (
-            window.confirm("로그인이 필요한 서비스입니다. 이동하시겠습니까?")
-          ) {
-            window.location.replace("/signin");
-          }
-          return;
-        }
         await onTokenRefresh();
         // console.log(onTokenRefresh());
         return axios(config);

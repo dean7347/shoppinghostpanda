@@ -327,17 +327,22 @@ private final JwtTokenProvider jwtTokenProvider;
     public ResponseEntity<?> reissueV2(@CurrentSecurityContext(expression = "authentication")Authentication authentication,
                                                    HttpServletRequest req, HttpServletResponse res) {
 
-        log.info(authentication.getName() + "의 리이슈 신청");
-        if(authentication.getName().equals("anonymousUser"))
-        {
-            System.out.println(" 리이슈 실패 " );
-            return ResponseEntity.ok().body(new TFMessageDto(false, "재발급 실패1"));
-
-        }
+//        log.info(authentication.getName() + "의 리이슈 신청");
+//        if(authentication.getName().equals("anonymousUser"))
+//        {
+//            System.out.println(" 리이슈 실패 " );
+//            return ResponseEntity.ok().body(new TFMessageDto(false, "재발급 실패1"));
+//
+//        }
         String rtCookie = "";
         String atCookie="";
         Cookie[] cookies = req.getCookies();
-        if (cookies == null) return null;
+        System.out.println("cookies = " + cookies);
+        if (cookies.length==0) {
+            System.out.println("쿠키가없습니다");
+
+            return null;
+        }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("refreshToken"))
                 rtCookie = cookie.getValue();
@@ -345,10 +350,9 @@ private final JwtTokenProvider jwtTokenProvider;
                 atCookie = cookie.getValue();
         }
 //        System.out.println("기존쿡히"+atCookie);
-
         UserResponseDto.TokenInfo tokenInfo = userDetailsService.reissueV2(atCookie, rtCookie);
         if (tokenInfo == null) {
-            return ResponseEntity.status(406).body(new TFMessageDto(false, "재발급 실패2"));
+            return ResponseEntity.status(400).body(new TFMessageDto(false, "재발급 실패2"));
 
         }
 
