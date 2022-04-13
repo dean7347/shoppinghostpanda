@@ -1,145 +1,173 @@
-import React, { FC, useCallback } from "react";
-import "./navbar.css";
-import { Link, useHistory, useLocation } from "react-router-dom";
-import {
-  notification_dummy,
-  user_menu,
-  panda_menu,
-  seller_menu,
-  pandaSeller_menu,
-} from "./navbarTypes";
-import { useAuthStore } from "../../../store/authHooks";
-import Dropdown from "../../ekan/UI/dropdown/Dropdown";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import {useCallback} from "react";
+import {Link, useHistory} from "react-router-dom";
+import {alpha, styled} from "@mui/material/styles";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import {Divider} from "@mui/material";
+import {useAuthStore} from "../../../store/authHooks";
+import {panda_menu, seller_menu, user_menu} from "./navbarTypes";
 import Button from "../../ekan/UI/Button";
 
-// const renderNotificationItem = (item: StringObj, index: number) => (
-//     <div className="notification-item" key={index}>
-//         <i className={item.icon}/>
-//         <span>{item.content}</span>
-//     </div>
-// )
-
-const Navbar = () => {
-  const history = useHistory();
-  const location = useLocation();
-  const user = useAuthStore((state) => state.user);
-  const signOut = useAuthStore((state) => state.signOut);
-
-  //console.log("회원: ", user);
-
-  const renderUserToggle = useCallback(
-    () => (
-      <div className="topnav__right-user">
-        <div className="topnav__right-user__image">
-          {/*<img src={user.image} alt=""/>*/}
-        </div>
-        <div className="topnav__right-user__name">{user?.userName} ▼</div>
-      </div>
-    ),
-    [user]
-  );
-
-  const renderUserMenu = useCallback(
-    (item, index) => (
-      <div key={index}>
-        {item.link === "/logout" ? (
-          <a
-            onClick={() => {
-              signOut();
-            }}
-            key={index}
-          >
-            <div className="notification-item">
-              <i className={item.icon} />
-              <span>{item.content}</span>
-            </div>
-          </a>
-        ) : (
-          <Link to={item.link} key={index}>
-            <div className="notification-item">
-              <i className={item.icon} />
-              <span>{item.content}</span>
-            </div>
-          </Link>
-        )}
-      </div>
-    ),
-    [signOut, user]
-  );
-
-  const renderAuthMenu = useCallback(
-    (panda, seller) => {
-      if (panda && seller) {
-        return pandaSeller_menu;
-      }
-      if (panda) {
-        return panda_menu;
-      }
-      if (seller) {
-        return seller_menu;
-      }
-      return user_menu;
+const StyledMenu = styled((props) => (
+    <Menu
+        elevation={0}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        {...props}
+    />
+))(({theme}) => ({
+    '& .MuiPaper-root': {
+        borderRadius: 6,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        color:
+            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+        boxShadow:
+            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        '& .MuiMenu-list': {
+            padding: '4px 0',
+        },
+        '& .MuiMenuItem-root': {
+            '& .MuiSvgIcon-root': {
+                fontSize: 18,
+                color: theme.palette.text.secondary,
+                marginRight: theme.spacing(1.5),
+            },
+            '&:active': {
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
+            },
+        },
     },
-    [user]
-  );
+}));
 
-  return (
-    <nav className="navbar has-shadow">
-      {/*{location.pathname === '/' ?*/}
-      {/*    <a className="navbar-item" href='/'>*/}
-      {/*        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"/>*/}
-      {/*    </a>*/}
-      {/*    : <Link className="navbar-item" to={'/'}>*/}
-      {/*        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"/>*/}
-      {/*    </Link>*/}
-      {/*}*/}
-      {location.pathname === "/" ? (
-        <a className="navbar-brand navbar-logo" href="/">
-          <span>Panda</span>
-        </a>
-      ) : (
-        <Link className="navbar-brand" to={"/"}>
-          <span>Panda</span>
-        </Link>
-      )}
+const ResponsiveAppBar = () => {
+    const history = useHistory();
+    const user = useAuthStore(state => state.user)
+    const signOut = useAuthStore(state => state.signOut)
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
 
-      {user ? (
-        <div className="navbar-end">
-          <div>
-            <span className="mr-3">
-              <Dropdown
-                customToggle={() => renderUserToggle()}
-                contentData={renderAuthMenu(user.panda, user.seller)}
-                renderItems={(item, index) => renderUserMenu(item, index)}
-              />
-            </span>
-            {/*<span className="mr-3">*/}
-            {/*    <Dropdown*/}
-            {/*        icon='bx bx-bell'*/}
-            {/*        badge='0'*/}
-            {/*        contentData={notification_dummy}*/}
-            {/*        renderItems={(item: StringObj, index: number) => renderNotificationItem(item, index)}*/}
-            {/*        renderFooter={() => <Link to='/'>View All</Link>}*/}
-            {/*    />*/}
-            {/*</span>*/}
-          </div>
-        </div>
-      ) : (
-        <div className="navbar-end">
-          <div>
-            <div className="buttons">
-              <Button
-                text="회원가입"
-                onClick={() => history.push("/register")}
-                className="is-primary"
-              />
-              <Button text="로그인" onClick={() => history.push("/signin")} />
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
-  );
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        signOut()
+        setAnchorEl(null);
+    }
+
+    const renderAuthMenu = useCallback((panda, seller) => {
+        if (panda && seller) {
+            return user_menu
+        }
+        if (panda) {
+            return panda_menu
+        }
+        if (seller) {
+            return seller_menu
+        }
+        return user_menu
+    }, [user])
+
+    return (
+        <>
+            {
+                <AppBar color='inherit' position="static" elevation={1}>
+                    <Container maxWidth="xl">
+                        <Toolbar disableGutters>
+                            <Typography
+                                variant="h4"
+                                noWrap
+                                component="div"
+                                sx={{mr: 2, display: {xs: 'none', md: 'flex'}}}
+                            >
+                                <Link className='navbar-logo' to='/'><span>Panda</span></Link>
+                            </Typography>
+
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="div"
+                                sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}
+                            >
+                                <Link className='navbar-logo' to='/'><span>Panda</span></Link>
+                            </Typography>
+                            <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}/>
+                            {
+                                user &&
+                                <Box sx={{flexGrow: 0}}>
+                                    <IconButton onClick={handleClick} sx={{p: 0}}>
+                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                    </IconButton>
+                                    <StyledMenu
+                                        id="demo-customized-menu"
+                                        MenuListProps={{
+                                            'aria-labelledby': 'demo-customized-button',
+                                        }}
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                    >
+                                        {
+                                            renderAuthMenu(user.panda, user.seller).map((data) =>
+                                                <MenuItem sx={{fontSize: 18}} onClick={handleClose} disableRipple>
+                                                    <Link to={data.link} className='ml-1'>
+                                                        <i className={data.icon}/>
+                                                        <span className='ml-4'>{data.content}</span>
+                                                    </Link>
+                                                </MenuItem>
+                                            )
+                                        }
+                                        <Divider sx={{my: 0.5}}/>
+
+                                        <MenuItem sx={{fontSize: 18}} onClick={handleLogout} disableRipple>
+                                            <div className='ml-1'>
+                                                <i className="bx bx-log-out-circle bx-rotate-180"/>
+                                                <span className='ml-4'>로그아웃</span>
+                                            </div>
+                                        </MenuItem>
+                                    </StyledMenu>
+                                </Box>
+                            }
+
+                            {
+                                !user &&
+                                <Box sx={{flexGrow: 0}}>
+                                    <div className="buttons">
+                                        <Button text="회원가입" onClick={() => history.push('/signup')}
+                                                className="is-primary"/>
+                                        <Button text="로그인" onClick={() => history.push('/signin')}/>
+                                    </div>
+                                </Box>
+                            }
+
+                        </Toolbar>
+                    </Container>
+                </AppBar>
+            }
+        </>
+
+    );
 };
-
-export default Navbar;
+export default ResponsiveAppBar;
