@@ -117,9 +117,7 @@ const ResponsiveAppBar = () => {
                             {
                                 user &&
                                 <Box sx={{flexGrow: 0}}>
-                                    <IconButton onClick={handleClick} sx={{p: 0}}>
-                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
-                                    </IconButton>
+                                    <Button text={user.userName} className='is-inverted' onClick={handleClick}/>
                                     <StyledMenu
                                         id="demo-customized-menu"
                                         MenuListProps={{
