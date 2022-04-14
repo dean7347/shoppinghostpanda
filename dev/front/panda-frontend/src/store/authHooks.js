@@ -46,12 +46,9 @@ export const useAuthStore = create((set) => ({
 // 토큰 재발급 함수
 export const onTokenRefresh = async () => {
   try {
-    console.log("리프래시중임");
     const { data } = await axios.post("/api/reissuev2");
     console.log(data);
     if (data.success) {
-      console.log("리프레시데이타: ", data);
-
       useAuthStore.setState({
         user: data,
       });
