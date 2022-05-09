@@ -82,7 +82,7 @@ const Footer = () => {
           <hr />
           고객센터 <br />
           (주 5일 오전 10시 ~ 오후 5시까지)
-          <br /> 대표번호 :054-974-7868
+          <br /> 대표번호 :010-8697-7348
           <br /> 메일 : shoppinghostpanda@gmail.com
           <br />
           <br />

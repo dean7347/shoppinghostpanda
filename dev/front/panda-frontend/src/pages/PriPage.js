@@ -193,7 +193,7 @@ const pri = `
 성명 :김진동
 직책 :CEO
 직급 :CEO
-연락처 :0549747868, shoppinghostpanda@gamil.com,
+연락처 : 01086977348, shoppinghostpanda@gamil.com,
 ※ 개인정보 보호 담당부서로 연결됩니다.
 
 ▶ 개인정보 보호 담당부서
@@ -209,7 +209,7 @@ const pri = `
 ▶ 개인정보 열람청구 접수·처리 부서
 부서명 : 사업부
 담당자 : 김진동
-연락처 : 0549747868, shoppinghostpanda@gamil.com,
+연락처 : 01086977348, shoppinghostpanda@gamil.com,
 
 
 제12조(권익침해 구제방법)
