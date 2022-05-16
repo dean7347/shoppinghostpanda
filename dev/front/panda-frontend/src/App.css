@@ -12,8 +12,8 @@
   text-decoration: none;
 }
 
-.navbar-logo span{
-  font-family: 'Montserrat', sans-serif;
+.navbar-logo span {
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-size: 35px;
 }
@@ -54,7 +54,7 @@
   height: 100%;
 }
 
-.modal{
+.modal {
   display: flex !important;
 }
 
@@ -78,19 +78,32 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@media screen and (max-width: 768px){
-  .modal-card{
-    max-width: 90%;
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-.carousel-item{
-  height: 45vh;
-  max-height: 45vh;
+@media screen and (max-width: 768px) {
+  .modal-card {
+    max-width: 90%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .carousel-cont {
+    height: 20vh;
+    max-height: 20vh;
+  }
+  .carousel-image {
+    max-width: 100%;
+    height: auto;
+  }
+}
+.carousel-item {
+  height: 50vh;
+  max-height: 50vh;
 }
 
 .carousel-image {
