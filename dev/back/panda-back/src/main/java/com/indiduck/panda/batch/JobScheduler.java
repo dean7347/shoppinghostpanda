@@ -60,7 +60,7 @@ public class JobScheduler {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(confMap);
-        System.out.println("샵청구스케쥴링시작");
+        log.info("샵청구스케쥴링시작");
         try {
 
             jobLauncher.run(depositConfiguration.DepositJob(), jobParameters);
@@ -79,7 +79,7 @@ public class JobScheduler {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(confMap);
-        System.out.println("판다청구스케쥴링시작");
+        log.info("판다청구스케쥴링시작");
         try {
 
             jobLauncher.run(pandaConfiguration.DepositPandaJob(), jobParameters);

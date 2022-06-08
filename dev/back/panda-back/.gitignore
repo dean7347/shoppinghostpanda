@@ -12,6 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.properties
 resources/application-API-KEY.properties 
 ### IntelliJ IDEA ###
 .idea

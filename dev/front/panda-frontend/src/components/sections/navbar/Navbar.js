@@ -177,7 +177,7 @@ const ResponsiveAppBar = () => {
                   <div className="buttons">
                     <Button
                       text="회원가입"
-                      onClick={() => history.push("/signup")}
+                      onClick={() => history.push("/register")}
                       className="is-primary"
                     />
                     <Button

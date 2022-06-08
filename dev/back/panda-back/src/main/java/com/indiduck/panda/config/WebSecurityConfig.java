@@ -31,7 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .httpBasic().disable()
 //                .csrf().disable()
-//                TODO:cors추가하기
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).
                 and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
